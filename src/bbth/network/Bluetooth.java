@@ -35,6 +35,7 @@ public class Bluetooth {
 	}
 
 	private class EnableBluetoothState extends StateBase {
+		@Override
 		public State getState() {
 			return State.ENABLE_BLUETOOTH;
 		}
@@ -54,6 +55,7 @@ public class Bluetooth {
 	}
 
 	private class ListDevicesState extends StateBase {
+		@Override
 		public State getState() {
 			return State.LIST_DEVICES;
 		}
@@ -86,6 +88,7 @@ public class Bluetooth {
 	}
 
 	private class ConnectToEachDeviceState extends StateBase {
+		@Override
 		public State getState() {
 			return State.CONNECT_TO_EACH_DEVICE;
 		}
@@ -147,6 +150,7 @@ public class Bluetooth {
 	}
 
 	private class ConnectedState extends StateBase {
+		@Override
 		public State getState() {
 			return State.CONNECTED;
 		}
@@ -227,6 +231,7 @@ public class Bluetooth {
 	}
 
 	private class ListenForConnectionsState extends StateBase {
+		@Override
 		public State getState() {
 			return State.LISTEN_FOR_CONNECTIONS;
 		}
@@ -291,6 +296,7 @@ public class Bluetooth {
 	}
 
 	private class DisconnectedState extends StateBase {
+		@Override
 		public State getState() {
 			return State.DISCONNECTED;
 		}

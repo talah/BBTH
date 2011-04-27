@@ -104,6 +104,7 @@ final class GameView extends View implements Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		// update
 		long currentTime = System.currentTimeMillis();
