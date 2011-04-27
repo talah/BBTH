@@ -1,4 +1,4 @@
-package bbth.screens;
+package bbth.game;
 
 import bbth.core.Game;
 import bbth.core.GameActivity;
