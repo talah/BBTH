@@ -13,11 +13,11 @@ public class BBTHGame extends Game {
 
 	@Override
 	public float getWidth() {
-		return 1.5f;
+		return WIDTH;
 	}
 
 	@Override
 	public float getHeight() {
-		return 1.5f;
+		return HEIGHT;
 	}
 }
