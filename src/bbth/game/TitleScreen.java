@@ -1,4 +1,4 @@
-package bbth.screens;
+package bbth.game;
 
 import bbth.core.GameScreen;
 import android.graphics.Canvas;
