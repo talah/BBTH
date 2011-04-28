@@ -44,6 +44,27 @@ public class ConnectedGraph {
 		}
 	}
 	
+	public void remove_connection(PointF p, PointF p2) {
+		ArrayList<PointF> list = m_connections.get(p);
+		list.remove(p2);
+	}
+	
+	public void remove_connection(float x, float y, float x2, float y2) {
+		PointF key = get_point_at_coords(x, y);
+		PointF value = get_point_at_coords(x2, y2);
+
+		if (key == null) {
+			return;
+		}
+		
+		ArrayList<PointF> list = m_connections.get(key);
+		
+		if (value == null) {
+			return;
+		}
+		list.remove(value);
+	}
+	
 	public HashMap<PointF, ArrayList<PointF>> get_graph() {
 		return m_connections;
 	}
