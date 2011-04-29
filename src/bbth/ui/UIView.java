@@ -107,11 +107,25 @@ public class UIView extends GameScreen {
     
     public void setSize(float width, float height)
     {
-        this.setBounds(_rect.left, _rect.top, _rect.left + width, _rect.top + height);
-        this._width = width;
+    	this._width = width;
         this._height = height;
         this._h_width = _width / 2.f;
         this._h_height = _height / 2.f;
+
+        switch(this.anchor)
+        {
+            case TOP_LEFT: this.setBounds(_rect.left, _rect.top, _rect.left + _width, _rect.top + _height ); break;
+            case TOP_CENTER: this.setBounds(center.x - _h_width, _rect.top, center.x + _h_width, _rect.top + _height); break;
+            case TOP_RIGHT: this.setBounds(_rect.right - _width, _rect.top, _rect.right, _rect.top + _height); break;
+            case CENTER_LEFT: this.setBounds(_rect.left, center.y - _h_height, _rect.left + _width, center.y + _h_height); break;
+            case CENTER_CENTER: this.setBounds(center.x - _h_width, center.y - _h_height, center.x + _h_width, center.y + _h_height); break;
+            case CENTER_RIGHT: this.setBounds(_rect.right - _width, center.y - _h_height, _rect.right, center.y + _h_height); break;
+            case BOTTOM_LEFT: this.setBounds(_rect.left, _rect.bottom - _height, _rect.left + _width, _rect.bottom); break;
+            case BOTTOM_CENTER: this.setBounds(center.x - _h_width, _rect.bottom - _height, center.x + _h_width, _rect.bottom); break;
+            case BOTTOM_RIGHT: this.setBounds(_rect.right - _width, _rect.bottom - _height, _rect.right, _rect.bottom); break;
+        }
+        center.x = _rect.left + _h_width;
+        center.y = _rect.top + _h_height;
     }
     
     public void setPosition(float x, float y)

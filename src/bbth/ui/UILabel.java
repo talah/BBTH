@@ -18,6 +18,7 @@ public class UILabel extends UIControl {
 
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
+		_paint.setTextSize(14);
 
 		_paint.setColor(DEFAULT_TEXT_COLOR);
 
@@ -31,7 +32,17 @@ public class UILabel extends UIControl {
 	@Override
 	public void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
-		canvas.drawText(text, center.x, center.y + _paint.getTextSize() / 3.f, _paint);
+	    switch (_paint.getTextAlign()) {
+		case CENTER:
+			canvas.drawText(text, center.x, center.y + _paint.getTextSize() / 3.f, _paint);
+			break;
+		case LEFT:
+			canvas.drawText(text, _rect.left, center.y + _paint.getTextSize() / 3.f, _paint);
+			break;
+		case RIGHT:
+			canvas.drawText(text, _rect.right, center.y + _paint.getTextSize() / 3.f, _paint);
+			break;
+		}
 	}
 
 	@Override
@@ -52,7 +63,6 @@ public class UILabel extends UIControl {
 	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
         super.setBounds(left, top, right, bottom);
-		setTextSize(_height / 2.5f);
 		setText(text);
 	}
 
@@ -67,6 +77,7 @@ public class UILabel extends UIControl {
 	public void setTextSize(float size)
 	{
 		_paint.setTextSize(size);
+		sizeToFit();
 	}
 
 	public void setTextColor(int color)
@@ -76,30 +87,17 @@ public class UILabel extends UIControl {
 	
 	public void sizeToFit()
 	{
-		this._height = _paint.getTextSize();
-		this._h_height = _height / 2.f;
-		this._width = _paint.measureText(this.text);
-		this._h_width = _width / 2.f;
-		
-		switch(this.anchor)
-        {
-            case TOP_LEFT: super.setBounds(_rect.left, _rect.top, _rect.left + _width, _rect.top + _height ); break;
-            case TOP_CENTER: super.setBounds(center.x - _h_width, _rect.top, center.x + _h_width, _rect.top + _height); break;
-            case TOP_RIGHT: super.setBounds(_rect.left - _width, _rect.top, _rect.left, _rect.top + _height); break;
-            case CENTER_LEFT: super.setBounds(_rect.left, center.y - _h_height, _rect.left + _width, center.y + _h_height); break;
-            case CENTER_CENTER: super.setBounds(center.x - _h_width, center.y - _h_height, center.x + _h_width, center.y + _h_height); break;
-            case CENTER_RIGHT: super.setBounds(_rect.left - _width, center.y - _h_height, _rect.left, center.y + _h_height); break;
-            case BOTTOM_LEFT: super.setBounds(_rect.left, _rect.top - _height, _rect.left + _width, _rect.top); break;
-            case BOTTOM_CENTER: super.setBounds(center.x - _h_width, _rect.top - _height, center.x + _h_width, _rect.top); break;
-            case BOTTOM_RIGHT: super.setBounds(_rect.left - _width, _rect.top - _height, _rect.left, _rect.top); break;
-        }
-        center.x = _rect.left + _h_width;
-        center.y = _rect.top + _h_height;
+		setSize(_paint.measureText(this.text), _paint.getTextSize());	
 	}
 	
 	public void setBold(boolean bold)
 	{
 		_paint.setFakeBoldText(bold);
+	}
+	
+	public void setTextAlign(Align align)
+	{
+		_paint.setTextAlign(align);
 	}
     
 }
