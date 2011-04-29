@@ -1,19 +1,22 @@
 package bbth.game;
 
-import bbth.core.GameScreen;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
+import bbth.ui.Anchor;
+import bbth.ui.UILabel;
+import bbth.ui.UIView;
 
-public class TitleScreen extends GameScreen {
-	@Override
-	public void onDraw(Canvas canvas) {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(Color.WHITE);
-		paint.setTextAlign(Align.CENTER);
-		paint.setTextSize(30.f);
+public class TitleScreen extends UIView {
+	
+	private UILabel greeting;
+	
+	public TitleScreen()
+	{
+		greeting = new UILabel("Hello, World!", null);
+		greeting.setAnchor(Anchor.CENTER_CENTER);
+		greeting.setTextColor(Color.WHITE);
+		greeting.setPosition(160.f, 90.f);
+		greeting.setTextSize(30.f);
 		
-		canvas.drawText("Hello, world!", 160.f, 90.f, paint);
+		addSubview(greeting);
 	}
 }
