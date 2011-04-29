@@ -1,5 +1,6 @@
 package bbth.game;
 
+import android.app.Activity;
 import bbth.core.Game;
 
 public class BBTHGame extends Game {
@@ -7,8 +8,9 @@ public class BBTHGame extends Game {
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180;
 
-	public BBTHGame() {
-		currentScreen = new TitleScreen();
+	public BBTHGame(Activity activity) {
+		//currentScreen = new TitleScreen();
+		currentScreen = new MusicTestScreen(activity);
 	}
 
 	@Override

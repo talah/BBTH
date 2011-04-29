@@ -7,6 +7,6 @@ public class BBTHActivity extends GameActivity {
 
 	@Override
 	protected Game getGame() {
-		return new BBTHGame();
+		return new BBTHGame(this);
 	}
 }
