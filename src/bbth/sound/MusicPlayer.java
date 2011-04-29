@@ -1,7 +1,6 @@
 package bbth.sound;
 
 import java.io.IOException;
-
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -37,6 +36,10 @@ public class MusicPlayer {
 				listener.onCompletion(MusicPlayer.this);
 			}
 		});
+	}
+	
+	public int getCurrentPosition() {
+		return _mediaPlayer.getCurrentPosition();
 	}
 	
 	// plays the song once
