@@ -7,9 +7,10 @@ import bbth.ui.UIProgressBar;
 import bbth.ui.UIView;
 
 public class TitleScreen extends UIView {
-	
 	private UILabel greeting;
 	private UIProgressBar progressBar;
+	
+	private float elapsedTime;
 	
 	public TitleScreen(Object tag)
 	{
@@ -21,11 +22,20 @@ public class TitleScreen extends UIView {
 		greeting.setTextSize(30.f);
 		addSubview(greeting);
 		
-		//
-		progressBar = new UIProgressBar(greeting, greeting, tag);
+		// testing progress bar
+		progressBar = new UIProgressBar(tag);
 		progressBar.setAnchor(Anchor.CENTER_CENTER);
-		progressBar.setSize(30, 20);
-		progressBar.setPosition(160, 90);
+		progressBar.setSize(60, 20);
+		progressBar.setPosition(120, 90);
+		progressBar.setBorderRadius(5);
+		progressBar.setProgress(1.f);
 		addSubview(progressBar);
+
+	}
+	
+	public void onUpdate(float seconds) {
+		this.elapsedTime += seconds;
+		
+		progressBar.setProgress(elapsedTime / 10);
 	}
 }

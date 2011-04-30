@@ -17,4 +17,8 @@ public class MathUtils {
 	public static float get_dist(float x1, float y1, float x2, float y2) {
 		return FloatMath.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
+	
+	public static float clamp(float min, float max, float val) {
+		return Math.max(min, Math.min(val, max));
+	}
 }
