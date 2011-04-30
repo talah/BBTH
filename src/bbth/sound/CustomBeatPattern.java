@@ -1,7 +1,5 @@
 package bbth.sound;
 
-import java.util.List;
-
 /**
  * A custom beat pattern based on a list of beat lengths
  * @author justin
@@ -9,16 +7,20 @@ import java.util.List;
  */
 public class CustomBeatPattern implements BeatPattern {
 
-	private List<Integer> _beatTimes;
+	private int[] _beatTimes;
 	private boolean _looping;
+	private int _loopSum;
 	
 	// pattern will loop after last beat only if loop is set to true
-	public CustomBeatPattern(int firstBeatOffset, List<Integer> beatLengths, boolean loop) {
+	public CustomBeatPattern(int firstBeatOffset, int []beatLengths, boolean loop) {
+		_beatTimes = new int[beatLengths.length];
 		int currTime = firstBeatOffset;
-		for (int beatLength : beatLengths) {
-			_beatTimes.add(currTime);
-			currTime += beatLength;
+		for (int i = 0; i < beatLengths.length; ++i) {
+			_beatTimes[i] = currTime;
+			currTime += beatLengths[i];
 		}
+		_loopSum = currTime - firstBeatOffset;
+		_looping = loop;
 	}
 	
 	// returns MIN_VALUE if the beat number is invalid
@@ -26,9 +28,12 @@ public class CustomBeatPattern implements BeatPattern {
 		if (beatNumber < 0) {
 			return Integer.MIN_VALUE;
 		}
-		if (beatNumber < _beatTimes.size()) {
-			return _beatTimes.get(beatNumber);
+		if (beatNumber < _beatTimes.length) {
+			return _beatTimes[beatNumber];
 		}
-		return _looping ? _beatTimes.get(beatNumber % _beatTimes.size()) : Integer.MIN_VALUE;
+		if (_looping) {
+			return _loopSum * (beatNumber / _beatTimes.length) + _beatTimes[beatNumber % _beatTimes.length];
+		}
+		return Integer.MIN_VALUE;
 	}
 }
