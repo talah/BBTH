@@ -430,14 +430,14 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 				throw new ConcurrentModificationException();
 		}
 		
-		@Override
+		//@Override
 		public boolean hasNext() {
 			ensureUnmodified();
 			return currentIndex < numElements;
 		}
 		
 		@SuppressWarnings("unchecked")
-		@Override
+		//@Override
 		public E next() {
 			ensureUnmodified();
 			if (currentIndex < numElements) {
@@ -447,7 +447,7 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 				throw new NoSuchElementException();
 		}
 		
-		@Override
+		//@Override
 		public void remove() {
 			ensureUnmodified();
 			if (lastOpWasRemove)

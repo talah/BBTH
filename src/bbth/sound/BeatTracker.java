@@ -1,24 +1,43 @@
 package bbth.sound;
 
 /**
- * Tracks the beats of a song given its first beat time and beats-per-millisecond
+ * Tracks the beats of a song given a music player and a beat pattern
  * @author jardini
  *
  */
 public class BeatTracker {
 
 	private MusicPlayer _musicPlayer;
-	private int _firstBeat;
-	private int _bpm; // beats-per-millisecond
+	private BeatPattern _beatPattern;
+	private int _currentBeat;
 	
-	public BeatTracker(MusicPlayer player, int firstBeat, int beatsPerMilli) {
+	public BeatTracker(MusicPlayer player, BeatPattern pattern) {
 		_musicPlayer = player;
-		_firstBeat = firstBeat;
-		_bpm = beatsPerMilli;
+		_beatPattern = pattern;
+		_currentBeat = 0;
 	}
 
-	// returns the millisecond time difference between an event and a beat in the song
-	public int getOffsetFromBeat(int currentTime) {
+	// returns millisecond time difference from closest beat to current time
+	public int getClosestBeatOffset() {
+		int currTime = _musicPlayer.getCurrentPosition();
+		int beatTime = _beatPattern.getBeatTime(_currentBeat);
+		while (Math.abs(currTime - _beatPattern.getBeatTime(_currentBeat + 1)) < Math.abs(currTime - beatTime)) {
+			++_currentBeat;
+			beatTime = _beatPattern.getBeatTime(_currentBeat);
+		}
 		
+		return beatTime - currTime;
+	}
+	
+	// return index into BeatPattern for closest beat
+	public int getClosestBeat() {
+		int currTime = _musicPlayer.getCurrentPosition();
+		int beatTime = _beatPattern.getBeatTime(_currentBeat);
+		while (Math.abs(currTime - _beatPattern.getBeatTime(_currentBeat + 1)) < Math.abs(currTime - beatTime)) {
+			++_currentBeat;
+			beatTime = _beatPattern.getBeatTime(_currentBeat);
+		}
+		
+		return _currentBeat;
 	}
 }
