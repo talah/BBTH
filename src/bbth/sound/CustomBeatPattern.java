@@ -21,11 +21,14 @@ public class CustomBeatPattern implements BeatPattern {
 		}
 	}
 	
-	// returns -1 if the time is past the end of the song
+	// returns MIN_VALUE if the beat number is invalid
 	public int getBeatTime(int beatNumber) {
+		if (beatNumber < 0) {
+			return Integer.MIN_VALUE;
+		}
 		if (beatNumber < _beatTimes.size()) {
 			return _beatTimes.get(beatNumber);
 		}
-		return _looping ? _beatTimes.get(beatNumber % _beatTimes.size()) : -1;
+		return _looping ? _beatTimes.get(beatNumber % _beatTimes.size()) : Integer.MIN_VALUE;
 	}
 }
