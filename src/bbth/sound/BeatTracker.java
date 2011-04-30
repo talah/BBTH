@@ -1,5 +1,10 @@
 package bbth.sound;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.util.Log;
+
 /**
  * Tracks the beats of a song given a music player and a beat pattern
  * @author jardini
@@ -9,12 +14,14 @@ public class BeatTracker {
 
 	private MusicPlayer _musicPlayer;
 	private BeatPattern _beatPattern;
+	private List<Integer> _offsets;
 	private int _currentBeat;
 	
 	public BeatTracker(MusicPlayer player, BeatPattern pattern) {
 		_musicPlayer = player;
 		_beatPattern = pattern;
 		_currentBeat = 0;
+		_offsets = new ArrayList<Integer>();
 	}
 
 	// returns millisecond time difference from closest beat to current time
@@ -39,5 +46,28 @@ public class BeatTracker {
 		}
 		
 		return _currentBeat;
+	}
+	
+	public List<Integer> getBeatOffsetsInRange(int lowerBound, int upperBound) {
+		_offsets.clear();
+		
+		int beat = getClosestBeat();
+		int currTime = _musicPlayer.getCurrentPosition();
+		int offset = _beatPattern.getBeatTime(beat) - currTime;
+		while (offset > lowerBound) {
+			_offsets.add(offset);
+			--beat;
+			offset = _beatPattern.getBeatTime(beat) - currTime;
+		}
+		
+		beat = _currentBeat + 1;
+		offset = _beatPattern.getBeatTime(beat) - currTime;
+		while (offset < upperBound) {
+			_offsets.add(offset);
+			++beat;
+			offset = _beatPattern.getBeatTime(beat) - currTime;
+		}
+		
+		return _offsets;
 	}
 }
