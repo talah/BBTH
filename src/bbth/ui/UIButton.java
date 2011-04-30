@@ -17,12 +17,13 @@ public class UIButton extends UIControl {
 	public boolean isDown, isDisabled;
 	private Shader normal_state, down_state, disabled_state;
 	public float padding, corner_radius;
+	public UIButtonDelegate delegate;
 	
 	private final int DEFAULT_BG_START = Color.LTGRAY, DEFAULT_TEXT_COLOR = Color.DKGRAY, DEFAULT_DISABLED_COLOR = Color.LTGRAY,
 	DEFUALT_DISABLED_TEXT_COLOR = Color.LTGRAY;
 	
 	public UIButton(String text, Object tag) {
-	    super();
+	    super(tag);
 		padding = 8;
 		corner_radius = 6;
 		
@@ -91,10 +92,10 @@ public class UIButton extends UIControl {
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if(isDisabled)
-			return;
-		if(isDown && delegate != null)
+		if((isDisabled || !isDown) && delegate != null)
 			delegate.onTouchUp(this);
+		if(isDown && delegate != null)
+			delegate.onClick(this);
 		isDown = false;
 	}
 

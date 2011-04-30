@@ -14,7 +14,7 @@ public class UILabel extends UIControl {
 	private final int DEFAULT_TEXT_COLOR = Color.BLACK;
 
 	public UILabel(String text, Object tag) {
-	    super();
+	    super(tag);
 
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);

@@ -10,7 +10,8 @@ public class UINavigationController extends UIView {
 	private LinkedList<UIView> screens;
 	private UIView current_screen;
 
-	public UINavigationController() {
+	public UINavigationController(Object tag) {
+		super(tag);
 		screens = new LinkedList<UIView>();
 	}
 	
