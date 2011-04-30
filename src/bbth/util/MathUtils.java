@@ -1,5 +1,7 @@
 package bbth.util;
 
+import android.util.FloatMath;
+
 public class MathUtils {
 	private static final float PI = (float)Math.PI;
 	private static final float TWO_PI = 2 * PI;
@@ -9,10 +11,10 @@ public class MathUtils {
 	}
 	
 	public static float normalize_angle(float a, float center) {
-		return a - TWO_PI * (float)Math.floor((a + PI - center) / TWO_PI);
+		return a - TWO_PI * FloatMath.floor((a + PI - center) / TWO_PI);
 	}
 
 	public static float get_dist(float x1, float y1, float x2, float y2) {
-		return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+		return FloatMath.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 }
