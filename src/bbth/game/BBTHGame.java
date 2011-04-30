@@ -9,8 +9,8 @@ public class BBTHGame extends Game {
 	public static final float HEIGHT = 180;
 
 	public BBTHGame(Activity activity) {
-		currentScreen = new TitleScreen(null);
-		//currentScreen = new MusicTestScreen(activity);
+		//currentScreen = new TitleScreen(null);
+		currentScreen = new MusicTestScreen(activity);
 	}
 
 	@Override

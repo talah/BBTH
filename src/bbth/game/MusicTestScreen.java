@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import bbth.core.GameScreen;
 import bbth.sound.BeatPattern;
 import bbth.sound.BeatTracker;
@@ -25,8 +26,7 @@ import static bbth.game.BBTHGame.*;
 public class MusicTestScreen extends GameScreen {
 	
 	private static final String MAP_TEXT = "Map";
-	private static final String MENU_TEXT = "Creatures";
-	private static final String MAIN_MENU_TEXT = "Main Menu";
+	private static final String MAIN_MENU_TEXT = "Menu";
 	private static final String MINIMAP_TEXT = "Minimap";
 	
 	private static final float BEAT_LINE_HEIGHT = HEIGHT * 0.75f;
@@ -38,16 +38,18 @@ public class MusicTestScreen extends GameScreen {
 	private Paint _paint;
 	private int _millisPerBeat;
 	private int _score;
+	private int _combo;
 	private List<Integer> _beatOffsets;
-	private String _scoreStr;
+	private String _scoreStr, _comboStr;
 	
 	public MusicTestScreen(Context context) {
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
 		_paint.setTextSize(10);
 		
-		_score = 0;
+		_score = _combo = 0;
 		_scoreStr = String.valueOf(_score);
+		_comboStr = String.valueOf(_combo);
 		
 		_musicPlayer = new MusicPlayer(context, R.raw.bonusroom);
 		_millisPerBeat = 571;
@@ -72,7 +74,12 @@ public class MusicTestScreen extends GameScreen {
 		int offset = _beatTracker.getClosestBeatOffset();
 		if (Math.abs(offset) < TOLERANCE) {
 			++_score;
+			++_combo;
 			_scoreStr = String.valueOf(_score);
+			_comboStr = String.valueOf(_combo);
+		} else {
+			_combo = 0;
+			_comboStr = String.valueOf(_combo);
 		}
 	}
 	
@@ -92,15 +99,22 @@ public class MusicTestScreen extends GameScreen {
 		// draw beats section
 		canvas.drawLine(0, BEAT_LINE_HEIGHT - BEAT_RADIUS, 50, BEAT_LINE_HEIGHT - BEAT_RADIUS, _paint);
 		canvas.drawLine(0, BEAT_LINE_HEIGHT + BEAT_RADIUS, 50, BEAT_LINE_HEIGHT + BEAT_RADIUS, _paint);
-		canvas.drawText(_scoreStr, 25, HEIGHT - 10, _paint);
+		canvas.drawText(_comboStr, 25, HEIGHT - 14, _paint);
+		canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 		canvas.drawLine(50, 0, 50, HEIGHT, _paint);
 		
 		// draw map / creatures section
 		canvas.drawText(MAP_TEXT, WIDTH / 2, HEIGHT / 2, _paint);
 		canvas.drawLine(50, HEIGHT - 20, WIDTH - 50, HEIGHT - 20, _paint);
-		canvas.drawText(MENU_TEXT, WIDTH / 2, HEIGHT - 5, _paint);
+		_paint.setStyle(Style.STROKE);
+		canvas.drawCircle(100, HEIGHT - 10, 8, _paint);
+		canvas.drawRect(WIDTH / 2 - 8, HEIGHT - 18, WIDTH / 2 + 8, HEIGHT - 2, _paint);
+		canvas.drawLine(212, HEIGHT - 2, 228, HEIGHT - 2, _paint);
+		canvas.drawLine(212, HEIGHT - 2, 220, HEIGHT - 18, _paint);
+		canvas.drawLine(220, HEIGHT - 18, 228, HEIGHT - 2, _paint);
 		
 		// draw minimap section
+		_paint.setStyle(Style.FILL);
 		canvas.drawText(MAIN_MENU_TEXT, WIDTH - 25, 14, _paint);
 		canvas.drawLine(WIDTH - 50, 20, WIDTH, 20, _paint);
 		canvas.drawLine(WIDTH - 50, 0, WIDTH - 50, HEIGHT, _paint);
