@@ -2,9 +2,9 @@ package bbth.ui;
 
 public abstract class UIControl extends UIView {
     
-    public UIControl()
+    public UIControl(Object tag)
     {
-        super();
+        super(tag);
     }
     
 }

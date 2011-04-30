@@ -11,7 +11,7 @@ import bbth.core.GameScreen;
 public class UIView extends GameScreen {
 
 	protected CopyOnWriteArrayList<UIView> subviews;
-	private boolean _hasAppeared;
+	protected boolean _hasAppeared;
 	public Object tag;
 	protected RectF _rect;
 	protected float _width, _height, _h_width, _h_height;
@@ -20,11 +20,12 @@ public class UIView extends GameScreen {
 	
 	protected Anchor anchor;
 
-	public UIView() {
+	public UIView(Object tag) {
 		subviews = new CopyOnWriteArrayList<UIView>();
 		this.anchor = Anchor.TOP_LEFT;
 		_rect = new RectF(0,0,0,0);
 		center = new Point(0,0);
+		this.tag = tag;
 	}
 
     @Override
