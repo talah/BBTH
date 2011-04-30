@@ -3,8 +3,6 @@ package bbth.sound;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 /**
  * Tracks the beats of a song given a music player and a beat pattern
  * @author jardini
@@ -57,7 +55,9 @@ public class BeatTracker {
 		while (offset > lowerBound) {
 			_offsets.add(offset);
 			--beat;
-			offset = _beatPattern.getBeatTime(beat) - currTime;
+			offset = _beatPattern.getBeatTime(beat);
+			if (offset == Integer.MIN_VALUE) break;
+			offset -= currTime;
 		}
 		
 		beat = _currentBeat + 1;
@@ -65,7 +65,9 @@ public class BeatTracker {
 		while (offset < upperBound) {
 			_offsets.add(offset);
 			++beat;
-			offset = _beatPattern.getBeatTime(beat) - currTime;
+			offset = _beatPattern.getBeatTime(beat);
+			if (offset == Integer.MIN_VALUE) break;
+			offset -= currTime;
 		}
 		
 		return _offsets;
