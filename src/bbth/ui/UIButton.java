@@ -9,7 +9,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Shader;
 
 public class UIButton extends UIControl {
-
 	Paint _paint;
 	
 	private String text;
@@ -19,13 +18,15 @@ public class UIButton extends UIControl {
 	public float padding, corner_radius;
 	public UIButtonDelegate delegate;
 	
-	private final int DEFAULT_BG_START = Color.LTGRAY, DEFAULT_TEXT_COLOR = Color.DKGRAY, DEFAULT_DISABLED_COLOR = Color.LTGRAY,
+	private static final int DEFAULT_BG_START = Color.LTGRAY, DEFAULT_TEXT_COLOR = Color.DKGRAY, DEFAULT_DISABLED_COLOR = Color.LTGRAY,
 	DEFUALT_DISABLED_TEXT_COLOR = Color.LTGRAY;
+	private static final float DEFAULT_BORDER_WIDTH = 3.f;
+	private static final int DEFAULT_CORNER_RADIUS = 6;
 	
 	public UIButton(String text, Object tag) {
 	    super(tag);
 		padding = 8;
-		corner_radius = 6;
+		corner_radius = DEFAULT_CORNER_RADIUS;
 		
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
@@ -38,7 +39,7 @@ public class UIButton extends UIControl {
 		txt_disabled_color = DEFUALT_DISABLED_TEXT_COLOR;
 		stroke_color = bg_down_end_color;
 		
-		_paint.setStrokeWidth(3);
+		_paint.setStrokeWidth(DEFAULT_BORDER_WIDTH);
 		
 		this.text = text;
 		this.tag = tag;
