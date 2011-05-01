@@ -1,10 +1,18 @@
 package bbth.util;
 
+import java.util.Random;
+
 import android.util.FloatMath;
 
-public class MathUtils {
+public final class MathUtils {
 	public static final float PI = (float)Math.PI;
 	public static final float TWO_PI = 2 * PI;
+	private static final Random _random = new Random();
+	
+	// random number in the range [min, max)
+	public static float randInRange(float min, float max) {
+		return (max - min) * _random.nextFloat() + min;
+	}
 	
 	public static float get_angle(float x, float y, float x2, float y2) {
 		return (float)Math.atan2(y2 - y, x2 - x);
