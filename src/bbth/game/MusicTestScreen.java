@@ -9,12 +9,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
+import android.util.FloatMath;
 import bbth.core.GameScreen;
+import bbth.particles.ParticleSystem;
 import bbth.sound.BeatPattern;
 import bbth.sound.BeatTracker;
 import bbth.sound.CustomBeatPattern;
 import bbth.sound.MusicPlayer;
+import bbth.sound.MusicPlayer.OnCompletionListener;
 import bbth.sound.SimpleBeatPattern;
+import bbth.util.ColorUtils;
+import bbth.util.MathUtils;
 import static bbth.game.BBTHGame.*;
 
 /**
@@ -32,15 +38,18 @@ public class MusicTestScreen extends GameScreen {
 	private static final float BEAT_LINE_HEIGHT = HEIGHT * 0.75f;
 	private static final float BEAT_RADIUS = 8;
 	private static final float TOLERANCE = 80; // millisecond difference in what is still considered a valid touch
+
+	private Paint _paint;
+	private ParticleSystem _particles;
+	private RectF _comboBox;
 	
 	private MusicPlayer _musicPlayer;
 	private BeatTracker _beatTracker;
-	private Paint _paint;
 	private int _millisPerBeat;
 	private int _score;
 	private int _combo;
-	private List<Integer> _beatOffsets;
 	private String _scoreStr, _comboStr;
+	private List<Integer> _beatOffsets;
 	
 	public MusicTestScreen(Context context) {
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -49,9 +58,17 @@ public class MusicTestScreen extends GameScreen {
 		
 		_score = _combo = 0;
 		_scoreStr = String.valueOf(_score);
-		_comboStr = String.valueOf(_combo);
+		_comboStr = "x" + String.valueOf(_combo);
+		
+		_comboBox = new RectF(0, 0, 0, 0);
+		_particles = new ParticleSystem(100, 0.5f);
 		
 		_musicPlayer = new MusicPlayer(context, R.raw.bonusroom);
+		_musicPlayer.setOnCompletionListener(new OnCompletionListener() {
+			public void onCompletion(MusicPlayer mp) {
+				nextScreen = new TitleScreen(null);
+			}
+		});
 		_millisPerBeat = 571;
 		
 		int []beatLengths = { 571, 571, 571, 285, 286, 571, 190, 190, 191, 1142 };
@@ -66,20 +83,49 @@ public class MusicTestScreen extends GameScreen {
 	
 	@Override
 	public void onUpdate(float seconds) {
-		_beatOffsets = _beatTracker.getBeatOffsetsInRange(-500, 1500);
+		_beatOffsets = _beatTracker.getBeatOffsetsInRange(-400, 1500);
+		_particles.tick(seconds);
 	}
 	
 	@Override
 	public void onTouchDown(float x, float y) {
-		int offset = _beatTracker.getClosestBeatOffset();
-		if (Math.abs(offset) < TOLERANCE) {
-			++_score;
-			++_combo;
-			_scoreStr = String.valueOf(_score);
-			_comboStr = String.valueOf(_combo);
+		if (_comboBox.contains(x, y)) {
+			float xPos = (_comboBox.left + _comboBox.right) / 2;
+			float yPos = (_comboBox.top + _comboBox.bottom) / 2;
+			for (int i = 0; i < 90; ++i) {
+				float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+				float xVel = MathUtils.randInRange(5.f, 25.f) * FloatMath.cos(angle);
+				float yVel = MathUtils.randInRange(5.f, 25.f) * FloatMath.sin(angle);
+				_particles.createParticle().circle().color(ColorUtils.randomHSV(0, 360, 0, 1, 0.5f, 1)).velocity(xVel, yVel).shrink(0.3f, 0.4f).radius(2.0f).position(xPos, yPos);
+				_comboBox.bottom = _comboBox.top;
+				_comboBox.left = _comboBox.right;
+			}
 		} else {
-			_combo = 0;
-			_comboStr = String.valueOf(_combo);
+
+			int offset = _beatTracker.getClosestBeatOffset();
+			if (Math.abs(offset) < TOLERANCE) {
+				++_score;
+				++_combo;
+				_scoreStr = String.valueOf(_score);
+				_comboStr = "x" + String.valueOf(_combo);
+				
+				if (_combo == 5) {
+					_comboBox.left = MathUtils.randInRange(WIDTH * 0.25f, WIDTH * 0.7f);
+					_comboBox.right = _comboBox.left + 10;
+					_comboBox.top = MathUtils.randInRange(0, HEIGHT * 0.8f);
+					_comboBox.bottom = _comboBox.top + 10;
+				} else if (_combo > 5) {
+					_comboBox.left -= 1;
+					_comboBox.right += 1;
+					_comboBox.top -= 1;
+					_comboBox.bottom += 1;					
+				}
+			} else {
+				_combo = 0;
+				_comboStr = "x" + String.valueOf(_combo);
+				_comboBox.bottom = _comboBox.top;
+				_comboBox.left = _comboBox.right;
+			}
 		}
 	}
 	
@@ -99,12 +145,15 @@ public class MusicTestScreen extends GameScreen {
 		// draw beats section
 		canvas.drawLine(0, BEAT_LINE_HEIGHT - BEAT_RADIUS, 50, BEAT_LINE_HEIGHT - BEAT_RADIUS, _paint);
 		canvas.drawLine(0, BEAT_LINE_HEIGHT + BEAT_RADIUS, 50, BEAT_LINE_HEIGHT + BEAT_RADIUS, _paint);
-		canvas.drawText(_comboStr, 25, HEIGHT - 14, _paint);
-		canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
+		canvas.drawText(_comboStr, 25, HEIGHT - 10, _paint);
+		//canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 		canvas.drawLine(50, 0, 50, HEIGHT, _paint);
 		
 		// draw map / creatures section
-		canvas.drawText(MAP_TEXT, WIDTH / 2, HEIGHT / 2, _paint);
+		_paint.setColor(Color.YELLOW);
+		canvas.drawArc(_comboBox, 0, 360, true, _paint);
+		
+		_paint.setColor(Color.WHITE);
 		canvas.drawLine(50, HEIGHT - 20, WIDTH - 50, HEIGHT - 20, _paint);
 		_paint.setStyle(Style.STROKE);
 		canvas.drawCircle(100, HEIGHT - 10, 8, _paint);
@@ -119,7 +168,9 @@ public class MusicTestScreen extends GameScreen {
 		canvas.drawLine(WIDTH - 50, 20, WIDTH, 20, _paint);
 		canvas.drawLine(WIDTH - 50, 0, WIDTH - 50, HEIGHT, _paint);
 		canvas.drawText(MINIMAP_TEXT, WIDTH - 25, HEIGHT / 2, _paint);
-
+		
+		// draw particles
+		_particles.draw(canvas, _paint);
 	}	
 	
 	public void onStart() {
