@@ -10,6 +10,7 @@ public class BBTHGame extends Game {
 
 	public BBTHGame(Activity activity) {
 		currentScreen = new TitleScreen(null);
+		//currentScreen = new BBTHAITest(this);
 		//currentScreen = new MusicTestScreen(activity);
 	}
 

@@ -16,8 +16,8 @@ public class FlockRulesCalculator {
 	public FlockRulesCalculator() {
 		m_objects = new ArrayList<Movable>();
 		
-		m_neighbor_radius = 50.0f;
-		m_view_angle = 270.0f;
+		m_neighbor_radius = 100.0f;
+		m_view_angle = 2 * MathUtils.PI * .75f;
 	}
 	
 	public void add_object(Movable obj) {
@@ -122,7 +122,7 @@ public class FlockRulesCalculator {
 	}
 	
 	public float get_separation_component(Movable actor, float desired_separation, PointF result) {
-int size = m_objects.size();
+		int size = m_objects.size();
 		
 		float point_x = 0;
 		float point_y = 0;
@@ -173,7 +173,7 @@ int size = m_objects.size();
 	
 	private boolean can_see(Movable actor, Movable other) {
 		float dist = get_dist(actor, other);
-				
+		
 		// Check if we're in the correct radius
 		if (dist > m_neighbor_radius) {
 			return false;
@@ -186,6 +186,30 @@ int size = m_objects.size();
 		}
 		
 		return true;
+	}
+	
+	public boolean has_leader(Movable actor) {
+		int size = m_objects.size();
+		
+		for (int i = 0; i < size; i++) {
+			Movable other = m_objects.get(i);
+			
+			if (other == actor) {
+				continue;
+			}
+			
+			if (!can_see(actor, other)) {
+				continue;
+			}
+		
+			// Check if we are within the view angle
+			float angle = Math.abs(get_angle_offset(actor, other));
+			if (angle < MathUtils.PI/3.0f) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private float get_angle_offset(Movable actor, Movable other) {
