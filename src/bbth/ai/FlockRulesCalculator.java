@@ -7,6 +7,8 @@ import bbth.entity.*;
 import bbth.util.MathUtils;
 
 public class FlockRulesCalculator {
+	private static final float FRONT_VIEW_ANGLE = MathUtils.PI/2.0f;
+
 	public ArrayList<Movable> m_objects;
 	
 	public float m_neighbor_radius;
@@ -16,8 +18,8 @@ public class FlockRulesCalculator {
 	public FlockRulesCalculator() {
 		m_objects = new ArrayList<Movable>();
 		
-		m_neighbor_radius = 100.0f;
-		m_view_angle = 2 * MathUtils.PI * .75f;
+		m_neighbor_radius = 30.0f;
+		m_view_angle = 2 * MathUtils.PI * .65f;
 	}
 	
 	public void add_object(Movable obj) {
@@ -204,7 +206,7 @@ public class FlockRulesCalculator {
 		
 			// Check if we are within the view angle
 			float angle = Math.abs(get_angle_offset(actor, other));
-			if (angle < MathUtils.PI/3.0f) {
+			if (angle < FRONT_VIEW_ANGLE) {
 				return true;
 			}
 		}
