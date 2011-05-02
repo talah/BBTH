@@ -10,8 +10,8 @@ public class UILabel extends UIControl {
     Paint _paint;
 
 	private String text;
-
-	private final int DEFAULT_TEXT_COLOR = Color.BLACK;
+	public boolean shouldAutoresizeText;
+	private final int DEFAULT_TEXT_COLOR = Color.WHITE;
 
 	public UILabel(String text, Object tag) {
 	    super(tag);
@@ -70,7 +70,7 @@ public class UILabel extends UIControl {
 	{
 		this.text = text;
 		float width = _paint.measureText(text);
-		if(width > _width)
+		if(width > _width && shouldAutoresizeText)
 			_paint.setTextSize(_width / width * _paint.getTextSize());
 	}
 

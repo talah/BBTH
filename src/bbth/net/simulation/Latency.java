@@ -1,4 +1,4 @@
-package bbth.network;
+package bbth.net.simulation;
 
 public class Latency {
 

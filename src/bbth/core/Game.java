@@ -184,4 +184,14 @@ public abstract class Game {
 	 */
 	public void onScreenChange() {
 	}
+
+	/**
+	 * Stupid method necessary because of android's weird context/activity mess,
+	 * override it if you need to hook into this method on GameActivity.
+	 */
+	public void onActivityResult(int requestCode, int resultCode) {
+		if (currentScreen != null) {
+			currentScreen.onActivityResult(requestCode, resultCode);
+		}
+	}
 }
