@@ -7,16 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import bbth.game.BBTHGame;
 import bbth.net.simulation.LockStepProtocol;
-import bbth.net.simulation.SimulationBase;
+import bbth.net.simulation.Simulation;
 import bbth.particles.ParticleSystem;
 
-public class Simulation extends SimulationBase {
+public class NetworkTestSimulation extends Simulation {
 
 	private ParticleSystem particles = new ParticleSystem(1000);
 	private int timestep;
 	private Random random = new Random(0);
 
-	public Simulation(LockStepProtocol protocol) {
+	public NetworkTestSimulation(LockStepProtocol protocol) {
 		super(6, 0.1f, 2, protocol);
 	}
 

@@ -16,7 +16,7 @@ import android.util.Log;
  * network. In a lock-step simulation, only the user input is sent over the
  * network.
  */
-public abstract class SimulationBase {
+public abstract class Simulation {
 
 	private PriorityBlockingQueue<LockStep> incomingRemoteSteps = new PriorityBlockingQueue<LockStep>();
 	private PriorityBlockingQueue<LockStep> incomingLocalSteps = new PriorityBlockingQueue<LockStep>();
@@ -72,7 +72,7 @@ public abstract class SimulationBase {
 	 *            The number of coarse timesteps that user actions will be
 	 *            delayed. Must be greater than or equal to actual network lag.
 	 */
-	public SimulationBase(int finePerCoarse, float secondsPerCoarse, int coarseLag, LockStepProtocol protocol) {
+	public Simulation(int finePerCoarse, float secondsPerCoarse, int coarseLag, LockStepProtocol protocol) {
 		this.finePerCoarse = finePerCoarse;
 		this.coarseLag = coarseLag;
 		this.secondsPerFine = secondsPerCoarse / finePerCoarse;
