@@ -17,7 +17,7 @@ public class UIRadioButton extends UIControl {
 	private int _bg_color, _fg_color;
 	private LinearGradient _bg_gradient, _fg_gradient;
 
-	private boolean _selected;
+	private boolean _selected, _in_select_motion;
 	private float _inner_radius_ratio, _outer_radius;
 
 	public UIRadioButton(Object tag) {
@@ -31,6 +31,7 @@ public class UIRadioButton extends UIControl {
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
 		_inner_radius_ratio = DEFAULT_INNER_RADIUS_RATIO;
 		_selected = false;
+		_in_select_motion = false;
 
 		// _bg_paint.setColor(DEFAULT_BG);
 		setBackgroundColor(DEFAULT_BG);
@@ -38,16 +39,33 @@ public class UIRadioButton extends UIControl {
 		setForegroundColor(DEFAULT_FG);
 	}
 
+	private boolean inButton(float x, float y) {
+		return MathUtils.get_dist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
+	}
+	
+	@Override
+	public void onTouchMove(float x, float y) {
+		if (_in_select_motion && !inButton(x,  y)) {
+			_in_select_motion = false;
+		}
+	}
+	
 	@Override
 	public void onTouchDown(float x, float y) {
-		// TODO animation
+		if (inButton(x, y)) {
+			_in_select_motion = true;
+		} else {
+			_in_select_motion = false;
+		}
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if (MathUtils.get_dist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius) {
+		if (_in_select_motion && inButton(x, y)) {
 			_selected = !_selected;
 		}
+		
+		_in_select_motion = false;
 	}
 
 	private static LinearGradient generateVerticalGradient(RectF boundary, int color, boolean startColor) {
@@ -81,6 +99,10 @@ public class UIRadioButton extends UIControl {
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
 		setBackgroundColor(_bg_color);
 		setForegroundColor(_fg_color);
+	}
+	
+	public boolean isSelected() {
+		return _selected;
 	}
 
 	@Override
