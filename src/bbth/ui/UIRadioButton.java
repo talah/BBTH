@@ -14,8 +14,8 @@ public class UIRadioButton extends UIControl {
 	private static final float DEFAULT_BORDER_WIDTH = 3.f, DEFAULT_INNER_RADIUS_RATIO = 0.6f;
 
 	private Paint _bg_paint, _fg_paint;
-	private int _bg_color, _fg_start_color, _fg_end_color;
-	private LinearGradient _bg_gradient;
+	private int _bg_color, _fg_color;
+	private LinearGradient _bg_gradient, _fg_gradient;
 
 	private boolean _selected;
 	private float _inner_radius_ratio, _outer_radius;
@@ -34,7 +34,8 @@ public class UIRadioButton extends UIControl {
 
 		// _bg_paint.setColor(DEFAULT_BG);
 		setBackgroundColor(DEFAULT_BG);
-		_fg_paint.setColor(DEFAULT_FG);
+		//_fg_paint.setColor(DEFAULT_FG);
+		setForegroundColor(DEFAULT_FG);
 	}
 
 	@Override
@@ -62,10 +63,16 @@ public class UIRadioButton extends UIControl {
 		}
 	}
 
+	public void setForegroundColor(int color) {
+		_fg_color = color;
+		_fg_gradient = generateVerticalGradient(_rect, color, true);
+		_fg_paint.setColor(color);
+	}
+	
 	public void setBackgroundColor(int color) {
 		_bg_color = color;
-		_bg_gradient = generateVerticalGradient(_rect, color, true);
-		_bg_paint.setColor(_bg_color);
+		_bg_gradient = generateVerticalGradient(_rect, color, false);
+		_bg_paint.setColor(color);
 	}
 
 	public void setBounds(float left, float top, float right, float bottom) {
@@ -73,6 +80,7 @@ public class UIRadioButton extends UIControl {
 
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
 		setBackgroundColor(_bg_color);
+		setForegroundColor(_fg_color);
 	}
 
 	@Override
@@ -86,7 +94,9 @@ public class UIRadioButton extends UIControl {
 		_bg_paint.setShader(null);
 
 		if (_selected) {
+			_fg_paint.setShader(_fg_gradient);
 			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
+			_fg_paint.setShader(null);
 		}
 	}
 }
