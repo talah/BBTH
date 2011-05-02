@@ -15,6 +15,7 @@ public class UIProgressBar extends UIControl {
 		FINITE, INFINTE;
 	}
 
+	private static final float DEFAULT_CANDYCANE_SPEED = 100.f;
 	private static final int DEFAULT_BG = Color.LTGRAY, DEFAULT_FG = Color.GRAY;
 	private static final int DEFAULT_NUM_GRADIENT_COLORS = 8;
 	private static final float DEFAULT_BORDER_WIDTH = 3.f;
@@ -33,6 +34,7 @@ public class UIProgressBar extends UIControl {
 	// Nonsense relating to the candy cane
 	private int _num_gradient_colors;
 	private Matrix _tr_matrix;
+	private float _candycane_speed;
 
 	private Mode _mode;
 
@@ -45,6 +47,7 @@ public class UIProgressBar extends UIControl {
 		_num_gradient_colors = DEFAULT_NUM_GRADIENT_COLORS;
 		_mode = DEFAULT_MODE;
 		_border_radius = DEFAULT_CORNER_RADIUS;
+		_candycane_speed = DEFAULT_CANDYCANE_SPEED;
 
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_bg_paint.setStrokeWidth(DEFAULT_BORDER_WIDTH);
@@ -157,10 +160,8 @@ public class UIProgressBar extends UIControl {
 	}
 
 	public void onUpdate(float seconds) {
-		float speed = 100.f;
-
 		if (_mode == Mode.INFINTE) {
-			_tr_matrix.preTranslate(0, speed * seconds);
+			_tr_matrix.preTranslate(0, _candycane_speed * seconds);
 			_fg_gradient.setLocalMatrix(_tr_matrix);
 		}
 	}
