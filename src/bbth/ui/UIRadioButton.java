@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Paint.Style;
 
@@ -13,7 +14,7 @@ public class UIRadioButton extends UIControl {
 	private static final float DEFAULT_BORDER_WIDTH = 3.f, DEFAULT_INNER_RADIUS_RATIO = 0.6f;
 
 	private Paint _bg_paint, _fg_paint;
-	private int _bg_end_color, _bg_start_color;
+	private int _bg_color, _fg_start_color, _fg_end_color;
 	private LinearGradient _bg_gradient;
 
 	private boolean _selected;
@@ -30,8 +31,8 @@ public class UIRadioButton extends UIControl {
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
 		_inner_radius_ratio = DEFAULT_INNER_RADIUS_RATIO;
 		_selected = false;
-		
-		//_bg_paint.setColor(DEFAULT_BG);
+
+		// _bg_paint.setColor(DEFAULT_BG);
 		setBackgroundColor(DEFAULT_BG);
 		_fg_paint.setColor(DEFAULT_FG);
 	}
@@ -48,22 +49,30 @@ public class UIRadioButton extends UIControl {
 		}
 	}
 
-	public void setBackgroundColor(int color) {
-		_bg_start_color = color;
+	private static LinearGradient generateVerticalGradient(RectF boundary, int color, boolean startColor) {
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
 		hsv[2] *= 0.8f; // value component
-		_bg_end_color = Color.HSVToColor(hsv);
-		_bg_gradient = new LinearGradient(_rect.left, _rect.top, _rect.left, _rect.bottom, _bg_start_color, _bg_end_color, Shader.TileMode.MIRROR);
+		int c2 = Color.HSVToColor(hsv);
 
-		_bg_paint.setColor(_bg_end_color);
+		if (startColor) {
+			return new LinearGradient(boundary.left, boundary.top, boundary.left, boundary.bottom, color, c2, Shader.TileMode.MIRROR);
+		} else {
+			return new LinearGradient(boundary.left, boundary.top, boundary.left, boundary.bottom, c2, color, Shader.TileMode.MIRROR);
+		}
+	}
+
+	public void setBackgroundColor(int color) {
+		_bg_color = color;
+		_bg_gradient = generateVerticalGradient(_rect, color, true);
+		_bg_paint.setColor(_bg_color);
 	}
 
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
 
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
-		setBackgroundColor(_bg_start_color);
+		setBackgroundColor(_bg_color);
 	}
 
 	@Override
@@ -75,7 +84,7 @@ public class UIRadioButton extends UIControl {
 		_bg_paint.setShader(_bg_gradient);
 		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setShader(null);
-		
+
 		if (_selected) {
 			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
 		}
