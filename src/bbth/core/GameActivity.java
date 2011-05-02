@@ -1,6 +1,7 @@
 package bbth.core;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
@@ -11,10 +12,15 @@ import android.view.WindowManager.LayoutParams;
  */
 public abstract class GameActivity extends Activity {
 
+	public static GameActivity instance = null;
 	private GameView view;
 	private Game game;
 
 	protected abstract Game getGame();
+
+	public GameActivity() {
+		instance = this;
+	}
 
 	@Override
 	public void onCreate(Bundle savedState) {
@@ -24,6 +30,11 @@ public abstract class GameActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(LayoutParams.FLAG_FULLSCREEN, LayoutParams.FLAG_FULLSCREEN);
 		setContentView(view);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		game.onActivityResult(requestCode, resultCode);
 	}
 
 	private void start() {

@@ -1,5 +1,6 @@
 package bbth.core;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 
 public abstract class GameScreen {
@@ -87,5 +88,12 @@ public abstract class GameScreen {
 	 * while paused.
 	 */
 	public void onStop() {
+	}
+
+	/**
+	 * Stupid method necessary because of android's weird context/activity mess,
+	 * override it if you need to hook into this method on GameActivity.
+	 */
+	public void onActivityResult(int requestCode, int resultCode) {
 	}
 }

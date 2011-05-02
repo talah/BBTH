@@ -31,8 +31,10 @@ public class UIView extends GameScreen {
     @Override
 	public void onUpdate(float seconds)
 	{
-		for(UIView e : subviews) 
-	    	  e.onUpdate(seconds);
+    	for (int i = 0, n = subviews.size(); i < n; i++) {
+    		UIView e = subviews.get(i);
+    		e.onUpdate(seconds);
+    	}
 	}
 
 
@@ -40,28 +42,38 @@ public class UIView extends GameScreen {
 	public void onDraw(Canvas canvas) {
 		if(!_hasAppeared)
 			willAppear(true);
-		for(UIView e : subviews) 
-	    	  e.onDraw(canvas);
+    	for (int i = 0, n = subviews.size(); i < n; i++) {
+    		UIView e = subviews.get(i);
+    		e.onDraw(canvas);
+    	}
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		for(UIView e : subviews) 
-	    	  if(e.containsPoint(x, y))
-					e.onTouchDown(x, y);
+    	for (int i = 0, n = subviews.size(); i < n; i++) {
+    		UIView e = subviews.get(i);
+    		if (e.containsPoint(x, y)) {
+    			e.onTouchDown(x, y);
+    		}
+    	}
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		for(UIView e : subviews) 
-    	  if(e.containsPoint(x, y))
-				e.onTouchUp(x, y);
+    	for (int i = 0, n = subviews.size(); i < n; i++) {
+    		UIView e = subviews.get(i);
+    		if (e.containsPoint(x, y)) {
+    			e.onTouchUp(x, y);
+    		}
+    	}
 	}
 
 	@Override
 	public void onTouchMove(float x, float y) {
-		for(UIView e : subviews)
-			e.onTouchMove(x, y);
+    	for (int i = 0, n = subviews.size(); i < n; i++) {
+    		UIView e = subviews.get(i);
+    		e.onTouchMove(x, y);
+    	}
 	}
 
 	public void setBounds(float left, float top, float right, float bottom) {
