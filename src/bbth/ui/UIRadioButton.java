@@ -49,10 +49,6 @@ public class UIRadioButton extends UIControl {
 		}
 	}
 
-	private boolean inButton(float x, float y) {
-		return MathUtils.getDist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
-	}
-
 	@Override
 	public void onTouchMove(float x, float y) {
 		if (_in_select_motion && !containsPoint(x, y)) {

@@ -3,12 +3,10 @@ package bbth.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import bbth.collision.Point;
+import android.graphics.Canvas;
 import bbth.ui.Anchor;
 import bbth.ui.UIView;
 import bbth.util.MathUtils;
-
-import android.graphics.Canvas;
 
 /**
  * A player is someone who is interacting with the game.
