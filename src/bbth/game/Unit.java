@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import bbth.entity.BasicMovable;
+import bbth.game.Unit.Team;
 
 /**
  * A BBTH unit is one of the little dudes that walk around on the map and kill each other.
@@ -12,6 +13,14 @@ public class Unit extends BasicMovable {
 	public enum Team {
 		TEAM_0,
 		TEAM_1;
+		
+		public Team get_opposite_team() {
+			if (this == TEAM_0) {
+				return TEAM_1;
+			} else {
+				return TEAM_0;
+			}
+		}
 	}
 	
 	private Team team;
@@ -33,5 +42,9 @@ public class Unit extends BasicMovable {
 	
 	public Team getTeam() {
 		return this.team;
+	}
+
+	public void setTeam(Team newteam) {
+		team = newteam;
 	}
 }
