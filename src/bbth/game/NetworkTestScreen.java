@@ -162,6 +162,9 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 		serverButton.isDisabled = true;
 	}
 
+	/**
+	 * Stupid method necessary because of android's weird context/activity mess.
+	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode) {
 		bluetooth.onActivityResult(requestCode, resultCode);
