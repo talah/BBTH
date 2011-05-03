@@ -10,16 +10,16 @@ public class SimpleGreaterTransition extends StateTransition {
 		super(start_state, end_state);
 	}
 	
-	public void set_input_name(String inputname) {
+	public void setInputName(String inputname) {
 		m_input_name = inputname;
 	}
 	
-	public void set_val(float value) {
+	public void setVal(float value) {
 		m_val = value;
 	}
 	
 	@Override
-	public boolean check_conditions(HashMap<String, Float> inputs) {
+	public boolean checkConditions(HashMap<String, Float> inputs) {
 		if (!inputs.containsKey(m_input_name)) {
 			return false;
 		}

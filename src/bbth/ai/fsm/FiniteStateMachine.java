@@ -13,7 +13,7 @@ public class FiniteStateMachine {
 		m_current_state = null;
 	}
 	
-	public void add_state(String name) {
+	public void addState(String name) {
 		FiniteState s = new FiniteState(name);
 		m_states.put(name, s);
 		if (m_current_state == null) {
@@ -21,15 +21,15 @@ public class FiniteStateMachine {
 		}
 	}
 	
-	public String get_state_name() {
-		return m_current_state.get_name();
+	public String getStateName() {
+		return m_current_state.getName();
 	}
 	
-	public FiniteState get_state_by_name(String name) {
+	public FiniteState getStateByName(String name) {
 		return m_states.get(name);
 	}
 	
-	public FiniteState get_curr_state() {
+	public FiniteState getCurrState() {
 		return m_current_state;
 	}
 	
@@ -37,7 +37,7 @@ public class FiniteStateMachine {
 		if (m_current_state == null) {
 			return false;
 		}
-		FiniteState new_state = m_current_state.check_transitions(inputs);
+		FiniteState new_state = m_current_state.checkTransitions(inputs);
 		if (new_state != m_current_state) {
 			m_current_state = new_state;
 			return true;
@@ -45,11 +45,11 @@ public class FiniteStateMachine {
 		return false;
 	}
 	
-	public void apply_action(HashMap<String, Float> inputs) {
+	public void applyAction(HashMap<String, Float> inputs) {
 		if (m_current_state == null) {
 			return;
 		}
 		
-		m_current_state.apply_action(inputs);
+		m_current_state.applyAction(inputs);
 	}
 }

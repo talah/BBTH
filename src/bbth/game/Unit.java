@@ -20,7 +20,7 @@ public class Unit extends UIView {
 		super(null);
 
 		this.setAnchor(Anchor.CENTER_CENTER);
-		
+
 		this.team = team;
 		this.controller = new BasicMovable();
 
@@ -37,18 +37,18 @@ public class Unit extends UIView {
 
 	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
-		
+
 		controller.set_position(x, y);
 	}
-	
+
 	public void setVelocity(float vel, float dir) {
 		controller.set_velocity(vel, dir);
 	}
-	
+
 	public void update(float seconds) {
 		// Derp derp, Euler
 		controller.set_position(controller.get_x() + controller.get_x_vel() * seconds, controller.get_y() + controller.get_y_vel() * seconds);
-		
+
 		this.setPosition(controller.get_x(), controller.get_y());
 	}
 
@@ -58,5 +58,9 @@ public class Unit extends UIView {
 
 	public Team getTeam() {
 		return this.team;
+	}
+
+	public void setTeam(Team newteam) {
+		team = newteam;
 	}
 }
