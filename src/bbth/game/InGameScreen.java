@@ -82,8 +82,7 @@ public class InGameScreen extends UIScrollView {
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			Point position = mostAdvanced.getPosition();
-			this.scrollTo(position.x, position.y);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY());
 		}
 	}
 

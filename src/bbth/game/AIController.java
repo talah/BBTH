@@ -12,7 +12,6 @@ import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.ai.FlockRulesCalculator;
 import bbth.entity.Movable;
-import bbth.game.Unit.Team;
 import bbth.util.MathUtils;
 
 public class AIController {

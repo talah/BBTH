@@ -40,7 +40,7 @@ public class Player {
 		view.addSubview(base);
 
 		for (int i = 0; i < this.units.size(); i++) {
-			view.addSubview(units.get(i));
+			view.addSubview(units.get(i).getView());
 		}
 	}
 
@@ -65,7 +65,7 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			Unit curr_unit = units.get(i);
 
-			if (toReturn == null || toReturn.getPosition().y < curr_unit.getPosition().y) {
+			if (toReturn == null || toReturn.getY() < curr_unit.getY()) {
 				toReturn = curr_unit;
 			}
 		}

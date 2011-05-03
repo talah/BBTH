@@ -13,7 +13,6 @@ import android.util.FloatMath;
 import bbth.ai.FlockRulesCalculator;
 import bbth.core.GameScreen;
 import bbth.entity.*;
-import bbth.game.Unit.Team;
 import bbth.util.MathUtils;
 
 public class BBTHAITest extends GameScreen {
@@ -64,7 +63,7 @@ public class BBTHAITest extends GameScreen {
 	
 	private void randomizeEntities() {
 		for (int i = 0; i < 7; i++) {
-			Unit e = new Unit();
+			Unit e = new Unit(Team.TEAM_0);
 			e.setTeam(Team.TEAM_0);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
 			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
@@ -76,7 +75,7 @@ public class BBTHAITest extends GameScreen {
 		}
 		
 		for (int i = 0; i < 7; i++) {
-			Unit e = new Unit();
+			Unit e = new Unit(Team.TEAM_1);
 			e.setTeam(Team.TEAM_1);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
 			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
