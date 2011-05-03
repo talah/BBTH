@@ -3,6 +3,9 @@ package bbth.sound;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 /**
  * Tracks the beats of a song given a music player and a beat pattern
  * @author jardini
@@ -10,66 +13,75 @@ import java.util.List;
  */
 public class BeatTracker {
 
+	public static final float TOLERANCE = 80; // millisecond difference in what is still considered a valid touch
+
 	private MusicPlayer _musicPlayer;
 	private BeatPattern _beatPattern;
-	private List<Integer> _offsets;
-	private int _currentBeat;
+	private List<Beat> _beats;
+	private int _currentBeatIndex;
 	
 	public BeatTracker(MusicPlayer player, BeatPattern pattern) {
 		_musicPlayer = player;
 		_beatPattern = pattern;
-		_currentBeat = 0;
-		_offsets = new ArrayList<Integer>();
+		_currentBeatIndex = 0;
+		_beats = new ArrayList<Beat>();
 	}
 
-	// returns millisecond time difference from closest beat to current time
-	public int getClosestBeatOffset() {
-		int currTime = _musicPlayer.getCurrentPosition();
-		int beatTime = _beatPattern.getBeatTime(_currentBeat);
-		while (Math.abs(currTime - _beatPattern.getBeatTime(_currentBeat + 1)) < Math.abs(currTime - beatTime)) {
-			++_currentBeat;
-			beatTime = _beatPattern.getBeatTime(_currentBeat);
-		}
-		
-		return beatTime - currTime;
+	// returns whether a beat was successfully tapped
+	public boolean onTouchDown() {
+		Beat beat = getClosestBeat();
+		return beat != null && beat.onTouchDown(_musicPlayer.getCurrentPosition());
 	}
 	
+	// handle a release
+	public void onTouchUp() {
+		// does nothing for now
+	}
+		
 	// return index into BeatPattern for closest beat
-	public int getClosestBeat() {
+	public Beat getClosestBeat() {
 		int currTime = _musicPlayer.getCurrentPosition();
-		int beatTime = _beatPattern.getBeatTime(_currentBeat);
-		while (Math.abs(currTime - _beatPattern.getBeatTime(_currentBeat + 1)) < Math.abs(currTime - beatTime)) {
-			++_currentBeat;
-			beatTime = _beatPattern.getBeatTime(_currentBeat);
+		Beat beat = _beatPattern.getBeat(_currentBeatIndex);
+		Beat nextBeat = _beatPattern.getBeat(_currentBeatIndex + 1);
+		while (beat != null && nextBeat != null && Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
+			++_currentBeatIndex;
+			beat = _beatPattern.getBeat(_currentBeatIndex);
+			nextBeat = _beatPattern.getBeat(_currentBeatIndex + 1);
 		}
 		
-		return _currentBeat;
+		return beat;
 	}
 	
-	public List<Integer> getBeatOffsetsInRange(int lowerBound, int upperBound) {
-		_offsets.clear();
+	// get all the beats in a time window relative to the current time in the song being played
+	public List<Beat> getBeatsInRange(int lowerBound, int upperBound) {
+		_beats.clear();
 		
-		int beat = getClosestBeat();
+		Beat beat = getClosestBeat();
+		int i = _currentBeatIndex;
 		int currTime = _musicPlayer.getCurrentPosition();
-		int offset = _beatPattern.getBeatTime(beat) - currTime;
-		while (offset > lowerBound) {
-			_offsets.add(offset);
-			--beat;
-			offset = _beatPattern.getBeatTime(beat);
-			if (offset == Integer.MIN_VALUE) break;
-			offset -= currTime;
+		
+		while (beat != null && beat.getEndTime() - currTime > lowerBound) {
+			_beats.add(beat);
+			--i;
+			beat = _beatPattern.getBeat(i);
 		}
 		
-		beat = _currentBeat + 1;
-		offset = _beatPattern.getBeatTime(beat) - currTime;
-		while (offset < upperBound) {
-			_offsets.add(offset);
-			++beat;
-			offset = _beatPattern.getBeatTime(beat);
-			if (offset == Integer.MIN_VALUE) break;
-			offset -= currTime;
+		i = _currentBeatIndex + 1;
+		beat = _beatPattern.getBeat(i);
+		while (beat != null && beat._startTime - currTime < upperBound) {
+			_beats.add(beat);
+			++i;
+			beat = _beatPattern.getBeat(i);
 		}
 		
-		return _offsets;
+		return _beats;
+	}
+	
+	// draw a list of beats, likely obtained from getBeatsInRange
+	public void drawBeats(List<Beat> beats, float xMid, float yMid, Canvas canvas, Paint paint) {
+		int time = _musicPlayer.getCurrentPosition();
+		for (int i = 0; i < beats.size(); ++i) {
+			_beats.get(i).draw(time, xMid, yMid, canvas, paint);
+		}
 	}
 }

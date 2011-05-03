@@ -1,7 +1,6 @@
 package bbth.game;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,14 +12,11 @@ import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.core.GameScreen;
 import bbth.particles.ParticleSystem;
-import bbth.sound.BeatPattern;
-import bbth.sound.BeatTracker;
-import bbth.sound.CustomBeatPattern;
-import bbth.sound.MusicPlayer;
+import bbth.sound.*;
 import bbth.sound.MusicPlayer.OnCompletionListener;
-import bbth.sound.SimpleBeatPattern;
 import bbth.util.ColorUtils;
 import bbth.util.MathUtils;
+
 import static bbth.game.BBTHGame.*;
 
 /**
@@ -31,13 +27,11 @@ import static bbth.game.BBTHGame.*;
  */
 public class MusicTestScreen extends GameScreen {
 	
-	private static final String MAP_TEXT = "Map";
 	private static final String MAIN_MENU_TEXT = "Menu";
 	private static final String MINIMAP_TEXT = "Minimap";
 	
-	private static final float BEAT_LINE_HEIGHT = HEIGHT * 0.75f;
-	private static final float BEAT_RADIUS = 8;
-	private static final float TOLERANCE = 80; // millisecond difference in what is still considered a valid touch
+	private static final float BEAT_LINE_X = 25;
+	private static final float BEAT_LINE_Y = 135;
 
 	private Paint _paint;
 	private ParticleSystem _particles;
@@ -49,7 +43,7 @@ public class MusicTestScreen extends GameScreen {
 	private int _score;
 	private int _combo;
 	private String _scoreStr, _comboStr;
-	private List<Integer> _beatOffsets;
+	private List<Beat> _beats;
 	
 	public MusicTestScreen(Context context) {
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -71,19 +65,30 @@ public class MusicTestScreen extends GameScreen {
 		});
 		_millisPerBeat = 571;
 		
-		int []beatLengths = { 571, 571, 571, 285, 286, 571, 190, 190, 191, 1142 };
-		BeatPattern simplePattern = new SimpleBeatPattern(385, _millisPerBeat);
-		BeatPattern customPattern = new CustomBeatPattern(385, beatLengths, true);
+		BeatPattern simplePattern = new SimpleBeatPattern(385, _millisPerBeat, 30000);
+		Beat []beats = new Beat[10];
+		beats[0] = Beat.tap(571);
+		beats[1] = Beat.tap(571);
+		beats[2] = Beat.rest(571);
+		beats[3] = Beat.tap(285);
+		beats[4] = Beat.tap(286);
+		beats[5] = Beat.tap(571);
+		beats[6] = Beat.tap(190);
+		beats[7] = Beat.tap(190);
+		beats[8] = Beat.tap(191);
+		beats[9] = Beat.hold(1142);
+		
+		BeatPattern customPattern = new SimpleBeatPattern(385, beats);
 		_beatTracker = new BeatTracker(_musicPlayer, customPattern);
 		
 		
-		_beatOffsets = new ArrayList<Integer>();
+		_beats = new ArrayList<Beat>();
 		_musicPlayer.play();
 	}
 	
 	@Override
 	public void onUpdate(float seconds) {
-		_beatOffsets = _beatTracker.getBeatOffsetsInRange(-400, 1500);
+		_beats = _beatTracker.getBeatsInRange(-400, 1500);
 		_particles.tick(seconds);
 	}
 	
@@ -102,8 +107,8 @@ public class MusicTestScreen extends GameScreen {
 			}
 		} else {
 
-			int offset = _beatTracker.getClosestBeatOffset();
-			if (Math.abs(offset) < TOLERANCE) {
+			boolean onBeat = _beatTracker.onTouchDown();
+			if (onBeat) {
 				++_score;
 				++_combo;
 				_scoreStr = String.valueOf(_score);
@@ -131,20 +136,11 @@ public class MusicTestScreen extends GameScreen {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
-		for (int i = 0; i < _beatOffsets.size(); ++i) {
-			int offset = _beatOffsets.get(i);
-			if (Math.abs(offset) < TOLERANCE) {
-				_paint.setColor(Color.GREEN);
-			} else {
-				_paint.setColor(Color.RED);
-			}
-			canvas.drawCircle(25, HEIGHT * 0.75f - _beatOffsets.get(i) / 10, BEAT_RADIUS, _paint);
-		}
-		_paint.setColor(Color.WHITE);
-		
 		// draw beats section
-		canvas.drawLine(0, BEAT_LINE_HEIGHT - BEAT_RADIUS, 50, BEAT_LINE_HEIGHT - BEAT_RADIUS, _paint);
-		canvas.drawLine(0, BEAT_LINE_HEIGHT + BEAT_RADIUS, 50, BEAT_LINE_HEIGHT + BEAT_RADIUS, _paint);
+		_beatTracker.drawBeats(_beats, BEAT_LINE_X, BEAT_LINE_Y, canvas, _paint);
+		_paint.setColor(Color.WHITE);
+		canvas.drawLine(0, BEAT_LINE_Y - Beat.RADIUS, 50, BEAT_LINE_Y - Beat.RADIUS, _paint);
+		canvas.drawLine(0, BEAT_LINE_Y + Beat.RADIUS, 50, BEAT_LINE_Y + Beat.RADIUS, _paint);
 		canvas.drawText(_comboStr, 25, HEIGHT - 10, _paint);
 		//canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 		canvas.drawLine(50, 0, 50, HEIGHT, _paint);
