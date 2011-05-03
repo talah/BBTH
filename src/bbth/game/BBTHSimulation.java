@@ -7,6 +7,7 @@ public class BBTHSimulation extends Simulation {
 
 	public BBTHSimulation(LockStepProtocol protocol) {
 		super(6, 0.1f, 2, protocol);
+		
 	}
 
 	@Override
