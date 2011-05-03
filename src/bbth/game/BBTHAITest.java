@@ -97,7 +97,7 @@ public class BBTHAITest extends GameScreen {
 			Unit entity = m_entities.get(i);
 			
 			//******** PHYSICS AFTER AI *******//
-			entity.setPosition(entity.getX() + entity.getSpeed() * FloatMath.cos(entity.getHeading()) * timediff, entity.getY() + entity.getSpeed() * FloatMath.sin(entity.getHeading()) * timediff);
+			entity.setPosition(entity.getX() + entity.getSpeed() * FloatMath.cos(entity.getHeading()) * timediff/1000.0f, entity.getY() + entity.getSpeed() * FloatMath.sin(entity.getHeading()) * timediff/1000.0f);
 			//******** PHYSICS AFTER AI *******//
 
 			if (entity.getTeam() == Team.TEAM_0) {
