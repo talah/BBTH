@@ -21,28 +21,28 @@ public class BBTHSimulation extends Simulation {
 
 		team = localTeam;
 		localPlayer = new Player(team, aiController);
-		
+
 		if (team == Team.TEAM_0) {
 			remotePlayer = new Player(Team.TEAM_1, aiController);
 		} else {
 			remotePlayer = new Player(Team.TEAM_0, aiController);
 		}
 	}
-	
+
 	public void setupSubviews(UIView view) {
 		localPlayer.setupSubviews(view);
 		remotePlayer.setupSubviews(view);
 	}
-	
+
 	public Unit getOpponentsMostAdvancedUnit() {
 		return remotePlayer.getMostAdvancedUnit();
 	}
-	
+
 	// Just for debugging so we know the simulation isn't stuck
 	public int getTimestep() {
 		return timestep;
 	}
-	
+
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isLocal, boolean isOnBeat) {
 		if (isLocal) {
@@ -63,14 +63,25 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void update(float seconds) {
 		timestep++;
-		
+
 		aiController.update();
-		localPlayer.update(seconds);
-		remotePlayer.update(seconds);
+
+		if (team == Team.TEAM_1) {
+			localPlayer.update(seconds);
+			remotePlayer.update(seconds);
+		} else {
+			remotePlayer.update(seconds);
+			localPlayer.update(seconds);
+		}
 	}
 
 	public void draw(Canvas canvas) {
-		localPlayer.draw(canvas);
-		remotePlayer.draw(canvas);
+		if (team == Team.TEAM_0) {
+			remotePlayer.draw(canvas);
+			localPlayer.draw(canvas);
+		} else {
+			localPlayer.draw(canvas);
+			remotePlayer.draw(canvas);
+		}
 	}
 }

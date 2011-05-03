@@ -8,6 +8,7 @@ import bbth.net.bluetooth.State;
 import bbth.net.simulation.LockStepProtocol;
 import bbth.ui.UILabel;
 import bbth.ui.UIScrollView;
+import bbth.util.MathUtils;
 
 public class InGameScreen extends UIScrollView {
 
@@ -19,6 +20,8 @@ public class InGameScreen extends UIScrollView {
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
 		super(null);
 
+		MathUtils.resetRandom(0);
+		
 		this.team = playerTeam;
 		
 		// Set up the scrolling!
