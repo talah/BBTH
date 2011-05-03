@@ -148,7 +148,8 @@ public class InGameScreen extends UIScrollView {
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		boolean isOnBeat = beatTracker.onTouchDown();
+		Beat.BeatType beatType = beatTracker.onTouchDown();
+		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
 			++score;
 			++combo;
@@ -160,6 +161,7 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		super.onTouchDown(x, y);
+		// TODO: send whether a hold or tap
 		sim.recordTapDown(x, y, isOnBeat);
 	}
 
