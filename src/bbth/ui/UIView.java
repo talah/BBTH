@@ -203,6 +203,7 @@ public class UIView extends GameScreen {
     			e.center.x = e._rect.centerX();
     			e.center.y = e._rect.centerY();
     		}
+    		_rect.union(e._rect);
 		}
 		    
     }

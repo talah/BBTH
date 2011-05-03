@@ -1,17 +1,16 @@
 package bbth.ui;
 
-import bbth.util.MathUtils;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.Paint.Style;
 
 public class UIRadioButton extends UIControl {
 	private static final int DEFAULT_BG = Color.LTGRAY, DEFAULT_FG = Color.GRAY;
-	private static final float DEFAULT_BORDER_WIDTH = 3.f, DEFAULT_INNER_RADIUS_RATIO = 0.6f;
+	private static final float DEFAULT_BORDER_WIDTH = 3.f, DEFAULT_INNER_RADIUS_RATIO = 0.6f, DEFAULT_BUTTON_WIDTH = 10, DEFAULT_BUTTON_HEIGHT = 10;
 
 	private Paint _bg_paint, _fg_paint;
 	private int _bg_color, _fg_color;
@@ -19,8 +18,9 @@ public class UIRadioButton extends UIControl {
 
 	private boolean _selected, _in_select_motion;
 	private float _inner_radius_ratio, _outer_radius;
+	private UILabel _label;
 
-	public UIRadioButton(Object tag) {
+	public UIRadioButton(String label, Object tag) {
 		super(tag);
 
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -37,34 +37,36 @@ public class UIRadioButton extends UIControl {
 		setBackgroundColor(DEFAULT_BG);
 		//_fg_paint.setColor(DEFAULT_FG);
 		setForegroundColor(DEFAULT_FG);
-	}
-
-	private boolean inButton(float x, float y) {
-		return MathUtils.get_dist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
+		
+		if(label != null && !label.equals(""))
+		{
+			_label = new UILabel(label, null);
+			_label.setPosition(1.5f * DEFAULT_BUTTON_WIDTH, 0);
+			_label.setSize(0, DEFAULT_BUTTON_HEIGHT);
+			_label.setTextSize(DEFAULT_BUTTON_HEIGHT);
+			_label.sizeToFit();
+			addSubview(_label);
+			setSize(1.5f * DEFAULT_BUTTON_WIDTH + _label._width, DEFAULT_BUTTON_HEIGHT);
+		}else{
+			setSize(DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT);
+		}
 	}
 	
 	@Override
 	public void onTouchMove(float x, float y) {
-		if (_in_select_motion && !inButton(x,  y)) {
+		if (_in_select_motion && !containsPoint(x, y)) {
 			_in_select_motion = false;
 		}
 	}
 	
 	@Override
 	public void onTouchDown(float x, float y) {
-		if (inButton(x, y)) {
-			_in_select_motion = true;
-		} else {
-			_in_select_motion = false;
-		}
+		_in_select_motion = true;
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if (_in_select_motion && inButton(x, y)) {
-			_selected = !_selected;
-		}
-		
+		_selected = !_selected;
 		_in_select_motion = false;
 	}
 
@@ -107,17 +109,18 @@ public class UIRadioButton extends UIControl {
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
 		_bg_paint.setStyle(Style.STROKE);
-		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
+		canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setStyle(Style.FILL);
 
 		_bg_paint.setShader(_bg_gradient);
-		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
+		canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setShader(null);
 
 		if (_selected) {
 			_fg_paint.setShader(_fg_gradient);
-			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
+			canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
 			_fg_paint.setShader(null);
 		}
 	}

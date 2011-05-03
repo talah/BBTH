@@ -4,6 +4,7 @@ import bbth.ui.Anchor;
 import bbth.ui.UIButton;
 import bbth.ui.UIButtonDelegate;
 import bbth.ui.UIProgressBar;
+import bbth.ui.UIRadioButton;
 import bbth.ui.UIScrollView;
 import bbth.ui.UIView;
 
@@ -35,6 +36,12 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate{
 		progressBar.setBorderRadius(5);
 		progressBar.setProgress(1.f);
 		addSubview(progressBar);
+		
+		UIRadioButton testButton = new UIRadioButton("Hello", null);
+		testButton.setAnchor(Anchor.CENTER_CENTER);
+		testButton.setPosition(160, 120);
+		addSubview(testButton);
+		
 
 	}
 	
