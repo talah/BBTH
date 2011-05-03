@@ -3,7 +3,7 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import bbth.core.GameActivity;
-import bbth.net.Simulation;
+import bbth.net.NetworkTestSimulation;
 import bbth.net.bluetooth.Bluetooth;
 import bbth.net.bluetooth.State;
 import bbth.net.simulation.LockStepProtocol;
@@ -18,7 +18,7 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 	private static final int CLIENT = 2;
 
 	private Paint paint;
-	private Simulation sim;
+	private NetworkTestSimulation sim;
 	private UIButton serverButton;
 	private UIButton clientButton;
 	private UILabel label;
@@ -78,7 +78,7 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onUpdate(float seconds) {
 		if (bluetooth.getState() == State.CONNECTED && sim == null) {
-			sim = new Simulation(protocol);
+			sim = new NetworkTestSimulation(protocol);
 		} else if (bluetooth.getState() != State.CONNECTED && sim != null) {
 			type = 0;
 			clientButton.isDisabled = false;
