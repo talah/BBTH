@@ -15,7 +15,7 @@ public class UIRadioButton extends UIControl {
 
 	private Paint _bg_paint, _fg_paint;
 	private int _bg_color, _fg_color;
-	private LinearGradient _bg_gradient, _fg_gradient;
+	private LinearGradient _bg_gradient, _fg_gradient, _fg_down_gradient;
 
 	private boolean _selected, _in_select_motion;
 	private float _inner_radius_ratio, _outer_radius;
@@ -85,6 +85,8 @@ public class UIRadioButton extends UIControl {
 		_fg_color = color;
 		_fg_gradient = generateVerticalGradient(_rect, color, true);
 		_fg_paint.setColor(color);
+		
+		_fg_down_gradient = generateVerticalGradient(_rect, color, false);
 	}
 	
 	public void setBackgroundColor(int color) {
@@ -115,7 +117,11 @@ public class UIRadioButton extends UIControl {
 		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setShader(null);
 
-		if (_selected) {
+		if (_in_select_motion) {
+			_fg_paint.setShader(_fg_down_gradient);
+			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
+			_fg_paint.setShader(null);
+		} else if (_selected) {
 			_fg_paint.setShader(_fg_gradient);
 			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
 			_fg_paint.setShader(null);
