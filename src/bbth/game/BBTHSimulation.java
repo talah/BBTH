@@ -65,12 +65,23 @@ public class BBTHSimulation extends Simulation {
 		timestep++;
 
 		aiController.update();
-		localPlayer.update(seconds);
-		remotePlayer.update(seconds);
+
+		if (team == Team.TEAM_1) {
+			localPlayer.update(seconds);
+			remotePlayer.update(seconds);
+		} else {
+			remotePlayer.update(seconds);
+			localPlayer.update(seconds);
+		}
 	}
 
 	public void draw(Canvas canvas) {
-		localPlayer.draw(canvas);
-		remotePlayer.draw(canvas);
+		if (team == Team.TEAM_0) {
+			remotePlayer.draw(canvas);
+			localPlayer.draw(canvas);
+		} else {
+			localPlayer.draw(canvas);
+			remotePlayer.draw(canvas);
+		}
 	}
 }

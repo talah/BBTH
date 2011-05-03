@@ -14,8 +14,10 @@ import bbth.net.bluetooth.State;
 import bbth.net.simulation.LockStepProtocol;
 import bbth.ui.UILabel;
 import bbth.ui.UIScrollView;
+import bbth.util.MathUtils;
 import bbth.core.GameActivity;
 import bbth.sound.*;
+import bbth.sound.MusicPlayer.OnCompletionListener;
 
 public class InGameScreen extends UIScrollView {
 
@@ -30,12 +32,16 @@ public class InGameScreen extends UIScrollView {
 	private int combo;
 	private int score;
 	private String comboStr, scoreStr;
+	private BeatPattern beatPattern;
+	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol, boolean isServer) {
 		super(null);
 
+		MathUtils.resetRandom(0);
+		
 		this.team = playerTeam;
 
 		// Set up the scrolling!
@@ -60,14 +66,32 @@ public class InGameScreen extends UIScrollView {
 		paint.setTextSize(10);
 
 		// Setup music stuff
-		BeatPattern simplePattern = new SimpleBeatPattern(385, 571, 30000);
-		MusicPlayer musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
-		beatTracker = new BeatTracker(musicPlayer, simplePattern);
+		beatPattern = new SimpleBeatPattern(385, 571, 30000);
+		musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
+		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
+			public void onCompletion(MusicPlayer mp) {
+				beatTracker = new BeatTracker(musicPlayer, beatPattern);
+				beatsInRange = new ArrayList<Beat>();
+				mp.play();
+			}
+		});
+		
+		beatTracker = new BeatTracker(musicPlayer, beatPattern);
 		beatsInRange = new ArrayList<Beat>();
+		
+		// Setup score stuff
+		score = 0;
+		scoreStr = String.valueOf(score);
+		combo = 0;
+		comboStr = String.valueOf(combo);
+		
+		// Start playing the music!
+		musicPlayer.play();
 	}
 
 	@Override
 	public void onStop() {
+		musicPlayer.stop();
 		// Disconnect when we lose focus
 		bluetooth.disconnect();
 	}
