@@ -15,13 +15,6 @@ public class UIProgressBar extends UIControl {
 		FINITE, INFINTE;
 	}
 
-	private static final float DEFAULT_CANDYCANE_SPEED = 100.f;
-	private static final int DEFAULT_BG = Color.LTGRAY, DEFAULT_FG = Color.GRAY;
-	private static final int DEFAULT_NUM_GRADIENT_COLORS = 8;
-	private static final float DEFAULT_BORDER_WIDTH = 3.f;
-	private static final int DEFAULT_CORNER_RADIUS = 6;
-	private static final Mode DEFAULT_MODE = Mode.FINITE;
-
 	private int _bg_start_color, _bg_end_color;
 	private LinearGradient _bg_gradient;
 	private Paint _bg_paint;
@@ -44,19 +37,19 @@ public class UIProgressBar extends UIControl {
 	public UIProgressBar(Object tag) {
 		super(tag);
 
-		_num_gradient_colors = DEFAULT_NUM_GRADIENT_COLORS;
-		_mode = DEFAULT_MODE;
-		_border_radius = DEFAULT_CORNER_RADIUS;
-		_candycane_speed = DEFAULT_CANDYCANE_SPEED;
+		_num_gradient_colors = UIDefaultConstants.UI_PROGRESS_BAR_NUM_GRADIENT_COLORS;
+		_mode = UIDefaultConstants.UI_PROGRESS_BAR_DEFAULT_MODE;
+		_border_radius = UIDefaultConstants.CORNER_RADIUS;
+		_candycane_speed = UIDefaultConstants.UI_PROGRESS_BAR_CANDYCANE_SPEED;
 
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_bg_paint.setStrokeWidth(DEFAULT_BORDER_WIDTH);
+		_bg_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 		_fg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_progress_bar = new RectF();
 		_tr_matrix = new Matrix();
 
-		setBackgroundColor(DEFAULT_BG);
-		setForegroundColor(DEFAULT_FG);
+		setBackgroundColor(UIDefaultConstants.BACKGROUND_COLOR);
+		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
 		setProgress(0.f);
 	}
 

@@ -10,9 +10,6 @@ import android.graphics.Shader;
 import android.graphics.Paint.Style;
 
 public class UIRadioButton extends UIControl {
-	private static final int DEFAULT_BG = Color.LTGRAY, DEFAULT_FG = Color.GRAY;
-	private static final float DEFAULT_BORDER_WIDTH = 3.f, DEFAULT_INNER_RADIUS_RATIO = 0.6f;
-
 	private Paint _bg_paint, _fg_paint;
 	private int _bg_color, _fg_color;
 	private LinearGradient _bg_gradient, _fg_gradient, _fg_down_gradient;
@@ -24,19 +21,19 @@ public class UIRadioButton extends UIControl {
 		super(tag);
 
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_bg_paint.setStrokeWidth(DEFAULT_BORDER_WIDTH);
+		_bg_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 
 		_fg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 		_outer_radius = Math.min(_rect.width(), _rect.height()) / 2;
-		_inner_radius_ratio = DEFAULT_INNER_RADIUS_RATIO;
+		_inner_radius_ratio = UIDefaultConstants.UI_RADIO_BUTTON_INNER_RADIUS_RATIO;
 		_selected = false;
 		_in_select_motion = false;
 
 		// _bg_paint.setColor(DEFAULT_BG);
-		setBackgroundColor(DEFAULT_BG);
+		setBackgroundColor(UIDefaultConstants.BACKGROUND_COLOR);
 		//_fg_paint.setColor(DEFAULT_FG);
-		setForegroundColor(DEFAULT_FG);
+		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
 	}
 
 	private boolean inButton(float x, float y) {
