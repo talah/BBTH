@@ -212,6 +212,20 @@ public class UIScrollView extends UIView {
 		if(max_x > 0)
 			max_x += 8;
 		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
+
+	}
+	
+	
+	public void scrollTo(float x, float y)
+	{
+		pos_x = MathUtils.clamp(0, max_x, x);
+		pos_y = MathUtils.clamp(0, max_y, y);
+		
+		if(max_y > 0)
+			_v_scroll_handle_rect.offsetTo(_v_scroll_handle_rect.left, _v_track_rect.top + (pos_y/max_y) * max_offset_y);
+		
+		if(max_x > 0)
+		_h_scroll_handle_rect.offsetTo(_h_track_rect.left + (pos_x/max_x) * max_offset_x, _h_scroll_handle_rect.top);
 	}
 
 
