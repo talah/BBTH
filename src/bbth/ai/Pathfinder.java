@@ -19,7 +19,7 @@ public class Pathfinder {
 		m_graph = cg;
 		
 		m_entries = new HashMap<PointF, AStarEntry>();
-		for (PointF p : cg.get_graph().keySet()) {
+		for (PointF p : cg.getGraph().keySet()) {
 			m_entries.put(p, new AStarEntry(p));
 		}
 		
@@ -29,22 +29,22 @@ public class Pathfinder {
 		m_found_path = new ArrayList<PointF>();
 	}
 	
-	public boolean find_path(PointF start, PointF goal) {
-		return find_path(start, goal, null, 1.0f);
+	public boolean findPath(PointF start, PointF goal) {
+		return findPath(start, goal, null, 1.0f);
 	}
 	
-	public boolean find_path(PointF start, PointF goal, Heuristic se) {
-		return find_path(start, goal, se, 1.0f);
+	public boolean findPath(PointF start, PointF goal, Heuristic se) {
+		return findPath(start, goal, se, 1.0f);
 	}
 	
-	public boolean find_path(PointF start, PointF goal, Heuristic se, float tolerance) {
+	public boolean findPath(PointF start, PointF goal, Heuristic se, float tolerance) {
 		m_closed_set.clear();
 		m_came_from.clear();
 		m_open_set.clear();
 		m_found_path.clear();
 		
 		// Reset all the scores.
-		for (PointF p : m_graph.get_graph().keySet()) {
+		for (PointF p : m_graph.getGraph().keySet()) {
 			if (!m_entries.containsKey(p)) {
 				m_entries.put(p, new AStarEntry(p));
 			} else {
@@ -62,7 +62,7 @@ public class Pathfinder {
 		// Initialize open set.
 		AStarEntry startentry = m_entries.get(start);
 		startentry.m_g_score = 0;
-		startentry.m_h_score = estimate_h_score(se, startentry, goal) ;
+		startentry.m_h_score = estimateHScore(se, startentry, goal) ;
 		startentry.m_f_score = m_entries.get(start).m_h_score;
 		
 		m_open_set.offer(startentry);
@@ -70,16 +70,16 @@ public class Pathfinder {
 		while (m_open_set.size() != 0) {
 			AStarEntry current = m_open_set.poll();
 			
-			if (get_dist(current, goal) < tolerance) {
+			if (getDist(current, goal) < tolerance) {
 				// We're done.
-				reconstruct_path(current.m_point);
+				reconstructPath(current.m_point);
 				return true;
 			}
 			
 			m_closed_set.add(current.m_point);
 			
 			// Find neighbors.
-			ArrayList<PointF> neighbors = m_graph.get_neighbors(current.m_point);
+			ArrayList<PointF> neighbors = m_graph.getNeighbors(current.m_point);
 			if (neighbors == null) {
 				continue;
 			}
@@ -91,14 +91,14 @@ public class Pathfinder {
 					continue;
 				}
 				
-				int tentative_g_score = current.m_g_score + (int)get_dist(current, neighbor);
+				int tentative_g_score = current.m_g_score + (int)getDist(current, neighbor);
 				
 				AStarEntry nentry = m_entries.get(neighbor);
 				
 				// Check if this is a better score for this neighbor. If so, update it.
 				if (nentry.m_g_score > tentative_g_score) {
 					nentry.m_g_score = tentative_g_score;
-					nentry.m_h_score = estimate_h_score(se, nentry, goal);
+					nentry.m_h_score = estimateHScore(se, nentry, goal);
 					nentry.m_f_score = nentry.m_g_score + nentry.m_h_score;
 					
 					m_open_set.remove(nentry);
@@ -111,26 +111,26 @@ public class Pathfinder {
 		return false;
 	}
 
-	private void reconstruct_path(PointF current) {
+	private void reconstructPath(PointF current) {
 		if (m_came_from.containsKey(current)) {
-			reconstruct_path(m_came_from.get(current));
+			reconstructPath(m_came_from.get(current));
 		}
 		m_found_path.add(current);
 	}
 	
-	public ArrayList<PointF> get_path() {
+	public ArrayList<PointF> getPath() {
 		return m_found_path;
 	}
 
-	private int estimate_h_score(Heuristic se, AStarEntry start, PointF goal) {
+	private int estimateHScore(Heuristic se, AStarEntry start, PointF goal) {
 		if (se == null) {
-			return (int)get_dist(start, goal);
+			return (int)getDist(start, goal);
 		} else {
-			return se.estimate_h_score(start.m_point, goal);
+			return se.estimateHScore(start.m_point, goal);
 		}
 	}
 
-	private float get_dist(AStarEntry current, PointF goal) {
+	private float getDist(AStarEntry current, PointF goal) {
 		return (float)Math.sqrt((current.m_point.x - goal.x)*(current.m_point.x - goal.x) + (current.m_point.y - goal.y)*(current.m_point.y - goal.y));
 	}
 }

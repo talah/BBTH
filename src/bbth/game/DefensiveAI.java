@@ -23,26 +23,26 @@ public class DefensiveAI extends UnitAI {
 		float xcomp = 0;
 		float ycomp = 0;
 		
-		calculate_flocking(entity, c, flock, m_flock_dir);
+		calculateFlocking(entity, c, flock, m_flock_dir);
 		
 		xcomp = m_flock_dir.x;
 		ycomp = m_flock_dir.y;
 		
 		// Calculate somewhere to go if it's a leader.
-		if (!flock.has_leader(entity)) {
-			ArrayList<Unit> enemies = c.get_enemies(entity);
-			Unit enemy = get_closest_enemy(entity, enemies);
+		if (!flock.hasLeader(entity)) {
+			ArrayList<Unit> enemies = c.getEnemies(entity);
+			Unit enemy = getClosestEnemy(entity, enemies);
 			
 			if (enemy != null) {
-				float angle = MathUtils.get_angle(entity.get_x(), entity.get_y(), enemy.get_x(), enemy.get_y());
+				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), enemy.getX(), enemy.getY());
 				xcomp += 0.05f * FloatMath.cos(angle);
 				ycomp += 0.05f * FloatMath.sin(angle);
 			}
 		}
 		
-		float wanteddir = MathUtils.get_angle(0, 0, xcomp, ycomp);
+		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
 		
-		float wantedchange = MathUtils.normalize_angle(wanteddir, entity.get_heading()) - entity.get_heading();
+		float wantedchange = MathUtils.normalizeAngle(wanteddir, entity.getHeading()) - entity.getHeading();
 		
 		float actualchange = wantedchange;
 		if (actualchange > max_vel_change) {
@@ -53,16 +53,16 @@ public class DefensiveAI extends UnitAI {
 			actualchange = -1.0f * max_vel_change;
 		}
 		
-		entity.set_velocity(0.05f, entity.get_heading() + actualchange);
+		entity.setVelocity(0.05f, entity.getHeading() + actualchange);
 	}
 
-	private Unit get_closest_enemy(Unit entity, ArrayList<Unit> enemies) {
+	private Unit getClosestEnemy(Unit entity, ArrayList<Unit> enemies) {
 		float bestdist = Float.MAX_VALUE;
 		Unit bestunit = null;
 		int size = enemies.size();
 		for (int i = 0; i < size; i++) {
 			Unit enemy = enemies.get(i);
-			float enemydist = MathUtils.get_dist_sqr(entity.get_x(), entity.get_y(), enemy.get_x(), enemy.get_y());
+			float enemydist = MathUtils.getDistSqr(entity.getX(), entity.getY(), enemy.getX(), enemy.getY());
 			if (enemydist < bestdist) {
 				bestunit = enemy;
 				bestdist = enemydist;

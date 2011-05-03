@@ -14,7 +14,7 @@ public class Unit extends BasicMovable {
 		TEAM_0,
 		TEAM_1;
 		
-		public Team get_opposite_team() {
+		public Team getOppositeTeam() {
 			if (this == TEAM_0) {
 				return TEAM_1;
 			} else {
@@ -37,7 +37,7 @@ public class Unit extends BasicMovable {
 	}
 	
 	public void draw(Canvas canvas) {
-		canvas.drawCircle(this.get_x(), this.get_y(), 10, test_paint);
+		canvas.drawCircle(this.getX(), this.getY(), 10, test_paint);
 	}
 	
 	public Team getTeam() {

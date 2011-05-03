@@ -11,13 +11,13 @@ public abstract class StateTransition {
 		m_end_state = end_state;
 	}
 	
-	public abstract boolean check_conditions(HashMap<String, Float> inputs);
+	public abstract boolean checkConditions(HashMap<String, Float> inputs);
 	
-	public FiniteState get_new_state() {
+	public FiniteState getNewState() {
 		return m_end_state;
 	}
 	
-	public FiniteState get_start_state() {
+	public FiniteState getStartState() {
 		return m_start_state;
 	}
 }

@@ -50,7 +50,7 @@ public class UIRadioButton extends UIControl {
 	}
 
 	private boolean inButton(float x, float y) {
-		return MathUtils.get_dist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
+		return MathUtils.getDist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
 	}
 
 	@Override

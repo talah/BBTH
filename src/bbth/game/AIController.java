@@ -41,18 +41,18 @@ public class AIController {
 		}
    	}
 	
-	public void add_entity(Unit u) {
+	public void addEntity(Unit u) {
 		m_entities.get(u.getTeam()).add(u);
-		m_flocks.get(u.getTeam()).add_object(u);
+		m_flocks.get(u.getTeam()).addObject(u);
 	}
 	
-	public void remove_entity(Unit u) {
+	public void removeEntity(Unit u) {
 		m_entities.get(u.getTeam()).add(u);
-		m_flocks.get(u.getTeam()).add_object(u);
+		m_flocks.get(u.getTeam()).addObject(u);
 	}
 	
-	public ArrayList<Unit> get_enemies(Unit u) {
-		return m_entities.get(u.getTeam().get_opposite_team());
+	public ArrayList<Unit> getEnemies(Unit u) {
+		return m_entities.get(u.getTeam().getOppositeTeam());
 	}
 	
 	public void update() {

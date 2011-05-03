@@ -59,31 +59,31 @@ public class BBTHAITest extends GameScreen {
     	m_entities = new ArrayList<Unit>();
     	m_rand = new Random();
     	
-        randomize_entities();
+        randomizeEntities();
 	}
 	
-	private void randomize_entities() {
+	private void randomizeEntities() {
 		for (int i = 0; i < 7; i++) {
 			Unit e = new Unit();
 			e.setTeam(Team.TEAM_0);
-			e.set_position(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
-			e.set_velocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
+			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
+			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
 			m_entities.add(e);
 			
 			//******** SETUP FOR AI *******//
-			m_controller.add_entity(e);
+			m_controller.addEntity(e);
 			//******** SETUP FOR AI *******//
 		}
 		
 		for (int i = 0; i < 7; i++) {
 			Unit e = new Unit();
 			e.setTeam(Team.TEAM_1);
-			e.set_position(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
-			e.set_velocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
+			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
+			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
 			m_entities.add(e);
 			
 			//******** SETUP FOR AI *******//
-			m_controller.add_entity(e);
+			m_controller.addEntity(e);
 			//******** SETUP FOR AI *******//
 		}
 	}
@@ -101,15 +101,15 @@ public class BBTHAITest extends GameScreen {
 			Unit entity = m_entities.get(i);
 			
 			//******** PHYSICS AFTER AI *******//
-			entity.set_position(entity.get_x() + entity.get_speed() * FloatMath.cos(entity.get_heading()) * timediff, entity.get_y() + entity.get_speed() * FloatMath.sin(entity.get_heading()) * timediff);
+			entity.setPosition(entity.getX() + entity.getSpeed() * FloatMath.cos(entity.getHeading()) * timediff, entity.getY() + entity.getSpeed() * FloatMath.sin(entity.getHeading()) * timediff);
 			//******** PHYSICS AFTER AI *******//
 
 			if (entity.getTeam() == Team.TEAM_0) {
-				canvas.drawCircle(entity.get_x(), entity.get_y(), 3, m_paint_0);
+				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_0);
 			}
 			
 			if (entity.getTeam() == Team.TEAM_1) {
-				canvas.drawCircle(entity.get_x(), entity.get_y(), 3, m_paint_1);
+				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_1);
 			}
 		}
 		
