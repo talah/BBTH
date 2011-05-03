@@ -1,13 +1,12 @@
 package bbth.game;
 
-import android.graphics.Color;
 import bbth.ui.Anchor;
-import bbth.ui.UILabel;
+import bbth.ui.UIButton;
 import bbth.ui.UIProgressBar;
-import bbth.ui.UIView;
+import bbth.ui.UIScrollView;
 
-public class TitleScreen extends UIView {
-	private UILabel greeting;
+public class TitleScreen extends UIScrollView {
+	private UIButton greeting;
 	private UIProgressBar progressBar;
 	
 	private float elapsedTime;
@@ -15,18 +14,24 @@ public class TitleScreen extends UIView {
 	public TitleScreen(Object tag)
 	{
 		super(tag);
-		greeting = new UILabel("Hello, World!", null);
+		
+		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		setPosition(0, 0);
+		
+		greeting = new UIButton("Hello, World!", null);
 		greeting.setAnchor(Anchor.CENTER_CENTER);
-		greeting.setTextColor(Color.WHITE);
+		greeting.setSize(160, 20);
+		//greeting.setTextColor(Color.WHITE);
 		greeting.setPosition(160.f, 90.f);
-		greeting.setTextSize(30.f);
+		//greeting.setTextSize(30.f);
+		//greeting.sizeToFit();
 		addSubview(greeting);
 		
 		// testing progress bar
 		progressBar = new UIProgressBar(tag);
 		progressBar.setAnchor(Anchor.CENTER_CENTER);
-		progressBar.setSize(60, 20);
-		progressBar.setPosition(120, 90);
+		progressBar.setSize(160, 20);
+		progressBar.setPosition(160, 120);
 		progressBar.setBorderRadius(5);
 		progressBar.setProgress(1.f);
 		addSubview(progressBar);

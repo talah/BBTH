@@ -11,12 +11,14 @@ import bbth.core.GameScreen;
 public class UIView extends GameScreen {
 
 	protected CopyOnWriteArrayList<UIView> subviews;
-	protected boolean _hasAppeared;
+	protected boolean _hasAppeared, _layedOut;
 	public Object tag;
 	protected RectF _rect;
 	protected float _width, _height, _h_width, _h_height;
+	protected int subviewCount;
 	protected Point center;
 	protected UIDelegate delegate;
+	protected Point _position;
 	
 	protected Anchor anchor;
 
@@ -25,14 +27,16 @@ public class UIView extends GameScreen {
 		this.anchor = Anchor.TOP_LEFT;
 		_rect = new RectF(0,0,0,0);
 		center = new Point(0,0);
+		_position = new Point(0,0);
 		this.tag = tag;
 	}
 
     @Override
 	public void onUpdate(float seconds)
 	{
-    	for (int i = 0, n = subviews.size(); i < n; i++) {
-    		UIView e = subviews.get(i);
+    	int idx = subviewCount;
+    	while(idx-- > 0) {
+    		UIView e = subviews.get(idx);
     		e.onUpdate(seconds);
     	}
 	}
@@ -42,16 +46,18 @@ public class UIView extends GameScreen {
 	public void onDraw(Canvas canvas) {
 		if(!_hasAppeared)
 			willAppear(true);
-    	for (int i = 0, n = subviews.size(); i < n; i++) {
-    		UIView e = subviews.get(i);
+		int idx = subviewCount;
+    	while(idx-- > 0){
+    		UIView e = subviews.get(idx);
     		e.onDraw(canvas);
     	}
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
-    	for (int i = 0, n = subviews.size(); i < n; i++) {
-    		UIView e = subviews.get(i);
+		int idx = subviewCount;
+    	while(idx-- > 0){
+    		UIView e = subviews.get(idx);
     		if (e.containsPoint(x, y)) {
     			e.onTouchDown(x, y);
     		}
@@ -60,8 +66,9 @@ public class UIView extends GameScreen {
 
 	@Override
 	public void onTouchUp(float x, float y) {
-    	for (int i = 0, n = subviews.size(); i < n; i++) {
-    		UIView e = subviews.get(i);
+		int idx = subviewCount;
+    	while(idx-- > 0){
+    		UIView e = subviews.get(idx);
     		if (e.containsPoint(x, y)) {
     			e.onTouchUp(x, y);
     		}
@@ -70,8 +77,9 @@ public class UIView extends GameScreen {
 
 	@Override
 	public void onTouchMove(float x, float y) {
-    	for (int i = 0, n = subviews.size(); i < n; i++) {
-    		UIView e = subviews.get(i);
+		int idx = subviewCount;
+    	while(idx-- > 0){
+    		UIView e = subviews.get(idx);
     		e.onTouchMove(x, y);
     	}
 	}
@@ -86,7 +94,10 @@ public class UIView extends GameScreen {
 	public void addSubview(UIView subview)
 	{
 		if(!subviews.contains(subview))
+		{
 			subviews.add(subview);
+			subviewCount = subviews.size();
+		}
 
 	}
 
@@ -94,6 +105,7 @@ public class UIView extends GameScreen {
 	{
 	    subview.willHide(true);
 		subviews.remove(subview);
+		subviewCount = subviews.size();
 	}
 
 	public void removeSubviews(Collection<UIView> views)
@@ -104,13 +116,17 @@ public class UIView extends GameScreen {
 	public void willAppear(boolean animated)
 	{
 		_hasAppeared = true;
+		layoutSubviews();
 	}
 
 	public void willHide(boolean animated)
 	{
 		_hasAppeared = false;
-		for(UIView e : subviews)
+		int idx = subviewCount;
+		while(idx-- > 0){
+    		UIView e = subviews.get(idx);
 		    e.willHide(animated);
+		}
 	}
     
     public void setAnchor(Anchor anchor)
@@ -157,6 +173,13 @@ public class UIView extends GameScreen {
         }
         center.x = _rect.left + _h_width;
         center.y = _rect.top + _h_height;
+        
+        _position.x = x; _position.y = y;
+    }
+    
+    public Point getPosition()
+    {
+    	return _position;
     }
     
     public boolean containsPoint(float x, float y)
@@ -167,6 +190,21 @@ public class UIView extends GameScreen {
     public void setDelegate(UIDelegate delegate)
     {
         this.delegate = delegate;
+    }
+    
+    protected void layoutSubviews()
+    {
+    	int idx = subviewCount;
+		while(idx-- > 0){
+    		UIView e = subviews.get(idx);
+    		if(!e._layedOut)
+    		{
+    			e._rect.offset(_rect.left, _rect.top);
+    			e.center.x = e._rect.centerX();
+    			e.center.y = e._rect.centerY();
+    		}
+		}
+		    
     }
     
 }
