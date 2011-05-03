@@ -47,16 +47,8 @@ public class Player {
 
 	public void spawnUnit(float x, float y) {
 		Unit u = new Unit(team);
-		switch (this.team) {
-		case TEAM_0:
-			u.setVelocity(MathUtils.randInRange(5, 10), (float) Math.PI * 3f / 2f);
-			break;
-			
-		case TEAM_1:
-			u.setVelocity(MathUtils.randInRange(-10, -5), (float) Math.PI * 3f / 2f);
-			break;
-		}
 		u.setPosition(x, y);
+		//u.setVelocity(MathUtils.randInRange(50, 100), MathUtils.randInRange(0, MathUtils.TWO_PI));
 		aiController.addEntity(u);
 		units.add(u);
 	}
