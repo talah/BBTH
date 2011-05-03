@@ -2,10 +2,7 @@ package bbth.ui;
 
 import android.graphics.Color;
 
-public final class UIDefaultConstants {
-	private UIDefaultConstants() {
-	}
-
+public interface UIDefaultConstants {
 	// General stuff
 	public static final int BACKGROUND_COLOR = Color.LTGRAY;
 	public static final int FOREGROUND_COLOR = Color.GRAY;
@@ -27,4 +24,6 @@ public final class UIDefaultConstants {
 
 	// UIRadioButton
 	public static final float UI_RADIO_BUTTON_INNER_RADIUS_RATIO = 0.6f;
+	public static final float UI_RADIO_BUTTON_WIDTH = 10;
+	public static final float UI_RADIO_BUTTON_LABEL_HEIGHT = 10;
 }

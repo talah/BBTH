@@ -5,9 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.Paint.Style;
 
 public class UIRadioButton extends UIControl {
 	private Paint _bg_paint, _fg_paint;
@@ -16,8 +16,9 @@ public class UIRadioButton extends UIControl {
 
 	private boolean _selected, _in_select_motion;
 	private float _inner_radius_ratio, _outer_radius;
+	private UILabel _label;
 
-	public UIRadioButton(Object tag) {
+	public UIRadioButton(String label, Object tag) {
 		super(tag);
 
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -32,36 +33,41 @@ public class UIRadioButton extends UIControl {
 
 		// _bg_paint.setColor(DEFAULT_BG);
 		setBackgroundColor(UIDefaultConstants.BACKGROUND_COLOR);
-		//_fg_paint.setColor(DEFAULT_FG);
+		// _fg_paint.setColor(DEFAULT_FG);
 		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
+
+		if (label != null && !label.equals("")) {
+			_label = new UILabel(label, null);
+			_label.setPosition(1.5f * UIDefaultConstants.UI_RADIO_BUTTON_WIDTH, 0);
+			_label.setSize(0, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
+			_label.setTextSize(UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
+			_label.sizeToFit();
+			addSubview(_label);
+			setSize(1.5f * UIDefaultConstants.UI_RADIO_BUTTON_WIDTH + _label._width, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
+		} else {
+			setSize(UIDefaultConstants.UI_RADIO_BUTTON_WIDTH, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
+		}
 	}
 
 	private boolean inButton(float x, float y) {
 		return MathUtils.get_dist(x, y, _rect.centerX(), _rect.centerY()) <= _outer_radius;
 	}
-	
+
 	@Override
 	public void onTouchMove(float x, float y) {
-		if (_in_select_motion && !inButton(x,  y)) {
-			_in_select_motion = false;
-		}
-	}
-	
-	@Override
-	public void onTouchDown(float x, float y) {
-		if (inButton(x, y)) {
-			_in_select_motion = true;
-		} else {
+		if (_in_select_motion && !containsPoint(x, y)) {
 			_in_select_motion = false;
 		}
 	}
 
 	@Override
+	public void onTouchDown(float x, float y) {
+		_in_select_motion = true;
+	}
+
+	@Override
 	public void onTouchUp(float x, float y) {
-		if (_in_select_motion && inButton(x, y)) {
-			_selected = !_selected;
-		}
-		
+		_selected = !_selected;
 		_in_select_motion = false;
 	}
 
@@ -82,10 +88,10 @@ public class UIRadioButton extends UIControl {
 		_fg_color = color;
 		_fg_gradient = generateVerticalGradient(_rect, color, true);
 		_fg_paint.setColor(color);
-		
+
 		_fg_down_gradient = generateVerticalGradient(_rect, color, false);
 	}
-	
+
 	public void setBackgroundColor(int color) {
 		_bg_color = color;
 		_bg_gradient = generateVerticalGradient(_rect, color, false);
@@ -99,28 +105,29 @@ public class UIRadioButton extends UIControl {
 		setBackgroundColor(_bg_color);
 		setForegroundColor(_fg_color);
 	}
-	
+
 	public boolean isSelected() {
 		return _selected;
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
 		_bg_paint.setStyle(Style.STROKE);
-		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
+		canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setStyle(Style.FILL);
 
 		_bg_paint.setShader(_bg_gradient);
-		canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius, _bg_paint);
+		canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius, _bg_paint);
 		_bg_paint.setShader(null);
 
 		if (_in_select_motion) {
 			_fg_paint.setShader(_fg_down_gradient);
-			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
+			canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
 			_fg_paint.setShader(null);
 		} else if (_selected) {
 			_fg_paint.setShader(_fg_gradient);
-			canvas.drawCircle(_rect.centerX(), _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
+			canvas.drawCircle(_rect.left + _outer_radius, _rect.centerY(), _outer_radius * _inner_radius_ratio, _fg_paint);
 			_fg_paint.setShader(null);
 		}
 	}
