@@ -2,21 +2,34 @@ package bbth.game;
 
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
+import android.graphics.RectF;
+import bbth.collision.Point;
 import bbth.net.bluetooth.Bluetooth;
 import bbth.net.bluetooth.State;
 import bbth.net.simulation.LockStepProtocol;
+import bbth.ui.Anchor;
 import bbth.ui.UILabel;
+import bbth.ui.UIScrollView;
 import bbth.ui.UIView;
 
-public class InGameScreen extends UIView {
+public class InGameScreen extends UIScrollView {
 
 	private BBTHSimulation sim;
 	private UILabel label;
 	private Bluetooth bluetooth;
+	private Team team;
 
-	public InGameScreen(Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
 		super(null);
 
+		this.team = playerTeam;
+		
+		// Set up the scrolling!
+		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		this.setPosition(0, 0);
+		this.setScrolls(false);
+		
+		// Test labels
 		label = new UILabel("", null);
 		label.setTextSize(10);
 		label.setPosition(10, 10);
@@ -25,7 +38,8 @@ public class InGameScreen extends UIView {
 		addSubview(label);
 
 		this.bluetooth = bluetooth;
-		sim = new BBTHSimulation(protocol);
+		sim = new BBTHSimulation(playerTeam, protocol);
+		sim.setupSubviews(this);
 	}
 
 	@Override
@@ -37,6 +51,20 @@ public class InGameScreen extends UIView {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+		
+		// Draw a background grid thing so we know we're not hallucinating
+		canvas.translate(-this.pos_x, -this.pos_y);
+		RectF bounds = this._content_bounds;
+		for (float f = bounds.top; f <= bounds.bottom; f += 20) {
+			canvas.drawLine(bounds.left, f, bounds.right, f, this._scroll_paint);
+		}
+		for (float f = bounds.left; f <= bounds.right; f += 20) {
+			canvas.drawLine(f, bounds.top, f, bounds.bottom, this._track_paint);
+		}
+		canvas.translate(this.pos_x, this.pos_y);
+		
+		// Draw the game
+		sim.draw(canvas);
 	}
 
 	@Override
@@ -50,6 +78,13 @@ public class InGameScreen extends UIView {
 		}
 
 		sim.onUpdate(seconds);
+		
+		// Center the scroll on the most advanced enemy
+		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
+		if (mostAdvanced != null) {
+			Point position = mostAdvanced.getPosition();
+			this.scrollTo(position.x, position.y);
+		}
 	}
 
 	@Override

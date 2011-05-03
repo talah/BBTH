@@ -8,10 +8,10 @@ import bbth.util.MathUtils;
 
 public class UIScrollView extends UIView {
 	
-	private float dx, dy, _x, _y, pos_x, pos_y, max_x, max_y, max_offset_y, max_offset_x;
-	private boolean isScrolling, isDown, scrollsHorizontal = true, scrollsVertical = true, scrollEnabled = true;
-	private RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
-	private Paint _scroll_paint, _track_paint;
+	protected float dx, dy, _x, _y, pos_x, pos_y, max_x, max_y, max_offset_y, max_offset_x;
+	protected boolean isScrolling, isDown, scrollsHorizontal = true, scrollsVertical = true, scrollEnabled = true;
+	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
+	protected Paint _scroll_paint, _track_paint;
 	
 	public UIScrollView(Object tag) {
 		super(tag);

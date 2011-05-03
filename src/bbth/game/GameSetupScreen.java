@@ -20,7 +20,9 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private UIButton clientButton;
 	private UIButton disconnectButton;
 	private UILabel label;
-
+	
+	private Team playerTeam;
+	
 	public GameSetupScreen() {
 		super(null);
 
@@ -62,7 +64,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		label.setText("Status: " + bluetooth.getString());
 
 		if (bluetooth.getState() == State.CONNECTED) {
-			nextScreen = new InGameScreen(bluetooth, protocol);
+			nextScreen = new InGameScreen(playerTeam, bluetooth, protocol);
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
 			clientButton.isDisabled = false;
@@ -89,11 +91,15 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			serverButton.isDisabled = true;
 			clientButton.isDisabled = true;
 			disconnectButton.isDisabled = false;
+			
+			playerTeam = Team.TEAM_1;
 		} else if (sender == clientButton) {
 			bluetooth.connect();
 			serverButton.isDisabled = true;
 			clientButton.isDisabled = true;
 			disconnectButton.isDisabled = false;
+			
+			playerTeam = Team.TEAM_0;
 		} else if (sender == disconnectButton) {
 			bluetooth.disconnect();
 			serverButton.isDisabled = false;

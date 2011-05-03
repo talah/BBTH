@@ -207,5 +207,4 @@ public class UIView extends GameScreen {
 		}
 		    
     }
-    
 }
