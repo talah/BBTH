@@ -16,54 +16,75 @@ import bbth.entity.*;
 import bbth.util.MathUtils;
 
 public class BBTHAITest extends GameScreen {
-	ArrayList<Movable> m_entities;
-	ArrayList<PointF> m_entity_wanted;
-	private Paint m_paint;
+	
+	ArrayList<Unit> m_entities;
+	
+	private Paint m_paint_0;
+	private Paint m_paint_1;
 	private Random m_rand;
 	private BBTHGame m_parent;
-	private FlockRulesCalculator m_flock;
+	
+	//******** SETUP FOR AI *******//
+	private AIController m_controller;
+	//******** SETUP FOR AI *******//
 	
 	long m_last_time = 0;
-	
-	private PointF m_result;
-	private float max_vel_change = 0.3f;
 	
 	public BBTHAITest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
 		
-		m_flock = new FlockRulesCalculator();
-		
+		//******** SETUP FOR AI *******//
+		m_controller = new AIController(bbthGame);
+		//******** SETUP FOR AI *******//
+
 		m_last_time = System.currentTimeMillis();
 		
-		m_paint = new Paint();
-		m_paint.setColor(Color.WHITE);
-        m_paint.setStrokeWidth(2.0f);
-        m_paint.setStrokeJoin(Join.ROUND);
-        m_paint.setStyle(Style.STROKE);
-        m_paint.setTextSize(20);
-        m_paint.setAntiAlias(true);
+		m_paint_0 = new Paint();
+		m_paint_0.setColor(Color.BLUE);
+		m_paint_0.setStrokeWidth(2.0f);
+		m_paint_0.setStrokeJoin(Join.ROUND);
+		m_paint_0.setStyle(Style.STROKE);
+		m_paint_0.setTextSize(20);
+		m_paint_0.setAntiAlias(true);
+		
+		m_paint_1 = new Paint();
+		m_paint_1.setColor(Color.RED);
+		m_paint_1.setStrokeWidth(2.0f);
+		m_paint_1.setStrokeJoin(Join.ROUND);
+		m_paint_1.setStyle(Style.STROKE);
+		m_paint_1.setTextSize(20);
+		m_paint_1.setAntiAlias(true);
         
-    	m_entities = new ArrayList<Movable>();
-    	m_entity_wanted = new ArrayList<PointF>();
+    	m_entities = new ArrayList<Unit>();
     	m_rand = new Random();
     	
-    	m_result = new PointF();
-    	
-        randomize_entities();
+        randomizeEntities();
 	}
 	
-	private void randomize_entities() {
-		for (int i = 0; i < 15; i++) {
-			BasicMovable e = new BasicMovable();
-			e.set_position(m_rand.nextFloat() * m_parent.getWidth(), m_rand.nextFloat() * m_parent.getHeight());
-			e.set_velocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
+	private void randomizeEntities() {
+		for (int i = 0; i < 7; i++) {
+			Unit e = new Unit(Team.TEAM_0);
+			e.setTeam(Team.TEAM_0);
+			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
+			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
 			m_entities.add(e);
 			
-			m_entity_wanted.add(new PointF());
-			
-			m_flock.add_object(e);
+			//******** SETUP FOR AI *******//
+			m_controller.addEntity(e);
+			//******** SETUP FOR AI *******//
 		}
 		
+		for (int i = 0; i < 7; i++) {
+			Unit e = new Unit(Team.TEAM_1);
+			e.setTeam(Team.TEAM_1);
+			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
+			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
+			m_entities.add(e);
+			
+			//******** SETUP FOR AI *******//
+			m_controller.addEntity(e);
+			//******** SETUP FOR AI *******//
+		}
 	}
 
 	@Override
@@ -71,64 +92,24 @@ public class BBTHAITest extends GameScreen {
 		long curr_time = System.currentTimeMillis();
 		long timediff = curr_time - m_last_time;
 		
+		//******** SETUP FOR AI *******//
+		m_controller.update();
+		//******** SETUP FOR AI *******//
+		
 		for (int i = 0; i < m_entities.size(); i++) {
-			float angle = 0;
-			float xcomp = 0;
-			float ycomp = 0;
+			Unit entity = m_entities.get(i);
 			
-			Movable entity = m_entities.get(i);
-			
-			// Calculate flocking.
-			m_flock.get_cohesion_component(entity, m_result);
-			
-			xcomp = m_result.x * .2f / m_parent.getWidth();
-			ycomp = m_result.y * .2f / m_parent.getWidth();
-			
-			m_flock.get_alignment_component(entity, m_result);
-			
-			xcomp += m_result.x;
-			ycomp += m_result.y;
-			
-			m_flock.get_separation_component(entity, 20.0f, m_result);
-			
-			xcomp += m_result.x;
-			ycomp += m_result.y;
-			
-			if (m_rand.nextInt(100) == 0 || (m_entity_wanted.get(i).x == 0 && m_entity_wanted.get(i).y == 0)) {
-				float desired_x = m_rand.nextInt((int) m_parent.getWidth());
-				float desired_y = m_rand.nextInt((int) m_parent.getHeight());
-				m_entity_wanted.get(i).set(desired_x, desired_y);
+			//******** PHYSICS AFTER AI *******//
+			entity.setPosition(entity.getX() + entity.getSpeed() * FloatMath.cos(entity.getHeading()) * timediff, entity.getY() + entity.getSpeed() * FloatMath.sin(entity.getHeading()) * timediff);
+			//******** PHYSICS AFTER AI *******//
+
+			if (entity.getTeam() == Team.TEAM_0) {
+				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_0);
 			}
 			
-			xcomp /= 3;
-			ycomp /= 3;
-			
-			// Calculate somewhere to go if we're a leader.
-			if (!m_flock.has_leader(entity)) {
-				angle = MathUtils.get_angle(entity.get_x(), entity.get_y(), m_entity_wanted.get(i).x, m_entity_wanted.get(i).y);
-				xcomp += 0.05f * FloatMath.cos(angle);
-				ycomp += 0.05f * FloatMath.sin(angle);
+			if (entity.getTeam() == Team.TEAM_1) {
+				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_1);
 			}
-			
-			//float power = MathUtils.get_dist(0, 0, xcomp, ycomp);
-			float wanteddir = MathUtils.get_angle(0, 0, xcomp, ycomp);
-			
-			float wantedchange = MathUtils.normalize_angle(wanteddir, entity.get_heading()) - entity.get_heading();
-			
-			float actualchange = wantedchange;
-			if (actualchange > max_vel_change) {
-				actualchange = max_vel_change;
-			}
-			
-			if (actualchange < -1.0f * max_vel_change) {
-				actualchange = -1.0f * max_vel_change;
-			}
-			
-			entity.set_velocity(0.05f, entity.get_heading() + actualchange);
-			
-			entity.set_position(entity.get_x() + entity.get_speed() * FloatMath.cos(entity.get_heading()) * timediff, entity.get_y() + entity.get_speed() * FloatMath.sin(entity.get_heading()) * timediff);
-			
-			canvas.drawCircle(entity.get_x(), entity.get_y(), 3, m_paint);
 		}
 		
 		m_last_time = curr_time;

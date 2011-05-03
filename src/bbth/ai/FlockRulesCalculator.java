@@ -22,11 +22,11 @@ public class FlockRulesCalculator {
 		m_view_angle = 2 * MathUtils.PI * .65f;
 	}
 	
-	public void add_object(Movable obj) {
+	public void addObject(Movable obj) {
 		m_objects.add(obj);
 	}
 	
-	public void remove_object(Movable obj) {
+	public void removeObject(Movable obj) {
 		m_objects.remove(obj);
 	}
 	
@@ -34,21 +34,21 @@ public class FlockRulesCalculator {
 		m_objects.clear();
 	}
 	
-	public void set_neighbor_radius(float r) {
+	public void setNeighborRadius(float r) {
 		if (r < 0) {
 			return;
 		}
 		m_neighbor_radius = r;
 	}
 	
-	public void set_view_angle(float angle) {
+	public void setViewAngle(float angle) {
 		if (angle < 0) {
 			return;
 		}
 		m_view_angle = angle;
 	}
 	
-	public float get_cohesion_component(Movable actor, PointF result) {
+	public float getCohesionComponent(Movable actor, PointF result) {
 		int size = m_objects.size();
 		
 		float point_x = 0;
@@ -61,12 +61,12 @@ public class FlockRulesCalculator {
 				continue;
 			}
 			
-			if (!can_see(actor, other)) {
+			if (!canSee(actor, other)) {
 				continue;
 			}
 			
-			point_x += other.get_x();
-			point_y += other.get_y();
+			point_x += other.getX();
+			point_y += other.getY();
 			
 			count++;
 		}
@@ -79,12 +79,12 @@ public class FlockRulesCalculator {
 		point_x /= count;
 		point_y /= count;
 		
-		result.set(point_x - actor.get_x(), point_y - actor.get_y());
+		result.set(point_x - actor.getX(), point_y - actor.getY());
 		
-		return MathUtils.get_dist(actor.get_x(), actor.get_y(), point_x, point_y);
+		return MathUtils.getDist(actor.getX(), actor.getY(), point_x, point_y);
 	}
 	
-	public float get_alignment_component(Movable actor, PointF result) {
+	public float getAlignmentComponent(Movable actor, PointF result) {
 		int size = m_objects.size();
 		
 		float othervel_x = 0;
@@ -97,18 +97,18 @@ public class FlockRulesCalculator {
 				continue;
 			}
 			
-			if (!can_see(actor, other)) {
+			if (!canSee(actor, other)) {
 				continue;
 			}
 			
-			othervel_x += other.get_speed() * Math.cos(other.get_heading());
-			othervel_y += other.get_speed() * Math.sin(other.get_heading());
+			othervel_x += other.getSpeed() * Math.cos(other.getHeading());
+			othervel_y += other.getSpeed() * Math.sin(other.getHeading());
 			
 			count++;
 		}
 		
-		float actor_vel_x = actor.get_speed() * (float)Math.cos(actor.get_heading());
-		float actor_vel_y = actor.get_speed() * (float)Math.sin(actor.get_heading());
+		float actor_vel_x = actor.getSpeed() * (float)Math.cos(actor.getHeading());
+		float actor_vel_y = actor.getSpeed() * (float)Math.sin(actor.getHeading());
 		
 		if (count == 0) {
 			result.set(0, 0);
@@ -120,10 +120,10 @@ public class FlockRulesCalculator {
 		
 		result.set(othervel_x - actor_vel_x, othervel_y - actor_vel_y);
 		
-		return MathUtils.get_dist(actor_vel_x, actor_vel_y, othervel_x, othervel_y);
+		return MathUtils.getDist(actor_vel_x, actor_vel_y, othervel_x, othervel_y);
 	}
 	
-	public float get_separation_component(Movable actor, float desired_separation, PointF result) {
+	public float getSeparationComponent(Movable actor, float desired_separation, PointF result) {
 		int size = m_objects.size();
 		
 		float point_x = 0;
@@ -136,18 +136,18 @@ public class FlockRulesCalculator {
 				continue;
 			}
 			
-			if (!can_see(actor, other)) {
+			if (!canSee(actor, other)) {
 				continue;
 			}
 			
-			float dist = get_dist(actor, other);
+			float dist = getDist(actor, other);
 			
 			if (dist > desired_separation) {
 				continue;
 			}
 			
-			float this_x = actor.get_x() - other.get_x();
-			float this_y = actor.get_y() - other.get_y();
+			float this_x = actor.getX() - other.getX();
+			float this_y = actor.getY() - other.getY();
 			float magnitude = (float)Math.sqrt(this_x * this_x + this_y * this_y);
 			this_x /= magnitude;
 			this_y /= magnitude;
@@ -173,8 +173,8 @@ public class FlockRulesCalculator {
 		return (float)Math.sqrt(point_x * point_x + point_y * point_y);
 	}
 	
-	private boolean can_see(Movable actor, Movable other) {
-		float dist = get_dist(actor, other);
+	private boolean canSee(Movable actor, Movable other) {
+		float dist = getDist(actor, other);
 		
 		// Check if we're in the correct radius
 		if (dist > m_neighbor_radius) {
@@ -182,7 +182,7 @@ public class FlockRulesCalculator {
 		}
 		
 		// Check if we are within the view angle
-		float angle = Math.abs(get_angle_offset(actor, other));
+		float angle = Math.abs(getAngleOffset(actor, other));
 		if (angle > m_view_angle/2.0f) {
 			return false;
 		}
@@ -190,7 +190,7 @@ public class FlockRulesCalculator {
 		return true;
 	}
 	
-	public boolean has_leader(Movable actor) {
+	public boolean hasLeader(Movable actor) {
 		int size = m_objects.size();
 		
 		for (int i = 0; i < size; i++) {
@@ -200,12 +200,12 @@ public class FlockRulesCalculator {
 				continue;
 			}
 			
-			if (!can_see(actor, other)) {
+			if (!canSee(actor, other)) {
 				continue;
 			}
 		
 			// Check if we are within the view angle
-			float angle = Math.abs(get_angle_offset(actor, other));
+			float angle = Math.abs(getAngleOffset(actor, other));
 			if (angle < FRONT_VIEW_ANGLE) {
 				return true;
 			}
@@ -214,13 +214,13 @@ public class FlockRulesCalculator {
 		return false;
 	}
 	
-	private float get_angle_offset(Movable actor, Movable other) {
-		float absangle = MathUtils.get_angle(actor.get_x(), actor.get_y(), other.get_x(), other.get_y());
-		return MathUtils.normalize_angle(absangle, actor.get_heading()) - actor.get_heading();
+	private float getAngleOffset(Movable actor, Movable other) {
+		float absangle = MathUtils.getAngle(actor.getX(), actor.getY(), other.getX(), other.getY());
+		return MathUtils.normalizeAngle(absangle, actor.getHeading()) - actor.getHeading();
 	}
 	
-	private float get_dist(Movable actor, Movable other) {
-		return MathUtils.get_dist(actor.get_x(), actor.get_y(), other.get_x(), other.get_y());
+	private float getDist(Movable actor, Movable other) {
+		return MathUtils.getDist(actor.getX(), actor.getY(), other.getX(), other.getY());
 	}
 	
 }

@@ -4,11 +4,12 @@ import bbth.ui.Anchor;
 import bbth.ui.UIButton;
 import bbth.ui.UIButtonDelegate;
 import bbth.ui.UIProgressBar;
+import bbth.ui.UIProgressBar.Mode;
 import bbth.ui.UIRadioButton;
 import bbth.ui.UIScrollView;
 import bbth.ui.UIView;
 
-public class TitleScreen extends UIScrollView implements UIButtonDelegate{
+public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 	private UIButton greeting;
 	private UIProgressBar progressBar;
 	
@@ -17,7 +18,6 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate{
 	public TitleScreen(Object tag)
 	{
 		super(tag);
-		
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		setPosition(0, 0);
 		
@@ -35,20 +35,24 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate{
 		progressBar.setPosition(160, 1020);
 		progressBar.setBorderRadius(5);
 		progressBar.setProgress(1.f);
+		progressBar.setMode(Mode.INFINTE);
 		addSubview(progressBar);
 		
 		UIRadioButton testButton = new UIRadioButton("Hello", null);
 		testButton.setAnchor(Anchor.CENTER_CENTER);
 		testButton.setPosition(160, 120);
 		addSubview(testButton);
-		
-
 	}
 	
 	public void onUpdate(float seconds) {
+		super.onUpdate(seconds);
+
 		this.elapsedTime += seconds;
-		
 		progressBar.setProgress(elapsedTime / 10);
+		
+		if (this.progressBar.getProgress() == 1.f) {
+			this.progressBar.setMode(Mode.INFINTE);
+		}
 	}
 
 	@Override

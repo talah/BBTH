@@ -15,31 +15,31 @@ public class FiniteState {
 		m_transitions = new ArrayList<StateTransition>();
 	}
 	
-	public FiniteState check_transitions(HashMap<String, Float> inputs) {
+	public FiniteState checkTransitions(HashMap<String, Float> inputs) {
 		int size = m_transitions.size();
 		for (int i = 0; i < size; i++) {
 			StateTransition s = m_transitions.get(i);
-			if (s.check_conditions(inputs)) {
-				return s.get_new_state();
+			if (s.checkConditions(inputs)) {
+				return s.getNewState();
 			}
 		}
 		
 		return this;
 	}
 	
-	public void add_transition(StateTransition t) {
+	public void addTransition(StateTransition t) {
 		m_transitions.add(t);
 	}
 	
-	public void set_action(FSMAction action) {
+	public void setAction(FSMAction action) {
 		m_action = action;
 	}
 
-	public String get_name() {
+	public String getName() {
 		return m_name;
 	}
 
-	public void apply_action(HashMap<String, Float> inputs) {
+	public void applyAction(HashMap<String, Float> inputs) {
 		if (m_action == null) {
 			return;
 		}

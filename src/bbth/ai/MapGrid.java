@@ -51,22 +51,22 @@ public class MapGrid extends ConnectedGraph {
 							m_points[r2][c2] = new PointF(r2, c2);
 						}
 						
-						add_connection(currpoint, m_points[r2][c2]);
+						addConnection(currpoint, m_points[r2][c2]);
 					}
 				}
 			}
 		}
 	}
 	
-	public void mark_passable(float x, float y) {
-		mark_passable(get_y_bin(y), get_x_bin(x));
+	public void markPassable(float x, float y) {
+		markPassable(getYBin(y), getXBin(x));
 	}
 	
-	public void mark_impassable(float x, float y) {
-		mark_impassable(get_y_bin(y), get_x_bin(x));
+	public void markImpassable(float x, float y) {
+		markImpassable(getYBin(y), getXBin(x));
 	}
 	
-	public void mark_passable(int r, int c) {
+	public void markPassable(int r, int c) {
 		PointF currpoint = m_points[r][c];
 		
 		for (int r2off = -1; r2off <= 1; r2off++) {
@@ -86,12 +86,12 @@ public class MapGrid extends ConnectedGraph {
 					continue;
 				}
 				
-				add_connection(currpoint, m_points[r2][c2]);
+				addConnection(currpoint, m_points[r2][c2]);
 			}
 		}
 	}
 	
-	public void mark_impassable(int r, int c) {
+	public void markImpassable(int r, int c) {
 		PointF currpoint = m_points[r][c];
 		
 		for (int r2off = -1; r2off <= 1; r2off++) {
@@ -111,28 +111,28 @@ public class MapGrid extends ConnectedGraph {
 					continue;
 				}
 				
-				remove_connection(currpoint, m_points[r2][c2]);
+				removeConnection(currpoint, m_points[r2][c2]);
 			}
 		}
 	}
 	
-	public PointF get_bin(float x, float y) {
+	public PointF getBin(float x, float y) {
 		return m_points[(int)((y/m_height) * m_y_size)][(int)((x/m_width) * m_x_size)];
 	}
 	
-	public int get_x_bin(float x) {
+	public int getXBin(float x) {
 		return (int)((x/m_width) * m_x_size);
 	}
 	
-	public int get_y_bin(float y) {
+	public int getYBin(float y) {
 		return (int)((y/m_height) * m_y_size);
 	}
 	
-	public float get_x_pos(int x_bin) {
+	public float getXPos(int x_bin) {
 		return ((float)x_bin)/m_x_size * m_width;
 	}
 	
-	public float get_y_pos(int y_bin) {
+	public float getYPos(int y_bin) {
 		return ((float)y_bin)/m_y_size * m_height;
 	}
 }
