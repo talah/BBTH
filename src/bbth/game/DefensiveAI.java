@@ -53,7 +53,7 @@ public class DefensiveAI extends UnitAI {
 			actualchange = -1.0f * max_vel_change;
 		}
 		
-		entity.setVelocity(0.05f, entity.getHeading() + actualchange);
+		entity.setVelocity(50.0f, entity.getHeading() + actualchange);
 	}
 
 	private Unit getClosestEnemy(Unit entity, ArrayList<Unit> enemies) {

@@ -3,14 +3,11 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
 import android.graphics.RectF;
-import bbth.collision.Point;
 import bbth.net.bluetooth.Bluetooth;
 import bbth.net.bluetooth.State;
 import bbth.net.simulation.LockStepProtocol;
-import bbth.ui.Anchor;
 import bbth.ui.UILabel;
 import bbth.ui.UIScrollView;
-import bbth.ui.UIView;
 
 public class InGameScreen extends UIScrollView {
 

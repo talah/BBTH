@@ -78,4 +78,8 @@ public class BasicMovable implements Movable {
 		return m_y_vel;
 	}
 
+	public void update(float seconds) {
+		m_x += m_x_vel * seconds;
+		m_y += m_y_vel * seconds;
+	}
 }

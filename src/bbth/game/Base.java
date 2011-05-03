@@ -3,7 +3,6 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import bbth.ui.Anchor;
 import bbth.ui.UIView;
 
 public class Base extends UIView {
