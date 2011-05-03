@@ -78,7 +78,7 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onUpdate(float seconds) {
 		if (bluetooth.getState() == State.CONNECTED && sim == null) {
-			sim = new NetworkTestSimulation(protocol);
+			sim = new NetworkTestSimulation(protocol, type == SERVER);
 		} else if (bluetooth.getState() != State.CONNECTED && sim != null) {
 			type = 0;
 			clientButton.isDisabled = false;
@@ -116,8 +116,9 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 		super.onTouchDown(x, y);
 
 		if (sim != null) {
+			boolean isHold = false;
 			boolean isOnBeat = true;
-			sim.recordTapDown(x, y, isOnBeat);
+			sim.recordTapDown(x, y, isHold, isOnBeat);
 		}
 	}
 

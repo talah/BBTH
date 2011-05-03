@@ -21,7 +21,7 @@ public class InGameScreen extends UIScrollView {
 
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
-	
+
 	private BBTHSimulation sim;
 	private UILabel label;
 	private Bluetooth bluetooth;
@@ -33,16 +33,16 @@ public class InGameScreen extends UIScrollView {
 	private List<Beat> beatsInRange;
 	private Paint paint;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol, boolean isServer) {
 		super(null);
 
 		this.team = playerTeam;
-		
+
 		// Set up the scrolling!
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		this.setPosition(0, 0);
 		this.setScrolls(false);
-		
+
 		// Test labels
 		label = new UILabel("", null);
 		label.setTextSize(10);
@@ -52,13 +52,13 @@ public class InGameScreen extends UIScrollView {
 		addSubview(label);
 
 		this.bluetooth = bluetooth;
-		sim = new BBTHSimulation(playerTeam, protocol);
+		sim = new BBTHSimulation(playerTeam, protocol, isServer);
 		sim.setupSubviews(this);
-		
+
 		// Setup paint
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setTextSize(10);
-		
+
 		// Setup music stuff
 		BeatPattern simplePattern = new SimpleBeatPattern(385, 571, 30000);
 		MusicPlayer musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
@@ -75,7 +75,7 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		
+
 		// Draw a background grid thing so we know we're not hallucinating
 		canvas.translate(-this.pos_x, -this.pos_y);
 		RectF bounds = this._content_bounds;
@@ -86,16 +86,16 @@ public class InGameScreen extends UIScrollView {
 			canvas.drawLine(f, bounds.top, f, bounds.bottom, this._track_paint);
 		}
 		canvas.translate(this.pos_x, this.pos_y);
-		
+
 		// Draw the music section of the screen
 		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
 		paint.setColor(Color.WHITE);
 		canvas.drawLine(0, BEAT_LINE_Y - Beat.RADIUS, 50, BEAT_LINE_Y - Beat.RADIUS, paint);
 		canvas.drawLine(0, BEAT_LINE_Y + Beat.RADIUS, 50, BEAT_LINE_Y + Beat.RADIUS, paint);
 		canvas.drawText(comboStr, 25, _height - 10, paint);
-		//canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
+		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 		canvas.drawLine(50, 0, 50, _height, paint);
-		
+
 		// Draw the game
 		sim.draw(canvas);
 	}
@@ -111,13 +111,13 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		sim.onUpdate(seconds);
-		
+
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
 			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY());
 		}
-		
+
 		// Get beats in range
 		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
 	}
@@ -125,6 +125,7 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onTouchDown(float x, float y) {
 		boolean isOnBeat = beatTracker.onTouchDown();
+		boolean isHold = false; // TODO: set this from song
 		if (isOnBeat) {
 			++score;
 			++combo;
@@ -136,7 +137,7 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		super.onTouchDown(x, y);
-		sim.recordTapDown(x, y, isOnBeat);
+		sim.recordTapDown(x, y, isHold, isOnBeat);
 	}
 
 	@Override

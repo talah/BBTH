@@ -16,8 +16,8 @@ public class NetworkTestSimulation extends Simulation {
 	private int timestep;
 	private Random random = new Random(0);
 
-	public NetworkTestSimulation(LockStepProtocol protocol) {
-		super(6, 0.1f, 2, protocol);
+	public NetworkTestSimulation(LockStepProtocol protocol, boolean isServer) {
+		super(6, 0.1f, 2, protocol, isServer);
 	}
 
 	public int getTimestep() {
@@ -25,17 +25,17 @@ public class NetworkTestSimulation extends Simulation {
 	}
 
 	@Override
-	protected final void simulateTapDown(float x, float y, boolean isLocal, boolean isOnBeat) {
+	protected final void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		particles.createParticle().position(x, y).radius(10).color(Color.RED).shrink(0.5f);
 	}
 
 	@Override
-	protected final void simulateTapMove(float x, float y, boolean isLocal) {
+	protected final void simulateTapMove(float x, float y, boolean isServer) {
 		particles.createParticle().position(x, y).radius(5).color(Color.RED).shrink(0.5f);
 	}
 
 	@Override
-	protected final void simulateTapUp(float x, float y, boolean isLocal) {
+	protected final void simulateTapUp(float x, float y, boolean isServer) {
 	}
 
 	public void draw(Canvas canvas, Paint paint) {
