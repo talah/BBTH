@@ -9,6 +9,7 @@ public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
 	private Player localPlayer, remotePlayer;
+	private AIController aiController;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol) {
 		// 6 fine timesteps per coarse timestep
@@ -16,16 +17,18 @@ public class BBTHSimulation extends Simulation {
 		// user inputs lag 2 coarse timesteps behind
 		super(6, 0.1f, 2, protocol);
 
+		aiController = new AIController();
+
 		team = localTeam;
-		localPlayer = new Player(team);
+		localPlayer = new Player(team, aiController);
 		
 		if (team == Team.TEAM_0) {
-			remotePlayer = new Player(Team.TEAM_1);
+			remotePlayer = new Player(Team.TEAM_1, aiController);
 		} else {
-			remotePlayer = new Player(Team.TEAM_0);
+			remotePlayer = new Player(Team.TEAM_0, aiController);
 		}
 	}
-
+	
 	public void setupSubviews(UIView view) {
 		localPlayer.setupSubviews(view);
 		remotePlayer.setupSubviews(view);
@@ -60,6 +63,8 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void update(float seconds) {
 		timestep++;
+		
+		aiController.update();
 		localPlayer.update(seconds);
 		remotePlayer.update(seconds);
 	}

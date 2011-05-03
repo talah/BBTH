@@ -17,8 +17,9 @@ public class Player {
 	private Team team;
 	private List<Unit> units;
 	private Base base;
-
-	public Player(Team team) {
+	private AIController aiController;
+	
+	public Player(Team team, AIController controller) {
 		this.team = team;
 		units = new ArrayList<Unit>();
 
@@ -34,6 +35,8 @@ public class Player {
 			base.setPosition(0, 0);
 			break;
 		}
+		
+		this.aiController = controller;
 	}
 
 	public void setupSubviews(UIView view) {
@@ -56,6 +59,7 @@ public class Player {
 			break;
 		}
 		u.setPosition(x, y);
+		aiController.addEntity(u);
 		units.add(u);
 	}
 

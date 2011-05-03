@@ -8,11 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
-import android.graphics.PointF;
 import android.util.FloatMath;
-import bbth.ai.FlockRulesCalculator;
 import bbth.core.GameScreen;
-import bbth.entity.*;
 import bbth.util.MathUtils;
 
 public class BBTHAITest extends GameScreen {
@@ -34,7 +31,7 @@ public class BBTHAITest extends GameScreen {
 		m_parent = bbthGame;
 		
 		//******** SETUP FOR AI *******//
-		m_controller = new AIController(bbthGame);
+		m_controller = new AIController();
 		//******** SETUP FOR AI *******//
 
 		m_last_time = System.currentTimeMillis();
