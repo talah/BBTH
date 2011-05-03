@@ -18,28 +18,23 @@ public class UIButton extends UIControl {
 	public float padding, corner_radius;
 	public UIButtonDelegate delegate;
 	
-	private static final int DEFAULT_BG_START = Color.LTGRAY, DEFAULT_TEXT_COLOR = Color.DKGRAY, DEFAULT_DISABLED_COLOR = Color.LTGRAY,
-	DEFUALT_DISABLED_TEXT_COLOR = Color.LTGRAY;
-	private static final float DEFAULT_BORDER_WIDTH = 3.f;
-	private static final int DEFAULT_CORNER_RADIUS = 6;
-	
 	public UIButton(String text, Object tag) {
 	    super(tag);
 		padding = 8;
-		corner_radius = DEFAULT_CORNER_RADIUS;
+		corner_radius = UIDefaultConstants.CORNER_RADIUS;
 		
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
 		_paint.setFakeBoldText(true);
 		
-		setButtonColor(DEFAULT_BG_START);
+		setButtonColor(UIDefaultConstants.BACKGROUND_COLOR);
 		setButtonDownColor(bg_end_color);
-		setDisabledColor(DEFAULT_DISABLED_COLOR);
-		txt_color = DEFAULT_TEXT_COLOR;
-		txt_disabled_color = DEFUALT_DISABLED_TEXT_COLOR;
+		setDisabledColor(UIDefaultConstants.UI_BUTTON_DISABLED_COLOR);
+		txt_color = UIDefaultConstants.UI_BUTTON_TEXT_COLOR;
+		txt_disabled_color = UIDefaultConstants.UI_BUTTON_DISABLED_TEXT_COLOR;
 		stroke_color = bg_down_end_color;
 		
-		_paint.setStrokeWidth(DEFAULT_BORDER_WIDTH);
+		_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 		
 		this.text = text;
 		this.tag = tag;

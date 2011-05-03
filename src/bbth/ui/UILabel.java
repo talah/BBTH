@@ -1,7 +1,6 @@
 package bbth.ui;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 
@@ -11,7 +10,6 @@ public class UILabel extends UIControl {
 
 	private String text;
 	public boolean shouldAutoresizeText;
-	private final int DEFAULT_TEXT_COLOR = Color.WHITE;
 
 	public UILabel(String text, Object tag) {
 	    super(tag);
@@ -20,7 +18,7 @@ public class UILabel extends UIControl {
 		_paint.setTextAlign(Align.CENTER);
 		_paint.setTextSize(14);
 
-		_paint.setColor(DEFAULT_TEXT_COLOR);
+		_paint.setColor(UIDefaultConstants.UI_LABEL_TEXT_COLOR);
 
 		_paint.setStrokeWidth(3);
 
