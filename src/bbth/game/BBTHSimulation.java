@@ -1,6 +1,7 @@
 package bbth.game;
 
 import android.graphics.Canvas;
+import bbth.game.ai.AIController;
 import bbth.net.simulation.LockStepProtocol;
 import bbth.net.simulation.Simulation;
 import bbth.ui.UIView;

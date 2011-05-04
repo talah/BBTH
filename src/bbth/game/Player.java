@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
+import bbth.game.ai.AIController;
 import bbth.ui.Anchor;
 import bbth.ui.UIView;
 

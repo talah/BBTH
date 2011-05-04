@@ -1,4 +1,4 @@
-package bbth.game;
+package bbth.game.test;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
