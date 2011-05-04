@@ -1,6 +1,5 @@
 package bbth.core;
 
-import android.content.Intent;
 import android.graphics.Canvas;
 
 public abstract class GameScreen {

@@ -91,6 +91,7 @@ public class UIProgressBar extends UIControl {
 		return this._progress;
 	}
 
+	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
 
@@ -138,6 +139,7 @@ public class UIProgressBar extends UIControl {
 		_bg_paint.setColor(_bg_start_color);
 	}
 
+	@Override
 	public void onDraw(Canvas canvas) {
 		_bg_paint.setStyle(Style.STROKE);
 		canvas.drawRoundRect(_rect, _border_radius, _border_radius, _bg_paint);
@@ -152,6 +154,7 @@ public class UIProgressBar extends UIControl {
 		_fg_paint.setShader(null);
 	}
 
+	@Override
 	public void onUpdate(float seconds) {
 		if (_mode == Mode.INFINTE) {
 			_tr_matrix.preTranslate(0, _candycane_speed * seconds);

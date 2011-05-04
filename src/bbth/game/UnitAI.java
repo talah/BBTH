@@ -2,7 +2,6 @@ package bbth.game;
 
 import android.graphics.PointF;
 import bbth.ai.FlockRulesCalculator;
-import bbth.entity.Movable;
 
 public abstract class UnitAI {
 	private PointF m_result;

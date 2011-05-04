@@ -12,7 +12,7 @@ public class AStarEntry implements Comparable<AStarEntry> {
 		m_point = p;
 	}
 
-	//@Override
+	@Override
 	public int compareTo(AStarEntry other) {
 		if (m_f_score == other.m_f_score) {
 			return 0;

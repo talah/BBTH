@@ -1,7 +1,6 @@
 package bbth.game;
 import java.util.ArrayList;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.ai.FlockRulesCalculator;
 import bbth.util.MathUtils;

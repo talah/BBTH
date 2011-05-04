@@ -51,6 +51,7 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 		addSubview(testButton);
 	}
 	
+	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
 

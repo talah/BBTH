@@ -7,65 +7,62 @@ package bbth.util;
 import static bbth.util.Envelope.OutOfBoundsHandler.*;
 
 public class Envelope {
-	public static final class Factory {
-		private Factory() {}
-		
-		// TODO: createSimpleEnvelope(double startValue, double endValue, int length) etc.
-	}
+	public static final Envelope ALWAYS_ZERO = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+	public static final Envelope ALWAYS_ONE = new Envelope(1f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
 	
 	public static enum OutOfBoundsHandler {
 		THROW_EXCEPTION {
 			@Override
-			int translateTime(int time, int totalLength) {
+			float translateTime(float time, float totalLength) {
 				if (time >=0 && time <= totalLength)
 					return time;
 				throw new IllegalArgumentException("time was out of bounds");
 			}
 		}, RETURN_FIRST_OR_LAST {
 			@Override
-			int translateTime(int time, int totalLength) {
-				if (time < 0)
-					return 0;
+			float translateTime(float time, float totalLength) {
 				if (time > totalLength)
 					return totalLength;
+				if (time < 0)
+					return 0;
 				return time;
 			}
 		}, WRAP {
 			@Override
-			int translateTime(int time, int totalLength) {
-				return time % totalLength;
+			float translateTime(float time, float totalLength) {
+				return totalLength <= 0 ? 0 : time % totalLength;
 			}
 		};
 		
-		abstract int translateTime(int time, int totalLength);
+		abstract float translateTime(float time, float totalLength);
 	}
 	
 	static abstract class Entry {
-		public final int endTime;
-		public final int length;
+		public final float endTime;
+		public final float length;
 		
-		public Entry(int endTime, int length) {
+		public Entry(float endTime, float length) {
 			this.endTime = endTime;
 			this.length = length;
 		}
 		
-		public final boolean coversTime(int time) {
+		public final boolean coversTime(float time) {
 			return (time < endTime && time > endTime - length) || time == endTime;
 		}
 		
-		public abstract double getValueAtTime(int time);
+		public abstract double getValueAtTime(float time);
 	}
 	
 	static class FlatEntry extends Entry {
 		double value;
 
-		public FlatEntry(int endTime, int length, double value) {
+		public FlatEntry(float endTime, float length, double value) {
 			super(endTime, length);
 			this.value = value;
 		}
 
 		@Override
-		public double getValueAtTime(int time) {
+		public double getValueAtTime(float time) {
 			return value;
 		}
 	}
@@ -74,23 +71,23 @@ public class Envelope {
 		double slope;
 		double endValue;
 		
-		public LinearEntry(int endTime, int length, double startValue, double endValue) {
+		public LinearEntry(float endTime, float length, double startValue, double endValue) {
 			super(endTime, length);
 			this.slope = (endValue - startValue) / length;
 			this.endValue = endValue;
 		}
 		
 		@Override
-		public double getValueAtTime(int time) {
+		public double getValueAtTime(float time) {
 			return endValue - slope*(endTime - time); // Linear interpolation using 3 operations. Slick, no?
 		}
 	}
 	
 	Bag<Entry> entrys = new Bag<Entry>();
-	int length;
+	float length;
 	OutOfBoundsHandler outOfBoundsHandler;
 	
-	protected Entry getEntryAtTime(int time) {
+	protected Entry getEntryAtTime(float time) {
 		// binary search
 		int min = 0;
 		int max = entrys.size() - 1;
@@ -115,10 +112,10 @@ public class Envelope {
 	
 	public Envelope(double startValue, OutOfBoundsHandler outOfBoundsHandler) {
 		this.outOfBoundsHandler = outOfBoundsHandler;
-		entrys.add(new FlatEntry(0,0,startValue));
+		entrys.add(new FlatEntry(0f,0f,startValue));
 	}
 	
-	private void checkLengthOfTime(int lengthOfTime) {
+	private void checkLengthOfTime(float lengthOfTime) {
 		if (lengthOfTime < 1)
 			throw new IllegalArgumentException("Length of time must be at least 1");
 	}
@@ -127,21 +124,21 @@ public class Envelope {
 		return entrys.getLast().getValueAtTime(length);
 	}
 	
-	public void addFlatSegment(int lengthOfTime) {
+	public void addFlatSegment(float lengthOfTime) {
 		addFlatSegment(lengthOfTime, getEndValue());
 	}
 	
-	public void addFlatSegment(int lengthOfTime, double value) {
+	public void addFlatSegment(float lengthOfTime, double value) {
 		checkLengthOfTime(lengthOfTime);
 		length += lengthOfTime;
 		entrys.add(new FlatEntry(length, lengthOfTime, value));
 	}
 	
-	public void addLinearSegment(int lengthOfTime, double endValue) {
+	public void addLinearSegment(float lengthOfTime, double endValue) {
 		addLinearSegment(lengthOfTime, endValue, getEndValue());
 	}
 	
-	public void addLinearSegment(int lengthOfTime, double endValue, double startValue) {
+	public void addLinearSegment(float lengthOfTime, double endValue, double startValue) {
 		checkLengthOfTime(lengthOfTime);
 		length += lengthOfTime;
 		entrys.add(new LinearEntry(length, lengthOfTime, startValue, endValue));
@@ -151,15 +148,15 @@ public class Envelope {
 		throw new UnsupportedOperationException("Envelope.scaleTimes(): Not implemented yet");
 	}
 	
-	public void scaleTimesToTotalLength(int totalLengthOfTime) {
+	public void scaleTimesToTotalLength(float totalLengthOfTime) {
 		throw new UnsupportedOperationException("Envelope.scaleTimesToTotalLength(): Not implemented yet");
 	}
 	
-	public int getTotalLength() {
+	public float getTotalLength() {
 		return length;
 	}
 	
-	public double getValueAtTime(int time) {
+	public double getValueAtTime(float time) {
 		time = outOfBoundsHandler.translateTime(time, length);
 		return getEntryAtTime(time).getValueAtTime(time);
 	}

@@ -6,7 +6,6 @@ import java.util.List;
 import android.graphics.Canvas;
 import bbth.ui.Anchor;
 import bbth.ui.UIView;
-import bbth.util.MathUtils;
 
 /**
  * A player is someone who is interacting with the game.

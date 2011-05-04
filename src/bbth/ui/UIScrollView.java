@@ -124,6 +124,7 @@ public class UIScrollView extends UIView {
 			super.onTouchMove(x + pos_x, y+pos_y);
 	}
 	
+	@Override
 	public void addSubview(UIView view)
 	{
 		_content_bounds.union(view._rect);
@@ -137,6 +138,7 @@ public class UIScrollView extends UIView {
 		super.addSubview(view);
 	}
 	
+	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
 		dx = 0;
@@ -201,6 +203,7 @@ public class UIScrollView extends UIView {
 		scrollEnabled = scrolls;
 	}
 	
+	@Override
 	protected void layoutSubviews()
 	{
 		_content_bounds.set(_rect);

@@ -32,6 +32,7 @@ public class MusicPlayer {
 	// passes in a callback that is called when the song ends
 	public void setOnCompletionListener(final OnCompletionListener listener) {
 		_mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
 			public void onCompletion(MediaPlayer mp) {
 				listener.onCompletion(MusicPlayer.this);
 			}

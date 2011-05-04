@@ -17,6 +17,7 @@ public class Base extends UIView {
 		paint.setColor(Color.BLUE);
 	}
 
+	@Override
 	public void onDraw(Canvas canvas) {
 		canvas.drawRect(_rect, paint);
 	}

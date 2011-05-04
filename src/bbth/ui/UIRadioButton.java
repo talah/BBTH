@@ -1,6 +1,5 @@
 package bbth.ui;
 
-import bbth.util.MathUtils;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -94,6 +93,7 @@ public class UIRadioButton extends UIControl {
 		_bg_paint.setColor(color);
 	}
 
+	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
 

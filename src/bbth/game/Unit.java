@@ -37,15 +37,18 @@ public class Unit extends BasicMovable {
 		return this.view;
 	}
 	
+	@Override
 	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
 		view.setPosition(x, y);
 	}
 
+	@Override
 	public void setVelocity(float vel, float dir) {
 		super.setVelocity(vel, dir);
 	}
 
+	@Override
 	public void update(float seconds) {
 		// Derp derp, Euler
 		super.update(seconds);
