@@ -25,6 +25,9 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 
 	public GameSetupScreen() {
 		super(null);
+		
+		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		setPosition(0, 0);
 
 		protocol = new LockStepProtocol();
 		bluetooth = new Bluetooth(GameActivity.instance, protocol);
