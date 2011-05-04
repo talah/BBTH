@@ -57,8 +57,13 @@ public class AIController {
 	private void update(ArrayList<Unit> entities, FlockRulesCalculator flock) {
 		int size = entities.size();
 		int num_to_update = (int) ((size * m_fraction_to_update)+1);
+		
+		if (size == 0) {
+			return;
+		}
+		
 		int i = m_last_updated;
-		while (num_to_update > 0) {			
+		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 			
 			// TODO: Use the correct AI for the individual unit.
