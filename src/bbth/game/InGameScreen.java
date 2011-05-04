@@ -37,11 +37,11 @@ public class InGameScreen extends UIScrollView {
 	private List<Beat> beatsInRange;
 	private Paint paint;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol, boolean isServer) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
-		
+
 		this.team = playerTeam;
 
 		// Set up the scrolling!
@@ -58,7 +58,7 @@ public class InGameScreen extends UIScrollView {
 		addSubview(label);
 
 		this.bluetooth = bluetooth;
-		sim = new BBTHSimulation(playerTeam, protocol, isServer);
+		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
 
 		// Setup paint
@@ -75,16 +75,16 @@ public class InGameScreen extends UIScrollView {
 				mp.play();
 			}
 		});
-		
+
 		beatTracker = new BeatTracker(musicPlayer, beatPattern);
 		beatsInRange = new ArrayList<Beat>();
-		
+
 		// Setup score stuff
 		score = 0;
 		scoreStr = String.valueOf(score);
 		combo = 0;
 		comboStr = String.valueOf(combo);
-		
+
 		// Start playing the music!
 		musicPlayer.play();
 	}

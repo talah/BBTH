@@ -60,8 +60,8 @@ public class BBTHAITest extends GameScreen {
 	
 	private void randomizeEntities() {
 		for (int i = 0; i < 7; i++) {
-			Unit e = new Unit(Team.TEAM_0);
-			e.setTeam(Team.TEAM_0);
+			Unit e = new Unit(Team.SERVER);
+			e.setTeam(Team.SERVER);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
 			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
 			m_entities.add(e);
@@ -72,8 +72,8 @@ public class BBTHAITest extends GameScreen {
 		}
 		
 		for (int i = 0; i < 7; i++) {
-			Unit e = new Unit(Team.TEAM_1);
-			e.setTeam(Team.TEAM_1);
+			Unit e = new Unit(Team.CLIENT);
+			e.setTeam(Team.CLIENT);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
 			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
 			m_entities.add(e);
@@ -100,11 +100,9 @@ public class BBTHAITest extends GameScreen {
 			entity.setPosition(entity.getX() + entity.getSpeed() * FloatMath.cos(entity.getHeading()) * timediff/1000.0f, entity.getY() + entity.getSpeed() * FloatMath.sin(entity.getHeading()) * timediff/1000.0f);
 			//******** PHYSICS AFTER AI *******//
 
-			if (entity.getTeam() == Team.TEAM_0) {
+			if (entity.getTeam() == Team.SERVER) {
 				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_0);
-			}
-			
-			if (entity.getTeam() == Team.TEAM_1) {
+			} else {
 				canvas.drawCircle(entity.getX(), entity.getY(), 3, m_paint_1);
 			}
 		}

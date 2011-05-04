@@ -24,10 +24,10 @@ public class Unit extends BasicMovable {
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		switch (team) {
-		case TEAM_0:
+		case CLIENT:
 			paint.setColor(Color.RED);
 			break;
-		case TEAM_1:
+		case SERVER:
 			paint.setColor(Color.GREEN);
 			break;
 		}

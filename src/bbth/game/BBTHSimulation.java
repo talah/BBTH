@@ -9,6 +9,7 @@ public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
 	private Player localPlayer, remotePlayer;
+	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
@@ -20,13 +21,10 @@ public class BBTHSimulation extends Simulation {
 		aiController = new AIController();
 
 		team = localTeam;
-		localPlayer = new Player(team, aiController);
-
-		if (team == Team.TEAM_0) {
-			remotePlayer = new Player(Team.TEAM_1, aiController);
-		} else {
-			remotePlayer = new Player(Team.TEAM_0, aiController);
-		}
+		serverPlayer = new Player(Team.SERVER, aiController);
+		clientPlayer = new Player(Team.CLIENT, aiController);
+		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
+		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 	}
 
 	public void setupSubviews(UIView view) {
@@ -46,9 +44,9 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		if (isServer) {
-			localPlayer.spawnUnit(x, y);
+			serverPlayer.spawnUnit(x, y);
 		} else {
-			remotePlayer.spawnUnit(x, y);
+			clientPlayer.spawnUnit(x, y);
 		}
 	}
 
@@ -65,23 +63,12 @@ public class BBTHSimulation extends Simulation {
 		timestep++;
 
 		aiController.update();
-
-		if (team == Team.TEAM_1) {
-			localPlayer.update(seconds);
-			remotePlayer.update(seconds);
-		} else {
-			remotePlayer.update(seconds);
-			localPlayer.update(seconds);
-		}
+		serverPlayer.update(seconds);
+		clientPlayer.update(seconds);
 	}
 
 	public void draw(Canvas canvas) {
-		if (team == Team.TEAM_0) {
-			remotePlayer.draw(canvas);
-			localPlayer.draw(canvas);
-		} else {
-			localPlayer.draw(canvas);
-			remotePlayer.draw(canvas);
-		}
+		localPlayer.draw(canvas);
+		remotePlayer.draw(canvas);
 	}
 }

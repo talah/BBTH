@@ -23,12 +23,12 @@ public class Player {
 
 		base = new Base(this);
 		switch (team) {
-		case TEAM_0:
+		case CLIENT:
 			base.setAnchor(Anchor.BOTTOM_LEFT);
 			base.setPosition(0, BBTHGame.HEIGHT);
 			break;
 			
-		case TEAM_1:
+		case SERVER:
 			base.setAnchor(Anchor.TOP_LEFT);
 			base.setPosition(0, 0);
 			break;
