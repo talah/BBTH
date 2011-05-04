@@ -64,6 +64,11 @@ public abstract class Simulation {
 	private LockStep currentStep = new LockStep();
 
 	/**
+	 * For tie breaking: whenever there's a tie, do the server's action first.
+	 */
+	public final boolean isServer;
+
+	/**
 	 * @param finePerCoarse
 	 *            The number of fine timesteps per coarse timestep.
 	 * @param secondsPerCoarse
@@ -72,11 +77,12 @@ public abstract class Simulation {
 	 *            The number of coarse timesteps that user actions will be
 	 *            delayed. Must be greater than or equal to actual network lag.
 	 */
-	public Simulation(int finePerCoarse, float secondsPerCoarse, int coarseLag, LockStepProtocol protocol) {
+	public Simulation(int finePerCoarse, float secondsPerCoarse, int coarseLag, LockStepProtocol protocol, boolean isServer) {
 		this.finePerCoarse = finePerCoarse;
 		this.coarseLag = coarseLag;
 		this.secondsPerFine = secondsPerCoarse / finePerCoarse;
 		this.protocol = protocol;
+		this.isServer = isServer;
 
 		// Start with initial blank timesteps up to the lag buffer (pretending
 		// like we had received them from before)
@@ -117,11 +123,15 @@ public abstract class Simulation {
 				nextLocalStep = incomingLocalSteps.remove();
 				nextRemoteStep = incomingRemoteSteps.remove();
 
-				for (int j = 0, n = nextLocalStep.events.size(); j < n; j++) {
-					incomingEvents.add(nextLocalStep.events.get(j));
-				}
-				for (int j = 0, n = nextRemoteStep.events.size(); j < n; j++) {
-					incomingEvents.add(nextRemoteStep.events.get(j));
+				// In case there is a tie (two events occurring at the same
+				// time), add events to the queue in the same order on both
+				// clients.
+				if (isServer) {
+					nextLocalStep.addEventsToQueue(incomingEvents);
+					nextRemoteStep.addEventsToQueue(incomingEvents);
+				} else {
+					nextRemoteStep.addEventsToQueue(incomingEvents);
+					nextLocalStep.addEventsToQueue(incomingEvents);
 				}
 			}
 
@@ -152,26 +162,27 @@ public abstract class Simulation {
 	 * Called for every event, in order of the event's timestamps.
 	 */
 	private final void dispatchEvent(Event event) {
+		boolean isServer = (event.flags & Event.IS_SERVER) != 0;
 		switch (event.type) {
 		case Event.TAP_DOWN:
-			simulateTapDown(event.x, event.y, event.isLocal, event.isOnBeat);
+			simulateTapDown(event.x, event.y, isServer, (event.flags & Event.IS_HOLD) != 0, (event.flags & Event.IS_ON_BEAT) != 0);
 			break;
 
 		case Event.TAP_MOVE:
-			simulateTapMove(event.x, event.y, event.isLocal);
+			simulateTapMove(event.x, event.y, isServer);
 			break;
 
 		case Event.TAP_UP:
-			simulateTapUp(event.x, event.y, event.isLocal);
+			simulateTapUp(event.x, event.y, isServer);
 			break;
 		}
 	}
 
-	protected abstract void simulateTapDown(float x, float y, boolean isLocal, boolean isOnBeat);
+	protected abstract void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat);
 
-	protected abstract void simulateTapMove(float x, float y, boolean isLocal);
+	protected abstract void simulateTapMove(float x, float y, boolean isServer);
 
-	protected abstract void simulateTapUp(float x, float y, boolean isLocal);
+	protected abstract void simulateTapUp(float x, float y, boolean isServer);
 
 	/**
 	 * Called every fine timestep with the number of seconds since the last fine
@@ -197,26 +208,25 @@ public abstract class Simulation {
 	/**
 	 * Helper function for recordTap*() functions.
 	 */
-	private final Event makeEvent(float x, float y, int type, boolean isOnBeat) {
+	private final Event makeEvent(float x, float y, int type, boolean isHold, boolean isOnBeat) {
 		Event event = new Event();
 		event.type = type;
-		event.isLocal = true;
-		event.isOnBeat = isOnBeat;
+		event.flags = (isServer ? Event.IS_SERVER : 0) | (isHold ? Event.IS_HOLD : 0) | (isOnBeat ? Event.IS_ON_BEAT : 0);
 		event.fineTime = currentFineTimestep + coarseLag * finePerCoarse;
 		event.x = x;
 		event.y = y;
 		return event;
 	}
 
-	public final void recordTapDown(float x, float y, boolean isOnBeat) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_DOWN, isOnBeat));
+	public final void recordTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
+		currentStep.events.add(makeEvent(x, y, Event.TAP_DOWN, isHold, isOnBeat));
 	}
 
 	public final void recordTapMove(float x, float y) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_MOVE, false));
+		currentStep.events.add(makeEvent(x, y, Event.TAP_MOVE, false, false));
 	}
 
 	public final void recordTapUp(float x, float y) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_UP, false));
+		currentStep.events.add(makeEvent(x, y, Event.TAP_UP, false, false));
 	}
 }

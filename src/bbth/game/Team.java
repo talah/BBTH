@@ -1,13 +1,13 @@
 package bbth.game;
 
 public enum Team {
-	TEAM_0, TEAM_1;
+	CLIENT, SERVER;
 
 	public Team getOppositeTeam() {
-		if (this == TEAM_0) {
-			return TEAM_1;
+		if (this == CLIENT) {
+			return SERVER;
 		} else {
-			return TEAM_0;
+			return CLIENT;
 		}
 	}
 }

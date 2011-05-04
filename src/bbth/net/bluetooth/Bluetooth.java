@@ -1,8 +1,9 @@
 package bbth.net.bluetooth;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -242,9 +243,9 @@ public final class Bluetooth implements Runnable {
 					@Override
 					public void run() {
 						try {
-							InputStream socketIn = socket.getInputStream();
+							DataInputStream in = new DataInputStream(socket.getInputStream());
 							while (!Thread.interrupted()) {
-								protocol.readFrom(socketIn);
+								protocol.readFrom(in);
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -256,16 +257,17 @@ public final class Bluetooth implements Runnable {
 				readThread.start();
 
 				// Run the write thread
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(byteArrayOut);
 				OutputStream socketOut = socket.getOutputStream();
 				while (!Thread.interrupted()) {
 					// Write an outgoing object to a temporary byte buffer
-					out.reset();
+					byteArrayOut.reset();
 					protocol.writeTo(out);
 
 					// Make sure we only write complete packets in one chunk,
 					// not sure if this will help fix the Android bug or not
-					out.writeTo(socketOut);
+					byteArrayOut.writeTo(socketOut);
 					socketOut.flush();
 				}
 			} catch (IOException e) {

@@ -9,24 +9,22 @@ public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
 	private Player localPlayer, remotePlayer;
+	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol) {
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
-		super(6, 0.1f, 2, protocol);
+		super(6, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
 
 		team = localTeam;
-		localPlayer = new Player(team, aiController);
-
-		if (team == Team.TEAM_0) {
-			remotePlayer = new Player(Team.TEAM_1, aiController);
-		} else {
-			remotePlayer = new Player(Team.TEAM_0, aiController);
-		}
+		serverPlayer = new Player(Team.SERVER, aiController);
+		clientPlayer = new Player(Team.CLIENT, aiController);
+		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
+		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 	}
 
 	public void setupSubviews(UIView view) {
@@ -44,20 +42,20 @@ public class BBTHSimulation extends Simulation {
 	}
 
 	@Override
-	protected void simulateTapDown(float x, float y, boolean isLocal, boolean isOnBeat) {
-		if (isLocal) {
-			localPlayer.spawnUnit(x, y);
+	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
+		if (isServer) {
+			serverPlayer.spawnUnit(x, y);
 		} else {
-			remotePlayer.spawnUnit(x, y);
+			clientPlayer.spawnUnit(x, y);
 		}
 	}
 
 	@Override
-	protected void simulateTapMove(float x, float y, boolean isLocal) {
+	protected void simulateTapMove(float x, float y, boolean isServer) {
 	}
 
 	@Override
-	protected void simulateTapUp(float x, float y, boolean isLocal) {
+	protected void simulateTapUp(float x, float y, boolean isServer) {
 	}
 
 	@Override
@@ -65,23 +63,12 @@ public class BBTHSimulation extends Simulation {
 		timestep++;
 
 		aiController.update();
-
-		if (team == Team.TEAM_1) {
-			localPlayer.update(seconds);
-			remotePlayer.update(seconds);
-		} else {
-			remotePlayer.update(seconds);
-			localPlayer.update(seconds);
-		}
+		serverPlayer.update(seconds);
+		clientPlayer.update(seconds);
 	}
 
 	public void draw(Canvas canvas) {
-		if (team == Team.TEAM_0) {
-			remotePlayer.draw(canvas);
-			localPlayer.draw(canvas);
-		} else {
-			localPlayer.draw(canvas);
-			remotePlayer.draw(canvas);
-		}
+		localPlayer.draw(canvas);
+		remotePlayer.draw(canvas);
 	}
 }

@@ -20,9 +20,9 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private UIButton clientButton;
 	private UIButton disconnectButton;
 	private UILabel label;
-	
+
 	private Team playerTeam;
-	
+
 	public GameSetupScreen() {
 		super(null);
 
@@ -91,15 +91,15 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			serverButton.isDisabled = true;
 			clientButton.isDisabled = true;
 			disconnectButton.isDisabled = false;
-			
-			playerTeam = Team.TEAM_1;
+
+			playerTeam = Team.SERVER;
 		} else if (sender == clientButton) {
 			bluetooth.connect();
 			serverButton.isDisabled = true;
 			clientButton.isDisabled = true;
 			disconnectButton.isDisabled = false;
-			
-			playerTeam = Team.TEAM_0;
+
+			playerTeam = Team.CLIENT;
 		} else if (sender == disconnectButton) {
 			bluetooth.disconnect();
 			serverButton.isDisabled = false;

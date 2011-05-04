@@ -10,6 +10,22 @@ public class Event implements Comparable<Event> {
 	public static final int TAP_UP = 2;
 
 	/**
+	 * Was the action performed on a hold beat or a tap beat?
+	 */
+	public static final int IS_HOLD = 0x20;
+
+	/**
+	 * Was the action on the beat on the phone on which it occurred at the time
+	 * the user did it?
+	 */
+	public static final int IS_ON_BEAT = 0x40;
+
+	/**
+	 * Did the action originate as the server?
+	 */
+	public static final int IS_SERVER = 0x80;
+
+	/**
 	 * The size in bytes of this event when written to and read from a byte
 	 * buffer.
 	 */
@@ -21,15 +37,9 @@ public class Event implements Comparable<Event> {
 	public int type;
 
 	/**
-	 * Is the action supposed to be applied as the local player?
+	 * A combination of IS_HOLD, IS_ON_BEAT, and IS_SERVER.
 	 */
-	public boolean isLocal;
-
-	/**
-	 * Was the action on the beat on the phone on which it occurred at the time
-	 * the user did it?
-	 */
-	public boolean isOnBeat;
+	public int flags;
 
 	/**
 	 * The number of fine timesteps since the beginning of the simulation.
