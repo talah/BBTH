@@ -10,7 +10,7 @@ import bbth.ui.UIScrollView;
 import bbth.ui.UIView;
 
 public class TitleScreen extends UIScrollView implements UIButtonDelegate {
-	private UIButton greeting;
+	private UIButton greeting, scrollUp;
 	private UIProgressBar progressBar;
 	
 	private float elapsedTime;
@@ -29,14 +29,21 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 		addSubview(greeting);
 		
 		// testing progress bar
-		progressBar = new UIProgressBar(tag);
-		progressBar.setAnchor(Anchor.CENTER_CENTER);
-		progressBar.setSize(160, 20);
-		progressBar.setPosition(160, 1020);
-		progressBar.setBorderRadius(5);
-		progressBar.setProgress(1.f);
-		progressBar.setMode(Mode.INFINTE);
-		addSubview(progressBar);
+//		progressBar = new UIProgressBar(tag);
+//		progressBar.setAnchor(Anchor.CENTER_CENTER);
+//		progressBar.setSize(160, 20);
+//		progressBar.setPosition(160, 1020);
+//		progressBar.setBorderRadius(5);
+//		progressBar.setProgress(1.f);
+//		progressBar.setMode(Mode.INFINTE);
+//		addSubview(progressBar);
+		
+		scrollUp = new UIButton("Scroll To Top", null);
+		scrollUp.setAnchor(Anchor.CENTER_CENTER);
+		scrollUp.setSize(160, 20);
+		scrollUp.setPosition(160.f, 220.f);
+		scrollUp.delegate = this;
+		addSubview(scrollUp);
 		
 		UIRadioButton testButton = new UIRadioButton("Hello", null);
 		testButton.setAnchor(Anchor.CENTER_CENTER);
@@ -48,11 +55,11 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 		super.onUpdate(seconds);
 
 		this.elapsedTime += seconds;
-		progressBar.setProgress(elapsedTime / 10);
-		
-		if (this.progressBar.getProgress() == 1.f) {
-			this.progressBar.setMode(Mode.INFINTE);
-		}
+//		progressBar.setProgress(elapsedTime / 10);
+//		
+//		if (this.progressBar.getProgress() == 1.f) {
+//			this.progressBar.setMode(Mode.INFINTE);
+//		}
 	}
 
 	@Override
@@ -77,6 +84,8 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 	public void onClick(UIButton button) {
 		if(button == greeting)
 			scrollTo(0, 1020);
+		else if(button == scrollUp)
+			scrollTo(0,0);
 		
 	}
 }

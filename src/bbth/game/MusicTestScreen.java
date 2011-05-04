@@ -107,7 +107,8 @@ public class MusicTestScreen extends GameScreen {
 			}
 		} else {
 
-			boolean onBeat = _beatTracker.onTouchDown();
+			Beat.BeatType beatType = _beatTracker.onTouchDown();
+			boolean onBeat = (beatType != Beat.BeatType.REST);
 			if (onBeat) {
 				++_score;
 				++_combo;

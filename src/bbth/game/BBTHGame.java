@@ -12,9 +12,9 @@ public class BBTHGame extends Game {
 		// currentScreen = new TitleScreen(null);
 //		 currentScreen = new GameTestScreen();
 		// currentScreen = new BBTHAITest(this);
-		// currentScreen = new MusicTestScreen(activity);
+		 currentScreen = new MusicTestScreen(activity);
 		// currentScreen = new NetworkTestScreen();
-		 currentScreen = new GameSetupScreen();
+		// currentScreen = new GameSetupScreen();
 	}
 
 	@Override

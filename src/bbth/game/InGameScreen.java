@@ -148,8 +148,9 @@ public class InGameScreen extends UIScrollView {
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		boolean isOnBeat = beatTracker.onTouchDown();
-		boolean isHold = false; // TODO: set this from song
+		Beat.BeatType beatType = beatTracker.onTouchDown();
+		boolean isHold = (beatType == Beat.BeatType.HOLD);
+		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
 			++score;
 			++combo;

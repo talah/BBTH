@@ -13,6 +13,10 @@ import android.graphics.Paint;
  */
 public class BeatTracker {
 
+	public static final int TOUCH_RESULT_MISS = 0;
+	public static final int TOUCH_RESULT_TAP = 1;
+	public static final int TOUCH_RESULT_HOLD = 2;
+	
 	public static final float TOLERANCE = 80; // millisecond difference in what is still considered a valid touch
 
 	private MusicPlayer _musicPlayer;
@@ -28,9 +32,12 @@ public class BeatTracker {
 	}
 
 	// returns whether a beat was successfully tapped
-	public boolean onTouchDown() {
+	public Beat.BeatType onTouchDown() {
 		Beat beat = getClosestBeat();
-		return beat != null && beat.onTouchDown(_musicPlayer.getCurrentPosition());
+		if (beat != null && beat.onTouchDown(_musicPlayer.getCurrentPosition())) {
+			return beat.type;
+		}
+		return Beat.BeatType.REST;
 	}
 	
 	// handle a release
