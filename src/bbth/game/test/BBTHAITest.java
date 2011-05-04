@@ -1,4 +1,4 @@
-package bbth.game;
+package bbth.game.test;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,6 +10,10 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.core.GameScreen;
+import bbth.game.BBTHGame;
+import bbth.game.Team;
+import bbth.game.Unit;
+import bbth.game.ai.AIController;
 import bbth.util.MathUtils;
 
 public class BBTHAITest extends GameScreen {

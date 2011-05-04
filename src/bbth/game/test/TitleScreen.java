@@ -1,5 +1,6 @@
-package bbth.game;
+package bbth.game.test;
 
+import bbth.game.BBTHGame;
 import bbth.ui.Anchor;
 import bbth.ui.UIButton;
 import bbth.ui.UIButtonDelegate;

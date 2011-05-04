@@ -1,9 +1,10 @@
-package bbth.game;
+package bbth.game.ai;
 import java.util.ArrayList;
 
 import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.ai.FlockRulesCalculator;
+import bbth.game.Unit;
 import bbth.util.MathUtils;
 
 public class SimpleAI extends UnitAI {

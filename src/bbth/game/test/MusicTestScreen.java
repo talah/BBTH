@@ -1,4 +1,4 @@
-package bbth.game;
+package bbth.game.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,8 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.core.GameScreen;
+import bbth.game.R;
+import bbth.game.R.raw;
 import bbth.particles.ParticleSystem;
 import bbth.sound.*;
 import bbth.sound.MusicPlayer.OnCompletionListener;

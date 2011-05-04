@@ -1,9 +1,12 @@
-package bbth.game;
+package bbth.game.ai;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 
 import bbth.ai.FlockRulesCalculator;
+import bbth.game.BBTHGame;
+import bbth.game.Team;
+import bbth.game.Unit;
 
 public class AIController {
 	EnumMap<Team, ArrayList<Unit>> m_entities;
