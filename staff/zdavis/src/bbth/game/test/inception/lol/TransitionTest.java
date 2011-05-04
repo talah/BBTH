@@ -1,7 +1,6 @@
-package zdavis.src.bbth.game;
+package zdavis.src.bbth.game.test.inception.lol;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.*;
 import bbth.engine.ui.DefaultTransition;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
@@ -28,8 +27,6 @@ public class TransitionTest extends UINavigationController {
 	DefaultTransition oneToTwo;
 	DefaultTransition twoToOne;
 	boolean oneInFront = true;
-	
-	Envelope always255 = new Envelope(255f, Envelope.OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
 	
 	public TransitionTest() {
 		super("transitiontest");
