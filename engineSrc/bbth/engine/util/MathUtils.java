@@ -27,11 +27,15 @@ public final class MathUtils {
 	}
 
 	public static float getDist(float x1, float y1, float x2, float y2) {
-		return FloatMath.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+		float dx = x1 - x2;
+		float dy = y1 - y2;
+		return FloatMath.sqrt(dx * dx + dy * dy);
 	}
 	
 	public static float getDistSqr(float x1, float y1, float x2, float y2) {
-		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+		float dx = x1 - x2;
+		float dy = y1 - y2;
+		return dx * dx + dy * dy;
 	}
 	
 	public static float clamp(float min, float max, float val) {

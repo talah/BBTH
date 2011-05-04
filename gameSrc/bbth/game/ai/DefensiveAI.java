@@ -34,8 +34,9 @@ public class DefensiveAI extends UnitAI {
 			
 			if (enemy != null) {
 				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), enemy.getX(), enemy.getY());
-				xcomp += getObjectiveWeighting() * FloatMath.cos(angle);
-				ycomp += getObjectiveWeighting() * FloatMath.sin(angle);
+				float objectiveweighting = getObjectiveWeighting();
+				xcomp += objectiveweighting * FloatMath.cos(angle);
+				ycomp += objectiveweighting * FloatMath.sin(angle);
 			}
 		}
 		
@@ -44,12 +45,14 @@ public class DefensiveAI extends UnitAI {
 		float wantedchange = MathUtils.normalizeAngle(wanteddir, entity.getHeading()) - entity.getHeading();
 		
 		float actualchange = wantedchange;
-		if (actualchange > getMaxVelChange()) {
-			actualchange = getMaxVelChange();
+		float maxvelchange = getMaxVelChange();
+		
+		if (actualchange > maxvelchange) {
+			actualchange = maxvelchange;
 		}
 		
-		if (actualchange < -1.0f * getMaxVelChange()) {
-			actualchange = -1.0f * getMaxVelChange();
+		if (actualchange < -1.0f * maxvelchange) {
+			actualchange = -1.0f * maxvelchange;
 		}
 		
 		entity.setVelocity(getMaxVel() , entity.getHeading() + actualchange);

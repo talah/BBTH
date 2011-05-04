@@ -1,5 +1,6 @@
 package bbth.game;
 
+import npartlan.BBTHAITest;
 import android.app.Activity;
 import bbth.engine.core.Game;
 
@@ -10,11 +11,11 @@ public class BBTHGame extends Game {
 
 	public BBTHGame(Activity activity) {
 //		currentScreen = new TitleScreen(null);
-//		currentScreen = new BBTHAITest(this);
+		currentScreen = new BBTHAITest(this);
 //		currentScreen = new MusicTestScreen(activity);
 //		currentScreen = new NetworkTestScreen();
 //		currentScreen = new TransitionTest();
-		currentScreen = new GameSetupScreen();
+//		currentScreen = new GameSetupScreen();
 	}
 
 	@Override

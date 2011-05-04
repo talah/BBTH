@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.PointF;
+import android.util.FloatMath;
 
 public class Pathfinder {
 	ConnectedGraph m_graph;
@@ -131,6 +132,8 @@ public class Pathfinder {
 	}
 
 	private float getDist(AStarEntry current, PointF goal) {
-		return (float)Math.sqrt((current.m_point.x - goal.x)*(current.m_point.x - goal.x) + (current.m_point.y - goal.y)*(current.m_point.y - goal.y));
+		float dx = current.m_point.x - goal.x;
+		float dy = current.m_point.y - goal.y;
+		return FloatMath.sqrt(dx * dx + dy * dy);
 	}
 }
