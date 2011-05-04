@@ -78,7 +78,7 @@ public class InGameScreen extends UIScrollView {
 		
 		beatTracker = new BeatTracker(musicPlayer, beatPattern);
 		beatsInRange = new ArrayList<Beat>();
-		
+
 		// Setup score stuff
 		score = 0;
 		scoreStr = String.valueOf(score);
@@ -138,9 +138,9 @@ public class InGameScreen extends UIScrollView {
 		
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
-		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY());
-		}
+//		if (mostAdvanced != null) {
+//			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY());
+//		}
 		
 		// Get beats in range
 		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
