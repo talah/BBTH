@@ -2,7 +2,6 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
-import bbth.game.test.BBTHAITest;
 
 public class BBTHGame extends Game {
 
