@@ -26,6 +26,10 @@ public class BBTHAITest extends GameScreen {
 	//******** SETUP FOR AI *******//
 	
 	long m_last_time = 0;
+
+	private int m_timestep = 0;
+
+	private long m_time_since_step;
 	
 	public BBTHAITest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
@@ -59,7 +63,7 @@ public class BBTHAITest extends GameScreen {
 	}
 	
 	private void randomizeEntities() {
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 20; i++) {
 			Unit e = new Unit(Team.SERVER);
 			e.setTeam(Team.SERVER);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -71,7 +75,7 @@ public class BBTHAITest extends GameScreen {
 			//******** SETUP FOR AI *******//
 		}
 		
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 20; i++) {
 			Unit e = new Unit(Team.CLIENT);
 			e.setTeam(Team.CLIENT);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
@@ -88,6 +92,12 @@ public class BBTHAITest extends GameScreen {
 	public void onDraw(Canvas canvas) {
 		long curr_time = System.currentTimeMillis();
 		long timediff = curr_time - m_last_time;
+		
+		m_time_since_step += timediff;
+		if (m_time_since_step >= 17) {
+			m_time_since_step = m_time_since_step-17;
+			m_timestep++;
+		}
 		
 		//******** SETUP FOR AI *******//
 		m_controller.update();

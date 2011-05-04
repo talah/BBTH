@@ -7,6 +7,12 @@ import bbth.entity.Movable;
 public abstract class UnitAI {
 	private PointF m_result;
 	
+	private float m_max_vel_change = 0.5f;
+	
+	private float m_objective_weighting = 0.05f;
+
+	private float m_max_vel = 50.0f;
+	
 	public UnitAI() {
 		m_result = new PointF();
 	}
@@ -37,5 +43,35 @@ public abstract class UnitAI {
 		result.y /= 3;
 		
 		return;
+	}
+
+	public void setMaxVelChange(float m_max_vel_change) {
+		if (m_max_vel_change < 0) {
+			m_max_vel_change = 0;
+		}
+		this.m_max_vel_change = m_max_vel_change;
+	}
+
+	public float getMaxVelChange() {
+		return m_max_vel_change;
+	}
+
+	public void setObjectiveWeighting(float m_objective_weighting) {
+		this.m_objective_weighting = m_objective_weighting;
+	}
+
+	public float getObjectiveWeighting() {
+		return m_objective_weighting;
+	}
+
+	public void setMaxVel(float m_max_vel) {
+		if (m_max_vel < 0) {
+			m_max_vel = 0;
+		}
+		this.m_max_vel = m_max_vel;
+	}
+
+	public float getMaxVel() {
+		return m_max_vel;
 	}
 }

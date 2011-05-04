@@ -7,7 +7,7 @@ import bbth.entity.*;
 import bbth.util.MathUtils;
 
 public class FlockRulesCalculator {
-	private static final float FRONT_VIEW_ANGLE = MathUtils.PI/2.0f;
+	private static final float FRONT_VIEW_ANGLE = MathUtils.PI/3.0f;
 
 	public ArrayList<Movable> m_objects;
 	
@@ -174,10 +174,10 @@ public class FlockRulesCalculator {
 	}
 	
 	private boolean canSee(Movable actor, Movable other) {
-		float dist = getDist(actor, other);
+		float dist = getDistSqr(actor, other);
 		
 		// Check if we're in the correct radius
-		if (dist > m_neighbor_radius) {
+		if (dist > m_neighbor_radius*m_neighbor_radius) {
 			return false;
 		}
 		
@@ -221,6 +221,10 @@ public class FlockRulesCalculator {
 	
 	private float getDist(Movable actor, Movable other) {
 		return MathUtils.getDist(actor.getX(), actor.getY(), other.getX(), other.getY());
+	}
+	
+	private float getDistSqr(Movable actor, Movable other) {
+		return MathUtils.getDistSqr(actor.getX(), actor.getY(), other.getX(), other.getY());
 	}
 	
 }

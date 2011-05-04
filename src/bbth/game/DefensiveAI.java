@@ -11,8 +11,6 @@ public class DefensiveAI extends UnitAI {
 	
 	private PointF m_flock_dir;
 
-	private float max_vel_change = 0.3f;
-
 	public DefensiveAI() {
 		super();
 		m_flock_dir = new PointF();
@@ -35,8 +33,8 @@ public class DefensiveAI extends UnitAI {
 			
 			if (enemy != null) {
 				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), enemy.getX(), enemy.getY());
-				xcomp += 0.05f * FloatMath.cos(angle);
-				ycomp += 0.05f * FloatMath.sin(angle);
+				xcomp += getObjectiveWeighting() * FloatMath.cos(angle);
+				ycomp += getObjectiveWeighting() * FloatMath.sin(angle);
 			}
 		}
 		
@@ -45,15 +43,15 @@ public class DefensiveAI extends UnitAI {
 		float wantedchange = MathUtils.normalizeAngle(wanteddir, entity.getHeading()) - entity.getHeading();
 		
 		float actualchange = wantedchange;
-		if (actualchange > max_vel_change) {
-			actualchange = max_vel_change;
+		if (actualchange > getMaxVelChange()) {
+			actualchange = getMaxVelChange();
 		}
 		
-		if (actualchange < -1.0f * max_vel_change) {
-			actualchange = -1.0f * max_vel_change;
+		if (actualchange < -1.0f * getMaxVelChange()) {
+			actualchange = -1.0f * getMaxVelChange();
 		}
 		
-		entity.setVelocity(50.0f, entity.getHeading() + actualchange);
+		entity.setVelocity(getMaxVel() , entity.getHeading() + actualchange);
 	}
 
 	private Unit getClosestEnemy(Unit entity, ArrayList<Unit> enemies) {

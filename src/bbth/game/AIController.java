@@ -10,6 +10,10 @@ public class AIController {
 	EnumMap<Team, FlockRulesCalculator> m_flocks;
 	
 	DefensiveAI m_aggressive;
+	
+	private float m_fraction_to_update = 0.33f;
+	
+	int m_last_updated = 0;
 
 	public AIController() {
 		m_aggressive = new DefensiveAI();
@@ -48,12 +52,28 @@ public class AIController {
 	}
 	
 	private void update(ArrayList<Unit> entities, FlockRulesCalculator flock) {
-		for (int i = 0; i < entities.size(); i++) {
-			
+		int size = entities.size();
+		int num_to_update = (int) ((size * m_fraction_to_update)+1);
+		int i = m_last_updated;
+		while (num_to_update > 0) {			
 			Unit entity = entities.get(i);
 			
 			// TODO: Use the correct AI for the individual unit.
 			m_aggressive.update(entity, this, flock);
+			
+			num_to_update--;
+
+			if (i >= size-1) {
+				i = 0;
+			} else {
+				i++;
+			}
+		}
+		
+		if (i >= size-1) {
+			m_last_updated = 0;
+		} else {
+			m_last_updated = i+1;
 		}
 	}
 
@@ -63,5 +83,12 @@ public class AIController {
 	
 	public float getHeight() {
 		return BBTHGame.HEIGHT;
+	}
+	
+	public void setUpdateFraction(float fraction) {
+		if (fraction < 0) {
+			fraction = 0;
+		}
+		m_fraction_to_update = fraction;
 	}
 }
