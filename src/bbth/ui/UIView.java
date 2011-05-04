@@ -49,15 +49,15 @@ public class UIView extends GameScreen {
 	public void onDraw(Canvas canvas) {
 		if(!_hasAppeared)
 			willAppear(true);
-		canvas.save();
-		canvas.clipRect(_rect);
+		//canvas.save();
+		//canvas.clipRect(_rect);
 		int idx = subviewCount;
     	while(idx-- > 0){
     		UIView e = subviews.get(idx);
-    		if(RectF.intersects(_rect, e._rect))
+    		//if(RectF.intersects(_rect, e._rect))
     			e.onDraw(canvas);
     	}
-    	canvas.restore();
+    	//canvas.restore();
 	}
 
 	@Override
