@@ -48,7 +48,7 @@ public class Unit extends BasicMovable {
 
 	public void update(float seconds) {
 		// Derp derp, Euler
-		this.update(seconds);
+		super.update(seconds);
 		view.setPosition(this.getX(), this.getY());
 	}
 

@@ -9,6 +9,10 @@ public final class MathUtils {
 	public static final float TWO_PI = 2 * PI;
 	private static final Random _random = new Random();
 	
+	public static void resetRandom(long seed) {
+		_random.setSeed(seed);
+	}
+	
 	// random number in the range [min, max)
 	public static float randInRange(float min, float max) {
 		return (max - min) * _random.nextFloat() + min;
