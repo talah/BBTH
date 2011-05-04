@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import bbth.collision.Point;
 import bbth.core.GameScreen;
@@ -19,6 +20,7 @@ public class UIView extends GameScreen {
 	protected Point center;
 	protected UIDelegate delegate;
 	protected Point _position;
+	protected Rect _clip_rect;
 	
 	protected Anchor anchor;
 
@@ -26,6 +28,7 @@ public class UIView extends GameScreen {
 		subviews = new CopyOnWriteArrayList<UIView>();
 		this.anchor = Anchor.TOP_LEFT;
 		_rect = new RectF(0,0,0,0);
+		_clip_rect = new Rect(0,0,0,0);
 		center = new Point(0,0);
 		_position = new Point(0,0);
 		this.tag = tag;
@@ -46,11 +49,15 @@ public class UIView extends GameScreen {
 	public void onDraw(Canvas canvas) {
 		if(!_hasAppeared)
 			willAppear(true);
+		canvas.save();
+		canvas.clipRect(_rect);
 		int idx = subviewCount;
     	while(idx-- > 0){
     		UIView e = subviews.get(idx);
-    		e.onDraw(canvas);
+    		if(RectF.intersects(_rect, e._rect))
+    			e.onDraw(canvas);
     	}
+    	canvas.restore();
 	}
 
 	@Override
@@ -203,7 +210,6 @@ public class UIView extends GameScreen {
     			e.center.x = e._rect.centerX();
     			e.center.y = e._rect.centerY();
     		}
-    		_rect.union(e._rect);
 		}
 		    
     }

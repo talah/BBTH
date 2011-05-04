@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Region;
 import bbth.util.MathUtils;
 
 public class UIScrollView extends UIView {
@@ -34,9 +35,21 @@ public class UIScrollView extends UIView {
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		canvas.save();
+
+		if(!_hasAppeared)
+			willAppear(true);
+		
+		canvas.clipRect(_rect, Region.Op.INTERSECT);
 		canvas.translate(-pos_x, -pos_y);
-		super.onDraw(canvas);
-		canvas.translate(pos_x, pos_y);
+		int idx = subviewCount;
+    	while(idx-- > 0){
+    		UIView e = subviews.get(idx);
+    		if(e._rect.intersects(_rect.left + pos_x, _rect.top + pos_y, _rect.right + pos_x, _rect.bottom + pos_y))
+    			e.onDraw(canvas);
+    	}
+    	canvas.restore();
+		
 		
 		if(isScrolling && scrollEnabled)
 		{
