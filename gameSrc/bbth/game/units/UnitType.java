@@ -6,7 +6,7 @@ public enum UnitType {
 	ATTACKING {
 		@Override
 		public Unit createUnit(Team team) {
-			return null;
+			return new AttackingUnit(team);
 		}
 	},
 	DEFENDING {

@@ -1,6 +1,5 @@
 package bbth.game;
 
-import npartlan.BBTHAITest;
 import android.app.Activity;
 import bbth.engine.core.Game;
 import bbth.game.test.TransitionTest;

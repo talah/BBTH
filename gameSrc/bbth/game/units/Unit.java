@@ -13,9 +13,9 @@ import bbth.game.Team;
  * each other.
  */
 public abstract class Unit extends BasicMovable {
-	private Team team;
-	private Paint paint;
-	private UIView view;
+	protected Team team;
+	protected UIView view;
+	protected Paint paint;
 
 	public Unit(Team team) {
 		view = new UIView(null);
@@ -57,9 +57,7 @@ public abstract class Unit extends BasicMovable {
 	}
 
 	public abstract void draw(Canvas canvas);
-	{
-		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
-	}
+	public abstract UnitType getType();
 
 	public Team getTeam() {
 		return this.team;

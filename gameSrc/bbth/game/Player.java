@@ -47,11 +47,11 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
-		Unit u = currentUnitType.createUnit(team);
-		u.setPosition(x, y);
+		Unit newUnit = currentUnitType.createUnit(team);
+		newUnit.setPosition(x, y);
 		//u.setVelocity(MathUtils.randInRange(50, 100), MathUtils.randInRange(0, MathUtils.TWO_PI));
-		aiController.addEntity(u);
-		units.add(u);
+		aiController.addEntity(newUnit);
+		units.add(newUnit);
 	}
 
 	public Unit getMostAdvancedUnit() {
