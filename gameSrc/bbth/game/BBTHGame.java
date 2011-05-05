@@ -3,6 +3,7 @@ package bbth.game;
 import npartlan.BBTHAITest;
 import android.app.Activity;
 import bbth.engine.core.Game;
+import bbth.game.test.TransitionTest;
 
 public class BBTHGame extends Game {
 
@@ -14,8 +15,8 @@ public class BBTHGame extends Game {
 //		currentScreen = new BBTHAITest(this);
 //		currentScreen = new MusicTestScreen(activity);
 //		currentScreen = new NetworkTestScreen();
-//		currentScreen = new TransitionTest();
-		currentScreen = new GameSetupScreen();
+		currentScreen = new TransitionTest();
+//		currentScreen = new GameSetupScreen();
 	}
 
 	@Override

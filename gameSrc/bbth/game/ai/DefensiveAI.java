@@ -8,7 +8,7 @@ import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.util.MathUtils;
-import bbth.game.Unit;
+import bbth.game.units.Unit;
 
 public class DefensiveAI extends UnitAI {
 	

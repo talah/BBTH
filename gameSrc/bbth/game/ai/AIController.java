@@ -9,7 +9,7 @@ import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
-import bbth.game.Unit;
+import bbth.game.units.Unit;
 
 public class AIController {
 	EnumMap<Team, ArrayList<Unit>> m_entities;

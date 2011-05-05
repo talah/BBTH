@@ -1,12 +1,11 @@
 package bbth.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import android.graphics.Canvas;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 import bbth.game.ai.AIController;
+import bbth.game.units.*;
 
 /**
  * A player is someone who is interacting with the game.
@@ -16,6 +15,8 @@ public class Player {
 	private List<Unit> units;
 	private Base base;
 	private AIController aiController;
+	
+	UnitType currentUnitType = UnitType.ATTACKING;
 	
 	public Player(Team team, AIController controller) {
 		this.team = team;
@@ -46,7 +47,7 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
-		Unit u = new Unit(team);
+		Unit u = currentUnitType.createUnit(team);
 		u.setPosition(x, y);
 		//u.setVelocity(MathUtils.randInRange(50, 100), MathUtils.randInRange(0, MathUtils.TWO_PI));
 		aiController.addEntity(u);

@@ -1,4 +1,4 @@
-package zdavis.src.bbth.game.test.inception.lol;
+package bbth.game.test.inception.lol;
 
 import android.graphics.*;
 import bbth.engine.ui.DefaultTransition;
@@ -40,14 +40,18 @@ public class TransitionTest extends UINavigationController {
 		
 		push(view1);
 		
-		oneToTwo = new DefaultTransition(1f);
+		oneToTwo = new DefaultTransition(2f);
 		Envelope alpha = new Envelope(0f, Envelope.OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
-		alpha.addLinearSegment(1f, 255f);
+		alpha.addFlatSegment(1f, 0.0);
+		alpha.addLinearSegment(1f, 255.0);
 		oneToTwo.setNewAlpha(alpha);
+		Envelope scale = new Envelope(1f, Envelope.OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+		scale.addLinearSegment(1f, 0.0);
+		oneToTwo.setOldScale(scale);
 		
 		twoToOne = new DefaultTransition(2f);
 		Envelope x = new Envelope(BBTHGame.WIDTH, Envelope.OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
-		x.addLinearSegment(2f, 0f);
+		x.addLinearSegment(2f, 0.0);
 		twoToOne.setNewX(x);
 	}
 	

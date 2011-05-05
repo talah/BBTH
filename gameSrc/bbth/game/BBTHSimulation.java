@@ -7,6 +7,7 @@ import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIView;
 import bbth.game.ai.AIController;
+import bbth.game.units.Unit;
 
 public class BBTHSimulation extends Simulation {
 	private int timestep;

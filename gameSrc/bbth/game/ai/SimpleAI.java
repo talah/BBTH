@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import android.util.FloatMath;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.util.MathUtils;
-import bbth.game.Unit;
+import bbth.game.units.Unit;
 
 public class SimpleAI extends UnitAI {
 

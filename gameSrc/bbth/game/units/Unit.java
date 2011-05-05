@@ -1,4 +1,4 @@
-package bbth.game;
+package bbth.game.units;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -6,12 +6,13 @@ import android.graphics.Paint;
 import bbth.engine.entity.BasicMovable;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
+import bbth.game.Team;
 
 /**
  * A BBTH unit is one of the little dudes that walk around on the map and kill
  * each other.
  */
-public class Unit extends BasicMovable {
+public abstract class Unit extends BasicMovable {
 	private Team team;
 	private Paint paint;
 	private UIView view;
@@ -55,7 +56,8 @@ public class Unit extends BasicMovable {
 		view.setPosition(this.getX(), this.getY());
 	}
 
-	public void draw(Canvas canvas) {
+	public abstract void draw(Canvas canvas);
+	{
 		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
 	}
 

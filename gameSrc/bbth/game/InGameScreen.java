@@ -22,6 +22,7 @@ import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.game.units.Unit;
 
 public class InGameScreen extends UIScrollView {
 
