@@ -5,17 +5,17 @@ import android.util.FloatMath;
 import bbth.game.Team;
 
 public class AttackingUnit extends Unit {
-	public AttackingUnit(Team team) {
-		super(team);
+	public AttackingUnit(Team team, Paint p) {
+		super(team, p);
 	}
 	
-	private static final float LINE_LENGTH = 15f;
+	private static final float LINE_LENGTH = 6f;
 	
 	@Override
 	public void draw(Canvas canvas) {
-		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
+		canvas.drawCircle(this.getX(), this.getY(), 4, paint);
 		float heading = getHeading();
-		canvas.drawLine(getX(), getY(), LINE_LENGTH*FloatMath.cos(heading), LINE_LENGTH*FloatMath.cos(heading), paint);
+		canvas.drawLine(getX(), getY(), getX() + LINE_LENGTH*FloatMath.cos(heading), getY() + LINE_LENGTH*FloatMath.sin(heading), paint);
 	}
 
 	@Override

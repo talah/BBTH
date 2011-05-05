@@ -17,21 +17,13 @@ public abstract class Unit extends BasicMovable {
 	protected UIView view;
 	protected Paint paint;
 
-	public Unit(Team team) {
+	public Unit(Team team, Paint p) {
 		view = new UIView(null);
 		view.setAnchor(Anchor.CENTER_CENTER);
 
 		this.team = team;
 
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		switch (team) {
-		case CLIENT:
-			paint.setColor(Color.RED);
-			break;
-		case SERVER:
-			paint.setColor(Color.GREEN);
-			break;
-		}
+		paint = p;
 	}
 
 	public UIView getView() {

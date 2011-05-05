@@ -2,11 +2,12 @@ package bbth.game.units;
 
 import android.graphics.*;
 import android.util.FloatMath;
+import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
 public class UberUnit extends Unit {
-	public UberUnit(Team team) {
-		super(team);
+	public UberUnit(Team team, Paint p) {
+		super(team, p);
 	}
 	
 	private float[] outline = { 0f, -15f, 10f, 10f,
@@ -18,8 +19,8 @@ public class UberUnit extends Unit {
 		canvas.save();
 		
 		canvas.translate(getX(), getY());
-		canvas.rotate(getHeading());
-		canvas.drawPoints(outline, paint);
+		canvas.rotate(MathUtils.toDegrees(getHeading()) + 90);
+		canvas.drawLines(outline, paint);
 		
 		canvas.restore();
 	}
