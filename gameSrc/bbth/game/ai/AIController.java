@@ -3,6 +3,7 @@ package bbth.game.ai;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import android.util.Log;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
@@ -10,26 +11,23 @@ import bbth.game.Unit;
 
 public class AIController {
 	EnumMap<Team, ArrayList<Unit>> m_entities;
+	EnumMap<Team, Integer> m_last_updated;
 	EnumMap<Team, FlockRulesCalculator> m_flocks;
 	
 	DefensiveAI m_aggressive;
 	
 	private float m_fraction_to_update = 0.33f;
 	
-	int m_last_updated = 0;
-
 	public AIController() {
 		m_aggressive = new DefensiveAI();
 		
 		m_flocks = new EnumMap<Team, FlockRulesCalculator>(Team.class);
+		m_last_updated = new EnumMap<Team, Integer>(Team.class);
+    	m_entities = new EnumMap<Team, ArrayList<Unit>>(Team.class);
 		
 		for (Team t : Team.values()) {
 			m_flocks.put(t, new FlockRulesCalculator());
-		}
-        
-    	m_entities = new EnumMap<Team, ArrayList<Unit>>(Team.class);
-    	
-    	for (Team t : Team.values()) {
+			m_last_updated.put(t, 0);
 			m_entities.put(t, new ArrayList<Unit>());
 		}
    	}
@@ -50,11 +48,11 @@ public class AIController {
 	
 	public void update() {
 		for (Team t : Team.values()) {
-			update(m_entities.get(t), m_flocks.get(t));
+			update(m_entities.get(t), m_flocks.get(t), t);
 		}
 	}
 	
-	private void update(ArrayList<Unit> entities, FlockRulesCalculator flock) {
+	private void update(ArrayList<Unit> entities, FlockRulesCalculator flock, Team team) {
 		int size = entities.size();
 		int num_to_update = (int) ((size * m_fraction_to_update)+1);
 		
@@ -62,7 +60,13 @@ public class AIController {
 			return;
 		}
 		
-		int i = m_last_updated;
+		int last_updated = m_last_updated.get(team);
+		
+		if (last_updated > size-1) {
+			last_updated = 0;
+		}
+		
+		int i = last_updated;
 		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 			
@@ -79,9 +83,9 @@ public class AIController {
 		}
 		
 		if (i >= size-1) {
-			m_last_updated = 0;
+			m_last_updated.put(team, 0);
 		} else {
-			m_last_updated = i+1;
+			m_last_updated.put(team, i+1);
 		}
 	}
 
