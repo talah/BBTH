@@ -12,9 +12,14 @@ public abstract class LineOfSightTester {
 	 * Call this to update the acceleration data structure.
 	 */
 	public abstract void updateWalls();
+	
+	public abstract void setBounds(float min_x, float min_y, float max_x, float max_y);
 
 	/**
 	 * Does the line segment not intersect any wall line segments?
 	 */
 	public abstract boolean isLineOfSightClear(PointF start, PointF end);
+	
+	public abstract boolean isLineOfSightClear(float startx, float starty, float endx, float endy);
+
 }

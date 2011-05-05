@@ -2,7 +2,6 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
-import edwallac.TriangulationTestScreen;
 
 public class BBTHGame extends Game {
 
@@ -15,8 +14,8 @@ public class BBTHGame extends Game {
 		// currentScreen = new MusicTestScreen(activity);
 		// currentScreen = new NetworkTestScreen();
 		// currentScreen = new TransitionTest();
-		// currentScreen = new GameSetupScreen();
-		currentScreen = new TriangulationTestScreen();
+		currentScreen = new GameSetupScreen();
+		// currentScreen = new TriangulationTestScreen();
 	}
 
 	@Override

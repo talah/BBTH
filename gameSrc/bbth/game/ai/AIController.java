@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 import android.util.Log;
+import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
+import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
 import bbth.game.units.Unit;
@@ -20,7 +22,7 @@ public class AIController {
 	
 	Team[] m_teams;
 		
-	private float m_fraction_to_update = 0.33f;
+	private float m_fraction_to_update = 0.99f;
 	
 	public AIController() {
 		m_defensive = new DefensiveAI();
@@ -38,8 +40,8 @@ public class AIController {
 		}
    	}
 	
-	public void setPathfinder(Pathfinder pathfinder, MapGrid grid) {
-		m_defensive.setPathfinder(pathfinder, grid);
+	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester) {
+		m_defensive.setPathfinder(pathfinder, graph, tester);
 	}
 	
 	public void addEntity(Unit u) {

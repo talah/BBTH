@@ -98,4 +98,17 @@ public class ConnectedGraph {
 		
 		return null;
 	}
+
+	public PointF getClosestNode(float x, float y) {
+		float bestdist = 0;
+		PointF closest = null;
+		for (PointF p : m_connections.keySet()) {
+			float dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+			if (closest == null || dist < bestdist) {
+				closest = p;
+				bestdist = dist;
+			}
+		}
+		return closest;
+	}
 }

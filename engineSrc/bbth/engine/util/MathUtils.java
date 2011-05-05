@@ -41,4 +41,12 @@ public final class MathUtils {
 	public static float clamp(float min, float max, float val) {
 		return Math.max(min, Math.min(val, max));
 	}
+
+	public static float toDegrees(float heading) {
+		return heading * 180/PI;
+	}
+	
+	public static float toRadians(float heading) {
+		return heading * PI/180;
+	}
 }

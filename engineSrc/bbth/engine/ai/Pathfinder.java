@@ -138,4 +138,8 @@ public class Pathfinder {
 		float dy = current.m_point.y - goal.y;
 		return dx * dx + dy * dy;
 	}
+
+	public void clearPath() {
+		m_found_path.clear();
+	}
 }
