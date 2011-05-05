@@ -17,6 +17,8 @@ public class AIController {
 	EnumMap<Team, FlockRulesCalculator> m_flocks;
 	
 	DefensiveAI m_defensive;
+	
+	Team[] m_teams;
 		
 	private float m_fraction_to_update = 0.33f;
 	
@@ -27,7 +29,9 @@ public class AIController {
 		m_last_updated = new EnumMap<Team, Integer>(Team.class);
     	m_entities = new EnumMap<Team, ArrayList<Unit>>(Team.class);
 		
-		for (Team t : Team.values()) {
+    	m_teams = Team.values();
+    	
+		for (Team t : m_teams) {
 			m_flocks.put(t, new FlockRulesCalculator());
 			m_last_updated.put(t, 0);
 			m_entities.put(t, new ArrayList<Unit>());
@@ -53,7 +57,7 @@ public class AIController {
 	}
 	
 	public void update() {
-		for (Team t : Team.values()) {
+		for (Team t : m_teams) {
 			update(m_entities.get(t), m_flocks.get(t), t);
 		}
 	}
@@ -71,16 +75,16 @@ public class AIController {
 		if (last_updated > size-1) {
 			last_updated = 0;
 		}
-				
+		
 		int i = last_updated;
 		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 			
 			// TODO: Use the correct AI for the individual unit.
 			m_defensive.update(entity, this, flock);
-						
+			
 			num_to_update--;
-
+			
 			if (i >= size-1) {
 				i = 0;
 			} else {
