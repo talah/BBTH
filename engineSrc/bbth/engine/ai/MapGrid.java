@@ -117,14 +117,26 @@ public class MapGrid extends ConnectedGraph {
 	}
 	
 	public PointF getBin(float x, float y) {
-		return m_points[(int)((y/m_height) * m_y_size)][(int)((x/m_width) * m_x_size)];
+		return m_points[getYBin(y)][getXBin(x)];
 	}
 	
 	public int getXBin(float x) {
+		if (x < 0) {
+			return 0;
+		}
+		if (x >= m_width) {
+			return m_x_size-1;
+		}
 		return (int)((x/m_width) * m_x_size);
 	}
 	
 	public int getYBin(float y) {
+		if (y < 0) {
+			return 0;
+		}
+		if (y >= m_height) {
+			return m_y_size-1;
+		}
 		return (int)((y/m_height) * m_y_size);
 	}
 	

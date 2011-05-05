@@ -6,9 +6,13 @@ import java.util.Random;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.ai.Heuristic;
+import bbth.engine.ai.MapGrid;
+import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
@@ -24,6 +28,8 @@ public class BBTHAITest extends GameScreen {
 	private Paint m_paint_1;
 	private Random m_rand;
 	private BBTHGame m_parent;
+	private Pathfinder m_pathfinder;
+	private MapGrid m_grid;
 	
 	//******** SETUP FOR AI *******//
 	private AIController m_controller;
@@ -37,10 +43,14 @@ public class BBTHAITest extends GameScreen {
 	
 	public BBTHAITest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
+				
+		m_grid = new MapGrid((int)BBTHGame.WIDTH, (int)BBTHGame.HEIGHT, (int)BBTHGame.WIDTH/10, (int)BBTHGame.HEIGHT/10);
+		m_pathfinder = new Pathfinder(m_grid);
 		
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
 		//******** SETUP FOR AI *******//
+		m_controller.setPathfinder(m_pathfinder, m_grid);
 
 		m_last_time = System.currentTimeMillis();
 		
@@ -67,7 +77,7 @@ public class BBTHAITest extends GameScreen {
 	}
 	
 	private void randomizeEntities() {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 15; i++) {
 			Unit e = new Unit(Team.SERVER);
 			e.setTeam(Team.SERVER);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -79,7 +89,7 @@ public class BBTHAITest extends GameScreen {
 			//******** SETUP FOR AI *******//
 		}
 		
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 15; i++) {
 			Unit e = new Unit(Team.CLIENT);
 			e.setTeam(Team.CLIENT);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());

@@ -55,7 +55,7 @@ public class Pathfinder {
 				e.m_h_score = Integer.MAX_VALUE;
 			}
 		}
-		
+				
 		if (!m_graph.contains(start)) {
 			return false;
 		}
@@ -68,10 +68,12 @@ public class Pathfinder {
 		
 		m_open_set.offer(startentry);
 		
+		float tolerancesqr = tolerance * tolerance;
+		
 		while (m_open_set.size() != 0) {
 			AStarEntry current = m_open_set.poll();
 			
-			if (getDist(current, goal) < tolerance) {
+			if (getDistSqr(current, goal) < tolerancesqr) {
 				// We're done.
 				reconstructPath(current.m_point);
 				return true;
@@ -92,7 +94,7 @@ public class Pathfinder {
 					continue;
 				}
 				
-				int tentative_g_score = current.m_g_score + (int)getDist(current, neighbor);
+				int tentative_g_score = current.m_g_score + (int)getDistSqr(current, neighbor);
 				
 				AStarEntry nentry = m_entries.get(neighbor);
 				
@@ -125,15 +127,15 @@ public class Pathfinder {
 
 	private int estimateHScore(Heuristic se, AStarEntry start, PointF goal) {
 		if (se == null) {
-			return (int)getDist(start, goal);
+			return (int)getDistSqr(start, goal);
 		} else {
 			return se.estimateHScore(start.m_point, goal);
 		}
 	}
-
-	private float getDist(AStarEntry current, PointF goal) {
+	
+	private float getDistSqr(AStarEntry current, PointF goal) {
 		float dx = current.m_point.x - goal.x;
 		float dy = current.m_point.y - goal.y;
-		return FloatMath.sqrt(dx * dx + dy * dy);
+		return dx * dx + dy * dy;
 	}
 }

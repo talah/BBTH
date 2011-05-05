@@ -5,6 +5,8 @@ import java.util.EnumMap;
 
 import android.util.Log;
 import bbth.engine.ai.FlockRulesCalculator;
+import bbth.engine.ai.MapGrid;
+import bbth.engine.ai.Pathfinder;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
 import bbth.game.Unit;
@@ -14,12 +16,12 @@ public class AIController {
 	EnumMap<Team, Integer> m_last_updated;
 	EnumMap<Team, FlockRulesCalculator> m_flocks;
 	
-	DefensiveAI m_aggressive;
-	
+	DefensiveAI m_defensive;
+		
 	private float m_fraction_to_update = 0.33f;
 	
 	public AIController() {
-		m_aggressive = new DefensiveAI();
+		m_defensive = new DefensiveAI();
 		
 		m_flocks = new EnumMap<Team, FlockRulesCalculator>(Team.class);
 		m_last_updated = new EnumMap<Team, Integer>(Team.class);
@@ -31,6 +33,10 @@ public class AIController {
 			m_entities.put(t, new ArrayList<Unit>());
 		}
    	}
+	
+	public void setPathfinder(Pathfinder pathfinder, MapGrid grid) {
+		m_defensive.setPathfinder(pathfinder, grid);
+	}
 	
 	public void addEntity(Unit u) {
 		m_entities.get(u.getTeam()).add(u);
@@ -65,14 +71,14 @@ public class AIController {
 		if (last_updated > size-1) {
 			last_updated = 0;
 		}
-		
+				
 		int i = last_updated;
 		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 			
 			// TODO: Use the correct AI for the individual unit.
-			m_aggressive.update(entity, this, flock);
-			
+			m_defensive.update(entity, this, flock);
+						
 			num_to_update--;
 
 			if (i >= size-1) {
@@ -85,7 +91,7 @@ public class AIController {
 		if (i >= size-1) {
 			m_last_updated.put(team, 0);
 		} else {
-			m_last_updated.put(team, i+1);
+			m_last_updated.put(team, i);
 		}
 	}
 

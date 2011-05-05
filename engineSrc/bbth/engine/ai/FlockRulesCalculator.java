@@ -8,7 +8,7 @@ import bbth.engine.entity.Movable;
 import bbth.engine.util.MathUtils;
 
 public class FlockRulesCalculator {
-	private static final float FRONT_VIEW_ANGLE = MathUtils.PI / 3.0f;
+	private static final float FRONT_VIEW_ANGLE = MathUtils.PI / 2.0f;
 
 	public ArrayList<Movable> m_objects;
 
