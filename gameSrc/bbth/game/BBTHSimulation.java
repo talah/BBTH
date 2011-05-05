@@ -1,6 +1,8 @@
 package bbth.game;
 
 import android.graphics.Canvas;
+import bbth.engine.ai.MapGrid;
+import bbth.engine.ai.Pathfinder;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIView;
@@ -12,6 +14,8 @@ public class BBTHSimulation extends Simulation {
 	private Player localPlayer, remotePlayer;
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
+	private Pathfinder pathFinder;
+	private MapGrid grid;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
@@ -26,6 +30,12 @@ public class BBTHSimulation extends Simulation {
 		clientPlayer = new Player(Team.CLIENT, aiController);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
+		
+		int width = (int) BBTHGame.WIDTH;
+		int height = (int) BBTHGame.HEIGHT;
+		grid = new MapGrid(width, height, width / 10, height / 10);
+		pathFinder = new Pathfinder(grid);
+		aiController.setPathfinder(pathFinder, grid);
 	}
 
 	public void setupSubviews(UIView view) {
@@ -44,6 +54,8 @@ public class BBTHSimulation extends Simulation {
 
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
+		//if (!isOnBeat) return;
+		
 		if (isServer) {
 			serverPlayer.spawnUnit(x, y);
 		} else {
