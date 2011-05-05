@@ -1,4 +1,4 @@
-package edwallac.src.bbth.game.test.bbth.edwallac.evan.wallace.cs.brown.edu.exe.bbth.beatbackthehorde.hax;
+package edwallac;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
