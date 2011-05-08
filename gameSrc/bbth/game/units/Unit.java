@@ -16,6 +16,7 @@ public abstract class Unit extends BasicMovable {
 	protected Team team;
 	protected UIView view;
 	protected Paint paint;
+	protected Unit target;
 
 	public Unit(Team team) {
 		view = new UIView(null);
@@ -65,5 +66,9 @@ public abstract class Unit extends BasicMovable {
 
 	public void setTeam(Team newteam) {
 		team = newteam;
+	}
+	
+	public void setTarget(Unit target) {
+		
 	}
 }

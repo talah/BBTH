@@ -1,7 +1,6 @@
 package bbth.game.units;
 
 import android.graphics.*;
-import android.util.FloatMath;
 import bbth.game.Team;
 
 public class UberUnit extends Unit {
