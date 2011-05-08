@@ -20,9 +20,11 @@ import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
 import bbth.engine.sound.BeatTracker;
+import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.sound.SimpleBeatPattern;
+import bbth.engine.sound.SoundManager;
 import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 import bbth.game.R;
@@ -41,11 +43,15 @@ public class MusicTestScreen extends GameScreen {
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
 	
+	private static final int HIT_SOUND_ID = 0;
+	private static final int MISS_SOUND_ID = 1;
+	
 	private Paint _paint;
 	private ParticleSystem _particles;
 	private RectF _comboBox;
 	
 	private MusicPlayer _musicPlayer;
+	private SoundManager _soundManager;
 	private BeatTracker _beatTracker;
 	private int _millisPerBeat;
 	private int _score;
@@ -65,6 +71,9 @@ public class MusicTestScreen extends GameScreen {
 		_comboBox = new RectF(0, 0, 0, 0);
 		_particles = new ParticleSystem(100, 0.5f);
 		
+		_soundManager = new SoundManager(context, 8);
+		_soundManager.addSound(HIT_SOUND_ID, R.raw.hit1);
+		_soundManager.addSound(MISS_SOUND_ID, R.raw.miss1);
 		_musicPlayer = new MusicPlayer(context, R.raw.bonusroom);
 		_musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			@Override
@@ -74,7 +83,10 @@ public class MusicTestScreen extends GameScreen {
 		});
 		_millisPerBeat = 571;
 		
-		BeatPattern simplePattern = new SimpleBeatPattern(385, _millisPerBeat, 30000);
+		BeatPattern simplePattern1 = new SimpleBeatPattern(385, _millisPerBeat, 3000);
+		BeatPattern simplePattern2 = new SimpleBeatPattern(385, _millisPerBeat / 3, 3000);
+		BeatPattern []subpatterns = { simplePattern1, simplePattern2 };
+		BeatPattern compositePattern = new CompositeBeatPattern(subpatterns);
 		Beat[] beats = new Beat[10];
 		beats[0] = Beat.tap(571);
 		beats[1] = Beat.tap(571);
@@ -88,7 +100,7 @@ public class MusicTestScreen extends GameScreen {
 		beats[9] = Beat.hold(1142);
 		
 		BeatPattern customPattern = new SimpleBeatPattern(385, beats);
-		_beatTracker = new BeatTracker(_musicPlayer, customPattern);
+		_beatTracker = new BeatTracker(_musicPlayer, compositePattern);
 		
 		_beats = new ArrayList<Beat>();
 		_musicPlayer.play();
@@ -118,6 +130,7 @@ public class MusicTestScreen extends GameScreen {
 			Beat.BeatType beatType = _beatTracker.onTouchDown();
 			boolean onBeat = (beatType != Beat.BeatType.REST);
 			if (onBeat) {
+				_soundManager.play(HIT_SOUND_ID);
 				++_score;
 				++_combo;
 				_scoreStr = String.valueOf(_score);
@@ -135,6 +148,7 @@ public class MusicTestScreen extends GameScreen {
 					_comboBox.bottom += 1;
 				}
 			} else {
+				_soundManager.play(MISS_SOUND_ID);
 				_combo = 0;
 				_comboStr = "x" + String.valueOf(_combo);
 				_comboBox.bottom = _comboBox.top;
