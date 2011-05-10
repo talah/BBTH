@@ -105,7 +105,7 @@ public class UIButton extends UIControl {
         super.setBounds(left, top, right, bottom);
 		normal_state = new LinearGradient(left, top, left, bottom, bg_start_color, bg_end_color, Shader.TileMode.MIRROR);
 		down_state = new LinearGradient(left, top, left, bottom, bg_down_start_color, bg_down_end_color, Shader.TileMode.MIRROR);
-		disabled_state = new LinearGradient(left, top, left, bottom, bg_down_start_color, bg_down_end_color, Shader.TileMode.MIRROR);
+		disabled_state = new LinearGradient(left, top, left, bottom, bg_disabled_start_color, bg_disabled_end_color, Shader.TileMode.MIRROR);
 		setTextSize(_height / 2.5f);
 		setText(text);
 	}
@@ -144,9 +144,9 @@ public class UIButton extends UIControl {
 		bg_disabled_end_color = color;
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
-		hsv[2] *= 1.2f; // value component
+		hsv[2] *= 1.1f; // value component
 		bg_disabled_start_color = Color.HSVToColor(hsv);
-		disabled_state = new LinearGradient(_rect.left, _rect.top, _rect.left, _rect.bottom, bg_down_start_color, bg_down_end_color, Shader.TileMode.MIRROR);
+		disabled_state = new LinearGradient(_rect.left, _rect.top, _rect.left, _rect.bottom, bg_disabled_start_color, bg_disabled_end_color, Shader.TileMode.MIRROR);
 	}
 
 	public void setTextSize(float size)
