@@ -77,6 +77,7 @@ public abstract class Unit extends BasicMovable {
 		return fsm.getCurrState();
 	}
 	
+	// If state name is "attacking," can attack current target.
 	public String getStateName() {
 		return fsm.getStateName();
 	}
