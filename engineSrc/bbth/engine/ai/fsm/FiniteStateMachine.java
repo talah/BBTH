@@ -26,6 +26,9 @@ public class FiniteStateMachine {
 	}
 	
 	public String getStateName() {
+		if (m_current_state == null) {
+			return null;
+		}
 		return m_current_state.getName();
 	}
 	

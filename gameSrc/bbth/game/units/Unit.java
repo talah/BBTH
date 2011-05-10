@@ -76,6 +76,10 @@ public abstract class Unit extends BasicMovable {
 	public FiniteState getState() {
 		return fsm.getCurrState();
 	}
+	
+	public String getStateName() {
+		return fsm.getStateName();
+	}
 
 	public void setTarget(Unit target) {
 		this.target = target;
