@@ -8,13 +8,15 @@ import android.util.FloatMath;
 import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.ai.fsm.*;
+import bbth.engine.ai.fsm.FiniteState;
+import bbth.engine.ai.fsm.FiniteStateMachine;
+import bbth.engine.ai.fsm.SimpleGreaterTransition;
+import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.util.MathUtils;
 import bbth.game.units.Unit;
 
-public class DefensiveAI extends UnitAI {
-	
+public class UberAI extends UnitAI {
 	private PointF m_flock_dir;
 
 	private Pathfinder m_pathfinder;
@@ -28,7 +30,7 @@ public class DefensiveAI extends UnitAI {
 
 	private HashMap<String, Float> m_fsm_conditions;
 	
-	public DefensiveAI() {
+	public UberAI() {
 		super();
 		m_flock_dir = new PointF();
 		start_point = new PointF();
@@ -249,5 +251,4 @@ public class DefensiveAI extends UnitAI {
 		m_map_grid = graph;
 		m_tester = tester;
 	}
-
 }

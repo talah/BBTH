@@ -8,13 +8,19 @@ import android.util.FloatMath;
 import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.ai.fsm.*;
+import bbth.engine.ai.fsm.FiniteState;
+import bbth.engine.ai.fsm.FiniteStateMachine;
+import bbth.engine.ai.fsm.SimpleGreaterTransition;
+import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.util.MathUtils;
+import bbth.game.BBTHGame;
+import bbth.game.Team;
 import bbth.game.units.Unit;
 
-public class DefensiveAI extends UnitAI {
-	
+public class OffensiveAI extends UnitAI {
+
+
 	private PointF m_flock_dir;
 
 	private Pathfinder m_pathfinder;
@@ -28,7 +34,7 @@ public class DefensiveAI extends UnitAI {
 
 	private HashMap<String, Float> m_fsm_conditions;
 	
-	public DefensiveAI() {
+	public OffensiveAI() {
 		super();
 		m_flock_dir = new PointF();
 		start_point = new PointF();
@@ -97,48 +103,47 @@ public class DefensiveAI extends UnitAI {
 		
 		// Calculate somewhere to go if it's a leader.
 		if (!flock.hasLeader(entity)) {
-			Unit enemy = entity.getTarget();
+			float goal_x = BBTHGame.WIDTH/2.0f;
+			float goal_y = 0;
+			if (entity.getTeam() == Team.CLIENT) { 
+				goal_y = BBTHGame.HEIGHT;
+			}
+			start_point.set(start_x, start_y);
+			end_point.set(goal_x, goal_y);
 			
-			if (enemy != null) {
-				float goal_x = enemy.getX();
-				float goal_y = enemy.getY();
-				start_point.set(start_x, start_y);
-				end_point.set(goal_x, goal_y);
+			if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
+				PointF start = getClosestNode(start_point);
+				PointF end = getClosestNode(end_point);
 				
-				if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
-					PointF start = getClosestNode(start_point);
-					PointF end = getClosestNode(end_point);
-					
-					ArrayList<PointF> path = null;
-					
-					if (start != null && end != null) {
-						m_pathfinder.clearPath();
-						m_pathfinder.findPath(start, end);
-					}
-					
-					path = m_pathfinder.getPath();
-					
-					path.add(end_point);
-					
-					if (path.size() > 1) {
-						PointF goal_point = path.get(0);
-						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1))) {
-							goal_point = path.get(1);
-						}
-						
-						//System.out.println("Next point: " + goal_point.x + ", " + goal_point.y + " = " + m_map_grid.getXPos((int)goal_point.x) + ", " + m_map_grid.getYPos((int)goal_point.y));
-						goal_x = goal_point.x;
-						goal_y = goal_point.y;
-					}
-					
-					//System.out.println("Team: " + entity.getTeam() + " Start: " + entity.getX() + ", " + entity.getY() + " = " + start.x + ", " + start.y + " End: " + end.x + ", " + end.y);
+				ArrayList<PointF> path = null;
+				
+				if (start != null && end != null) {
+					m_pathfinder.clearPath();
+					m_pathfinder.findPath(start, end);
 				}
 				
-				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
-				float objectiveweighting = getObjectiveWeighting();
-				xcomp += objectiveweighting * FloatMath.cos(angle);
-				ycomp += objectiveweighting * FloatMath.sin(angle);
+				path = m_pathfinder.getPath();
+				
+				path.add(end_point);
+				
+				if (path.size() > 1) {
+					PointF goal_point = path.get(0);
+					if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1))) {
+						goal_point = path.get(1);
+					}
+					
+					//System.out.println("Next point: " + goal_point.x + ", " + goal_point.y + " = " + m_map_grid.getXPos((int)goal_point.x) + ", " + m_map_grid.getYPos((int)goal_point.y));
+					goal_x = goal_point.x;
+					goal_y = goal_point.y;
+				}
+				
+				//System.out.println("Team: " + entity.getTeam() + " Start: " + entity.getX() + ", " + entity.getY() + " = " + start.x + ", " + start.y + " End: " + end.x + ", " + end.y);
 			}
+			
+			float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
+			float objectiveweighting = getObjectiveWeighting();
+			xcomp += objectiveweighting * FloatMath.cos(angle);
+			ycomp += objectiveweighting * FloatMath.sin(angle);
 		}
 		
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);

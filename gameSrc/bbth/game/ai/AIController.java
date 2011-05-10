@@ -2,6 +2,7 @@ package bbth.game.ai;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 
 import android.util.Log;
 import bbth.engine.ai.ConnectedGraph;
@@ -12,6 +13,8 @@ import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
+import bbth.engine.ai.fsm.*;
 
 public class AIController {
 	EnumMap<Team, ArrayList<Unit>> m_entities;
@@ -19,6 +22,8 @@ public class AIController {
 	EnumMap<Team, FlockRulesCalculator> m_flocks;
 	
 	DefensiveAI m_defensive;
+	OffensiveAI m_offensive;
+	UberAI m_uber;
 	
 	Team[] m_teams;
 		
@@ -26,11 +31,12 @@ public class AIController {
 	
 	public AIController() {
 		m_defensive = new DefensiveAI();
+		m_offensive = new OffensiveAI();
+		m_uber = new UberAI();
 		
 		m_flocks = new EnumMap<Team, FlockRulesCalculator>(Team.class);
 		m_last_updated = new EnumMap<Team, Integer>(Team.class);
-    	m_entities = new EnumMap<Team, ArrayList<Unit>>(Team.class);
-		
+    	m_entities = new EnumMap<Team, ArrayList<Unit>>(Team.class);		
     	m_teams = Team.values();
     	
 		for (Team t : m_teams) {
@@ -42,6 +48,8 @@ public class AIController {
 	
 	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester) {
 		m_defensive.setPathfinder(pathfinder, graph, tester);
+		m_offensive.setPathfinder(pathfinder, graph, tester);
+		m_uber.setPathfinder(pathfinder, graph, tester);
 	}
 	
 	public void addEntity(Unit u) {
@@ -53,7 +61,7 @@ public class AIController {
 		m_entities.get(u.getTeam()).add(u);
 		m_flocks.get(u.getTeam()).addObject(u);
 	}
-	
+
 	public ArrayList<Unit> getEnemies(Unit u) {
 		return m_entities.get(u.getTeam().getOppositeTeam());
 	}
@@ -83,7 +91,13 @@ public class AIController {
 			Unit entity = entities.get(i);
 			
 			// TODO: Use the correct AI for the individual unit.
-			m_defensive.update(entity, this, flock);
+			if (entity.getType() == UnitType.DEFENDING) { 
+				m_defensive.update(entity, this, flock);
+			} else if (entity.getType() == UnitType.ATTACKING) {
+				m_offensive.update(entity, this, flock);
+			} else if (entity.getType() == UnitType.UBER) {
+				m_uber.update(entity, this, flock);
+			}
 			
 			num_to_update--;
 			

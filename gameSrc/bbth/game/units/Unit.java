@@ -1,8 +1,8 @@
 package bbth.game.units;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import bbth.engine.ai.fsm.*;
 import bbth.engine.entity.BasicMovable;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
@@ -16,12 +16,18 @@ public abstract class Unit extends BasicMovable {
 	protected Team team;
 	protected UIView view;
 	protected Paint paint;
+	private FiniteStateMachine fsm;
+	private Unit target;
 
 	public Unit(Team team, Paint p) {
 		view = new UIView(null);
 		view.setAnchor(Anchor.CENTER_CENTER);
-
+		
+		fsm = new FiniteStateMachine();
+		
 		this.team = team;
+		
+		target = null;
 
 		paint = p;
 	}
@@ -57,5 +63,25 @@ public abstract class Unit extends BasicMovable {
 
 	public void setTeam(Team newteam) {
 		team = newteam;
+	}
+
+	public void setFSM(FiniteStateMachine fsm) {
+		this.fsm = fsm;
+	}
+
+	public FiniteStateMachine getFSM() {
+		return fsm;
+	}
+	
+	public FiniteState getState() {
+		return fsm.getCurrState();
+	}
+
+	public void setTarget(Unit target) {
+		this.target = target;
+	}
+
+	public Unit getTarget() {
+		return target;
 	}
 }

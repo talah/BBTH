@@ -15,6 +15,10 @@ public class FiniteStateMachine {
 	
 	public void addState(String name) {
 		FiniteState s = new FiniteState(name);
+		addState(name, s);
+	}
+	
+	public void addState(String name, FiniteState s) {
 		m_states.put(name, s);
 		if (m_current_state == null) {
 			m_current_state = s;
