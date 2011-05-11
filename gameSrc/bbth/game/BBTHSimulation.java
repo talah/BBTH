@@ -93,4 +93,9 @@ public class BBTHSimulation extends Simulation {
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
 	}
+
+	public void drawForMiniMap(Canvas canvas) {
+		localPlayer.drawForMiniMap(canvas);
+		remotePlayer.drawForMiniMap(canvas);
+	}
 }

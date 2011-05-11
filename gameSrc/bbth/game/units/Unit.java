@@ -56,6 +56,7 @@ public abstract class Unit extends BasicMovable {
 	}
 
 	public abstract void draw(Canvas canvas);
+	public abstract void drawForMiniMap(Canvas canvas);
 	public abstract UnitType getType();
 
 	public Team getTeam() {

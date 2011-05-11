@@ -80,7 +80,7 @@ public class InGameScreen extends UIScrollView {
 		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
 		canvas.translate(minimapRect.left, minimapRect.top);
 		canvas.scale(scaleX, scaleY);
-		sim.draw(canvas);
+		sim.drawForMiniMap(canvas);
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Style.STROKE);
 		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);

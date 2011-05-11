@@ -40,7 +40,6 @@ public class Player {
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
 		paint.setStrokeJoin(Join.ROUND);
-		paint.setStyle(Style.STROKE);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
 		paint.setColor(team.getColor());
@@ -138,6 +137,7 @@ public class Player {
 	}
 
 	public void draw(Canvas canvas) {
+		paint.setStyle(Style.STROKE);
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
@@ -145,7 +145,13 @@ public class Player {
 		// Derp
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
-		paint.setStyle(Style.STROKE);
 		paint.setColor(team.getColor());
+	}
+	
+	public void drawForMiniMap(Canvas canvas) {
+		paint.setStyle(Style.FILL);
+		for (int i = 0; i < units.size(); i++) {
+			units.get(i).drawForMiniMap(canvas);
+		}
 	}
 }

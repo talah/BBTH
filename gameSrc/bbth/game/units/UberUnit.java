@@ -1,7 +1,7 @@
 package bbth.game.units;
 
-import android.graphics.*;
-import android.util.FloatMath;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
@@ -29,5 +29,9 @@ public class UberUnit extends Unit {
 	public UnitType getType() {
 		return UnitType.UBER;
 	}
-	
+
+	@Override
+	public void drawForMiniMap(Canvas canvas) {
+		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
+	}
 }
