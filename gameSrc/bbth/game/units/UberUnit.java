@@ -34,20 +34,21 @@ public class UberUnit extends Unit {
 			return;
 		
 		if (!getStateName().equals("attacking")) {
-			return;
+			fireTarget = null;
+			firing = false;
 		}
 		
 		if (firing) {
 			if (fireTarget.isDead() || powerLevel < 0) {
+System.err.println(team + ": finished firing at target: "+fireTarget+" (leftover power: "+powerLevel+")");
 				powerLevel = Math.max(0f, powerLevel);
 				charging = true;
 				firing = false;
 				fireTarget = null;
 			} else {
-//System.err.println(team + ": starting to fire at target: "+target.hashCode());
 				powerLevel -= DISCHARGE_RATE;
 				float damage = DAMAGE_RATE * seconds;
-				for (Unit unit : unitManager.getUnitsIntersectingLine(getX(), getY(), target.getX(), target.getY())) {
+				for (Unit unit : unitManager.getUnitsIntersectingLine(getX(), getY(), fireTarget.getX(), fireTarget.getY())) {
 					if (team.isEnemy(unit.getTeam())) {
 						unit.takeDamage(damage);
 						System.err.println(team + ": dealt "+damage+" to unit: "+unit.hashCode());
@@ -55,19 +56,21 @@ public class UberUnit extends Unit {
 				}
 			}
 		} else {
-			if (charging) {
-				if (powerLevel > MAX_POWER_LEVEL) { // that is, if its power level is over 9000
-					powerLevel = MAX_POWER_LEVEL;
-					charging = false;
-				} else {
-					powerLevel += CHARGE_RATE * seconds;
-				}
+			if (powerLevel > MAX_POWER_LEVEL) { // that is, if its power level is over 9000
+				powerLevel = MAX_POWER_LEVEL;
+				charging = false;
+			} else {
+				charging = true;
 			}
 			
-			if (!charging && target != null && !target.isDead()) {
+			if (charging) {
+				powerLevel += CHARGE_RATE * seconds;
+			}
+			
+			if (!charging && target != null && !target.isDead() && getStateName().equals("attacking")) {
 				firing = true;
 				fireTarget = target;
-//System.err.println(team + ": starting to fire at target: "+target.hashCode());
+System.err.println(team + ": starting to fire at target: "+fireTarget.hashCode());
 			}
 		}
 	}
@@ -97,12 +100,12 @@ public class UberUnit extends Unit {
 		canvas.drawCircle(getX(), getY(), radius, paint);
 		if (firing) {
 			paint.setStrokeWidth(radius);
-			canvas.drawLine(getX(), getY(), target.getX(), target.getY(), paint);
-			canvas.drawCircle(target.getX(), target.getY(), radius*1.3f, paint);
+			canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
+			canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*1.3f, paint);
 			paint.setColor(Color.WHITE);
 			paint.setStrokeWidth(radius*.5f);
-			canvas.drawCircle(target.getX(), target.getY(), radius*.65f, paint);
-			canvas.drawLine(getX(), getY(), target.getX(), target.getY(), paint);
+			canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*.65f, paint);
+			canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
 		}
 		
 		paint.set(tempPaint);

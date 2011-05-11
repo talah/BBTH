@@ -134,7 +134,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		spawnUnit(UnitType.UBER, Team.CLIENT);
 	}
 	
-	int updateCounter;
+	Bag<Unit> unitsToRemove = new Bag<Unit>();
 	@Override
 	public void onUpdate(float seconds) {
 		//******** SETUP FOR AI *******//
@@ -142,9 +142,13 @@ public class CombatTest extends GameScreen implements UnitManager {
 		//******** SETUP FOR AI *******//
 		
 		// do NOT precache size
-		for (updateCounter=0; updateCounter < units.size(); ++updateCounter) {
-			Unit unit = units.get(updateCounter);
+		for (int i=0; i < units.size(); ++i) {
+			Unit unit = units.get(i);
 			unit.update(seconds);
+		}
+		
+		while (!unitsToRemove.isEmpty()) {
+			units.remove(unitsToRemove.removeLast());
 		}
 	}
 
@@ -199,7 +203,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	public void notifyUnitDead(Unit unit) {
 		units.remove(unit);
 		m_controller.removeEntity(unit);
-		--updateCounter;
+		unitsToRemove.add(unit);
 	}
 
 	Bag<Unit> temp = new Bag<Unit>();
