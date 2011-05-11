@@ -25,7 +25,7 @@ public class Player {
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
 	private Team team;
-	private List<Unit> units;
+	public List<Unit> units;
 	private Base base;
 	private AIController aiController;
 	private Paint paint;

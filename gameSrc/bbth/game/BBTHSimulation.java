@@ -24,19 +24,20 @@ public class BBTHSimulation extends Simulation {
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
+	private GridAcceleration<Unit> accel;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
-			boolean isServer) {
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(6, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
+		accel = new GridAcceleration<Unit>(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
 		serverPlayer = new Player(Team.SERVER, aiController);
@@ -54,7 +55,7 @@ public class BBTHSimulation extends Simulation {
 		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		tester.walls = graphGen.walls;
 
-		aiController.setPathfinder(pathFinder, graphGen.graph, tester);
+		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
 	}
 
@@ -77,18 +78,18 @@ public class BBTHSimulation extends Simulation {
 	}
 
 	@Override
-	protected void simulateTapDown(float x, float y, boolean isServer,
-			boolean isHold, boolean isOnBeat) {
+	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-		player.startWall(x, y);
+		// player.startWall(x, y);
 		player.spawnUnit(x, y);
 	}
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
-		
-		if (!player.settingWall()) return;
+
+		if (!player.settingWall())
+			return;
 		player.updateWall(x, y);
 	}
 
@@ -96,7 +97,8 @@ public class BBTHSimulation extends Simulation {
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
-		if (!player.settingWall()) return;
+		if (!player.settingWall())
+			return;
 		Wall w = player.endWall(x, y);
 
 		graphGen.walls.add(w);
@@ -115,6 +117,9 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
+		accel.clear();
+		accel.insertUnits(serverPlayer.units);
+		accel.insertUnits(clientPlayer.units);
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
