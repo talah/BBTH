@@ -181,7 +181,7 @@ public class DefensiveAI extends UnitAI {
 			float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI/6.0f);
 			float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI/6.0f);
 			
-			if (m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2) && 
+			if (m_tester != null && m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2) && 
 					m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2)) {
 				clear = true;
 			} else {

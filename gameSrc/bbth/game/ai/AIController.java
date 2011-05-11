@@ -58,8 +58,8 @@ public class AIController {
 	}
 	
 	public void removeEntity(Unit u) {
-		m_entities.get(u.getTeam()).add(u);
-		m_flocks.get(u.getTeam()).addObject(u);
+		m_entities.get(u.getTeam()).remove(u);
+		m_flocks.get(u.getTeam()).removeObject(u);
 	}
 
 	public ArrayList<Unit> getEnemies(Unit u) {
