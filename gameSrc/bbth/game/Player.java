@@ -24,7 +24,7 @@ public class Player {
 	private Paint paint;
 	private UIView view;
 
-	UnitType currentUnitType = UnitType.ATTACKING;
+	UnitType currentUnitType = UnitType.DEFENDING;
 	
 	private static float height = BBTHGame.HEIGHT * 2;
 
