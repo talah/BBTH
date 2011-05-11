@@ -36,7 +36,7 @@ public class BBTHSimulation extends Simulation {
 		int height = (int) BBTHGame.HEIGHT;
 		grid = new MapGrid(width, height, width / 10, height / 10);
 		pathFinder = new Pathfinder(grid);
-		aiController.setPathfinder(pathFinder, grid);
+		//aiController.setPathfinder(pathFinder, grid);
 	}
 
 	public void setupSubviews(UIView view) {

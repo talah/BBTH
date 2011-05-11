@@ -2,12 +2,13 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
+import bbth.game.test.CombatTest;
 
 public class BBTHGame extends Game {
-
+	
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180;
-
+	
 	public BBTHGame(Activity activity) {
 //		currentScreen = new TitleScreen(null);
 //		currentScreen = new BBTHAITest(this);
@@ -16,13 +17,14 @@ public class BBTHGame extends Game {
 //		currentScreen = new TransitionTest();
 //		currentScreen = new GameSetupScreen();
 //		currentScreen = new TriangulationTestScreen();
+		currentScreen = new CombatTest(this);
 	}
-
+	
 	@Override
 	public float getWidth() {
 		return WIDTH;
 	}
-
+	
 	@Override
 	public float getHeight() {
 		return HEIGHT;

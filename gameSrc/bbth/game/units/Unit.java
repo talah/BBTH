@@ -1,8 +1,8 @@
 package bbth.game.units;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import bbth.engine.ai.fsm.*;
 import bbth.engine.entity.BasicMovable;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
@@ -13,26 +13,27 @@ import bbth.game.Team;
  * each other.
  */
 public abstract class Unit extends BasicMovable {
+	private FiniteStateMachine fsm;
+	
 	protected Team team;
 	protected UIView view;
 	protected Paint paint;
-	protected Unit target;
 
-	public Unit(Team team) {
+	protected Unit target;
+	protected UnitManager unitManager;
+	
+	protected float health = getStartingHealth();
+
+	public Unit(UnitManager unitManager, Team team, Paint p) {
 		view = new UIView(null);
 		view.setAnchor(Anchor.CENTER_CENTER);
-
+		
+		fsm = new FiniteStateMachine();
+		
 		this.team = team;
+		this.unitManager = unitManager;
 
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		switch (team) {
-		case CLIENT:
-			paint.setColor(Color.RED);
-			break;
-		case SERVER:
-			paint.setColor(Color.GREEN);
-			break;
-		}
+		paint = p;
 	}
 
 	public UIView getView() {
@@ -45,10 +46,11 @@ public abstract class Unit extends BasicMovable {
 		view.setPosition(x, y);
 	}
 
-	@Override
-	public void setVelocity(float vel, float dir) {
-		super.setVelocity(vel, dir);
-	}
+	// why override just to call super
+//	@Override
+//	public void setVelocity(float vel, float dir) {
+//		super.setVelocity(vel, dir);
+//	}
 
 	@Override
 	public void update(float seconds) {
@@ -59,6 +61,8 @@ public abstract class Unit extends BasicMovable {
 
 	public abstract void draw(Canvas canvas);
 	public abstract UnitType getType();
+	public abstract float getStartingHealth();
+	public abstract float getRadius();
 
 	public Team getTeam() {
 		return this.team;
@@ -67,8 +71,48 @@ public abstract class Unit extends BasicMovable {
 	public void setTeam(Team newteam) {
 		team = newteam;
 	}
-	
-	public void setTarget(Unit target) {
-		
+
+	public void setFSM(FiniteStateMachine fsm) {
+		this.fsm = fsm;
 	}
+
+	public FiniteStateMachine getFSM() {
+		return fsm;
+	}
+	
+	public FiniteState getState() {
+		return fsm.getCurrState();
+	}
+	
+	// If state name is "attacking," can attack current target.
+	public String getStateName() {
+		return fsm.getStateName();
+	}
+
+	public void setTarget(Unit target) {
+		this.target = target;
+	}
+
+	public Unit getTarget() {
+		return target;
+	}
+	
+	public float getHealth() {
+		return health;
+	}
+	
+	public boolean isDead() {
+		return health <= 0f;
+	}
+	
+	public void takeDamage(float damage) {
+		if (!isDead()) {
+			health -= damage;
+			if (isDead()) {
+				unitManager.notifyUnitDead(this);
+			}
+		}
+	}
+	
+	protected static Paint tempPaint = new Paint();
 }

@@ -15,7 +15,7 @@ public interface UIDefaultConstants {
 	// UIButton
 	public static final int UI_BUTTON_TEXT_COLOR = Color.DKGRAY;
 	public static final int UI_BUTTON_DISABLED_COLOR = Color.LTGRAY;
-	public static final int UI_BUTTON_DISABLED_TEXT_COLOR = Color.LTGRAY;
+	public static final int UI_BUTTON_DISABLED_TEXT_COLOR = Color.GRAY;
 
 	// UIProgressBar
 	public static final float UI_PROGRESS_BAR_CANDYCANE_SPEED = 100.f;

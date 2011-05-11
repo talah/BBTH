@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.PointF;
-import android.util.FloatMath;
 
 public class Pathfinder {
 	ConnectedGraph m_graph;
@@ -137,5 +136,9 @@ public class Pathfinder {
 		float dx = current.m_point.x - goal.x;
 		float dy = current.m_point.y - goal.y;
 		return dx * dx + dy * dy;
+	}
+
+	public void clearPath() {
+		m_found_path.clear();
 	}
 }

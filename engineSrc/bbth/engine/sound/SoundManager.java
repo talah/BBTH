@@ -12,18 +12,21 @@ import android.media.SoundPool;
  * @author jardini
  */
 public class SoundManager {
+	
 	private SoundPool _soundPool;
 	private HashMap<Integer, Integer> _soundMap;
 	private AudioManager _audioManager;
+	private Context _context;
 	
 	public SoundManager(Context context, int maxSimultaneousSounds) {
 		_soundPool = new SoundPool(maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);
 		_soundMap = new HashMap<Integer, Integer>();
 		_audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		_context = context;
 	}
 		
-	public void addSound(int index, int soundId, Context context) {
-	    _soundMap.put(index, _soundPool.load(context, soundId, 1));
+	public void addSound(int index, int resourceId) {
+	    _soundMap.put(index, _soundPool.load(_context, resourceId, 1));
 	}
 
 	// plays a sound once
