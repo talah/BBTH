@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
-import bbth.engine.collision.Point;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;

@@ -3,9 +3,9 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitType;
 
@@ -18,7 +18,6 @@ public class UnitSelector {
 
 	private UnitType currentUnitType;
 	private Paint rectPaint, unitPaint;
-	private Team team;
 	private Unit attacker, defender, uberer;
 
 	public UnitSelector(Team team) {
@@ -32,8 +31,6 @@ public class UnitSelector {
 		unitPaint.setStyle(Style.STROKE);
 		unitPaint.setAntiAlias(true);
 		
-		this.team = team;
-
 		attacker = UnitType.ATTACKING.createUnit(team, unitPaint);
 		attacker.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT / 2);
 		defender = UnitType.DEFENDING.createUnit(team, unitPaint);
@@ -55,16 +52,11 @@ public class UnitSelector {
 		
 		if (y < UNIT_HEIGHT) {
 			return 0;
-//			this.currentUnitType = UnitType.ATTACKING;
 		} else if (y < UNIT_HEIGHT * 2) {
 			return 1;
-//			this.currentUnitType = UnitType.DEFENDING;
 		} else {
 			return 2;
-//			this.currentUnitType = UnitType.UBER;
 		}
-
-//		return true;
 	}
 	
 	public void draw(Canvas canvas) {

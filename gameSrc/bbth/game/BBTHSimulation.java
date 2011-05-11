@@ -3,7 +3,6 @@ package bbth.game;
 import java.util.HashMap;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
