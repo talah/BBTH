@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
-import bbth.engine.particles.Particle;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
-import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
-import bbth.game.units.UnitType;
 
 /**
  * A player is someone who is interacting with the game.
@@ -33,8 +29,7 @@ public class Player {
 	private Paint paint;
 	private UIView view;
 	private ParticleSystem particles;
-
-	UnitType currentUnitType = UnitType.DEFENDING;
+	private UnitSelector selector;
 
 	private static float height = BBTHGame.HEIGHT * 2;
 
@@ -51,7 +46,7 @@ public class Player {
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
 		paint.setColor(team.getColor());
-		
+
 		switch (team) {
 		case CLIENT:
 			base.setAnchor(Anchor.BOTTOM_LEFT);
@@ -67,6 +62,7 @@ public class Player {
 		this.aiController = controller;
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+		selector = new UnitSelector(team);
 	}
 
 	public void setupSubviews(UIView view) {
@@ -86,11 +82,12 @@ public class Player {
 					* FloatMath.cos(angle);
 			float yVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.sin(angle);
-			Particle p = particles.createParticle().circle().velocity(xVel, yVel)
-					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
+			particles.createParticle().circle().velocity(xVel, yVel)
+					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
+					.color(team.getRandomShade());
 		}
 
-		Unit newUnit = currentUnitType.createUnit(team, paint);
+		Unit newUnit = selector.getUnitType().createUnit(team, paint);
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));

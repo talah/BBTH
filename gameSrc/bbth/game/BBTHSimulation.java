@@ -1,8 +1,8 @@
 package bbth.game;
 
 import android.graphics.Canvas;
-import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
+import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
@@ -17,8 +17,12 @@ public class BBTHSimulation extends Simulation {
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
-	private MapGrid grid;
+	private FastGraphGenerator graphGen;
 
+	// This is the virtual size of the game
+	public static final float GAME_WIDTH = 320;
+	public static final float GAME_HEIGHT = 360;
+	
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
@@ -33,13 +37,14 @@ public class BBTHSimulation extends Simulation {
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 		
-		int width = (int) BBTHGame.WIDTH;
-		int height = (int) BBTHGame.HEIGHT;
-		grid = new MapGrid(width, height, width / 10, height / 10);
-		pathFinder = new Pathfinder(grid);
-
-		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(10);
-		aiController.setPathfinder(pathFinder, grid, tester);
+		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		pathFinder = new Pathfinder(graphGen.graph);
+		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(15.f);
+		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+		tester.walls = graphGen.walls;
+				
+		aiController.setPathfinder(pathFinder, graphGen.graph, tester);
+		aiController.setUpdateFraction(.3f);
 	}
 
 	public void setupSubviews(UIView view) {
@@ -79,7 +84,7 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
-//		aiController.update();
+		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
 	}
