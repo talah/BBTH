@@ -31,6 +31,7 @@ public class Player {
 	private Paint paint;
 	private ParticleSystem particles;
 	private UnitSelector selector;
+	private float _health;
 
 	private ArrayList<Wall> walls;
 	private Wall currentWall;
@@ -40,6 +41,7 @@ public class Player {
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
+		_health = 100;
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
@@ -196,5 +198,20 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawForMiniMap(canvas);
 		}
+	}
+	
+	public float getHealth()
+	{
+		return _health;
+	}
+	
+	public void resetHealth()
+	{
+		_health = 100;
+	}
+	
+	public void adjustHealth(float delta)
+	{
+		_health = MathUtils.clamp(0, 100, _health + delta);
 	}
 }

@@ -17,8 +17,8 @@ import bbth.game.units.UnitType;
 public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
+	public Player localPlayer, remotePlayer;
 	private HashMap<Boolean, Player> playerMap;
-	private Player localPlayer, remotePlayer;
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
@@ -80,8 +80,11 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-		// player.startWall(x, y);
-		player.spawnUnit(x, y);
+		if (isHold) {
+			player.startWall(x, y);
+		} else {
+			player.spawnUnit(x, y);
+		}
 	}
 
 	@Override
