@@ -2,21 +2,21 @@ package bbth.game;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
-import bbth.game.R;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SoundManager;
 import bbth.engine.sound.SimpleBeatPattern;
+import bbth.engine.sound.SoundManager;
 
 /**
  * A complete beat track for a single song.  Handles music, hit and miss sounds, scoring.
@@ -41,7 +41,8 @@ public class BeatTrack {
 	private BeatTracker beatTracker;
 	private int combo;
 	private int score;
-	private String comboStr, scoreStr;
+	private String comboStr;
+	// scoreStr;
 	private BeatPattern beatPattern;
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
@@ -99,7 +100,7 @@ public class BeatTrack {
 
 		// Setup score stuff
 		score = 0;
-		scoreStr = String.valueOf(score);
+		// scoreStr = String.valueOf(score);
 		combo = 0;
 		comboStr = String.valueOf(combo);
 
@@ -152,7 +153,7 @@ public class BeatTrack {
 			soundManager.play(HIT_SOUND_ID);
 			++score;
 			++combo;
-			scoreStr = String.valueOf(score);
+			// scoreStr = String.valueOf(score);
 			comboStr = "x" + String.valueOf(combo);
 		} else {
 			soundManager.play(MISS_SOUND_ID);
