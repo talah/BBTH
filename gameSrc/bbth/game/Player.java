@@ -26,7 +26,7 @@ public class Player {
 
 	private Team team;
 	public List<Unit> units;
-	private Base base;
+	public Base base;
 	private AIController aiController;
 	private Paint paint;
 	private ParticleSystem particles;

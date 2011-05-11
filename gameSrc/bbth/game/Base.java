@@ -1,8 +1,8 @@
 package bbth.game;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import bbth.engine.ui.UIView;
 
 public class Base extends UIView {
@@ -15,12 +15,7 @@ public class Base extends UIView {
 		this.setSize(BBTHGame.WIDTH, 20);
 		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		
-		if (team == Team.CLIENT) {
-			paint.setColor(Color.CYAN);
-		} else if (team == Team.SERVER) {
-			paint.setColor(Color.MAGENTA);
-		}
+		paint.setColor(team.getBaseColor());
 		
 	}
 
@@ -28,4 +23,10 @@ public class Base extends UIView {
 	public void onDraw(Canvas canvas) {
 		canvas.drawRect(_rect, paint);
 	}
+	
+	public RectF getRect()
+	{
+		return _rect;
+	}
+	
 }

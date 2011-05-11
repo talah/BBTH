@@ -38,13 +38,8 @@ public class InGameScreen extends UIScrollView {
 		opponentHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		healthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		
-		if (team == Team.SERVER) {
-			healthPaint.setColor(Color.CYAN);
-			opponentHealthPaint.setColor(Color.MAGENTA);
-		} else if (team == Team.CLIENT) {
-			healthPaint.setColor(Color.MAGENTA);
-			opponentHealthPaint.setColor(Color.CYAN);
-		}
+		healthPaint.setColor(team.getBaseColor());
+		opponentHealthPaint.setColor(team.getOppositeTeam().getBaseColor());
 
 		// Set up the scrolling!
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -62,6 +57,7 @@ public class InGameScreen extends UIScrollView {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
+		this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
 
 		// Set up sound stuff
 		beatTrack = new BeatTrack(Song.RETRO);

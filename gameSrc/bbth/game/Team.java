@@ -19,6 +19,10 @@ public enum Team {
 		public Team getOppositeTeam() {
 			return Team.SERVER;
 		}
+		
+		public int getBaseColor() {
+			return Color.MAGENTA;
+		}
 	},
 	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71)) {
 		@Override
@@ -35,6 +39,10 @@ public enum Team {
 		public Team getOppositeTeam() {
 			return Team.CLIENT;
 		}
+		
+		public int getBaseColor() {
+			return Color.CYAN;
+		}
 	};
 
 	private int wallColor, tempWallColor;
@@ -45,6 +53,8 @@ public enum Team {
 	public abstract int getRandomShade();
 
 	public abstract Team getOppositeTeam();
+	
+	public abstract int getBaseColor();
 
 	private Team(int wallColor, int tempWallColor) {
 		this.wallColor = wallColor;

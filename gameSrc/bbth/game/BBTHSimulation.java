@@ -1,8 +1,10 @@
 package bbth.game;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
@@ -25,6 +27,7 @@ public class BBTHSimulation extends Simulation {
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
 	private GridAcceleration<Unit> accel;
+	private HashSet<Unit> localUnits;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -57,6 +60,8 @@ public class BBTHSimulation extends Simulation {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
+		
+		localUnits = new HashSet<Unit>();
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -126,6 +131,22 @@ public class BBTHSimulation extends Simulation {
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
+		RectF sr = serverPlayer.base.getRect();
+		RectF cr = clientPlayer.base.getRect();
+		
+		accel.getEntitiesInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
+		for(Unit u : localUnits)
+		{
+			if(u.getTeam() == Team.CLIENT)
+				serverPlayer.adjustHealth(-10);
+		}
+		
+		accel.getEntitiesInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
+		for(Unit u : localUnits)
+		{
+			if(u.getTeam() == Team.SERVER)
+				clientPlayer.adjustHealth(-10);
+		}
 	}
 
 	public void draw(Canvas canvas) {
