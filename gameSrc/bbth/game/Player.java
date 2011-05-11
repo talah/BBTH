@@ -68,10 +68,6 @@ public class Player {
 
 		view.addSubview(base);
 
-		for (int i = 0; i < this.units.size(); i++) {
-			view.addSubview(units.get(i).getView());
-		}
-		
 		if (isLocal) {
 			view.scrollTo(base.getPosition().x, base.getPosition().y);
 		}
@@ -102,8 +98,6 @@ public class Player {
 		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
-
-		this.view.addSubview(newUnit.getView());
 	}
 
 	public Unit getMostAdvancedUnit() {
@@ -134,7 +128,6 @@ public class Player {
 			if (unit.getY() < 0 || unit.getY() > BBTHSimulation.GAME_HEIGHT) {
 				units.remove(i);
 				i--;
-				view.removeSubview(unit.getView());
 				aiController.removeEntity(unit);
 			}
 
