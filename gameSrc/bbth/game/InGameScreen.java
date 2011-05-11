@@ -9,6 +9,7 @@ import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;
 
 public class InGameScreen extends UIScrollView {
@@ -43,7 +44,7 @@ public class InGameScreen extends UIScrollView {
 		sim.setupSubviews(this);
 
 		// Set up sound stuff
-		beatTrack = new BeatTrack(R.raw.bonusroom);
+		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
 	}
 
