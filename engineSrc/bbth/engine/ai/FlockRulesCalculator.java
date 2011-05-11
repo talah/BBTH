@@ -49,7 +49,7 @@ public class FlockRulesCalculator {
 		m_view_angle = angle;
 	}
 
-	public float getCohesionComponent(Movable actor, PointF result) {
+	public void getCohesionComponent(Movable actor, PointF result) {
 		int size = m_objects.size();
 
 		float point_x = 0;
@@ -74,18 +74,16 @@ public class FlockRulesCalculator {
 
 		if (count == 0) {
 			result.set(0, 0);
-			return 0;
+			return;
 		}
 
 		point_x /= count;
 		point_y /= count;
 
 		result.set(point_x - actor.getX(), point_y - actor.getY());
-
-		return MathUtils.getDist(actor.getX(), actor.getY(), point_x, point_y);
 	}
 
-	public float getAlignmentComponent(Movable actor, PointF result) {
+	public void getAlignmentComponent(Movable actor, PointF result) {
 		int size = m_objects.size();
 
 		float othervel_x = 0;
@@ -102,22 +100,18 @@ public class FlockRulesCalculator {
 				continue;
 			}
 
-			float otherspeed = other.getSpeed();
-			float otherheading = other.getHeading();
-			othervel_x += otherspeed * FloatMath.cos(otherheading);
-			othervel_y += otherspeed * FloatMath.sin(otherheading);
+			othervel_x += other.getXVel();
+			othervel_y += other.getYVel();
 
 			count++;
 		}
 
-		float actorspeed = actor.getSpeed();
-		float actorheading = actor.getHeading();
-		float actor_vel_x = actorspeed * FloatMath.cos(actorheading);
-		float actor_vel_y = actorspeed * FloatMath.sin(actorheading);
+		float actor_vel_x = actor.getXVel();
+		float actor_vel_y = actor.getYVel();
 
 		if (count == 0) {
 			result.set(0, 0);
-			return 0;
+			return;
 		}
 
 		othervel_x /= count;
@@ -125,11 +119,9 @@ public class FlockRulesCalculator {
 
 		result.set(othervel_x - actor_vel_x, othervel_y - actor_vel_y);
 
-		return MathUtils.getDist(actor_vel_x, actor_vel_y, othervel_x,
-				othervel_y);
 	}
 
-	public float getSeparationComponent(Movable actor,
+	public void getSeparationComponent(Movable actor,
 			float desired_separation, PointF result) {
 		int size = m_objects.size();
 
@@ -166,15 +158,13 @@ public class FlockRulesCalculator {
 
 		if (count == 0) {
 			result.set(0, 0);
-			return 0;
+			return;
 		}
 
 		point_x /= count;
 		point_y /= count;
 
 		result.set(point_x, point_y);
-
-		return FloatMath.sqrt(point_x * point_x + point_y * point_y);
 	}
 
 	private final boolean canSee(Movable actor, Movable other) {
