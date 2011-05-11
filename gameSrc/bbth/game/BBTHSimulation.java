@@ -58,7 +58,7 @@ public class BBTHSimulation extends Simulation {
 
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
-		//if (!isOnBeat) return;
+//		if (!isOnBeat) return;
 		
 		if (isServer) {
 			serverPlayer.spawnUnit(x, y);

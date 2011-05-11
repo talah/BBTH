@@ -20,7 +20,7 @@ public class BeatTrack {
 	private static final int BEAT_TRACK_WIDTH = 50;
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
-	private static final float BEAT_CIRCLE_RADIUS = Beat.RADIUS + BeatTracker.TOLERANCE / 10.f;
+	private static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
 
 	private BeatTracker beatTracker;
 	private int combo;
@@ -93,7 +93,7 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
 	}
 
-	public boolean simulateTouch(BBTHSimulation sim, float x, float y) {
+	public int checkTouch(BBTHSimulation sim, float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isHold = (beatType == Beat.BeatType.HOLD);
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
@@ -107,8 +107,10 @@ public class BeatTrack {
 			comboStr = "x" + String.valueOf(combo);
 		}
 
-		// TODO I'd like to move this back into InGameScreen; this involves passing two booleans.
-		sim.recordTapDown(x, y, isHold, isOnBeat);
-		return isOnBeat;
+		// Pack!
+		int toReturn = 0;
+		if (isOnBeat) toReturn += 1;
+		if (isHold) toReturn += 1 << 1;
+		return toReturn;
 	}
 }

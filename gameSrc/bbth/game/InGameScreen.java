@@ -15,16 +15,11 @@ import bbth.engine.util.MathUtils;
 import bbth.game.units.Unit;
 
 public class InGameScreen extends UIScrollView {
-	private static final int NUM_PARTICLES = 200;
-	private static final float PARTICLE_THRESHOLD = 0.5f;
-
 	private BBTHSimulation sim;
 	private UILabel label;
 	private Bluetooth bluetooth;
 	private Team team;
 	private BeatTrack beatTrack;
-	private ParticleSystem particles;
-	private Paint particlePaint;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
 		super(null);
@@ -50,9 +45,6 @@ public class InGameScreen extends UIScrollView {
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
 
-		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
-		particlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
 		beatTrack = new BeatTrack();
 		beatTrack.startMusic();
 	}
@@ -72,7 +64,6 @@ public class InGameScreen extends UIScrollView {
 		// Draw the game
 		canvas.translate(-this.pos_x, -this.pos_y);
 		sim.draw(canvas);
-		particles.draw(canvas, particlePaint);
 		canvas.translate(this.pos_x, this.pos_y);
 
 		// Overlay the beat track
@@ -92,7 +83,6 @@ public class InGameScreen extends UIScrollView {
 
 		sim.onUpdate(seconds);
 		beatTrack.refreshBeats();
-		particles.tick(seconds);
 
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
@@ -104,17 +94,13 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
-		boolean good = beatTrack.simulateTouch(sim, x + this.pos_x, y + this.pos_y);
+		int status = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
+		
+		// Unpack!
+		boolean isHold = (status & 0x2) == 1;
+		boolean isOnBeat = (status & 0x1) == 1;
 
-		if (good) {
-			for (int i = 0; i < 90; ++i) {
-				float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-				float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
-				float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-				particles.createParticle().circle().color(ColorUtils.randomHSV(0, 360, 0, 1, 0.5f, 1)).velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(2.0f)
-						.position(x + this.pos_x, y + this.pos_y).gravity(-150, -200);
-			}
-		}
+		sim.recordTapDown(x + this.pos_x, y + this.pos_y, isHold, isOnBeat);
 	}
 
 	@Override

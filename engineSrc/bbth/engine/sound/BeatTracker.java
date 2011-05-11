@@ -17,7 +17,7 @@ public class BeatTracker {
 	public static final int TOUCH_RESULT_TAP = 1;
 	public static final int TOUCH_RESULT_HOLD = 2;
 	
-	public static final float TOLERANCE = 80; // millisecond difference in what is still considered a valid touch
+	public static final float TOLERANCE = 100; // millisecond difference in what is still considered a valid touch
 
 	private MusicPlayer _musicPlayer;
 	private BeatPattern _beatPattern;

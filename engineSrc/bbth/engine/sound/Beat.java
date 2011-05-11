@@ -12,7 +12,7 @@ import android.graphics.Paint;
  *
  */
 public class Beat {
-	public final static int RADIUS = 8;
+	public final static float RADIUS = 8.f;
 	
 	public enum BeatType {
 		TAP, HOLD, REST
