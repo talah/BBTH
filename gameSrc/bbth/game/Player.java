@@ -11,7 +11,6 @@ import android.util.FloatMath;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.ui.UIView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
@@ -28,7 +27,6 @@ public class Player {
 	private Base base;
 	private AIController aiController;
 	private Paint paint;
-	private UIView view;
 	private ParticleSystem particles;
 	private UnitSelector selector;
 
@@ -64,10 +62,6 @@ public class Player {
 	}
 	
 	public void setupSubviews(UIScrollView view, boolean isLocal) {
-		this.view = view;
-
-		view.addSubview(base);
-
 		if (isLocal) {
 			view.scrollTo(base.getPosition().x, base.getPosition().y);
 		}

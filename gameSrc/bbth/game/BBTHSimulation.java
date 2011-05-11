@@ -59,7 +59,7 @@ public class BBTHSimulation extends Simulation {
 	public UnitSelector getMyUnitSelector() {
 		return localPlayer.getUnitSelector();
 	}
-	
+
 	// Just for debugging so we know the simulation isn't stuck
 	public int getTimestep() {
 		return timestep;
@@ -82,6 +82,10 @@ public class BBTHSimulation extends Simulation {
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
+	}
+
+	@Override
+	protected void simulateCustomEvent(int code, boolean isServer) {
 	}
 
 	@Override
