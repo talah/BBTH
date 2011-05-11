@@ -55,7 +55,7 @@ public class BeatTrack {
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
 			break;
 		case RETRO:
-			BeatPattern []patterns = new BeatPattern[2];
+			BeatPattern []patterns = new BeatPattern[3];
 			patterns[0] = new SimpleBeatPattern(350, 481, 4810 * 4);
 			List<Beat> beats = new ArrayList<Beat>();
 			for (int phrase = 0; phrase < 4; ++phrase) {
