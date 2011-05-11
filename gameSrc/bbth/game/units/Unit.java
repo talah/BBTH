@@ -20,8 +20,9 @@ public abstract class Unit extends BasicMovable {
 	private Unit target;
 
 	public Unit(Team team, Paint p) {
-		view = new UIView(null);
+		view = new UIView(this);
 		view.setAnchor(Anchor.CENTER_CENTER);
+//		view.setSize(4, 4);
 		
 		fsm = new FiniteStateMachine();
 		

@@ -1,6 +1,7 @@
 package bbth.game.units;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.FloatMath;
 import bbth.game.Team;
 

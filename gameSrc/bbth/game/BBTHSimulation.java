@@ -3,6 +3,7 @@ package bbth.game;
 import android.graphics.Canvas;
 import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
+import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIView;
@@ -36,7 +37,9 @@ public class BBTHSimulation extends Simulation {
 		int height = (int) BBTHGame.HEIGHT;
 		grid = new MapGrid(width, height, width / 10, height / 10);
 		pathFinder = new Pathfinder(grid);
-		//aiController.setPathfinder(pathFinder, grid);
+
+		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(10);
+		aiController.setPathfinder(pathFinder, grid, tester);
 	}
 
 	public void setupSubviews(UIView view) {
