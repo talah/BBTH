@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.collision.Point;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
@@ -31,7 +32,7 @@ public class Player {
 	private Paint paint;
 	private ParticleSystem particles;
 	private UnitSelector selector;
-	
+
 	private ArrayList<Wall> walls;
 	private Wall currentWall;
 
@@ -69,28 +70,34 @@ public class Player {
 	}
 
 	public void onTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
-		if (isHold) {
-			currentWall = new Wall(x, y, x, y);
-		} else {
-			this.spawnUnit(x, y);
-		}
+
 	}
 
-	public void onTapMove(float x, float y) {
-		// Update current wall
+	public void startWall(float x, float y) {
+		currentWall = new Wall(x, y, x, y);
 	}
-	
-	public void onTapUp(float x, float y) {
-		if (currentWall != null) {
-			walls.add(currentWall);
-			currentWall = null;
-		}
+
+	public void updateWall(float x, float y) {
+		if (currentWall == null) return;
+		
+		currentWall.b.set(x, y);
 	}
-	
+
+	public Wall endWall(float x, float y) {
+		if (currentWall == null) return null;
+		
+		currentWall.b.set(x, y);
+		walls.add(currentWall);
+
+		Wall toReturn = currentWall;
+		currentWall = null;
+		return toReturn;
+	}
+
 	public void setUnitType(UnitType type) {
 		selector.setUnitType(type);
 	}
-	
+
 	public void setupSubviews(UIScrollView view, boolean isLocal) {
 		if (isLocal) {
 			view.scrollTo(base.getPosition().x, base.getPosition().y);
@@ -163,6 +170,21 @@ public class Player {
 	}
 
 	public void draw(Canvas canvas) {
+		// draw walls
+		paint.setColor(team.getColor());
+		for (int i = 0; i < walls.size(); i++) {
+			Wall w = walls.get(i);
+			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+		}
+
+		// draw overlay wall
+		if (currentWall != null) {
+			paint.setColor(team.getColor());
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+					currentWall.b.y, paint);
+		}
+
+		// draw units
 		paint.setStyle(Style.STROKE);
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
@@ -173,7 +195,7 @@ public class Player {
 		particles.draw(canvas, paint);
 		paint.setColor(team.getColor());
 	}
-	
+
 	public void drawForMiniMap(Canvas canvas) {
 		paint.setStyle(Style.FILL);
 		for (int i = 0; i < units.size(); i++) {

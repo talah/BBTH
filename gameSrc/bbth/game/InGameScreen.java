@@ -124,7 +124,6 @@ public class InGameScreen extends UIScrollView {
 		
 		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 		if (unitType >= 0) {
-			Log.i("game", "recording event: " + unitType);
 			sim.recordCustomEvent(unitType);
 			return;
 		}

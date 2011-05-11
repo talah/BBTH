@@ -1,10 +1,13 @@
 package bbth.game;
 
+import java.util.HashMap;
+
 import android.graphics.Canvas;
 import android.util.Log;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
@@ -15,12 +18,14 @@ import bbth.game.units.UnitType;
 public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
+	private HashMap<Boolean, Player> playerMap;
 	private Player localPlayer, remotePlayer;
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
-
+	private SimpleLineOfSightTester tester;
+	
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
@@ -40,9 +45,13 @@ public class BBTHSimulation extends Simulation {
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
+		playerMap = new HashMap<Boolean, Player>();
+		playerMap.put(true, serverPlayer);
+		playerMap.put(false, clientPlayer);
+		
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
 		pathFinder = new Pathfinder(graphGen.graph);
-		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(15.f);
+		tester = new SimpleLineOfSightTester(15.f);
 		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		tester.walls = graphGen.walls;
 
@@ -71,34 +80,57 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
+		// TODO Avoid branching!
+		
 		if (isServer) {
-			serverPlayer.onTapDown(x, y, isHold, isOnBeat);
+//			if (isHold) {
+				serverPlayer.startWall(x, y);
+//			} else {
+				serverPlayer.spawnUnit(x, y);
+//			}
 		} else {
-			clientPlayer.onTapDown(x, y, isHold, isOnBeat);
+//			if (isHold) {
+				clientPlayer.startWall(x, y);
+//			} else {
+				clientPlayer.spawnUnit(x, y);
+//			}
 		}
 	}
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
+		// TODO Avoid branching!
+		
 		if (isServer) {
-			serverPlayer.onTapMove(x, y);
+			serverPlayer.updateWall(x, y);
 		} else {
-			clientPlayer.onTapMove(x, y);
+			clientPlayer.updateWall(x, y);
 		}
 	}
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
+		// TODO Avoid branching!
+		
 		if (isServer) {
-			serverPlayer.onTapUp(x, y);
+			Wall w = serverPlayer.endWall(x, y);
+			if (w == null) return;
+			
+			graphGen.walls.add(w);
+			graphGen.compute();
+			tester.updateWalls();
 		} else {
-			clientPlayer.onTapUp(x, y);
+			Wall w = clientPlayer.endWall(x, y);
+			if (w == null) return;
+			
+			graphGen.walls.add(w);
+			graphGen.compute();
+			tester.updateWalls();
 		}
 	}
 
 	@Override
 	protected void simulateCustomEvent(int code, boolean isServer) {
-		Log.i("game", "simulating event: " + code + " " + isServer);
 		if (isServer) {
 			serverPlayer.setUnitType(UnitType.fromInt(code));
 		} else {
