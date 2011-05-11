@@ -106,7 +106,7 @@ public class InGameScreen extends UIScrollView {
 		super.onTouchDown(x, y);
 		boolean good = beatTrack.simulateTouch(sim, x + this.pos_x, y + this.pos_y);
 
-		if (true || good) {
+		if (good) {
 			for (int i = 0; i < 90; ++i) {
 				float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 				float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);

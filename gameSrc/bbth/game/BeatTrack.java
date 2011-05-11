@@ -6,6 +6,8 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
+import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
@@ -15,8 +17,10 @@ import bbth.engine.sound.SimpleBeatPattern;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 
 public class BeatTrack {
+	private static final int BEAT_TRACK_WIDTH = 50;
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
+	private static final float BEAT_CIRCLE_RADIUS = Beat.RADIUS + 2.f;
 
 	private BeatTracker beatTracker;
 	private int combo;
@@ -51,6 +55,8 @@ public class BeatTrack {
 		// Setup paint
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setTextSize(10);
+		paint.setStrokeWidth(2.f);
+		paint.setStrokeCap(Cap.ROUND);
 	}
 
 	public void startMusic() {
@@ -62,14 +68,24 @@ public class BeatTrack {
 	}
 
 	public void draw(Canvas canvas) {
-		// Draw the music section of the screen
+		paint.setARGB(127, 0, 0, 0);
+		canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
+
+		paint.setARGB(127, 255, 255, 255);
+		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
+
 		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		
+		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
-		canvas.drawLine(0, BEAT_LINE_Y - Beat.RADIUS, 50, BEAT_LINE_Y - Beat.RADIUS, paint);
-		canvas.drawLine(0, BEAT_LINE_Y + Beat.RADIUS, 50, BEAT_LINE_Y + Beat.RADIUS, paint);
+		canvas.drawCircle(BEAT_LINE_X, BEAT_LINE_Y, BEAT_CIRCLE_RADIUS, paint);
+		paint.setStyle(Style.FILL);
+		
+		paint.setColor(Color.WHITE);
+		// canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);		
 		canvas.drawText(comboStr, 25, BBTHGame.HEIGHT - 10, paint);
 		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
-		canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);
 	}
 
 	public void refreshBeats() {
