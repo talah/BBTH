@@ -20,7 +20,7 @@ public class BeatTrack {
 	private static final int BEAT_TRACK_WIDTH = 50;
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
-	private static final float BEAT_CIRCLE_RADIUS = Beat.RADIUS + 2.f;
+	private static final float BEAT_CIRCLE_RADIUS = Beat.RADIUS + BeatTracker.TOLERANCE / 10.f;
 
 	private BeatTracker beatTracker;
 	private int combo;
@@ -30,7 +30,7 @@ public class BeatTrack {
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
-
+	
 	public BeatTrack() {
 		// Setup music stuff
 		beatPattern = new SimpleBeatPattern(385, 571, 300000);
