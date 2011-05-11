@@ -83,6 +83,7 @@ public class OffensiveAI extends UnitAI {
 		Unit target = entity.getTarget();
 		if (target == null) {
 			entity.setVelocity(0.0001f, 0.0f);
+			return;
 		}
 		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), target.getX(), target.getY());
 		entity.setVelocity(0.0001f, angle);
