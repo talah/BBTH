@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import bbth.engine.net.bluetooth.Bluetooth;
@@ -22,7 +23,7 @@ public class InGameScreen extends UIScrollView {
 	private Bluetooth bluetooth;
 	private Team team;
 	private BeatTrack beatTrack;
-	private Paint paint = new Paint();
+	private Paint paint;
 	private final RectF minimapRect;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
@@ -53,6 +54,13 @@ public class InGameScreen extends UIScrollView {
 		// Set up sound stuff
 		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
+		
+		paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setStrokeWidth(2.0f);
+		paint.setStrokeJoin(Join.ROUND);
+		paint.setTextSize(20);
+		paint.setAntiAlias(true);
 
 		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2,
 				BBTHGame.WIDTH, BBTHGame.HEIGHT);

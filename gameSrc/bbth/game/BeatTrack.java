@@ -70,7 +70,8 @@ public class BeatTrack {
 					beats.add(Beat.rest(481));
 				}
 				for (int i = 0; i < 2; ++i) {
-					beats.add(Beat.hold(481 * 4));
+					beats.add(Beat.hold(481 * 2));
+					beats.add(Beat.rest(481 * 2));
 				}
 			}
 			patterns[1] = new SimpleBeatPattern(beats);
@@ -103,10 +104,11 @@ public class BeatTrack {
 		comboStr = String.valueOf(combo);
 
 		// Setup paint
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		paint = new Paint();
 		paint.setTextSize(10);
 		paint.setStrokeWidth(2.f);
 		paint.setStrokeCap(Cap.ROUND);
+		paint.setAntiAlias(true);
 	}
 
 	public void startMusic() {
@@ -140,7 +142,7 @@ public class BeatTrack {
 
 	public void refreshBeats() {
 		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
+		beatsInRange = beatTracker.getBeatsInRange(-700, 1900);
 	}
 
 	public Beat.BeatType checkTouch(BBTHSimulation sim, float x, float y) {

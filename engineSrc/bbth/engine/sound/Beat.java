@@ -13,6 +13,7 @@ import android.graphics.Paint;
  */
 public class Beat {
 	public final static float RADIUS = 8.f;
+	private final static int OFFSET_DENOM = 12;
 	
 	public enum BeatType {
 		TAP, HOLD, REST
@@ -78,9 +79,9 @@ public class Beat {
 		}
 		
 		if (type == BeatType.TAP) {
-			canvas.drawCircle(x, yMiddle + offset / 10, RADIUS, paint);
+			canvas.drawCircle(x, yMiddle + offset / OFFSET_DENOM, RADIUS, paint);
 		} else {
-			canvas.drawLine(x, yMiddle + offset / 10, x, yMiddle + (offset - duration) / 10, paint);
+			canvas.drawLine(x, yMiddle + offset / OFFSET_DENOM, x, yMiddle + (offset - duration) / OFFSET_DENOM, paint);
 		}
 	}
 }
