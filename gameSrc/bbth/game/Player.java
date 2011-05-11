@@ -69,23 +69,19 @@ public class Player {
 		walls = new ArrayList<Wall>();
 	}
 
-	public void onTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
-
+	public boolean settingWall() {
+		return currentWall != null;
 	}
-
+	
 	public void startWall(float x, float y) {
 		currentWall = new Wall(x, y, x, y);
 	}
 
 	public void updateWall(float x, float y) {
-		if (currentWall == null) return;
-		
 		currentWall.b.set(x, y);
 	}
 
 	public Wall endWall(float x, float y) {
-		if (currentWall == null) return null;
-		
 		currentWall.b.set(x, y);
 		walls.add(currentWall);
 

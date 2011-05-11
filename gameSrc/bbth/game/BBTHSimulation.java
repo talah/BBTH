@@ -25,7 +25,7 @@ public class BBTHSimulation extends Simulation {
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
-	
+
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
@@ -48,7 +48,7 @@ public class BBTHSimulation extends Simulation {
 		playerMap = new HashMap<Boolean, Player>();
 		playerMap.put(true, serverPlayer);
 		playerMap.put(false, clientPlayer);
-		
+
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
 		pathFinder = new Pathfinder(graphGen.graph);
 		tester = new SimpleLineOfSightTester(15.f);
@@ -80,62 +80,38 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
-		// TODO Avoid branching!
-		
-		if (isServer) {
-//			if (isHold) {
-				serverPlayer.startWall(x, y);
-//			} else {
-				serverPlayer.spawnUnit(x, y);
-//			}
-		} else {
-//			if (isHold) {
-				clientPlayer.startWall(x, y);
-//			} else {
-				clientPlayer.spawnUnit(x, y);
-//			}
-		}
+		Player player = playerMap.get(isServer);
+		player.startWall(x, y);
+		player.spawnUnit(x, y);
 	}
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
-		// TODO Avoid branching!
+		Player player = playerMap.get(isServer);
 		
-		if (isServer) {
-			serverPlayer.updateWall(x, y);
-		} else {
-			clientPlayer.updateWall(x, y);
-		}
+		if (!player.settingWall()) return;
+		player.updateWall(x, y);
 	}
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
-		// TODO Avoid branching!
-		
-		if (isServer) {
-			Wall w = serverPlayer.endWall(x, y);
-			if (w == null) return;
-			
-			graphGen.walls.add(w);
-			graphGen.compute();
-			tester.updateWalls();
-		} else {
-			Wall w = clientPlayer.endWall(x, y);
-			if (w == null) return;
-			
-			graphGen.walls.add(w);
-			graphGen.compute();
-			tester.updateWalls();
-		}
+		Player player = playerMap.get(isServer);
+
+		if (!player.settingWall()) return;
+		Wall w = player.endWall(x, y);
+		if (w == null)
+			return;
+
+		graphGen.walls.add(w);
+		graphGen.compute();
+		tester.updateWalls();
 	}
 
 	@Override
 	protected void simulateCustomEvent(int code, boolean isServer) {
-		if (isServer) {
-			serverPlayer.setUnitType(UnitType.fromInt(code));
-		} else {
-			clientPlayer.setUnitType(UnitType.fromInt(code));
-		}
+		Player player = playerMap.get(isServer);
+
+		player.setUnitType(UnitType.fromInt(code));
 	}
 
 	@Override
