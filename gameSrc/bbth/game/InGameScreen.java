@@ -75,6 +75,9 @@ public class InGameScreen extends UIScrollView {
 		// Overlay the beat track
 		beatTrack.draw(canvas);
 
+		// Overlay the unit selector
+		sim.getMyUnitSelector().draw(canvas);
+		
 		// Draw minimap
 		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
 		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
@@ -112,6 +115,11 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
+		
+		if (sim.getMyUnitSelector().checkUnitChange(x, y)) {
+			return;
+		}
+		
 		BeatType beatType = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
 
 		// Unpack!
