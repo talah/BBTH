@@ -46,7 +46,7 @@ public class AIController {
 		}
 	}
 
-	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration<Unit> accel) {
+	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration accel) {
 		m_defensive.setPathfinder(pathfinder, graph, tester, accel);
 		m_offensive.setPathfinder(pathfinder, graph, tester, accel);
 		m_uber.setPathfinder(pathfinder, graph, tester, accel);

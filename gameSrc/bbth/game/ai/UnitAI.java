@@ -33,7 +33,7 @@ public abstract class UnitAI {
 	protected Pathfinder m_pathfinder;
 	protected ConnectedGraph m_map_grid;
 	protected LineOfSightTester m_tester;
-	protected GridAcceleration<Unit> m_accel;
+	protected GridAcceleration m_accel;
 
 	public UnitAI() {
 		m_result = new PointF();
@@ -97,7 +97,7 @@ public abstract class UnitAI {
 		return m_max_vel;
 	}
 
-	public final void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration<Unit> accel) {
+	public final void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration accel) {
 		m_pathfinder = pathfinder;
 		m_map_grid = graph;
 		m_tester = tester;
@@ -109,7 +109,7 @@ public abstract class UnitAI {
 		float x = entity.getX();
 		float y = entity.getY();
 		cachedUnitSet.clear();
-		m_accel.getEntitiesInAABB(x - SEARCH_RADIUS, y - SEARCH_RADIUS, x + SEARCH_RADIUS, y + SEARCH_RADIUS, cachedUnitSet);
+		m_accel.getUnitsInAABB(x - SEARCH_RADIUS, y - SEARCH_RADIUS, x + SEARCH_RADIUS, y + SEARCH_RADIUS, cachedUnitSet);
 
 		// Find the closest unit ignoring units on the same team
 		float bestdist = Float.MAX_VALUE;

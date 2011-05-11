@@ -24,7 +24,7 @@ public class BBTHSimulation extends Simulation {
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
-	private GridAcceleration<Unit> accel;
+	private GridAcceleration accel;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -37,7 +37,7 @@ public class BBTHSimulation extends Simulation {
 		super(6, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
-		accel = new GridAcceleration<Unit>(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
+		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
 		serverPlayer = new Player(Team.SERVER, aiController);
@@ -120,7 +120,7 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
-		accel.clear();
+		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
 		aiController.update();
