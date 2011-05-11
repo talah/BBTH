@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
@@ -26,7 +27,7 @@ public class Player {
 
 	private Team team;
 	public List<Unit> units;
-	private Base base;
+	public Base base;
 	private AIController aiController;
 	private Paint paint;
 	private ParticleSystem particles;
@@ -49,6 +50,7 @@ public class Player {
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
 		paint.setColor(team.getUnitColor());
+		paint.setStrokeCap(Cap.ROUND);
 
 		switch (team) {
 		case CLIENT:
@@ -84,6 +86,12 @@ public class Player {
 
 	public Wall endWall(float x, float y) {
 		currentWall.b.set(x, y);
+		
+		currentWall.updateLength();
+		if (currentWall.length < BBTHSimulation.MIN_WALL_LENGTH) {
+			return null;
+		}
+		
 		walls.add(currentWall);
 
 		Wall toReturn = currentWall;
@@ -174,12 +182,12 @@ public class Player {
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 
-		// draw overlay wall
-		if (currentWall != null) {
-			paint.setColor(team.getTempWallColor());
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-					currentWall.b.y, paint);
-		}
+//		// draw overlay wall
+//		if (currentWall != null) {
+//			paint.setColor(team.getTempWallColor());
+//			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+//					currentWall.b.y, paint);
+//		}
 
 		// draw units
 		paint.setStyle(Style.STROKE);
@@ -194,9 +202,18 @@ public class Player {
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
+		// draw units
 		paint.setStyle(Style.FILL);
+		paint.setColor(team.getUnitColor());
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawForMiniMap(canvas);
+		}
+		
+		// draw walls
+		paint.setColor(team.getWallColor());
+		for (int i = 0; i < walls.size(); i++) {
+			Wall w = walls.get(i);
+			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 	}
 	

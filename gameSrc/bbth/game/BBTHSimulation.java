@@ -1,8 +1,10 @@
 package bbth.game;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
@@ -25,10 +27,14 @@ public class BBTHSimulation extends Simulation {
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
 	private GridAcceleration accel;
+	private HashSet<Unit> localUnits;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
+
+	// Minimal length of a wall
+	public static final float MIN_WALL_LENGTH = 5.f;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
@@ -57,6 +63,8 @@ public class BBTHSimulation extends Simulation {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
+
+		localUnits = new HashSet<Unit>();
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -80,6 +88,7 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
+
 		if (isHold) {
 			player.startWall(x, y);
 		} else {
@@ -104,6 +113,10 @@ public class BBTHSimulation extends Simulation {
 			return;
 		Wall w = player.endWall(x, y);
 
+		// // insanity check--the below should never do anything
+		if (w == null)
+			return;
+
 		graphGen.walls.add(w);
 		graphGen.compute();
 		tester.updateWalls();
@@ -126,6 +139,20 @@ public class BBTHSimulation extends Simulation {
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
+		RectF sr = serverPlayer.base.getRect();
+		RectF cr = clientPlayer.base.getRect();
+
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.CLIENT)
+				serverPlayer.adjustHealth(-10);
+		}
+
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.SERVER)
+				clientPlayer.adjustHealth(-10);
+		}
 	}
 
 	public void draw(Canvas canvas) {

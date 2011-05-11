@@ -24,7 +24,7 @@ public class Wall {
 		updateLength();
 	}
 
-	private void updateLength() {
+	public void updateLength() {
 		length = MathUtils.getDist(a.x, a.y, b.x, b.y);
 	}
 
