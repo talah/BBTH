@@ -66,11 +66,10 @@ public class GridAcceleration<T extends HasPosition> {
 		// Copy entities from all cells in the AABB into moveables
 		entities.clear();
 		for (int y = ymin; y <= ymax; y++) {
-			int i = y * cellsInX;
 			for (int x = xmin; x <= xmax; x++) {
 				// Manually iterate over the collection for performance (instead
 				// of using addAll)
-				ArrayList<T> toAdd = cells.get(i++).entities;
+				ArrayList<T> toAdd = cells.get(x + y * cellsInX).entities;
 				for (int j = 0; j < toAdd.size(); j++) {
 					entities.add(toAdd.get(j));
 				}
