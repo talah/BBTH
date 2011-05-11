@@ -56,7 +56,7 @@ public class BeatTrack {
 			break;
 		case RETRO:
 			BeatPattern []patterns = new BeatPattern[2];
-			patterns[0] = new SimpleBeatPattern(350, 481, 4810 * 2);
+			patterns[0] = new SimpleBeatPattern(350, 481, 4810 * 4);
 			List<Beat> beats = new ArrayList<Beat>();
 			for (int phrase = 0; phrase < 4; ++phrase) {
 				for (int i = 0; i < 4; ++i) {
@@ -69,10 +69,13 @@ public class BeatTrack {
 				for (int i = 0; i < 4; ++i) {
 					Beat.rest(481);
 				}
+				for (int i = 0; i < 2; ++i) {
+					Beat.hold(481 * 4);
+				}
 			}
-			beatPattern = new SimpleBeatPattern(0, beats);
-			//patterns[1] = new SimpleBeatPattern(0, beats);
-			//beatPattern = new CompositeBeatPattern(patterns);
+			patterns[1] = new SimpleBeatPattern(beats);
+			patterns[2] = new SimpleBeatPattern(0, 481, 4810 * 4);
+			beatPattern = new CompositeBeatPattern(patterns);
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
 			break;
 		}

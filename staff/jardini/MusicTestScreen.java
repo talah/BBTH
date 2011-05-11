@@ -119,7 +119,7 @@ public class MusicTestScreen extends GameScreen {
 			}
 		}
 		
-		_beatTracker = new BeatTracker(_musicPlayer, new SimpleBeatPattern(0, beats));
+		_beatTracker = new BeatTracker(_musicPlayer, new SimpleBeatPattern(beats));
 		
 		_beats = new ArrayList<Beat>();
 		_musicPlayer.play();
