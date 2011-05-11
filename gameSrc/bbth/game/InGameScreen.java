@@ -1,16 +1,13 @@
 package bbth.game;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.util.FloatMath;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.particles.ParticleSystem;
+import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 import bbth.game.units.Unit;
 
@@ -45,7 +42,8 @@ public class InGameScreen extends UIScrollView {
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
 
-		beatTrack = new BeatTrack();
+		// Set up sound stuff
+		beatTrack = new BeatTrack(R.raw.bonusroom);
 		beatTrack.startMusic();
 	}
 
@@ -94,11 +92,11 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
-		int status = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
+		BeatType beatType = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
 		
 		// Unpack!
-		boolean isHold = (status & 0x2) == 1;
-		boolean isOnBeat = (status & 0x1) == 1;
+		boolean isHold = (beatType == BeatType.HOLD);
+		boolean isOnBeat = (beatType != BeatType.REST);
 
 		sim.recordTapDown(x + this.pos_x, y + this.pos_y, isHold, isOnBeat);
 	}

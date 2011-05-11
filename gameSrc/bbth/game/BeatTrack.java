@@ -2,26 +2,37 @@ package bbth.game;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
+import bbth.game.R;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.SimpleBeatPattern;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
+import bbth.engine.sound.SoundManager;
 
+/**
+ * A complete beat track for a single song.  Handles music, hit and miss sounds, scoring
+ * @author jardini
+ *
+ */
 public class BeatTrack {
 	private static final int BEAT_TRACK_WIDTH = 50;
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
 	private static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
 
+	private static final int MAX_SOUNDS = 8;
+	private static final int HIT_SOUND_ID = 0;
+	private static final int MISS_SOUND_ID = 1;
+	
+	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private int combo;
 	private int score;
@@ -31,10 +42,10 @@ public class BeatTrack {
 	private List<Beat> beatsInRange;
 	private Paint paint;
 	
-	public BeatTrack() {
+	public BeatTrack(int resourceId) {
 		// Setup music stuff
 		beatPattern = new SimpleBeatPattern(385, 571, 300000);
-		musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
+		musicPlayer = new MusicPlayer(GameActivity.instance, resourceId);
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
 				beatTracker = new BeatTracker(musicPlayer, beatPattern);
@@ -42,6 +53,10 @@ public class BeatTrack {
 				mp.play();
 			}
 		});
+		
+		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
+		soundManager.addSound(HIT_SOUND_ID, R.raw.hit1);
+		soundManager.addSound(MISS_SOUND_ID, R.raw.miss1);
 
 		beatTracker = new BeatTracker(musicPlayer, beatPattern);
 		beatsInRange = new ArrayList<Beat>();
@@ -93,24 +108,21 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
 	}
 
-	public int checkTouch(BBTHSimulation sim, float x, float y) {
+	public Beat.BeatType checkTouch(BBTHSimulation sim, float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
-		boolean isHold = (beatType == Beat.BeatType.HOLD);
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
+			soundManager.play(HIT_SOUND_ID);
 			++score;
 			++combo;
 			scoreStr = String.valueOf(score);
 			comboStr = "x" + String.valueOf(combo);
 		} else {
+			soundManager.play(MISS_SOUND_ID);
 			combo = 0;
 			comboStr = "x" + String.valueOf(combo);
 		}
 
-		// Pack!
-		int toReturn = 0;
-		if (isOnBeat) toReturn += 1;
-		if (isHold) toReturn += 1 << 1;
-		return toReturn;
+		return beatType;
 	}
 }
