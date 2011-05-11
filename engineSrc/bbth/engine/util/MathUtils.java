@@ -13,6 +13,10 @@ public final class MathUtils {
 		_random.setSeed(seed);
 	}
 	
+	public static int randInRange(int min, int max) {
+		return min + _random.nextInt(max - min);
+	}
+	
 	// random number in the range [min, max)
 	public static float randInRange(float min, float max) {
 		return (max - min) * _random.nextFloat() + min;

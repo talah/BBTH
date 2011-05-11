@@ -77,7 +77,7 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
 	}
 
-	public void simulateTouch(BBTHSimulation sim, float x, float y) {
+	public boolean simulateTouch(BBTHSimulation sim, float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isHold = (beatType == Beat.BeatType.HOLD);
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
@@ -91,6 +91,8 @@ public class BeatTrack {
 			comboStr = "x" + String.valueOf(combo);
 		}
 
+		// TODO I'd like to move this back into InGameScreen; this involves passing two booleans.
 		sim.recordTapDown(x, y, isHold, isOnBeat);
+		return isOnBeat;
 	}
 }
