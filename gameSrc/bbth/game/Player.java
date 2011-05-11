@@ -69,15 +69,14 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
-//		Unit newUnit = currentUnitType.createUnit(team, paint);
-		Unit newUnit = new AttackingUnit(team, paint);
+		Unit newUnit = currentUnitType.createUnit(team, paint);
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));
 		if (team == Team.SERVER) {
-			newUnit.setVelocity(MathUtils.randInRange(5, 10), MathUtils.PI / 2.f);
+			newUnit.setVelocity(MathUtils.randInRange(30, 70), MathUtils.PI / 2.f);
 		} else {
-			newUnit.setVelocity(MathUtils.randInRange(5, 10), -MathUtils.PI / 2.f);
+			newUnit.setVelocity(MathUtils.randInRange(30, 70), -MathUtils.PI / 2.f);
 		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
@@ -103,7 +102,16 @@ public class Player {
 
 	public void update(float seconds) {
 		for (int i = 0; i < units.size(); i++) {
-			units.get(i).update(seconds);
+			Unit unit = units.get(i);
+			
+			unit.update(seconds);
+			if (unit.getY() < 0 || unit.getY() > height) {
+				units.remove(i);
+				i--;
+				view.removeSubview(unit.getView());
+				aiController.removeEntity(unit);
+			}
+			
 		}
 	}
 

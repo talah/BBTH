@@ -74,7 +74,7 @@ public class InGameScreen extends UIScrollView {
 		paint.setTextSize(10);
 
 		// Setup music stuff
-		beatPattern = new SimpleBeatPattern(385, 571, 30000);
+		beatPattern = new SimpleBeatPattern(385, 571, 300000);
 		musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
@@ -152,13 +152,12 @@ public class InGameScreen extends UIScrollView {
 			nextScreen = new GameSetupScreen();
 		}
 
-//		sim.update(seconds);
 		sim.onUpdate(seconds);
 
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-//			Log.i("ingamescreen", mostAdvanced.getX() + " " + mostAdvanced.getY());
+			Log.i("meow", mostAdvanced.getX() + " " + mostAdvanced.getY());
 			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
 		}
 		
@@ -182,22 +181,19 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		super.onTouchDown(x, y);
-		sim.recordTapDown(x, y, isHold, isOnBeat);
-//		sim.simulateTapDown(x, y, true, false, false);
+		sim.recordTapDown(x + this.pos_x, y + this.pos_y, isHold, isOnBeat);
 	}
 
 	@Override
 	public void onTouchMove(float x, float y) {
 		super.onTouchMove(x, y);
-		sim.recordTapMove(x, y);
-//		sim.simulateTapMove(x, y, true);
+		sim.recordTapMove(x + this.pos_x, y + this.pos_y);
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
 		super.onTouchUp(x, y);
-		sim.recordTapUp(x, y);
-//		sim.simulateTapUp(x, y, true);
+		sim.recordTapUp(x + this.pos_x, y + this.pos_y);
 	}
 
 	/**

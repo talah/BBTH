@@ -79,7 +79,7 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
-		aiController.update();
+//		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
 	}
