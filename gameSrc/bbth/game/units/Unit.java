@@ -13,11 +13,11 @@ import bbth.game.Team;
  * each other.
  */
 public abstract class Unit extends BasicMovable {
-	private FiniteStateMachine fsm;
-	
 	protected Team team;
 	protected UIView view;
 	protected Paint paint;
+	private FiniteStateMachine fsm;
+	private Unit target;
 
 	protected Unit target;
 	protected UnitManager unitManager;
@@ -27,6 +27,7 @@ public abstract class Unit extends BasicMovable {
 	public Unit(UnitManager unitManager, Team team, Paint p) {
 		view = new UIView(null);
 		view.setAnchor(Anchor.CENTER_CENTER);
+//		view.setSize(4, 4);
 		
 		fsm = new FiniteStateMachine();
 		

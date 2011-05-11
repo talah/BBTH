@@ -79,6 +79,7 @@ public class UberAI extends UnitAI {
 		Unit target = entity.getTarget();
 		if (target == null) {
 			entity.setVelocity(0.0001f, 0.0f);
+			return;
 		}
 		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), target.getX(), target.getY());
 		entity.setVelocity(0.0001f, angle);
@@ -107,7 +108,7 @@ public class UberAI extends UnitAI {
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
 				
-				if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
+				if (m_tester != null && !m_tester.isLineOfSightClear(start_point, end_point)) {
 					PointF start = getClosestNode(start_point);
 					PointF end = getClosestNode(end_point);
 					
@@ -183,7 +184,7 @@ public class UberAI extends UnitAI {
 			float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI/6.0f);
 			float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI/6.0f);
 			
-			if (m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2) && 
+			if (m_tester != null && m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2) && 
 					m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2)) {
 				clear = true;
 			} else {
