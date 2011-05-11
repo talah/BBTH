@@ -26,12 +26,13 @@ public class Player {
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
 	private Team team;
-	private List<Unit> units;
+	public List<Unit> units;
 	private Base base;
 	private AIController aiController;
 	private Paint paint;
 	private ParticleSystem particles;
 	private UnitSelector selector;
+	private float _health;
 
 	private ArrayList<Wall> walls;
 	private Wall currentWall;
@@ -41,6 +42,7 @@ public class Player {
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
+		_health = 100;
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
@@ -213,5 +215,20 @@ public class Player {
 			Wall w = walls.get(i);
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
+	}
+	
+	public float getHealth()
+	{
+		return _health;
+	}
+	
+	public void resetHealth()
+	{
+		_health = 100;
+	}
+	
+	public void adjustHealth(float delta)
+	{
+		_health = MathUtils.clamp(0, 100, _health + delta);
 	}
 }

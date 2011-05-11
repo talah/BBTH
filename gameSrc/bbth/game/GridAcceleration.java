@@ -2,6 +2,7 @@ package bbth.game;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import bbth.game.GridAcceleration.HasPosition;
 
@@ -34,15 +35,19 @@ public class GridAcceleration<T extends HasPosition> {
 	}
 
 	/**
-	 * Call this when the positions of the entities have changed.
+	 * Remove all entities.
 	 */
-	public void clearAndInsertEntities(ArrayList<T> entities) {
-		// Remove all old entities
+	public void clear() {
 		for (int i = 0, n = cellsInX * cellsInY; i < n; i++) {
 			cells.get(i).entities.clear();
 		}
+	}
 
-		// Add new entities to exactly one cell
+	/**
+	 * Adds each entity to exactly one cell. Call this after calling clear()
+	 * when the positions of the entities have changed.
+	 */
+	public void insertUnits(List<T> entities) {
 		for (int i = 0, n = entities.size(); i < n; i++) {
 			T entity = entities.get(i);
 			int x = Math.max(0, Math.min(cellsInX - 1, (int) (entity.getX() / cellWidth)));

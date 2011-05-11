@@ -1,9 +1,10 @@
 package bbth.engine.entity;
 
 import bbth.engine.util.MathUtils;
+import bbth.game.GridAcceleration.HasPosition;
 import android.util.FloatMath;
 
-public class BasicMovable implements Movable {
+public class BasicMovable implements Movable, HasPosition {
 
 	private float m_x;
 	private float m_y;

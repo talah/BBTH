@@ -27,10 +27,11 @@ public class InGameScreen extends UIScrollView {
 	private Bluetooth bluetooth;
 	private Team team;
 	private BeatTrack beatTrack;
-	private Paint paint = new Paint();
-	private final RectF minimapRect;
 	private Wall currentWall;
 	private ParticleSystem particles;
+	private Paint paint, opponentHealthPaint, healthPaint;
+	private final RectF minimapRect, opponentHealthRect, healthRect;
+	private final float HEALTHBAR_HEIGHT = 10;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
 			LockStepProtocol protocol) {
@@ -39,6 +40,18 @@ public class InGameScreen extends UIScrollView {
 		MathUtils.resetRandom(0);
 
 		this.team = playerTeam;
+		
+		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		opponentHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		healthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		
+		if (team == Team.SERVER) {
+			healthPaint.setColor(Color.CYAN);
+			opponentHealthPaint.setColor(Color.MAGENTA);
+		} else if (team == Team.CLIENT) {
+			healthPaint.setColor(Color.MAGENTA);
+			opponentHealthPaint.setColor(Color.CYAN);
+		}
 
 		// Set up the scrolling!
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -61,11 +74,12 @@ public class InGameScreen extends UIScrollView {
 		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2,
-				BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		paint.setStrokeWidth(2.f);
-
 		particles = new ParticleSystem(200, 0.5f);
+
+		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
+		opponentHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		healthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -108,6 +122,7 @@ public class InGameScreen extends UIScrollView {
 		paint.setColor(Color.WHITE);
 		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
 		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
+		canvas.save();
 		canvas.translate(minimapRect.left, minimapRect.top);
 		canvas.scale(scaleX, scaleY);
 		sim.drawForMiniMap(canvas);
@@ -120,6 +135,11 @@ public class InGameScreen extends UIScrollView {
 		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
 				BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
+		canvas.restore();
+		
+		//Draw health bars
+		canvas.drawRect(opponentHealthRect, opponentHealthPaint);
+		canvas.drawRect(healthRect, healthPaint);
 	}
 
 	@Override
@@ -133,7 +153,11 @@ public class InGameScreen extends UIScrollView {
 			nextScreen = new GameSetupScreen();
 		}
 
+		
 		sim.onUpdate(seconds);
+		healthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
+		opponentHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.remotePlayer.getHealth());
+		
 		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
