@@ -17,7 +17,6 @@ public abstract class Unit extends BasicMovable {
 	protected UIView view;
 	protected Paint paint;
 	private FiniteStateMachine fsm;
-	private Unit target;
 
 	protected Unit target;
 	protected UnitManager unitManager;
