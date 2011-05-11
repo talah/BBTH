@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.util.Log;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -24,7 +25,8 @@ public class InGameScreen extends UIScrollView {
 	private Paint paint = new Paint();
 	private final RectF minimapRect;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
+			LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
@@ -52,7 +54,8 @@ public class InGameScreen extends UIScrollView {
 		beatTrack = new BeatTrack(R.raw.bonusroom);
 		beatTrack.startMusic();
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2,
+				BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
 
 	@Override
@@ -77,7 +80,7 @@ public class InGameScreen extends UIScrollView {
 
 		// Overlay the unit selector
 		sim.getMyUnitSelector().draw(canvas);
-		
+
 		// Draw minimap
 		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
 		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
@@ -86,8 +89,10 @@ public class InGameScreen extends UIScrollView {
 		sim.drawForMiniMap(canvas);
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
-		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
+				BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 	}
 
@@ -108,7 +113,8 @@ public class InGameScreen extends UIScrollView {
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
+					- BBTHGame.HEIGHT / 2);
 		}
 	}
 
@@ -116,7 +122,10 @@ public class InGameScreen extends UIScrollView {
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
 		
-		if (sim.getMyUnitSelector().checkUnitChange(x, y)) {
+		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
+		if (unitType >= 0) {
+			Log.i("game", "recording event: " + unitType);
+			sim.recordCustomEvent(unitType);
 			return;
 		}
 		

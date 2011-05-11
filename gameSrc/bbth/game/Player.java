@@ -8,12 +8,14 @@ import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 /**
  * A player is someone who is interacting with the game.
@@ -29,6 +31,9 @@ public class Player {
 	private Paint paint;
 	private ParticleSystem particles;
 	private UnitSelector selector;
+	
+	private ArrayList<Wall> walls;
+	private Wall currentWall;
 
 	public Player(Team team, AIController controller) {
 		this.team = team;
@@ -59,6 +64,31 @@ public class Player {
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team);
+
+		walls = new ArrayList<Wall>();
+	}
+
+	public void onTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
+		if (isHold) {
+			currentWall = new Wall(x, y, x, y);
+		} else {
+			this.spawnUnit(x, y);
+		}
+	}
+
+	public void onTapMove(float x, float y) {
+		// Update current wall
+	}
+	
+	public void onTapUp(float x, float y) {
+		if (currentWall != null) {
+			walls.add(currentWall);
+			currentWall = null;
+		}
+	}
+	
+	public void setUnitType(UnitType type) {
+		selector.setUnitType(type);
 	}
 	
 	public void setupSubviews(UIScrollView view, boolean isLocal) {
@@ -131,7 +161,7 @@ public class Player {
 	public UnitSelector getUnitSelector() {
 		return this.selector;
 	}
-	
+
 	public void draw(Canvas canvas) {
 		paint.setStyle(Style.STROKE);
 		for (int i = 0; i < units.size(); i++) {

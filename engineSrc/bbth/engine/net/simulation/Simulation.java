@@ -238,6 +238,6 @@ public abstract class Simulation {
 	}
 	
 	public final void recordCustomEvent(int code) {
-		currentStep.events.add(makeEvent(0, 0, Event.TAP_UP, false, false, code));
+		currentStep.events.add(makeEvent(0, 0, Event.CUSTOM, false, false, code));
 	}
 }
