@@ -87,16 +87,7 @@ public class Player {
 			float yVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.sin(angle);
 			Particle p = particles.createParticle().circle().velocity(xVel, yVel)
-					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y);
-			
-			switch (team) {
-			case CLIENT:
-				p.color(ColorUtils.randomHSV(180, 240, 0.75f, 1, 0.5f, 1));
-				break;
-			case SERVER:
-				p.color(ColorUtils.randomHSV(0, 60, 0.75f, 1, 0.5f, 1));
-				break;
-			}
+					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = currentUnitType.createUnit(team, paint);
