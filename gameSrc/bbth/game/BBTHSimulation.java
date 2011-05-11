@@ -99,8 +99,6 @@ public class BBTHSimulation extends Simulation {
 
 		if (!player.settingWall()) return;
 		Wall w = player.endWall(x, y);
-		if (w == null)
-			return;
 
 		graphGen.walls.add(w);
 		graphGen.compute();

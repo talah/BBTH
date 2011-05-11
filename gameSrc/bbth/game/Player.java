@@ -47,7 +47,7 @@ public class Player {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
-		paint.setColor(team.getColor());
+		paint.setColor(team.getUnitColor());
 
 		switch (team) {
 		case CLIENT:
@@ -167,7 +167,7 @@ public class Player {
 
 	public void draw(Canvas canvas) {
 		// draw walls
-		paint.setColor(team.getColor());
+		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
 			Wall w = walls.get(i);
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
@@ -175,13 +175,14 @@ public class Player {
 
 		// draw overlay wall
 		if (currentWall != null) {
-			paint.setColor(team.getColor());
+			paint.setColor(team.getTempWallColor());
 			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
 					currentWall.b.y, paint);
 		}
 
 		// draw units
 		paint.setStyle(Style.STROKE);
+		paint.setColor(team.getUnitColor());
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
@@ -189,7 +190,6 @@ public class Player {
 		// Derp
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
-		paint.setColor(team.getColor());
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
