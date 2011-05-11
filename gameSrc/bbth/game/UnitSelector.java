@@ -3,6 +3,7 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
@@ -30,6 +31,7 @@ public class UnitSelector {
 		unitPaint.setStrokeJoin(Join.ROUND);
 		unitPaint.setStyle(Style.STROKE);
 		unitPaint.setAntiAlias(true);
+		unitPaint.setStrokeCap(Cap.ROUND);
 		
 		attacker = UnitType.ATTACKING.createUnit(team, unitPaint);
 		attacker.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT / 2);
