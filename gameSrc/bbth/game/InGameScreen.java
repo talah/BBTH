@@ -67,14 +67,10 @@ public class InGameScreen extends UIScrollView {
 		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
 
-<<<<<<< HEAD
+
 		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
 		opponentHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
 		healthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
-=======
-		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2,
-				BBTHGame.WIDTH, BBTHGame.HEIGHT);
->>>>>>> 8c677580e48d1a2cd34ceb7353fb9f9ad2004070
 	}
 
 	@Override
@@ -127,10 +123,10 @@ public class InGameScreen extends UIScrollView {
 		label.setText("" + sim.getTimestep());
 
 		// Go back to the menu and stop the music if we disconnect
-//		if (bluetooth.getState() != State.CONNECTED) {
-//			beatTrack.stopMusic();
-//			nextScreen = new GameSetupScreen();
-//		}
+		if (bluetooth.getState() != State.CONNECTED) {
+			beatTrack.stopMusic();
+			nextScreen = new GameSetupScreen();
+		}
 
 		
 		sim.onUpdate(seconds);
