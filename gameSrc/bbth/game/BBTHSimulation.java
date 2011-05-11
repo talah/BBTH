@@ -20,9 +20,9 @@ public class BBTHSimulation extends Simulation {
 	private FastGraphGenerator graphGen;
 
 	// This is the virtual size of the game
-	public static final float GAME_WIDTH = 320;
-	public static final float GAME_HEIGHT = 360;
-	
+	public static final float GAME_WIDTH = BBTHGame.WIDTH;
+	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
+
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
@@ -36,13 +36,13 @@ public class BBTHSimulation extends Simulation {
 		clientPlayer = new Player(Team.CLIENT, aiController);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
-		
+
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
 		pathFinder = new Pathfinder(graphGen.graph);
 		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(15.f);
 		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		tester.walls = graphGen.walls;
-				
+
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester);
 		aiController.setUpdateFraction(.3f);
 	}
@@ -63,8 +63,8 @@ public class BBTHSimulation extends Simulation {
 
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
-//		if (!isOnBeat) return;
-		
+		// if (!isOnBeat) return;
+
 		if (isServer) {
 			serverPlayer.spawnUnit(x, y);
 		} else {

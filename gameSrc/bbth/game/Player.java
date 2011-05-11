@@ -31,8 +31,6 @@ public class Player {
 	private ParticleSystem particles;
 	private UnitSelector selector;
 
-	private static float height = BBTHGame.HEIGHT * 2;
-
 	public Player(Team team, AIController controller) {
 		this.team = team;
 		units = new ArrayList<Unit>();
@@ -50,7 +48,7 @@ public class Player {
 		switch (team) {
 		case CLIENT:
 			base.setAnchor(Anchor.BOTTOM_LEFT);
-			base.setPosition(0, height);
+			base.setPosition(0, BBTHSimulation.GAME_HEIGHT);
 			break;
 
 		case SERVER:
@@ -129,7 +127,7 @@ public class Player {
 			Unit unit = units.get(i);
 
 			unit.update(seconds);
-			if (unit.getY() < 0 || unit.getY() > height) {
+			if (unit.getY() < 0 || unit.getY() > BBTHSimulation.GAME_HEIGHT) {
 				units.remove(i);
 				i--;
 				view.removeSubview(unit.getView());
