@@ -8,32 +8,43 @@ package bbth.engine.sound;
 public class CompositeBeatPattern implements BeatPattern {
 
 	private BeatPattern [] _patterns;
-	private int [] _offsets;
+	private int [] _endIndices; // end index of each pattern
 	private int _duration;
 	private int _size;
 	
 	public CompositeBeatPattern(BeatPattern[] patterns) {
 		assert(patterns.length > 1);
+		
 		_patterns = patterns;
-		_offsets = new int[patterns.length];
+		
+		// set indices/offsets
+		_endIndices = new int[patterns.length];
 		int duration = 0, size = 0;
 		for (int i = 0; i < patterns.length; ++i) {
-			_offsets[i] = duration;
-			duration += patterns[i].getDuration();
-			size += patterns[i].size();
+			BeatPattern pattern = patterns[i];
+			// order important within this loop
+			for (int beat = 0; beat < pattern.size(); ++beat) {
+				pattern.getBeat(beat)._startTime += duration;
+			}
+			duration += pattern.getDuration();
+			size += pattern.size();
+			_endIndices[i] = size;
 		}
 		_size = size;
 		_duration = duration;
 	}
 
 	@Override
+	// Linear in the number of patterns for now, so don't use a ton of patterns
 	public Beat getBeat(int beatNumber) {
-		int i = 0;
-		while (beatNumber >= _offsets[i + 1]) {
-			++i;
+		if (beatNumber < 0 || beatNumber >= _size) return null;
+		
+		int pattern = 0;
+		while (beatNumber >= _endIndices[pattern]) {
+			++pattern;
 		}
-		beatNumber -= _offsets[i];
-		return _patterns[i].getBeat(beatNumber);
+		beatNumber -= (pattern == 0) ? 0 : _endIndices[pattern - 1];
+		return _patterns[pattern].getBeat(beatNumber);
 	}
 	
 	public int getDuration() {

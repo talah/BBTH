@@ -3,7 +3,6 @@ package edwallac;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
-import bbth.engine.net.NetworkTestSimulation;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;

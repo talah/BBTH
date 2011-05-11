@@ -13,6 +13,7 @@ import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;
 
 public class InGameScreen extends UIScrollView {
@@ -25,7 +26,8 @@ public class InGameScreen extends UIScrollView {
 	private final RectF minimapRect, opponentHealthRect, healthRect;
 	private final float HEALTHBAR_HEIGHT = 10;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
+			LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
@@ -62,12 +64,17 @@ public class InGameScreen extends UIScrollView {
 		sim.setupSubviews(this);
 
 		// Set up sound stuff
-		beatTrack = new BeatTrack(R.raw.bonusroom);
+		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
 
+<<<<<<< HEAD
 		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
 		opponentHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
 		healthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
+=======
+		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2,
+				BBTHGame.WIDTH, BBTHGame.HEIGHT);
+>>>>>>> 8c677580e48d1a2cd34ceb7353fb9f9ad2004070
 	}
 
 	@Override
@@ -92,7 +99,7 @@ public class InGameScreen extends UIScrollView {
 
 		// Overlay the unit selector
 		sim.getMyUnitSelector().draw(canvas);
-		
+
 		// Draw minimap
 		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
 		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
@@ -102,8 +109,10 @@ public class InGameScreen extends UIScrollView {
 		sim.drawForMiniMap(canvas);
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
-		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
+				BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
 		
@@ -133,7 +142,8 @@ public class InGameScreen extends UIScrollView {
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
+					- BBTHGame.HEIGHT / 2);
 		}
 	}
 
@@ -141,7 +151,9 @@ public class InGameScreen extends UIScrollView {
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
 		
-		if (sim.getMyUnitSelector().checkUnitChange(x, y)) {
+		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
+		if (unitType >= 0) {
+			sim.recordCustomEvent(unitType);
 			return;
 		}
 		

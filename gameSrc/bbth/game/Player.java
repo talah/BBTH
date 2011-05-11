@@ -8,13 +8,14 @@ import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.ui.UIView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 /**
  * A player is someone who is interacting with the game.
@@ -28,10 +29,12 @@ public class Player {
 	private Base base;
 	private AIController aiController;
 	private Paint paint;
-	private UIView view;
 	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
+
+	private ArrayList<Wall> walls;
+	private Wall currentWall;
 
 	public Player(Team team, AIController controller) {
 		this.team = team;
@@ -45,7 +48,7 @@ public class Player {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
-		paint.setColor(team.getColor());
+		paint.setColor(team.getUnitColor());
 
 		switch (team) {
 		case CLIENT:
@@ -63,13 +66,36 @@ public class Player {
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team);
+
+		walls = new ArrayList<Wall>();
+	}
+
+	public boolean settingWall() {
+		return currentWall != null;
 	}
 	
+	public void startWall(float x, float y) {
+		currentWall = new Wall(x, y, x, y);
+	}
+
+	public void updateWall(float x, float y) {
+		currentWall.b.set(x, y);
+	}
+
+	public Wall endWall(float x, float y) {
+		currentWall.b.set(x, y);
+		walls.add(currentWall);
+
+		Wall toReturn = currentWall;
+		currentWall = null;
+		return toReturn;
+	}
+
+	public void setUnitType(UnitType type) {
+		selector.setUnitType(type);
+	}
+
 	public void setupSubviews(UIScrollView view, boolean isLocal) {
-		this.view = view;
-
-		view.addSubview(base);
-
 		if (isLocal) {
 			view.scrollTo(base.getPosition().x, base.getPosition().y);
 		}
@@ -139,9 +165,25 @@ public class Player {
 	public UnitSelector getUnitSelector() {
 		return this.selector;
 	}
-	
+
 	public void draw(Canvas canvas) {
+		// draw walls
+		paint.setColor(team.getWallColor());
+		for (int i = 0; i < walls.size(); i++) {
+			Wall w = walls.get(i);
+			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+		}
+
+		// draw overlay wall
+		if (currentWall != null) {
+			paint.setColor(team.getTempWallColor());
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+					currentWall.b.y, paint);
+		}
+
+		// draw units
 		paint.setStyle(Style.STROKE);
+		paint.setColor(team.getUnitColor());
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
@@ -149,9 +191,8 @@ public class Player {
 		// Derp
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
-		paint.setColor(team.getColor());
 	}
-	
+
 	public void drawForMiniMap(Canvas canvas) {
 		paint.setStyle(Style.FILL);
 		for (int i = 0; i < units.size(); i++) {

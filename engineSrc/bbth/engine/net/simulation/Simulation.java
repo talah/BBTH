@@ -175,6 +175,10 @@ public abstract class Simulation {
 		case Event.TAP_UP:
 			simulateTapUp(event.x, event.y, isServer);
 			break;
+			
+		case Event.CUSTOM:
+			simulateCustomEvent(event.code, isServer);
+			break;
 		}
 	}
 
@@ -184,6 +188,8 @@ public abstract class Simulation {
 
 	protected abstract void simulateTapUp(float x, float y, boolean isServer);
 
+	protected abstract void simulateCustomEvent(int code, boolean isServer);
+	
 	/**
 	 * Called every fine timestep with the number of seconds since the last fine
 	 * timestep.
@@ -208,25 +214,30 @@ public abstract class Simulation {
 	/**
 	 * Helper function for recordTap*() functions.
 	 */
-	private final Event makeEvent(float x, float y, int type, boolean isHold, boolean isOnBeat) {
+	private final Event makeEvent(float x, float y, int type, boolean isHold, boolean isOnBeat, int code) {
 		Event event = new Event();
 		event.type = type;
 		event.flags = (isServer ? Event.IS_SERVER : 0) | (isHold ? Event.IS_HOLD : 0) | (isOnBeat ? Event.IS_ON_BEAT : 0);
 		event.fineTime = currentFineTimestep + coarseLag * finePerCoarse;
 		event.x = x;
 		event.y = y;
+		event.code = code;
 		return event;
 	}
 
 	public final void recordTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_DOWN, isHold, isOnBeat));
+		currentStep.events.add(makeEvent(x, y, Event.TAP_DOWN, isHold, isOnBeat, 0));
 	}
 
 	public final void recordTapMove(float x, float y) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_MOVE, false, false));
+		currentStep.events.add(makeEvent(x, y, Event.TAP_MOVE, false, false, 0));
 	}
 
 	public final void recordTapUp(float x, float y) {
-		currentStep.events.add(makeEvent(x, y, Event.TAP_UP, false, false));
+		currentStep.events.add(makeEvent(x, y, Event.TAP_UP, false, false, 0));
+	}
+	
+	public final void recordCustomEvent(int code) {
+		currentStep.events.add(makeEvent(0, 0, Event.CUSTOM, false, false, code));
 	}
 }
