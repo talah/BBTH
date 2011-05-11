@@ -6,6 +6,7 @@ import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.ui.UIView;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
@@ -47,15 +48,19 @@ public class BBTHSimulation extends Simulation {
 		aiController.setUpdateFraction(.3f);
 	}
 
-	public void setupSubviews(UIView view) {
-		localPlayer.setupSubviews(view);
-		remotePlayer.setupSubviews(view);
+	public void setupSubviews(UIScrollView view) {
+		localPlayer.setupSubviews(view, true);
+		remotePlayer.setupSubviews(view, false);
 	}
 
 	public Unit getOpponentsMostAdvancedUnit() {
 		return remotePlayer.getMostAdvancedUnit();
 	}
 
+	public UnitSelector getMyUnitSelector() {
+		return localPlayer.getUnitSelector();
+	}
+	
 	// Just for debugging so we know the simulation isn't stuck
 	public int getTimestep() {
 		return timestep;

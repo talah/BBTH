@@ -10,6 +10,7 @@ import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
@@ -61,8 +62,8 @@ public class Player {
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team);
 	}
-
-	public void setupSubviews(UIView view) {
+	
+	public void setupSubviews(UIScrollView view, boolean isLocal) {
 		this.view = view;
 
 		view.addSubview(base);
@@ -70,10 +71,14 @@ public class Player {
 		for (int i = 0; i < this.units.size(); i++) {
 			view.addSubview(units.get(i).getView());
 		}
+		
+		if (isLocal) {
+			view.scrollTo(base.getPosition().x, base.getPosition().y);
+		}
 	}
 
 	public void spawnUnit(float x, float y) {
-		for (int i = 0; i < 90; ++i) {
+		for (int i = 0; i < 40; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.cos(angle);
@@ -136,6 +141,10 @@ public class Player {
 		}
 	}
 
+	public UnitSelector getUnitSelector() {
+		return this.selector;
+	}
+	
 	public void draw(Canvas canvas) {
 		paint.setStyle(Style.STROKE);
 		for (int i = 0; i < units.size(); i++) {
