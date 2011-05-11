@@ -29,6 +29,9 @@ public class BBTHSimulation extends Simulation {
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
 
+	// Minimal length of a wall
+	public static final float MIN_WALL_LENGTH = 5.f;
+	
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
 			boolean isServer) {
 		// 6 fine timesteps per coarse timestep
@@ -80,6 +83,7 @@ public class BBTHSimulation extends Simulation {
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
+
 		if (isHold) {
 			player.startWall(x, y);
 		} else {
@@ -90,8 +94,9 @@ public class BBTHSimulation extends Simulation {
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
-		
-		if (!player.settingWall()) return;
+
+		if (!player.settingWall())
+			return;
 		player.updateWall(x, y);
 	}
 
@@ -99,8 +104,13 @@ public class BBTHSimulation extends Simulation {
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
-		if (!player.settingWall()) return;
+		if (!player.settingWall())
+			return;
 		Wall w = player.endWall(x, y);
+
+		// // insanity check--the below should never do anything
+		if (w == null)
+			return;
 
 		graphGen.walls.add(w);
 		graphGen.compute();
