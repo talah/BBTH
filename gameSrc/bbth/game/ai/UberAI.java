@@ -107,7 +107,7 @@ public class UberAI extends UnitAI {
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
 				
-				if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
+				if (m_tester != null && !m_tester.isLineOfSightClear(start_point, end_point)) {
 					PointF start = getClosestNode(start_point);
 					PointF end = getClosestNode(end_point);
 					
