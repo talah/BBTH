@@ -13,7 +13,7 @@ import bbth.game.units.Unit;
 public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
-	private Player localPlayer, remotePlayer;
+	public Player localPlayer, remotePlayer;
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
