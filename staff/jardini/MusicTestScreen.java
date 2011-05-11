@@ -72,8 +72,8 @@ public class MusicTestScreen extends GameScreen {
 		_particles = new ParticleSystem(100, 0.5f);
 		
 		_soundManager = new SoundManager(context, 8);
-		_soundManager.addSound(HIT_SOUND_ID, R.raw.hit1);
-		_soundManager.addSound(MISS_SOUND_ID, R.raw.miss1);
+//		_soundManager.addSound(HIT_SOUND_ID, R.raw.hit1);
+//		_soundManager.addSound(MISS_SOUND_ID, R.raw.miss1);
 		_musicPlayer = new MusicPlayer(context, R.raw.bonusroom);
 		_musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			@Override

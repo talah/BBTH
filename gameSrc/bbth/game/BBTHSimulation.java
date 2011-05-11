@@ -37,6 +37,7 @@ public class BBTHSimulation extends Simulation {
 		int height = (int) BBTHGame.HEIGHT;
 		grid = new MapGrid(width, height, width / 10, height / 10);
 		pathFinder = new Pathfinder(grid);
+
 		SimpleLineOfSightTester tester = new SimpleLineOfSightTester(10);
 		aiController.setPathfinder(pathFinder, grid, tester);
 	}

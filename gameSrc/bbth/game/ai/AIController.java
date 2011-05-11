@@ -2,19 +2,15 @@ package bbth.game.ai;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 
-import android.util.Log;
 import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
-import bbth.engine.ai.MapGrid;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitType;
-import bbth.engine.ai.fsm.*;
 
 public class AIController {
 	EnumMap<Team, ArrayList<Unit>> m_entities;

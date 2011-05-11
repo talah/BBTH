@@ -7,14 +7,21 @@ import bbth.engine.ui.UIView;
 
 public class Base extends UIView {
 	private Paint paint;
-	
-	public Base(Object tag) {
+	private Team team;
+
+	public Base(Object tag, Team team) {
 		super(tag);
 
 		this.setSize(BBTHGame.WIDTH, 20);
 		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(Color.BLUE);
+		
+		if (team == Team.CLIENT) {
+			paint.setColor(Color.CYAN);
+		} else if (team == Team.SERVER) {
+			paint.setColor(Color.MAGENTA);
+		}
+		
 	}
 
 	@Override
