@@ -80,8 +80,11 @@ public class BBTHSimulation extends Simulation {
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-		player.startWall(x, y);
-		player.spawnUnit(x, y);
+		if (isHold) {
+			player.startWall(x, y);
+		} else {
+			player.spawnUnit(x, y);
+		}
 	}
 
 	@Override
