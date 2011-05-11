@@ -1,4 +1,4 @@
-package bbth.engine.net;
+package edwallac;
 
 import java.util.Random;
 
@@ -36,6 +36,10 @@ public class NetworkTestSimulation extends Simulation {
 
 	@Override
 	protected final void simulateTapUp(float x, float y, boolean isServer) {
+	}
+
+	@Override
+	protected void simulateCustomEvent(int code, boolean isServer) {
 	}
 
 	public void draw(Canvas canvas, Paint paint) {

@@ -8,6 +8,7 @@ public class Event implements Comparable<Event> {
 	public static final int TAP_DOWN = 0;
 	public static final int TAP_MOVE = 1;
 	public static final int TAP_UP = 2;
+	public static final int CUSTOM = 3;
 
 	/**
 	 * Was the action performed on a hold beat or a tap beat?
@@ -55,6 +56,11 @@ public class Event implements Comparable<Event> {
 	 * The y coordinate of the event in game space (not screen space).
 	 */
 	public float y;
+
+	/**
+	 * A custom event code (you can only have 256 of them).
+	 */
+	public int code;
 
 	@Override
 	public int compareTo(Event other) {

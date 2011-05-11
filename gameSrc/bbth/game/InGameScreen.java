@@ -1,7 +1,12 @@
 package bbth.game;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
+import android.util.Log;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -18,8 +23,11 @@ public class InGameScreen extends UIScrollView {
 	private Bluetooth bluetooth;
 	private Team team;
 	private BeatTrack beatTrack;
+	private Paint paint = new Paint();
+	private final RectF minimapRect;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
+			LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
@@ -46,6 +54,9 @@ public class InGameScreen extends UIScrollView {
 		// Set up sound stuff
 		beatTrack = new BeatTrack(Song.RETRO);
 		beatTrack.startMusic();
+
+		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2,
+				BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
 
 	@Override
@@ -67,6 +78,23 @@ public class InGameScreen extends UIScrollView {
 
 		// Overlay the beat track
 		beatTrack.draw(canvas);
+
+		// Overlay the unit selector
+		sim.getMyUnitSelector().draw(canvas);
+
+		// Draw minimap
+		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
+		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
+		canvas.translate(minimapRect.left, minimapRect.top);
+		canvas.scale(scaleX, scaleY);
+		sim.drawForMiniMap(canvas);
+		paint.setColor(Color.WHITE);
+		paint.setStyle(Style.STROKE);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
+				BBTHGame.HEIGHT + this.pos_y, paint);
+		paint.setStyle(Style.FILL);
 	}
 
 	@Override
@@ -86,15 +114,24 @@ public class InGameScreen extends UIScrollView {
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
+					- BBTHGame.HEIGHT / 2);
 		}
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
-		BeatType beatType = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
 		
+		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
+		if (unitType >= 0) {
+			Log.i("game", "recording event: " + unitType);
+			sim.recordCustomEvent(unitType);
+			return;
+		}
+		
+		BeatType beatType = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
+
 		// Unpack!
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);

@@ -2,15 +2,12 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
-import bbth.engine.core.GameActivity;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.simulation.LockStepProtocol;
 
 public class BBTHGame extends Game {
-
+	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180;
-
+	
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);
 		// currentScreen = new BBTHAITest(this);

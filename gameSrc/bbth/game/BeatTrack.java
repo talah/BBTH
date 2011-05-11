@@ -14,9 +14,9 @@ import bbth.engine.sound.BeatPattern;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
-import bbth.engine.sound.SimpleBeatPattern;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.sound.SoundManager;
+import bbth.engine.sound.SimpleBeatPattern;
 
 /**
  * A complete beat track for a single song.  Handles music, hit and miss sounds, scoring.

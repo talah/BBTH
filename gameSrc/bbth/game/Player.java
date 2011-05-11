@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
-import bbth.engine.particles.Particle;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIView;
-import bbth.engine.util.ColorUtils;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
@@ -31,12 +29,11 @@ public class Player {
 	private Base base;
 	private AIController aiController;
 	private Paint paint;
-	private UIView view;
 	private ParticleSystem particles;
-
-	UnitType currentUnitType = UnitType.DEFENDING;
-
-	private static float height = BBTHGame.HEIGHT * 2;
+	private UnitSelector selector;
+	
+	private ArrayList<Wall> walls;
+	private Wall currentWall;
 
 	public Player(Team team, AIController controller) {
 		this.team = team;
@@ -47,15 +44,14 @@ public class Player {
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
 		paint.setStrokeJoin(Join.ROUND);
-		paint.setStyle(Style.STROKE);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
 		paint.setColor(team.getColor());
-		
+
 		switch (team) {
 		case CLIENT:
 			base.setAnchor(Anchor.BOTTOM_LEFT);
-			base.setPosition(0, height);
+			base.setPosition(0, BBTHSimulation.GAME_HEIGHT);
 			break;
 
 		case SERVER:
@@ -67,30 +63,53 @@ public class Player {
 		this.aiController = controller;
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+		selector = new UnitSelector(team);
+
+		walls = new ArrayList<Wall>();
 	}
 
-	public void setupSubviews(UIView view) {
-		this.view = view;
+	public void onTapDown(float x, float y, boolean isHold, boolean isOnBeat) {
+		if (isHold) {
+			currentWall = new Wall(x, y, x, y);
+		} else {
+			this.spawnUnit(x, y);
+		}
+	}
 
-		view.addSubview(base);
-
-		for (int i = 0; i < this.units.size(); i++) {
-			view.addSubview(units.get(i).getView());
+	public void onTapMove(float x, float y) {
+		// Update current wall
+	}
+	
+	public void onTapUp(float x, float y) {
+		if (currentWall != null) {
+			walls.add(currentWall);
+			currentWall = null;
+		}
+	}
+	
+	public void setUnitType(UnitType type) {
+		selector.setUnitType(type);
+	}
+	
+	public void setupSubviews(UIScrollView view, boolean isLocal) {
+		if (isLocal) {
+			view.scrollTo(base.getPosition().x, base.getPosition().y);
 		}
 	}
 
 	public void spawnUnit(float x, float y) {
-		for (int i = 0; i < 90; ++i) {
+		for (int i = 0; i < 40; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.cos(angle);
 			float yVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.sin(angle);
-			Particle p = particles.createParticle().circle().velocity(xVel, yVel)
-					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
+			particles.createParticle().circle().velocity(xVel, yVel)
+					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
+					.color(team.getRandomShade());
 		}
 
-		Unit newUnit = currentUnitType.createUnit(team, paint);
+		Unit newUnit = selector.getUnitType().createUnit(team, paint);
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));
@@ -103,8 +122,6 @@ public class Player {
 		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
-
-		this.view.addSubview(newUnit.getView());
 	}
 
 	public Unit getMostAdvancedUnit() {
@@ -132,17 +149,21 @@ public class Player {
 			Unit unit = units.get(i);
 
 			unit.update(seconds);
-			if (unit.getY() < 0 || unit.getY() > height) {
+			if (unit.getY() < 0 || unit.getY() > BBTHSimulation.GAME_HEIGHT) {
 				units.remove(i);
 				i--;
-				view.removeSubview(unit.getView());
 				aiController.removeEntity(unit);
 			}
 
 		}
 	}
 
+	public UnitSelector getUnitSelector() {
+		return this.selector;
+	}
+
 	public void draw(Canvas canvas) {
+		paint.setStyle(Style.STROKE);
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
@@ -150,7 +171,13 @@ public class Player {
 		// Derp
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
-		paint.setStyle(Style.STROKE);
 		paint.setColor(team.getColor());
+	}
+	
+	public void drawForMiniMap(Canvas canvas) {
+		paint.setStyle(Style.FILL);
+		for (int i = 0; i < units.size(); i++) {
+			units.get(i).drawForMiniMap(canvas);
+		}
 	}
 }

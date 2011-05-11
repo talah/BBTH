@@ -23,5 +23,9 @@ public class AttackingUnit extends Unit {
 	public UnitType getType() {
 		return UnitType.ATTACKING;
 	}
-	
+
+	@Override
+	public void drawForMiniMap(Canvas canvas) {
+		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
+	}
 }
