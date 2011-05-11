@@ -118,13 +118,13 @@ public class InGameScreen extends UIScrollView {
 		// Draw a background grid thing so we know we're not hallucinating
 		canvas.translate(-this.pos_x, -this.pos_y);
 		
-		RectF bounds = this._content_bounds;
-		for (float f = bounds.top; f <= bounds.bottom; f += 20) {
-			canvas.drawLine(bounds.left, f, bounds.right, f, this.testPaint);
-		}
-		for (float f = bounds.left; f <= bounds.right; f += 20) {
-			canvas.drawLine(f, bounds.top, f, bounds.bottom, this.testPaint);
-		}
+//		RectF bounds = this._content_bounds;
+//		for (float f = bounds.top; f <= bounds.bottom; f += 20) {
+//			canvas.drawLine(bounds.left, f, bounds.right, f, this.testPaint);
+//		}
+//		for (float f = bounds.left; f <= bounds.right; f += 20) {
+//			canvas.drawLine(f, bounds.top, f, bounds.bottom, this.testPaint);
+//		}
 		
 		// Draw the game
 		sim.draw(canvas);
