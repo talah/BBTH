@@ -23,7 +23,7 @@ public enum Team {
 		}
 		
 		public int getRandomShade() {
-			return ColorUtils.randomHSV(0, 60, 0.75f, 1, 0.5f, 1));
+			return ColorUtils.randomHSV(0, 60, 0.75f, 1, 0.5f, 1);
 		}
 
 		public Team getOppositeTeam() {
