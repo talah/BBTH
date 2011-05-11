@@ -50,18 +50,21 @@ public class UnitSelector {
 		this.currentUnitType = type;
 	}
 
-	public boolean checkUnitChange(float x, float y) {
-		if (!DIMENSIONS.contains(x, y)) return false;
+	public int checkUnitChange(float x, float y) {
+		if (!DIMENSIONS.contains(x, y)) return -1;
 		
 		if (y < UNIT_HEIGHT) {
-			this.currentUnitType = UnitType.ATTACKING;
+			return 0;
+//			this.currentUnitType = UnitType.ATTACKING;
 		} else if (y < UNIT_HEIGHT * 2) {
-			this.currentUnitType = UnitType.DEFENDING;
+			return 1;
+//			this.currentUnitType = UnitType.DEFENDING;
 		} else {
-			this.currentUnitType = UnitType.UBER;
+			return 2;
+//			this.currentUnitType = UnitType.UBER;
 		}
 
-		return true;
+//		return true;
 	}
 	
 	public void draw(Canvas canvas) {

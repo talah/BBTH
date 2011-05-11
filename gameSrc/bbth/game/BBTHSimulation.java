@@ -1,6 +1,7 @@
 package bbth.game;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
@@ -9,6 +10,7 @@ import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation {
 	private int timestep;
@@ -23,7 +25,8 @@ public class BBTHSimulation extends Simulation {
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
+			boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
@@ -66,26 +69,41 @@ public class BBTHSimulation extends Simulation {
 	}
 
 	@Override
-	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
-		// if (!isOnBeat) return;
-
+	protected void simulateTapDown(float x, float y, boolean isServer,
+			boolean isHold, boolean isOnBeat) {
 		if (isServer) {
-			serverPlayer.spawnUnit(x, y);
+			serverPlayer.onTapDown(x, y, isHold, isOnBeat);
 		} else {
-			clientPlayer.spawnUnit(x, y);
+			clientPlayer.onTapDown(x, y, isHold, isOnBeat);
 		}
 	}
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
+		if (isServer) {
+			serverPlayer.onTapMove(x, y);
+		} else {
+			clientPlayer.onTapMove(x, y);
+		}
 	}
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
+		if (isServer) {
+			serverPlayer.onTapUp(x, y);
+		} else {
+			clientPlayer.onTapUp(x, y);
+		}
 	}
 
 	@Override
 	protected void simulateCustomEvent(int code, boolean isServer) {
+		Log.i("game", "simulating event: " + code + " " + isServer);
+		if (isServer) {
+			serverPlayer.setUnitType(UnitType.fromInt(code));
+		} else {
+			clientPlayer.setUnitType(UnitType.fromInt(code));
+		}
 	}
 
 	@Override

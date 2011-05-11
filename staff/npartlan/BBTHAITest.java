@@ -258,7 +258,6 @@ public class BBTHAITest extends GameScreen {
 		m_graph_gen.walls.add(w);
 		m_graph_gen.compute();
 		m_tester.updateWalls();
-
 	}
 
 	private PointF getClosestNode(PointF s) {
