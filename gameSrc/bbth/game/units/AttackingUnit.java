@@ -15,8 +15,8 @@ public class AttackingUnit extends Unit {
 	@Override
 	public void draw(Canvas canvas) {
 		canvas.drawCircle(this.getX(), this.getY(), 4, paint);
-		float heading = getHeading();
-		canvas.drawLine(getX(), getY(), getX() + LINE_LENGTH*FloatMath.cos(heading), getY() + LINE_LENGTH*FloatMath.sin(heading), paint);
+		
+		canvas.drawLine(getX(), getY(), , , paint);
 	}
 
 	@Override

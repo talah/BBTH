@@ -33,14 +33,13 @@ public class UberUnit extends Unit {
 		if (isDead())
 			return;
 		
-		if (!getStateName().equals("attacking")) {
-			fireTarget = null;
-			firing = false;
-		}
+//		if (!getStateName().equals("attacking")) {
+//			fireTarget = null;
+//			firing = false;
+//		}
 		
 		if (firing) {
-			if (fireTarget.isDead() || powerLevel < 0) {
-System.err.println(team + ": finished firing at target: "+fireTarget+" (leftover power: "+powerLevel+")");
+			if (!getStateName().equals("attacking") || fireTarget.isDead() || powerLevel < 0) {
 				powerLevel = Math.max(0f, powerLevel);
 				charging = true;
 				firing = false;
@@ -70,7 +69,6 @@ System.err.println(team + ": finished firing at target: "+fireTarget+" (leftover
 			if (!charging && target != null && !target.isDead() && getStateName().equals("attacking")) {
 				firing = true;
 				fireTarget = target;
-System.err.println(team + ": starting to fire at target: "+fireTarget.hashCode());
 			}
 		}
 	}
@@ -94,18 +92,27 @@ System.err.println(team + ": starting to fire at target: "+fireTarget.hashCode()
 		
 		tempPaint.set(paint);
 		
-		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
 		float radius = POWER_CIRCLE_RADIUS*powerLevel/MAX_POWER_LEVEL;
-		canvas.drawCircle(getX(), getY(), radius, paint);
-		if (firing) {
-			paint.setStrokeWidth(radius);
-			canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
-			canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*1.3f, paint);
-			paint.setColor(Color.WHITE);
-			paint.setStrokeWidth(radius*.5f);
-			canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*.65f, paint);
-			canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
+		if (radius > 0f) {
+			if (firing) {
+				paint.setColor(Color.GRAY);
+				
+				paint.setStrokeWidth(radius);
+				canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
+				
+				canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*.7f, paint);
+				
+				paint.setColor(Color.WHITE);
+				canvas.drawCircle(getX(), getY(), radius, paint);
+				canvas.drawCircle(fireTarget.getX(), fireTarget.getY(), radius*.45f, paint);
+				
+				paint.setStrokeWidth(radius*.5f);
+				canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
+			} else {
+				paint.setColor(Color.GRAY);
+				canvas.drawCircle(getX(), getY(), radius, paint);
+			}
 		}
 		
 		paint.set(tempPaint);
