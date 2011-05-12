@@ -103,7 +103,6 @@ public class AIController {
 		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 
-			// TODO: Use the correct AI for the individual unit.
 			if (entity.getType() == UnitType.DEFENDING) {
 				m_defensive.update(entity, this, flock);
 			} else if (entity.getType() == UnitType.ATTACKING) {

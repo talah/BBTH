@@ -23,6 +23,7 @@ import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
+import bbth.game.units.WallUnit;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final int NUM_PARTICLES = 1000;
@@ -404,6 +405,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public boolean isReady() {
 		return self_ready && other_ready;
+	}
+
+	@Override
+	public void removeWall(WallUnit wall) {
+		graphGen.walls.remove(wall);
+		graphGen.compute();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
+		
 	}
 
 }

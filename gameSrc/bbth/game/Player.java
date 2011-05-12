@@ -191,10 +191,15 @@ public class Player {
 		for (int i = walls.size() - 1; i >= 0; --i) {
 			walls.get(i).update(seconds);
 			if (walls.get(i).isDead()) {
-				walls.remove(i);
+				removeWall(i);
 			}
 		}
 
+	}
+
+	private void removeWall(int i) {
+		unitManager.removeWall(walls.get(i));
+		walls.remove(i);
 	}
 
 	public UnitSelector getUnitSelector() {
