@@ -182,6 +182,13 @@ public class Player {
 				aiController.removeEntity(unit);
 			}
 		}
+		
+		for (int i = walls.size() - 1; i >= 0; --i) {
+			walls.get(i).update(seconds);
+			if (walls.get(i).isDead()) {
+				walls.remove(i);
+			}
+		}
 
 	}
 
@@ -198,13 +205,6 @@ public class Player {
 		for (int i = 0; i < walls.size(); i++) {
 			walls.get(i).draw(canvas);
 		}
-
-		// // draw overlay wall
-		// if (currentWall != null) {
-		// paint.setColor(team.getTempWallColor());
-		// canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-		// currentWall.b.y, paint);
-		// }
 
 		// draw units
 		paint.setStyle(Style.STROKE);

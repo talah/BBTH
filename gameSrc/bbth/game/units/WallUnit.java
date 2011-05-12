@@ -1,9 +1,9 @@
 package bbth.game.units;
 
-import bbth.engine.fastgraph.Wall;
-import bbth.game.Team;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import bbth.engine.fastgraph.Wall;
+import bbth.game.Team;
 
 /**
  * A wall that's also a unit.  How convenient.
@@ -12,28 +12,20 @@ import android.graphics.Paint;
  */
 public class WallUnit extends Unit {
 
-	public static final float HEALTH = 5;
+	public static final float HEALTH = 10;
 	
 	private Wall wall;
-	private float health;
-	private UnitManager manager;
 
 	public WallUnit(Wall w, UnitManager m, Team team, Paint p) {
 		super(m, team, p);
 		wall = w;
-		health = HEALTH;
-		manager = m;
 		unitManager.notifyUnitDead(this);
 	}
 	
 	@Override
 	public void update(float seconds) {
 		super.update(seconds);
-		health -= seconds;
-		
-		if (health <= 0) {
-			manager.notifyUnitDead(this);
-		}
+		takeDamage(seconds);
 	}
 
 	@Override
