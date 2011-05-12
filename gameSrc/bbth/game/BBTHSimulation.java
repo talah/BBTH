@@ -14,6 +14,7 @@ import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
 import bbth.engine.util.Timer;
@@ -23,6 +24,15 @@ import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
+	private static final int NUM_PARTICLES = 1000;
+	private static final float PARTICLE_THRESHOLD = 0.5f;
+
+	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+	public static final Paint PARTICLE_PAINT = new Paint();
+	static {
+		PARTICLE_PAINT.setStrokeWidth(2.f);
+	}
+
 	private int timestep;
 	private Team team;
 	public Player localPlayer, remotePlayer;
@@ -56,7 +66,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float UBER_UNIT_THRESHOLD = 10;
 	public static final float UBER_CIRCLE_THRESHOLD = 5;
 	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
-	private static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
+	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 3 fine timesteps per coarse timestep
@@ -120,18 +130,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
-		// Update player combos.
 		if (isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
-
-			if (newcombo >= UBER_CIRCLE_THRESHOLD) {
-				float radius = UBER_CIRCLE_SIZE_MOD * newcombo + UBER_CIRCLE_INIT_SIZE;
-				player.setComboCircle(randInRange(x + radius, x + BBTHGame.WIDTH - radius), randInRange(y + radius, y + BBTHGame.HEIGHT - radius), radius);
-			}
 		} else {
 			player.setCombo(0);
-			player.clearComboCircle();
 		}
 
 		if (isHold) {
@@ -209,6 +212,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiTickTimer.stop();
 
+		PARTICLES.tick(seconds);
+
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
@@ -251,6 +256,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
+
+		PARTICLES.draw(canvas, PARTICLE_PAINT);
 	}
 
 	public void drawForMiniMap(Canvas canvas) {

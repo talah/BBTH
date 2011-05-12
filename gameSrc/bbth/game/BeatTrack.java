@@ -65,7 +65,7 @@ public class BeatTrack {
 			public void onCompletion(MusicPlayer mp) {
 				beatTracker = new BeatTracker(musicPlayer, beatPattern);
 				beatsInRange = new ArrayList<Beat>();
-				mp.play();
+				mp.loop();
 			}
 		});
 //		musicPlayer.setOnCompletionListener(listener);
@@ -91,7 +91,7 @@ public class BeatTrack {
 	}
 
 	public void startMusic() {
-		musicPlayer.play();
+		musicPlayer.loop();
 	}
 	
 	public void stopMusic() {
@@ -144,5 +144,9 @@ public class BeatTrack {
 		}
 
 		return beatType;
+	}
+
+	public float getCombo() {
+		return combo;
 	}
 }

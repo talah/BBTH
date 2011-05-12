@@ -3,6 +3,7 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
@@ -43,10 +44,14 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private Timer drawSimTimer = new Timer();
 	private Timer drawUITimer = new Timer();
 
+	public ComboCircle combo_circle;
+
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
 		this.team = playerTeam;
+
+		combo_circle = new ComboCircle(this.team);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -131,8 +136,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		drawParticleTimer.stop();
 
-		sim.localPlayer.combo_circle.onDraw(canvas);
-		sim.remotePlayer.combo_circle.onDraw(canvas);
+		combo_circle.onDraw(canvas);
 
 		canvas.translate(this.pos_x, this.pos_y);
 
@@ -258,6 +262,17 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 			currentWall = new Wall(worldX, worldY, worldX, worldY);
 		}
 
+		// Update player combos.
+		if (isOnBeat) {
+			if (beatTrack.getCombo() >= BBTHSimulation.UBER_CIRCLE_THRESHOLD) {
+				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD * beatTrack.getCombo() + BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
+				setComboCircle(MathUtils.randInRange(pos_x + radius, pos_x + BBTHGame.WIDTH - radius),
+						MathUtils.randInRange(pos_y + radius, pos_y + BBTHGame.HEIGHT - radius), radius);
+			}
+		} else {
+			clearComboCircle();
+		}
+
 		sim.recordTapDown(worldX, worldY, isHold, isOnBeat);
 	}
 
@@ -326,5 +341,18 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		} else {
 			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
+	}
+
+	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
+		this.combo_circle.setPosition(center_x, center_y);
+		this.combo_circle.radius = _uber_circle_radius;
+	}
+
+	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
+		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
+	}
+
+	public void clearComboCircle() {
+		this.combo_circle.radius = -1.f;
 	}
 }

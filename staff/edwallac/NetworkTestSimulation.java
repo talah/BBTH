@@ -39,7 +39,7 @@ public class NetworkTestSimulation extends Simulation {
 	}
 
 	@Override
-	protected void simulateCustomEvent(int code, boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 	}
 
 	public void draw(Canvas canvas, Paint paint) {

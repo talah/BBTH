@@ -8,10 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
-import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
@@ -25,19 +23,14 @@ import bbth.game.units.WallUnit;
  * A player is someone who is interacting with the game.
  */
 public class Player {
-	private static final int NUM_PARTICLES = 200;
-	private static final float PARTICLE_THRESHOLD = 0.5f;
-
 	private Team team;
 	public List<Unit> units;
 	public Base base;
 	private AIController aiController;
 	private Paint paint;
-	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
-	public ComboCircle combo_circle;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
@@ -72,11 +65,7 @@ public class Player {
 			break;
 		}
 
-		combo_circle = new ComboCircle(team);
-
 		this.aiController = controller;
-
-		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team, unitManager);
 
 		walls = new ArrayList<WallUnit>();
@@ -124,7 +113,8 @@ public class Player {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
 			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-			particles.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
+			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
+					.color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
@@ -158,8 +148,6 @@ public class Player {
 	}
 
 	public void update(float seconds) {
-		particles.tick(seconds);
-
 		for (int i = 0; i < units.size(); i++) {
 			Unit unit = units.get(i);
 
@@ -202,7 +190,6 @@ public class Player {
 		}
 
 		paint.setStyle(Style.FILL);
-		particles.draw(canvas, paint);
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
@@ -242,18 +229,4 @@ public class Player {
 	public float getCombo() {
 		return _combo;
 	}
-
-	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
-		this.combo_circle.setPosition(center_x, center_y);
-		this.combo_circle.radius = _uber_circle_radius;
-	}
-
-	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
-		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
-	}
-
-	public void clearComboCircle() {
-		this.combo_circle.radius = -1.f;
-	}
-
 }

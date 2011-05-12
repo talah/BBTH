@@ -1,6 +1,5 @@
 package bbth.game;
 
-import zdavis.CombatTest;
 import android.app.Activity;
 import bbth.engine.core.Game;
 
@@ -8,6 +7,16 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180;
+
+	public static final GameStatusMessageScreen DISCONNECT_SCREEN = new GameStatusMessageScreen(
+			"You have been disconnected", null);
+	public static final GameStatusMessageScreen WIN_SCREEN = new GameStatusMessageScreen(
+			"Congratulations! You won!", null);
+	public static final GameStatusMessageScreen LOSE_SCREEN = new GameStatusMessageScreen(
+			"Oh noes, you lost :(", null);
+	public static final GameStatusMessageScreen TIE_SCREEN = new GameStatusMessageScreen(
+			"It's a tie!", null);
+	public static final TitleScreen TITLE_SCREEN = new TitleScreen();
 
 	public BBTHGame(Activity activity) {
 //		currentScreen = new TitleScreen(null);
