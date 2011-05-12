@@ -94,7 +94,7 @@ public class OffensiveAI extends UnitAI {
 		if (!flock.hasLeader(entity)) {
 			float goal_x = BBTHSimulation.GAME_WIDTH/2.0f;
 			float goal_y = 0;
-			if (entity.getTeam() == Team.CLIENT) { 
+			if (entity.getTeam() == Team.SERVER) { 
 				goal_y = BBTHSimulation.GAME_HEIGHT;
 			}
 			start_point.set(start_x, start_y);
