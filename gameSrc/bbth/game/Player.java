@@ -74,7 +74,7 @@ public class Player {
 	public Team getTeam() {
 		return this.team;
 	}
-	
+
 	public boolean settingWall() {
 		return currentWall != null;
 	}
@@ -115,10 +115,13 @@ public class Player {
 	public void spawnUnit(float x, float y) {
 		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
-					.color(team.getRandomShade());
+			float xVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.sin(angle);
+			BBTHSimulation.PARTICLES.createParticle().circle()
+					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
+					.position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
@@ -129,11 +132,13 @@ public class Player {
 		}
 
 		newUnit.setPosition(x, y);
-		if (team == Team.SERVER) {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), MathUtils.PI / 2.f);
-		} else {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), -MathUtils.PI / 2.f);
-		}
+//		if (team == Team.SERVER) {
+//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+//					MathUtils.PI / 2.f);
+//		} else {
+//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+//					-MathUtils.PI / 2.f);
+//		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
 	}
@@ -143,7 +148,11 @@ public class Player {
 
 		for (int i = 0; i < units.size(); i++) {
 			Unit currUnit = units.get(i);
-			if (toReturn == null || (team == Team.SERVER && currUnit.getY() > toReturn.getY()) || (team == Team.CLIENT && currUnit.getY() < toReturn.getY())) {
+			if (toReturn == null
+					|| (team == Team.SERVER && currUnit.getY() > toReturn
+							.getY())
+					|| (team == Team.CLIENT && currUnit.getY() < toReturn
+							.getY())) {
 				toReturn = currUnit;
 			}
 		}
