@@ -27,6 +27,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	private Pathfinder m_pathfinder;
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
+	private GridAcceleration<Unit> accel = new GridAcceleration<Unit>(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -57,7 +58,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
 		//******** SETUP FOR AI *******//
-		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester);
+		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, accel);
 
 		bluePaint = new Paint();
 		bluePaint.setColor(Color.BLUE);
@@ -139,6 +140,8 @@ public class CombatTest extends GameScreen implements UnitManager {
 	public void onUpdate(float seconds) {
 		//******** SETUP FOR AI *******//
 		m_controller.update();
+		accel.clear();
+		accel.insertUnits(m_controller.getUnits());
 		//******** SETUP FOR AI *******//
 		
 		// do NOT precache size

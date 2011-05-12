@@ -13,6 +13,10 @@ public final class MathUtils {
 		_random.setSeed(seed);
 	}
 	
+	public static int randInRange(int min, int max) {
+		return min + _random.nextInt(max - min);
+	}
+	
 	// random number in the range [min, max)
 	public static float randInRange(float min, float max) {
 		return (max - min) * _random.nextFloat() + min;
@@ -48,5 +52,10 @@ public final class MathUtils {
 	
 	public static float toRadians(float heading) {
 		return heading * PI/180;
+	}
+	
+	public static float scale(float min, float max, float target_min, float target_max, float val)
+	{
+		return (val / ((max - min) / (target_max - target_min))) + target_min;
 	}
 }

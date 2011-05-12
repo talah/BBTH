@@ -1,87 +1,135 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
-import android.util.Log;
-import bbth.engine.ui.*;
+import android.util.FloatMath;
+import bbth.engine.fastgraph.Wall;
+import bbth.engine.particles.ParticleSystem;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 /**
  * A player is someone who is interacting with the game.
  */
 public class Player {
+	private static final int NUM_PARTICLES = 200;
+	private static final float PARTICLE_THRESHOLD = 0.5f;
+
 	private Team team;
-	private List<Unit> units;
+	public List<Unit> units;
 	private Base base;
 	private AIController aiController;
 	private Paint paint;
-	private UIView view;
+	private ParticleSystem particles;
+	private UnitSelector selector;
+	private float _health;
 
-	UnitType currentUnitType = UnitType.ATTACKING;
-	
-	private static float height = BBTHGame.HEIGHT * 2;
+	private ArrayList<Wall> walls;
+	private Wall currentWall;
 
 	public Player(Team team, AIController controller) {
 		this.team = team;
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
+		_health = 100;
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
 		paint.setStrokeJoin(Join.ROUND);
-		paint.setStyle(Style.STROKE);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
+		paint.setColor(team.getUnitColor());
 
 		switch (team) {
 		case CLIENT:
-			paint.setColor(Color.BLUE);
 			base.setAnchor(Anchor.BOTTOM_LEFT);
-			base.setPosition(0, height);
+			base.setPosition(0, BBTHSimulation.GAME_HEIGHT);
 			break;
 
 		case SERVER:
-			paint.setColor(Color.RED);
 			base.setAnchor(Anchor.TOP_LEFT);
 			base.setPosition(0, 0);
 			break;
 		}
 
 		this.aiController = controller;
+
+		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+		selector = new UnitSelector(team);
+
+		walls = new ArrayList<Wall>();
 	}
 
-	public void setupSubviews(UIView view) {
-		this.view = view;
-		
-		view.addSubview(base);
-		
-		for (int i = 0; i < this.units.size(); i++) {
-			view.addSubview(units.get(i).getView());
+	public boolean settingWall() {
+		return currentWall != null;
+	}
+	
+	public void startWall(float x, float y) {
+		currentWall = new Wall(x, y, x, y);
+	}
+
+	public void updateWall(float x, float y) {
+		currentWall.b.set(x, y);
+	}
+
+	public Wall endWall(float x, float y) {
+		currentWall.b.set(x, y);
+		walls.add(currentWall);
+
+		Wall toReturn = currentWall;
+		currentWall = null;
+		return toReturn;
+	}
+
+	public void setUnitType(UnitType type) {
+		selector.setUnitType(type);
+	}
+
+	public void setupSubviews(UIScrollView view, boolean isLocal) {
+		if (isLocal) {
+			view.scrollTo(base.getPosition().x, base.getPosition().y);
 		}
 	}
 
 	public void spawnUnit(float x, float y) {
-		Unit newUnit = currentUnitType.createUnit(null, team, paint); // TODO: Passing null will result in a NullPointerException
+		for (int i = 0; i < 40; ++i) {
+			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+			float xVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.sin(angle);
+			particles.createParticle().circle().velocity(xVel, yVel)
+					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
+					.color(team.getRandomShade());
+		}
+
+		if (true)
+			throw new UnsupportedOperationException("TODO: implement a UnitManager");
+		
+		Unit newUnit = selector.getUnitType().createUnit(null, team, paint);
+		
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));
 		if (team == Team.SERVER) {
-			newUnit.setVelocity(MathUtils.randInRange(30, 70), MathUtils.PI / 2.f);
+			newUnit.setVelocity(MathUtils.randInRange(30, 70),
+					MathUtils.PI / 2.f);
 		} else {
-			newUnit.setVelocity(MathUtils.randInRange(30, 70), -MathUtils.PI / 2.f);
+			newUnit.setVelocity(MathUtils.randInRange(30, 70),
+					-MathUtils.PI / 2.f);
 		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
-		
-		this.view.addSubview(newUnit.getView());
 	}
 
 	public Unit getMostAdvancedUnit() {
@@ -90,9 +138,11 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			Unit curr_unit = units.get(i);
 
-			if (toReturn == null || 
-					(team == Team.SERVER && curr_unit.getY() > toReturn.getY()) || 
-					(team == Team.CLIENT && curr_unit.getY() < toReturn.getY())) {
+			if (toReturn == null
+					|| (team == Team.SERVER && curr_unit.getY() > toReturn
+							.getY())
+					|| (team == Team.CLIENT && curr_unit.getY() < toReturn
+							.getY())) {
 				toReturn = curr_unit;
 			}
 		}
@@ -101,23 +151,71 @@ public class Player {
 	}
 
 	public void update(float seconds) {
+		particles.tick(seconds);
+
 		for (int i = 0; i < units.size(); i++) {
 			Unit unit = units.get(i);
-			
+
 			unit.update(seconds);
-			if (unit.getY() < 0 || unit.getY() > height) {
+			if (unit.getY() < 0 || unit.getY() > BBTHSimulation.GAME_HEIGHT) {
 				units.remove(i);
 				i--;
-				view.removeSubview(unit.getView());
 				aiController.removeEntity(unit);
 			}
-			
+
 		}
 	}
 
+	public UnitSelector getUnitSelector() {
+		return this.selector;
+	}
+
 	public void draw(Canvas canvas) {
+		// draw walls
+		paint.setColor(team.getWallColor());
+		for (int i = 0; i < walls.size(); i++) {
+			Wall w = walls.get(i);
+			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+		}
+
+		// draw overlay wall
+		if (currentWall != null) {
+			paint.setColor(team.getTempWallColor());
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+					currentWall.b.y, paint);
+		}
+
+		// draw units
+		paint.setStyle(Style.STROKE);
+		paint.setColor(team.getUnitColor());
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
+
+		// Derp
+		paint.setStyle(Style.FILL);
+		particles.draw(canvas, paint);
+	}
+
+	public void drawForMiniMap(Canvas canvas) {
+		paint.setStyle(Style.FILL);
+		for (int i = 0; i < units.size(); i++) {
+			units.get(i).drawForMiniMap(canvas);
+		}
+	}
+	
+	public float getHealth()
+	{
+		return _health;
+	}
+	
+	public void resetHealth()
+	{
+		_health = 100;
+	}
+	
+	public void adjustHealth(float delta)
+	{
+		_health = MathUtils.clamp(0, 100, _health + delta);
 	}
 }

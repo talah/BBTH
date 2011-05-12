@@ -24,4 +24,14 @@ public enum UnitType {
 	};
 	
 	public abstract Unit createUnit(UnitManager manager, Team team, Paint p);
+	
+	public static UnitType fromInt(int type) {
+		switch (type) {
+		case 0: return UnitType.ATTACKING;
+		case 1: return UnitType.DEFENDING;
+		case 2: return UnitType.UBER;
+		}
+		
+		return null;
+	}
 }

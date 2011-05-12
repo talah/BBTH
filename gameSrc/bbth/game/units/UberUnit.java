@@ -128,4 +128,8 @@ public class UberUnit extends Unit {
 		return 10f;
 	}
 	
+	@Override
+	public void drawForMiniMap(Canvas canvas) {
+		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
+	}
 }

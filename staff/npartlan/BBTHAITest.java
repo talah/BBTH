@@ -19,6 +19,7 @@ import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
+import bbth.game.GridAcceleration;
 import bbth.game.Team;
 import bbth.game.units.*;
 import bbth.game.ai.AIController;
@@ -49,6 +50,8 @@ public class BBTHAITest extends GameScreen {
 	private int m_timestep = 0;
 
 	private long m_time_since_step;
+
+	private GridAcceleration<Unit> m_accel;
 	
 	public BBTHAITest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
@@ -71,8 +74,9 @@ public class BBTHAITest extends GameScreen {
 		
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
+		m_accel = new GridAcceleration<Unit>(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
 		//******** SETUP FOR AI *******//
-		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester);
+		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, m_accel);
 
 		m_last_time = System.currentTimeMillis();
 		
@@ -153,6 +157,8 @@ public class BBTHAITest extends GameScreen {
 		}
 		
 		//******** SETUP FOR AI *******//
+		m_accel.clear();
+		m_accel.insertUnits(m_controller.getUnits());
 		m_controller.update();
 		//******** SETUP FOR AI *******//
 		
@@ -258,7 +264,6 @@ public class BBTHAITest extends GameScreen {
 		m_graph_gen.walls.add(w);
 		m_graph_gen.compute();
 		m_tester.updateWalls();
-
 	}
 
 	private PointF getClosestNode(PointF s) {

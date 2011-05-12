@@ -1,56 +1,50 @@
 package bbth.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.Canvas;
-
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
-import android.util.Log;
-import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.sound.Beat;
-import bbth.engine.sound.BeatPattern;
-import bbth.engine.sound.BeatTracker;
-import bbth.engine.sound.MusicPlayer;
-import bbth.engine.sound.SimpleBeatPattern;
-import bbth.engine.sound.MusicPlayer.OnCompletionListener;
+import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;
 
 public class InGameScreen extends UIScrollView {
-
-	private static final float BEAT_LINE_X = 25;
-	private static final float BEAT_LINE_Y = 135;
-
 	private BBTHSimulation sim;
 	private UILabel label;
 	private Bluetooth bluetooth;
 	private Team team;
-	private BeatTracker beatTracker;
-	private int combo;
-	private int score;
-	private String comboStr, scoreStr;
-	private BeatPattern beatPattern;
-	private MusicPlayer musicPlayer;
-	private List<Beat> beatsInRange;
-	private Paint paint, testPaint;
+	private BeatTrack beatTrack;
+	private Paint paint, opponentHealthPaint, healthPaint;
+	private final RectF minimapRect, opponentHealthRect, healthRect;
+	private final float HEALTHBAR_HEIGHT = 10;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
+			LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
 
 		this.team = playerTeam;
+		
+		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		opponentHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		healthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		
+		if (team == Team.SERVER) {
+			healthPaint.setColor(Color.CYAN);
+			opponentHealthPaint.setColor(Color.MAGENTA);
+		} else if (team == Team.CLIENT) {
+			healthPaint.setColor(Color.MAGENTA);
+			opponentHealthPaint.setColor(Color.CYAN);
+		}
 
 		// Set up the scrolling!
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -69,44 +63,20 @@ public class InGameScreen extends UIScrollView {
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
 
-		// Setup paint
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setTextSize(10);
+		// Set up sound stuff
+		beatTrack = new BeatTrack(Song.RETRO);
+		beatTrack.startMusic();
 
-		// Setup music stuff
-		beatPattern = new SimpleBeatPattern(385, 571, 300000);
-		musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
-		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
-			public void onCompletion(MusicPlayer mp) {
-				beatTracker = new BeatTracker(musicPlayer, beatPattern);
-				beatsInRange = new ArrayList<Beat>();
-				mp.play();
-			}
-		});
 
-		beatTracker = new BeatTracker(musicPlayer, beatPattern);
-		beatsInRange = new ArrayList<Beat>();
-
-		// Setup score stuff
-		score = 0;
-		scoreStr = String.valueOf(score);
-		combo = 0;
-		comboStr = String.valueOf(combo);
-
-		// Start playing the music!
-		musicPlayer.play();
-		
-		
-		testPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		LinearGradient g = new LinearGradient(_rect.left, _rect.top, _rect.left, _rect.bottom, Color.LTGRAY, Color.GRAY, Shader.TileMode.MIRROR);
-		testPaint.setStrokeWidth(2);
-		testPaint.setShader(g);
-
+		minimapRect = new RectF(BBTHGame.WIDTH - 40, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
+		opponentHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		healthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
 	}
 
 	@Override
 	public void onStop() {
-		musicPlayer.stop();
+		beatTrack.stopMusic();
+
 		// Disconnect when we lose focus
 		bluetooth.disconnect();
 	}
@@ -115,30 +85,36 @@ public class InGameScreen extends UIScrollView {
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		// Draw a background grid thing so we know we're not hallucinating
-		canvas.translate(-this.pos_x, -this.pos_y);
-		
-//		RectF bounds = this._content_bounds;
-//		for (float f = bounds.top; f <= bounds.bottom; f += 20) {
-//			canvas.drawLine(bounds.left, f, bounds.right, f, this.testPaint);
-//		}
-//		for (float f = bounds.left; f <= bounds.right; f += 20) {
-//			canvas.drawLine(f, bounds.top, f, bounds.bottom, this.testPaint);
-//		}
-		
 		// Draw the game
+		canvas.translate(-this.pos_x, -this.pos_y);
 		sim.draw(canvas);
-
 		canvas.translate(this.pos_x, this.pos_y);
 
-		// Draw the music section of the screen
-		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		// Overlay the beat track
+		beatTrack.draw(canvas);
+
+		// Overlay the unit selector
+		sim.getMyUnitSelector().draw(canvas);
+
+		// Draw minimap
+		float scaleX = minimapRect.width() / BBTHSimulation.GAME_WIDTH;
+		float scaleY = minimapRect.height() / BBTHSimulation.GAME_HEIGHT;
+		canvas.save();
+		canvas.translate(minimapRect.left, minimapRect.top);
+		canvas.scale(scaleX, scaleY);
+		sim.drawForMiniMap(canvas);
 		paint.setColor(Color.WHITE);
-		canvas.drawLine(0, BEAT_LINE_Y - Beat.RADIUS, 50, BEAT_LINE_Y - Beat.RADIUS, paint);
-		canvas.drawLine(0, BEAT_LINE_Y + Beat.RADIUS, 50, BEAT_LINE_Y + Beat.RADIUS, paint);
-		canvas.drawText(comboStr, 25, _height - 10, paint);
-		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
-		canvas.drawLine(50, 0, 50, _height, paint);
+		paint.setStyle(Style.STROKE);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
+				BBTHGame.HEIGHT + this.pos_y, paint);
+		paint.setStyle(Style.FILL);
+		canvas.restore();
+		
+		//Draw health bars
+		canvas.drawRect(opponentHealthRect, opponentHealthPaint);
+		canvas.drawRect(healthRect, healthPaint);
 	}
 
 	@Override
@@ -148,39 +124,41 @@ public class InGameScreen extends UIScrollView {
 
 		// Go back to the menu and stop the music if we disconnect
 		if (bluetooth.getState() != State.CONNECTED) {
-			musicPlayer.stop();
+			beatTrack.stopMusic();
 			nextScreen = new GameSetupScreen();
 		}
 
+		
 		sim.onUpdate(seconds);
+		healthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
+		opponentHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.remotePlayer.getHealth());
+		
+		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			Log.i("meow", mostAdvanced.getX() + " " + mostAdvanced.getY());
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
+					- BBTHGame.HEIGHT / 2);
 		}
-		
-		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		Beat.BeatType beatType = beatTracker.onTouchDown();
-		boolean isHold = (beatType == Beat.BeatType.HOLD);
-		boolean isOnBeat = (beatType != Beat.BeatType.REST);
-		if (isOnBeat) {
-			++score;
-			++combo;
-			scoreStr = String.valueOf(score);
-			comboStr = "x" + String.valueOf(combo);
-		} else {
-			combo = 0;
-			comboStr = "x" + String.valueOf(combo);
-		}
-
 		super.onTouchDown(x, y);
+		
+		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
+		if (unitType >= 0) {
+			sim.recordCustomEvent(unitType);
+			return;
+		}
+		
+		BeatType beatType = beatTrack.checkTouch(sim, x + this.pos_x, y + this.pos_y);
+
+		// Unpack!
+		boolean isHold = (beatType == BeatType.HOLD);
+		boolean isOnBeat = (beatType != BeatType.REST);
+
 		sim.recordTapDown(x + this.pos_x, y + this.pos_y, isHold, isOnBeat);
 	}
 

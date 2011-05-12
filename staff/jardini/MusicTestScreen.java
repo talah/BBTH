@@ -72,19 +72,21 @@ public class MusicTestScreen extends GameScreen {
 		_particles = new ParticleSystem(100, 0.5f);
 		
 		_soundManager = new SoundManager(context, 8);
-//		_soundManager.addSound(HIT_SOUND_ID, R.raw.hit1);
-//		_soundManager.addSound(MISS_SOUND_ID, R.raw.miss1);
-		_musicPlayer = new MusicPlayer(context, R.raw.bonusroom);
+		_soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);
+		_soundManager.addSound(MISS_SOUND_ID, R.raw.drum2);
+		_musicPlayer = new MusicPlayer(context, R.raw.retrobit);
 		_musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			@Override
 			public void onCompletion(MusicPlayer mp) {
 				nextScreen = new TitleScreen(null);
 			}
 		});
-		_millisPerBeat = 571;
+		//_millisPerBeat = 571;
+		_millisPerBeat = 481;
 		
-		BeatPattern simplePattern1 = new SimpleBeatPattern(385, _millisPerBeat, 3000);
-		BeatPattern simplePattern2 = new SimpleBeatPattern(385, _millisPerBeat / 3, 3000);
+		/*
+		BeatPattern simplePattern1 = new SimpleBeatPattern(350, _millisPerBeat, 3500);
+		BeatPattern simplePattern2 = new SimpleBeatPattern(0, _millisPerBeat, 35000);
 		BeatPattern []subpatterns = { simplePattern1, simplePattern2 };
 		BeatPattern compositePattern = new CompositeBeatPattern(subpatterns);
 		Beat[] beats = new Beat[10];
@@ -101,6 +103,23 @@ public class MusicTestScreen extends GameScreen {
 		
 		BeatPattern customPattern = new SimpleBeatPattern(385, beats);
 		_beatTracker = new BeatTracker(_musicPlayer, compositePattern);
+		*/
+		
+		List<Beat> beats = new ArrayList<Beat>();
+		for (int phrase = 0; phrase < 4; ++phrase) {
+			for (int i = 0; i < 4; ++i) {
+				beats.add(Beat.tap(481));
+			}
+			for (int i = 0; i < 4; ++i) {
+				beats.add(Beat.tap(240));
+				beats.add(Beat.tap(241));
+			}
+			for (int i = 0; i < 4; ++i) {
+				beats.add(Beat.rest(481));
+			}
+		}
+		
+		_beatTracker = new BeatTracker(_musicPlayer, new SimpleBeatPattern(beats));
 		
 		_beats = new ArrayList<Beat>();
 		_musicPlayer.play();

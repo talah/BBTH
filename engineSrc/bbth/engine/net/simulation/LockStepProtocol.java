@@ -17,6 +17,7 @@ import bbth.engine.net.bluetooth.Protocol;
  *     int time; // the number of fine timesteps from the start of the game
  *     float x;
  *     float y;
+ *     byte code;
  * }
  * </pre>
  */
@@ -49,6 +50,7 @@ public class LockStepProtocol implements Protocol {
 			event.fineTime = in.readInt();
 			event.x = in.readFloat();
 			event.y = in.readFloat();
+			event.code = in.readByte();
 
 			step.events.add(event);
 		}
@@ -70,6 +72,7 @@ public class LockStepProtocol implements Protocol {
 			out.writeInt(event.fineTime);
 			out.writeFloat(event.x);
 			out.writeFloat(event.y);
+			out.writeByte(event.code);
 		}
 	}
 }
