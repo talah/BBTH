@@ -182,17 +182,17 @@ public class AIController {
 						}
 						
 						//canvas.drawLine(start_x, start_y, start_x + m_vec_result.x, start_y + m_vec_result.y, m_paint_3);
-												
+						
 						if (m_vec_result.x == 0 && m_vec_result.y == 0) {
-							clear = true;
+							m_vec_result.x = 0.01f;
+							m_vec_result.y = 0.01f;
+						}
+						
+						float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
+						if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
+							heading += .08f;
 						} else {
-							float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
-							if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
-								heading += .08f;
-							} else {
-								heading -= .08f;
-							}
-							//canvas.drawLine(start_x, start_y, start_x + 15 * FloatMath.cos(heading), start_y + 15 * FloatMath.sin(heading), m_paint_1);
+							heading -= .08f;
 						}
 						
 						tries++;
