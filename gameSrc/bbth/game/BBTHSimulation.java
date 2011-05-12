@@ -174,12 +174,22 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT)
+			{
 				serverPlayer.adjustHealth(-10);
+				clientPlayer.units.remove(u);
+			}else{
+				serverPlayer.units.remove(u);
+			}
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER)
+			{
 				clientPlayer.adjustHealth(-10);
+				serverPlayer.units.remove(u);
+			}else{
+				clientPlayer.units.remove(u);
+			}
 		}
 	}
 
