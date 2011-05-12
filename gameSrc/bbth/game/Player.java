@@ -34,7 +34,7 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 
-	private ArrayList<Wall> walls;
+	public ArrayList<Wall> walls;
 	private Wall currentWall;
 
 	public Player(Team team, AIController controller) {

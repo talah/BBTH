@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
@@ -25,7 +24,7 @@ public class BBTHSimulation extends Simulation {
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
-	private SimpleLineOfSightTester tester;
+	private FastLineOfSightTester tester;
 	private GridAcceleration accel;
 	private HashSet<Unit> localUnits;
 
@@ -57,9 +56,8 @@ public class BBTHSimulation extends Simulation {
 
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
 		pathFinder = new Pathfinder(graphGen.graph);
-		tester = new SimpleLineOfSightTester(15.f);
+		tester = new FastLineOfSightTester(15.f, accel);
 		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-		tester.walls = graphGen.walls;
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
@@ -117,9 +115,14 @@ public class BBTHSimulation extends Simulation {
 		if (w == null)
 			return;
 
-		graphGen.walls.add(w);
+		addWall(w);
+	}
+
+	private void addWall(Wall wall) {
+		graphGen.walls.add(wall);
 		graphGen.compute();
-		tester.updateWalls();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
 	}
 
 	@Override
@@ -133,9 +136,14 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
+		// update acceleration data structure
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
+		accel.clearWalls();
+		accel.insertWalls(serverPlayer.walls);
+		accel.insertWalls(clientPlayer.walls);
+
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
