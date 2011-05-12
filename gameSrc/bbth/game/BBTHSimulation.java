@@ -67,6 +67,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float UBER_CIRCLE_THRESHOLD = 5;
 	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
 	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
+	public static final int UBER_CIRCLE_TAP = 67;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 3 fine timesteps per coarse timestep

@@ -43,16 +43,12 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private Timer drawParticleTimer = new Timer();
 	private Timer drawSimTimer = new Timer();
 	private Timer drawUITimer = new Timer();
-
-	public ComboCircle combo_circle;
-
+	
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
 		this.team = playerTeam;
-
-		combo_circle = new ComboCircle(this.team);
-
+		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -135,9 +131,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		particles.draw(canvas, paint);
 
 		drawParticleTimer.stop();
-
-		combo_circle.onDraw(canvas);
-
+		
 		canvas.translate(this.pos_x, this.pos_y);
 
 		drawUITimer.start();
@@ -260,17 +254,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		if (isOnBeat && isHold) {
 			currentWall = new Wall(worldX, worldY, worldX, worldY);
-		}
-
-		// Update player combos.
-		if (isOnBeat) {
-			if (beatTrack.getCombo() >= BBTHSimulation.UBER_CIRCLE_THRESHOLD) {
-				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD * beatTrack.getCombo() + BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
-				setComboCircle(MathUtils.randInRange(pos_x + (100 + radius), pos_x + BBTHGame.WIDTH - (100 + radius)),
-						MathUtils.randInRange(pos_y + (100 + radius), pos_y + BBTHGame.HEIGHT - (100 + radius)), radius);
-			}
-		} else {
-			clearComboCircle();
 		}
 
 		sim.recordTapDown(worldX, worldY, isHold, isOnBeat);
