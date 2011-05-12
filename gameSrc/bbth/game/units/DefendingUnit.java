@@ -7,8 +7,8 @@ import bbth.game.Team;
 
 public class DefendingUnit extends Unit {
 	private static final float FIRE_RATE = .5f; // twice a second
-	private static final float DAMAGE_PER_SHOT = 10f;
-	private static final float LASER_DISPLAY_TIME = .1f;
+	private static final float DAMAGE_PER_SHOT = 25f;
+	private static final float LASER_DISPLAY_TIME = .05f;
 	
 	public DefendingUnit(UnitManager unitManager, Team team, Paint p) {
 		super(unitManager, team, p);
@@ -94,10 +94,10 @@ public class DefendingUnit extends Unit {
 				
 				paint.setColor(Color.GRAY);
 				
-				canvas.drawLine(cannonEndX, cannonEndY, targetX, targetY, paint);
+				canvas.drawLine(cannonEndX, cannonEndY, endLength*xComponent, endLength*yComponent, paint);
 				
 				paint.setColor(Color.WHITE);
-				
+				canvas.drawCircle(cannonEndX, cannonEndY, 1f, paint);
 				
 				paint.set(tempPaint);
 			}
