@@ -22,7 +22,7 @@ public enum Team {
 		
 		@Override
 		public int getBaseColor() {
-			return Color.MAGENTA;
+			return Color.rgb(0, 0, 127);
 		}
 	},
 	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71)) {
@@ -43,7 +43,7 @@ public enum Team {
 		
 		@Override
 		public int getBaseColor() {
-			return Color.CYAN;
+			return Color.rgb(127, 0, 0);
 		}
 	};
 
