@@ -75,10 +75,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
 
-		if (this.team == Team.SERVER) {
-			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2 - BBTHGame.HEIGHT);
+		if (this.team == Team.CLIENT) {
+			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
 		} else {
-			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2);
+			this.scrollTo(0, 0);
 		}
 
 		// Set up sound stuff
