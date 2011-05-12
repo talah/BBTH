@@ -42,11 +42,6 @@ public class DefendingUnit extends Unit {
 			}
 		}
 		
-//		if (!getStateName().equals("attacking")) {
-//			fireTarget = null;
-//			firing = false;
-//		}
-		
 	}
 
 	private static final float CANNON_LENGTH = 8f;

@@ -46,7 +46,6 @@ public class UberUnit extends Unit {
 				for (Unit unit : unitManager.getUnitsIntersectingLine(getX(), getY(), fireTarget.getX(), fireTarget.getY())) {
 					if (team.isEnemy(unit.getTeam())) {
 						unit.takeDamage(damage);
-						System.err.println(team + ": dealt "+damage+" to unit: "+unit.hashCode());
 					}
 				}
 			}

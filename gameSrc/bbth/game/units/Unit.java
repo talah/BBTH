@@ -142,8 +142,9 @@ public abstract class Unit extends BasicMovable {
 			.velocity(xVel, yVel)
 			.angle(angle)
 			.shrink(0.1f, 0.15f)
-			.radius(2.0f)
-			.position(getX()+sin, getY())
+			.radius(getRadius()*1.5f)
+			.width(getRadius()/2f)
+			.position(getX()+sin*2f, getY()+cos*2f)
 			.color(team.getRandomShade());
 		}
 	}

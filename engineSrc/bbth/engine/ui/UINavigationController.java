@@ -43,7 +43,7 @@ public class UINavigationController extends UIView {
 				transitionTime += seconds;
 			transition.setTime(transitionTime);
 			if (transition.isDone()) {
-System.err.println("Transition finished");
+//System.err.println("Transition finished");
 				transitioning = false;
 				currentView = newView;
 				
