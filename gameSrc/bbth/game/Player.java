@@ -34,6 +34,7 @@ public class Player {
 	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
+	private float _combo;
 
 	public ArrayList<Wall> walls;
 	private Wall currentWall;
@@ -46,6 +47,7 @@ public class Player {
 
 		base = new Base(this, team);
 		_health = 100;
+		setCombo(0);
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
@@ -124,7 +126,12 @@ public class Player {
 					.color(team.getRandomShade());
 		}
 
-		Unit newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+		Unit newUnit = null;
+		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint);
+		} else {
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+		}
 		
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
@@ -233,5 +240,16 @@ public class Player {
 
 	public void adjustHealth(float delta) {
 		_health = MathUtils.clamp(0, 100, _health + delta);
+	}
+
+	public void setCombo(float _combo) {
+		if (_combo < 0) {
+			_combo = 0;
+		}
+		this._combo = _combo;
+	}
+
+	public float getCombo() {
+		return _combo;
 	}
 }
