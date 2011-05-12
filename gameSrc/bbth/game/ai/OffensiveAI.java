@@ -89,8 +89,10 @@ public class OffensiveAI extends UnitAI {
 			
 			if (entity.getStateName().equals("attacking")) {
 				Unit target = entity.getTarget();
-				goal_x = target.getX();
-				goal_y = target.getY();
+				if (target != null) {
+					goal_x = target.getX();
+					goal_y = target.getY();
+				}
 			}
 			
 			start_point.set(start_x, start_y);
