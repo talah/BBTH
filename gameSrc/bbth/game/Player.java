@@ -220,6 +220,18 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawEffects(canvas);
 		}
+		
+		// draw my wavefront
+		paint.setColor(team.getWavefrontColor());
+		paint.setStyle(Style.FILL);
+		Unit advUnit = getMostAdvancedUnit();
+		if (advUnit != null) {
+			if (team == Team.CLIENT) {
+				canvas.drawRect(0, advUnit.getY(), BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+			} else {
+				canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, advUnit.getY(), paint);
+			}
+		}
 	}
 	
 	public void postDraw(Canvas canvas) {
