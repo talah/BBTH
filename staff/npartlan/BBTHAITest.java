@@ -57,7 +57,7 @@ public class BBTHAITest extends GameScreen {
 		m_parent = bbthGame;
     	m_rand = new Random();
 						
-		m_graph_gen = new FastGraphGenerator(15.0f);
+		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
 		
 		m_tester = new SimpleLineOfSightTester(15.0f, m_graph_gen.walls);
@@ -73,6 +73,7 @@ public class BBTHAITest extends GameScreen {
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
 		m_accel = new GridAcceleration(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
+		m_accel.insertWalls(m_graph_gen.walls);
 		//******** SETUP FOR AI *******//
 		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, m_accel);
 

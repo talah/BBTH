@@ -25,8 +25,12 @@ public class FastGraphGenerator {
 	public final ArrayList<Wall> walls = new ArrayList<Wall>();
 	public float radius;
 
-	public FastGraphGenerator(float largestEntityRadius) {
+	public FastGraphGenerator(float largestEntityRadius, float width, float height) {
 		radius = largestEntityRadius;
+		walls.add(new Wall(0, 0, 0, height));
+		walls.add(new Wall(width, 0, width, height));
+		walls.add(new Wall(0, 0, width, 0));
+		walls.add(new Wall(0, height, width, height));
 	}
 
 	public void compute() {

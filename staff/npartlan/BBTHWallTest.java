@@ -63,7 +63,7 @@ public class BBTHWallTest extends GameScreen {
 		m_wall_to_player = new PointF();
 		m_vec_result = new PointF();
 						
-		m_graph_gen = new FastGraphGenerator(15.0f);
+		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
 		m_tester = new SimpleLineOfSightTester(15.0f, m_graph_gen.walls);
 		
