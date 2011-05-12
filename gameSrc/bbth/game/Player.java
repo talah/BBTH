@@ -19,6 +19,7 @@ import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
+import bbth.game.units.WallUnit;
 
 /**
  * A player is someone who is interacting with the game.
@@ -38,7 +39,7 @@ public class Player {
 	private float _combo;
 	public ComboCircle combo_circle;
 
-	public ArrayList<Wall> walls;
+	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
 
@@ -78,7 +79,7 @@ public class Player {
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team, unitManager);
 
-		walls = new ArrayList<Wall>();
+		walls = new ArrayList<WallUnit>();
 	}
 
 	public boolean settingWall() {
@@ -101,7 +102,7 @@ public class Player {
 			return null;
 		}
 
-		walls.add(currentWall);
+		walls.add(new WallUnit(currentWall, unitManager, team, paint));
 
 		Wall toReturn = currentWall;
 		currentWall = null;
@@ -180,8 +181,15 @@ public class Player {
 				i--;
 				aiController.removeEntity(unit);
 			}
-
 		}
+		
+		for (int i = walls.size() - 1; i >= 0; --i) {
+			walls.get(i).update(seconds);
+			if (walls.get(i).isDead()) {
+				walls.remove(i);
+			}
+		}
+
 	}
 
 	public UnitSelector getUnitSelector() {
@@ -195,16 +203,8 @@ public class Player {
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
-			Wall w = walls.get(i);
-			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+			walls.get(i).draw(canvas);
 		}
-
-		// // draw overlay wall
-		// if (currentWall != null) {
-		// paint.setColor(team.getTempWallColor());
-		// canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-		// currentWall.b.y, paint);
-		// }
 
 		// draw units
 		paint.setStyle(Style.STROKE);
@@ -212,8 +212,7 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
-		
-		// Derp
+
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
 	}
@@ -229,8 +228,7 @@ public class Player {
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
-			Wall w = walls.get(i);
-			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+			walls.get(i).draw(canvas);
 		}
 	}
 
