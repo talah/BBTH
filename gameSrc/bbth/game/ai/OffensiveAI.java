@@ -11,7 +11,6 @@ import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
-import bbth.game.BBTHGame;
 import bbth.game.BBTHSimulation;
 import bbth.game.Team;
 import bbth.game.units.Unit;

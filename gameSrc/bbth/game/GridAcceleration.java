@@ -98,4 +98,30 @@ public class GridAcceleration {
 			}
 		}
 	}
+
+	/**
+	 * Put all enemies whose centers potentially lie in the given axis-aligned
+	 * bounding box inside the given set (they might be slightly outside,
+	 * however). This will remove all existing entities in the set first.
+	 */
+	public void getWallsInAABB(float xmin_, float ymin_, float xmax_, float ymax_, HashSet<Wall> walls) {
+		// Convert from game space to grid space
+		int xmin = Math.max(0, (int) (xmin_ / cellWidth));
+		int ymin = Math.max(0, (int) (ymin_ / cellHeight));
+		int xmax = Math.min(cellsInX - 1, (int) (xmax_ / cellWidth));
+		int ymax = Math.min(cellsInY - 1, (int) (ymax_ / cellHeight));
+
+		// Copy units from all cells in the AABB into units
+		walls.clear();
+		for (int y = ymin; y <= ymax; y++) {
+			for (int x = xmin; x <= xmax; x++) {
+				// Manually iterate over the collection for performance (instead
+				// of using addAll)
+				ArrayList<Wall> toAdd = cells.get(x + y * cellsInX).walls;
+				for (int j = 0; j < toAdd.size(); j++) {
+					walls.add(toAdd.get(j));
+				}
+			}
+		}
+	}
 }

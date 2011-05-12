@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
@@ -25,9 +27,10 @@ public class BBTHSimulation extends Simulation {
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
-	private SimpleLineOfSightTester tester;
+	private FastLineOfSightTester tester;
 	private GridAcceleration accel;
-	private HashSet<Unit> localUnits;
+	private HashSet<Unit> cachedUnits;
+	private Paint paint = new Paint();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -55,16 +58,16 @@ public class BBTHSimulation extends Simulation {
 		playerMap.put(true, serverPlayer);
 		playerMap.put(false, clientPlayer);
 
-		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH - 10, GAME_HEIGHT - 10);
+		accel.insertWalls(graphGen.walls);
+
 		pathFinder = new Pathfinder(graphGen.graph);
-		tester = new SimpleLineOfSightTester(15.f);
-		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-		tester.walls = graphGen.walls;
+		tester = new FastLineOfSightTester(15.f, accel);
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
 
-		localUnits = new HashSet<Unit>();
+		cachedUnits = new HashSet<Unit>();
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -117,9 +120,14 @@ public class BBTHSimulation extends Simulation {
 		if (w == null)
 			return;
 
-		graphGen.walls.add(w);
+		addWall(w);
+	}
+
+	private void addWall(Wall wall) {
+		graphGen.walls.add(wall);
 		graphGen.compute();
-		tester.updateWalls();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
 	}
 
 	@Override
@@ -133,29 +141,51 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
+		// update acceleration data structure
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
+
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 
-		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
-		for (Unit u : localUnits) {
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT)
 				serverPlayer.adjustHealth(-10);
 		}
 
-		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
-		for (Unit u : localUnits) {
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER)
 				clientPlayer.adjustHealth(-10);
 		}
 	}
 
+	private void drawGrid(Canvas canvas) {
+		paint.setColor(Color.DKGRAY);
+
+		// TODO: only draw lines on screen for speed
+		for (float x = 0; x < GAME_WIDTH; x += 60) {
+			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
+		}
+		for (float y = 0; y < GAME_HEIGHT; y += 60) {
+			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
+		}
+	}
+
 	public void draw(Canvas canvas) {
+		drawGrid(canvas);
+
+		paint.setColor(Color.YELLOW);
+		for (int i = 0; i < graphGen.walls.size(); i++) {
+			Wall w = graphGen.walls.get(i);
+			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
+		}
+
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
 	}
