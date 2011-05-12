@@ -47,7 +47,7 @@ public class BeatTrack {
 	private List<Beat> beatsInRange;
 	private Paint paint;
 	
-	public BeatTrack(Song song) {
+	public BeatTrack(Song song, OnCompletionListener listener) {
 		// Setup song-specific stuff
 		switch (song) {
 		case DONKEY_KONG:
@@ -68,6 +68,7 @@ public class BeatTrack {
 				mp.play();
 			}
 		});
+//		musicPlayer.setOnCompletionListener(listener);
 		
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);

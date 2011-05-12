@@ -1,6 +1,7 @@
 package bbth.game.units;
 
 import android.graphics.Paint;
+import bbth.engine.fastgraph.Wall;
 import bbth.game.Team;
 
 public enum UnitType {
@@ -20,6 +21,12 @@ public enum UnitType {
 		@Override
 		public Unit createUnit(UnitManager manager, Team team, Paint p) {
 			return new UberUnit(manager, team, p);
+		}
+	},
+	WALL {
+		@Override
+		public Unit createUnit(UnitManager manager, Team team, Paint p) {
+			return new WallUnit(new Wall(0, 0, 0, 0), manager, team, p);
 		}
 	};
 	

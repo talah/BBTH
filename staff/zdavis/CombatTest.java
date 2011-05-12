@@ -1,4 +1,4 @@
-package zdavis.src.bbth.game.test;
+package zdavis;
 
 import java.util.*;
 
@@ -121,15 +121,14 @@ public class CombatTest extends GameScreen implements UnitManager {
 	private void randomizeEntities() {
 		for (int i = 0; i < 10; i++) {
 			spawnUnit(UnitType.ATTACKING, Team.SERVER);
-//			e.setPosition(0, 100);
+			spawnUnit(UnitType.DEFENDING, Team.SERVER);
 		}
+		spawnUnit(UnitType.UBER, Team.SERVER);
 		
 		for (int i = 0; i < 10; i++) {
+			spawnUnit(UnitType.ATTACKING, Team.CLIENT);
 			spawnUnit(UnitType.DEFENDING, Team.CLIENT);
-//			e.setPosition(BBTHGame.WIDTH, 100);
 		}
-		
-		spawnUnit(UnitType.UBER, Team.SERVER);
 		spawnUnit(UnitType.UBER, Team.CLIENT);
 	}
 	

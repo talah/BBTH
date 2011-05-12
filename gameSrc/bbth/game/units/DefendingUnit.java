@@ -1,57 +1,108 @@
 package bbth.game.units;
 
 import android.graphics.*;
-import bbth.engine.util.*;
-import bbth.engine.util.Envelope.OutOfBoundsHandler;
+import android.util.FloatMath;
+import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
 public class DefendingUnit extends Unit {
-	private static final float DETONATION_WITHIN_DISTANCE = 10f;
-	private static final float DETONATION_MAX_RADIUS = 20f;
-	private static final float DETONATION_TIME = .3f;
-	private static final float MIN_DAMAGE = 30f;
-	private static final float MAX_DAMAGE = 90f;
-	
-	private static final Envelope DAMAGE_ENVELOPE = new Envelope(MAX_DAMAGE, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
-	static {
-		DAMAGE_ENVELOPE.addLinearSegment(DETONATION_MAX_RADIUS, MIN_DAMAGE);
-	}
-	private static final Envelope RADIUS_ENVELOPE = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
-	static {
-		RADIUS_ENVELOPE.addLinearSegment(DETONATION_TIME, DETONATION_MAX_RADIUS);
-	}
+	private static final float FIRE_RATE = .5f; // twice a second
+	private static final float DAMAGE_PER_SHOT = 25f;
+	private static final float LASER_DISPLAY_TIME = .05f;
 	
 	public DefendingUnit(UnitManager unitManager, Team team, Paint p) {
 		super(unitManager, team, p);
 	}
-
-	@Override
-	public void takeDamage(float damage) {
-		super.takeDamage(damage);
-	}
-
+	
+	boolean firing;
+	float timeSinceLastShot;
+	Unit fireTarget;
+	
 	@Override
 	public void update(float seconds) {
 		super.update(seconds);
 		
 		if (isDead())
 			return;
+		
+		timeSinceLastShot += seconds;
+		if (firing) {
+			if (!getStateName().equals("attacking") || fireTarget.isDead()) {
+				firing = false;
+				fireTarget = null;
+			} else if (timeSinceLastShot > FIRE_RATE) {
+				timeSinceLastShot = 0f;
+				fireTarget.takeDamage(DAMAGE_PER_SHOT);
+			}
+		} else {
+			if (target != null && !target.isDead() && getStateName().equals("attacking")) {
+				firing = true;
+				fireTarget = target;
+			}
+		}
+		
+//		if (!getStateName().equals("attacking")) {
+//			fireTarget = null;
+//			firing = false;
+//		}
+		
 	}
 
-	private static final float LINE_LENGTH = 6f;
-
-	RectF rect = new RectF(-3f, -3f, 3f, 3f);
+	private static final float CANNON_LENGTH = 8f;
+	private static final float TURRET_RADIUS = 2f;
+	private static final float SQUARE_HALFWIDTH = 4f;
+	
+	RectF rect = new RectF(-SQUARE_HALFWIDTH, -SQUARE_HALFWIDTH, SQUARE_HALFWIDTH, SQUARE_HALFWIDTH);
 
 	@Override
 	public void draw(Canvas canvas) {
+		float heading = getHeading();
+		
 		canvas.save();
 
 		canvas.translate(getX(), getY());
-		canvas.rotate(MathUtils.toDegrees(getHeading()) + 90);
+		canvas.rotate(MathUtils.toDegrees(heading));
 
+		// draw body
 		canvas.drawRect(rect, paint);
-		canvas.drawLine(0f, 0f, 0f, -LINE_LENGTH, paint);
+		
 
+		// draw turret
+		canvas.drawCircle(0f, 0f, TURRET_RADIUS, paint);
+		
+		// draw cannon
+		Unit currentTarget = firing ? fireTarget : target;
+		
+		if (currentTarget == null) {
+			canvas.drawLine(TURRET_RADIUS, 0f, CANNON_LENGTH, 0f, paint);
+		} else {
+			float targetX = currentTarget.getX() - getX();
+			float targetY = currentTarget.getY() - getY();
+			
+			float endLength = FloatMath.sqrt(targetX*targetX + targetY*targetY);
+			float headingToTarget = MathUtils.getAngle(0f, 0f, targetX, targetY);
+			
+			float xComponent = FloatMath.cos(headingToTarget - heading);
+			float yComponent = FloatMath.sin(headingToTarget - heading);
+			
+			float cannonEndX = CANNON_LENGTH*xComponent; 
+			float cannonEndY = CANNON_LENGTH*yComponent; 
+			
+			canvas.drawLine(TURRET_RADIUS*xComponent, TURRET_RADIUS*yComponent, cannonEndX, cannonEndY, paint);
+			if (timeSinceLastShot < LASER_DISPLAY_TIME) {
+				tempPaint.set(paint);
+				
+				paint.setColor(Color.GRAY);
+				
+				canvas.drawLine(cannonEndX, cannonEndY, endLength*xComponent, endLength*yComponent, paint);
+				
+				paint.setColor(Color.WHITE);
+				canvas.drawCircle(cannonEndX, cannonEndY, 1f, paint);
+				
+				paint.set(tempPaint);
+			}
+		}
+		
 		canvas.restore();
 	}
 
@@ -62,7 +113,7 @@ public class DefendingUnit extends Unit {
 
 	@Override
 	public float getStartingHealth() {
-		return 50;
+		return 60;
 	}
 
 	@Override

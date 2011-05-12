@@ -10,7 +10,7 @@ public class UberUnit extends Unit {
 	
 	private static final float CHARGE_RATE = 4000f;
 	private static final float DISCHARGE_RATE = CHARGE_RATE * 2f/7f;
-	private static final float DAMAGE_RATE = 1337f;
+	private static final float DAMAGE_RATE = 500f;
 	
 	@Override
 	public float getStartingHealth() {
@@ -32,11 +32,6 @@ public class UberUnit extends Unit {
 		
 		if (isDead())
 			return;
-		
-//		if (!getStateName().equals("attacking")) {
-//			fireTarget = null;
-//			firing = false;
-//		}
 		
 		if (firing) {
 			if (!getStateName().equals("attacking") || fireTarget.isDead() || powerLevel < 0) {
