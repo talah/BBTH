@@ -44,6 +44,7 @@ public class LockStepProtocol implements Protocol {
 			Event event = new Event();
 
 			// Deserialize the event
+			event.id = in.readInt();
 			int type = in.readByte();
 			event.type = type & 0x03;
 			event.flags = type & 0xF8;
@@ -68,6 +69,7 @@ public class LockStepProtocol implements Protocol {
 			Event event = step.events.get(i);
 
 			// Serialize the event
+			out.writeInt(event.id);
 			out.writeByte(event.type | event.flags);
 			out.writeInt(event.fineTime);
 			out.writeFloat(event.x);
