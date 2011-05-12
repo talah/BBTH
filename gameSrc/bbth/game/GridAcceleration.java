@@ -61,10 +61,10 @@ public class GridAcceleration {
 	public void insertWalls(List<Wall> walls) {
 		for (int i = 0, n = walls.size(); i < n; i++) {
 			Wall wall = walls.get(i);
-			int xmin = Math.max(0, (int) (wall.getMinX() / cellWidth));
-			int ymin = Math.max(0, (int) (wall.getMinY() / cellHeight));
-			int xmax = Math.min(cellsInX - 1, (int) (wall.getMaxX() / cellWidth));
-			int ymax = Math.min(cellsInY - 1, (int) (wall.getMaxY() / cellHeight));
+			int xmin = Math.max(0, Math.min(cellsInX - 1, (int) (wall.getMinX() / cellWidth)));
+			int ymin = Math.max(0, Math.min(cellsInY - 1, (int) (wall.getMinY() / cellHeight)));
+			int xmax = Math.max(0, Math.min(cellsInX - 1, (int) (wall.getMaxX() / cellWidth)));
+			int ymax = Math.max(0, Math.min(cellsInY - 1, (int) (wall.getMaxY() / cellHeight)));
 			for (int y = ymin; y <= ymax; y++) {
 				for (int x = xmin; x <= xmax; x++) {
 					cells.get(x + y * cellsInX).walls.add(wall);
@@ -80,10 +80,10 @@ public class GridAcceleration {
 	 */
 	public void getUnitsInAABB(float xmin_, float ymin_, float xmax_, float ymax_, HashSet<Unit> units) {
 		// Convert from game space to grid space
-		int xmin = Math.max(0, (int) (xmin_ / cellWidth));
-		int ymin = Math.max(0, (int) (ymin_ / cellHeight));
-		int xmax = Math.min(cellsInX - 1, (int) (xmax_ / cellWidth));
-		int ymax = Math.min(cellsInY - 1, (int) (ymax_ / cellHeight));
+		int xmin = Math.max(0, Math.min(cellsInX - 1, (int) (xmin_ / cellWidth)));
+		int ymin = Math.max(0, Math.min(cellsInY - 1, (int) (ymin_ / cellHeight)));
+		int xmax = Math.max(0, Math.min(cellsInX - 1, (int) (xmax_ / cellWidth)));
+		int ymax = Math.max(0, Math.min(cellsInY - 1, (int) (ymax_ / cellHeight)));
 
 		// Copy units from all cells in the AABB into units
 		units.clear();
@@ -106,10 +106,10 @@ public class GridAcceleration {
 	 */
 	public void getWallsInAABB(float xmin_, float ymin_, float xmax_, float ymax_, HashSet<Wall> walls) {
 		// Convert from game space to grid space
-		int xmin = Math.max(0, (int) (xmin_ / cellWidth));
-		int ymin = Math.max(0, (int) (ymin_ / cellHeight));
-		int xmax = Math.min(cellsInX - 1, (int) (xmax_ / cellWidth));
-		int ymax = Math.min(cellsInY - 1, (int) (ymax_ / cellHeight));
+		int xmin = Math.max(0, Math.min(cellsInX - 1, (int) (xmin_ / cellWidth)));
+		int ymin = Math.max(0, Math.min(cellsInY - 1, (int) (ymin_ / cellHeight)));
+		int xmax = Math.max(0, Math.min(cellsInX - 1, (int) (xmax_ / cellWidth)));
+		int ymax = Math.max(0, Math.min(cellsInY - 1, (int) (ymax_ / cellHeight)));
 
 		// Copy units from all cells in the AABB into units
 		walls.clear();

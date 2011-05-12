@@ -26,9 +26,9 @@ public class BBTHGame extends Game {
 //		currentScreen = new NetworkTestScreen();
 //		currentScreen = new TransitionTest();
 //		currentScreen = new GameSetupScreen();
-		currentScreen = new CombatTest(this);
+//		currentScreen = new CombatTest(this);
 //		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), Song.DONKEY_KONG, new LockStepProtocol());
-//		currentScreen = new GameSetupScreen();
+		currentScreen = new GameSetupScreen();
 	}
 
 	@Override
