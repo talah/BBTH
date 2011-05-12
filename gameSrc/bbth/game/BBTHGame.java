@@ -11,7 +11,15 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180;
-	
+
+	public static final GameStatusMessageScreen DISCONNECT_SCREEN = new GameStatusMessageScreen(
+			"You have been disconnected", null);
+	public static final GameStatusMessageScreen WIN_SCREEN = new GameStatusMessageScreen(
+			"Congratulations! You won!", null);
+	public static final GameStatusMessageScreen LOSE_SCREEN = new GameStatusMessageScreen(
+			"Oh noes, you lost :(", null);
+	public static final GameSetupScreen SETUP_SCREEN = new GameSetupScreen();
+
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);
 		// currentScreen = new BBTHAITest(this);
@@ -19,8 +27,12 @@ public class BBTHGame extends Game {
 		// currentScreen = new NetworkTestScreen();
 		// currentScreen = new TransitionTest();
 		// currentScreen = new GameSetupScreen();
-		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), Song.DONKEY_KONG, 
-				new LockStepProtocol());
+		
+//		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
+//				GameActivity.instance, new LockStepProtocol()),
+//				Song.DONKEY_KONG, new LockStepProtocol());
+
+		currentScreen = SETUP_SCREEN;
 	}
 
 	@Override
