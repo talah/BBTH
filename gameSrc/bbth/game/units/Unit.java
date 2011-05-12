@@ -2,12 +2,13 @@ package bbth.game.units;
 
 import android.graphics.*;
 import android.graphics.Paint.Style;
+import android.util.FloatMath;
 import bbth.engine.ai.fsm.FiniteState;
 import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.entity.BasicMovable;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
-import bbth.game.Team;
+import bbth.game.*;
 
 /**
  * A BBTH unit is one of the little dudes that walk around on the map and kill
@@ -25,11 +26,11 @@ public abstract class Unit extends BasicMovable {
 	protected float health = getStartingHealth();
 
 	public Unit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
-		fsm = new FiniteStateMachine();
 		this.team = team;
 		this.unitManager = unitManager;
-
-		paint = p;
+		this.particleSystem = particleSystem;
+		this.paint = p;
+		fsm = new FiniteStateMachine();
 	}
 	
 	@Override
@@ -130,7 +131,21 @@ public abstract class Unit extends BasicMovable {
 	}
 	
 	protected void onDead() {
-		
+		for (int i = 0; i < 10*getRadius(); ++i) {
+			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+			float sin = FloatMath.sin(angle);
+			float cos = FloatMath.cos(angle);
+			float xVel = MathUtils.randInRange(25.f, 50.f) * cos;
+			float yVel = MathUtils.randInRange(25.f, 50.f) * sin;
+			particleSystem.createParticle()
+			.line()
+			.velocity(xVel, yVel)
+			.angle(angle)
+			.shrink(0.1f, 0.15f)
+			.radius(2.0f)
+			.position(getX()+sin, getY())
+			.color(team.getRandomShade());
+		}
 	}
 	
 	protected static Paint tempPaint = new Paint();
