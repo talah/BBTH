@@ -54,6 +54,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public Timer serverPlayerTimer = new Timer();
 	public Timer clientPlayerTimer = new Timer();
 	private static final Random random = new Random();
+	private Tutorial tutorial;
+	private boolean other_ready;
+	private boolean self_ready;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -64,10 +67,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// Combo constants
 	public static final float UBER_UNIT_THRESHOLD = 10;
-	public static final float UBER_CIRCLE_THRESHOLD = 5;
-	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
-	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
-	public static final int UBER_CIRCLE_TAP = 67;
+	
+	public static final int TUTORIAL_DONE = 13;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 3 fine timesteps per coarse timestep
@@ -77,6 +78,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// THIS IS IMPORTANT
 		random.setSeed(0);
+		
+		tutorial = new Tutorial();
+		other_ready = true;
+		self_ready = false;
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -181,63 +186,83 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		Player player = playerMap.get(isServer);
 
 		UnitType type = UnitType.fromInt(code);
-		if (type != null)
+		if (type != null) {
 			player.setUnitType(type);
+		} else if (code == TUTORIAL_DONE) {
+			if (player == remotePlayer) {
+				other_ready = true;
+			} else {
+				self_ready = true;
+			}
+		}
 	}
 
 	@Override
 	protected void update(float seconds) {
-		entireTickTimer.start();
-		timestep++;
-
-		// update acceleration data structure
-		accelTickTimer.start();
-		accel.clearUnits();
-		accel.insertUnits(serverPlayer.units);
-		accel.insertUnits(clientPlayer.units);
-		accelTickTimer.stop();
-
-		aiTickTimer.start();
-
-		aiControllerTimer.start();
-		aiController.update();
-		aiControllerTimer.stop();
-
-		serverPlayerTimer.start();
-		serverPlayer.update(seconds);
-		serverPlayerTimer.stop();
-
-		clientPlayerTimer.start();
-		clientPlayer.update(seconds);
-		clientPlayerTimer.stop();
-
-		aiTickTimer.stop();
-
-		PARTICLES.tick(seconds);
-
-		RectF sr = serverPlayer.base.getRect();
-		RectF cr = clientPlayer.base.getRect();
-		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
-		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.CLIENT) {
-				serverPlayer.adjustHealth(-10);
-				clientPlayer.units.remove(u);
-			} else {
-				serverPlayer.units.remove(u);
+		if (!self_ready) {
+			tutorial.update();
+			if (tutorial.isFinished()) {
+				recordCustomEvent(0, 0, TUTORIAL_DONE);
 			}
-			aiController.removeEntity(u);
+		} else if (!other_ready) {
+			tutorial.displayWait();
+		} else {
+			tutorial.hide();
 		}
-		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
-		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.SERVER) {
-				clientPlayer.adjustHealth(-10);
-				serverPlayer.units.remove(u);
-			} else {
-				clientPlayer.units.remove(u);
+		
+		if (other_ready && self_ready) {
+			entireTickTimer.start();
+			timestep++;
+	
+			// update acceleration data structure
+			accelTickTimer.start();
+			accel.clearUnits();
+			accel.insertUnits(serverPlayer.units);
+			accel.insertUnits(clientPlayer.units);
+			accelTickTimer.stop();
+	
+			aiTickTimer.start();
+	
+			aiControllerTimer.start();
+			aiController.update();
+			aiControllerTimer.stop();
+	
+			serverPlayerTimer.start();
+			serverPlayer.update(seconds);
+			serverPlayerTimer.stop();
+	
+			clientPlayerTimer.start();
+			clientPlayer.update(seconds);
+			clientPlayerTimer.stop();
+	
+			aiTickTimer.stop();
+	
+			PARTICLES.tick(seconds);
+	
+			RectF sr = serverPlayer.base.getRect();
+			RectF cr = clientPlayer.base.getRect();
+			accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
+			for (Unit u : cachedUnits) {
+				if (u.getTeam() == Team.CLIENT) {
+					serverPlayer.adjustHealth(-10);
+					clientPlayer.units.remove(u);
+				} else {
+					serverPlayer.units.remove(u);
+				}
+				aiController.removeEntity(u);
 			}
-			aiController.removeEntity(u);
+			accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
+			for (Unit u : cachedUnits) {
+				if (u.getTeam() == Team.SERVER) {
+					clientPlayer.adjustHealth(-10);
+					serverPlayer.units.remove(u);
+				} else {
+					clientPlayer.units.remove(u);
+				}
+				aiController.removeEntity(u);
+			}
+			entireTickTimer.stop();
 		}
-		entireTickTimer.stop();
 	}
 
 	private void drawGrid(Canvas canvas) {
@@ -331,6 +356,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	private static final boolean intervalsDontOverlap(float min1, float max1, float min2, float max2) {
 		return (min1 < min2 ? min2 - max1 : min1 - max2) > 0;
+	}
+
+	public boolean isReady() {
+		return self_ready && other_ready;
 	}
 
 }

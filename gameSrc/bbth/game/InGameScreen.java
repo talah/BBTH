@@ -83,8 +83,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		// Set up sound stuff
 		beatTrack = new BeatTrack(song, this);
-		beatTrack.startMusic();
-
+		
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
@@ -203,6 +202,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		simUpdateTimer.start();
 		sim.onUpdate(seconds);
 		simUpdateTimer.stop();
+		
+		if (sim.isReady() && !beatTrack.isPlaying()) {
+			beatTrack.startMusic();
+		}
 
 		// Update healths
 		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
