@@ -113,6 +113,22 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
+		// Can't spawn in front of most advanced unit.
+		Unit advUnit = getMostAdvancedUnit();
+		if (advUnit != null) {
+			if (team == Team.CLIENT) {
+				y = Math.max(y, advUnit.getY());
+			} else {
+				y = Math.min(y, advUnit.getY());
+			}
+		} else {
+			if (team == Team.CLIENT) {
+				y = BBTHSimulation.GAME_HEIGHT - Base.BASE_HEIGHT * 2.0f;
+			} else {
+				y = Base.BASE_HEIGHT * 2.0f;
+			}
+		}
+		
 		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f)
@@ -203,6 +219,18 @@ public class Player {
 		}
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawEffects(canvas);
+		}
+		
+		// draw my wavefront
+		paint.setColor(team.getWavefrontColor());
+		paint.setStyle(Style.FILL);
+		Unit advUnit = getMostAdvancedUnit();
+		if (advUnit != null) {
+			if (team == Team.CLIENT) {
+				canvas.drawRect(0, advUnit.getY(), BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+			} else {
+				canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, advUnit.getY(), paint);
+			}
 		}
 	}
 	

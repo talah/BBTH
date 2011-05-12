@@ -38,7 +38,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private Team team;
 	public Player localPlayer, remotePlayer;
 	private HashMap<Boolean, Player> playerMap;
-	private Player serverPlayer, clientPlayer;
+	public Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;

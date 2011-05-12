@@ -24,6 +24,11 @@ public enum Team {
 		public int getBaseColor() {
 			return Color.rgb(0, 0, 127);
 		}
+		
+		@Override
+		public int getWavefrontColor() {
+			return Color.argb(80, 0, 0, 127);
+		}
 	},
 	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71)) {
 		@Override
@@ -45,6 +50,11 @@ public enum Team {
 		public int getBaseColor() {
 			return Color.rgb(127, 0, 0);
 		}
+		
+		@Override
+		public int getWavefrontColor() {
+			return Color.argb(80, 127, 0, 0);
+		}
 	};
 
 	private int wallColor, tempWallColor;
@@ -55,6 +65,7 @@ public enum Team {
 	public abstract Team getOppositeTeam();
 	
 	public abstract int getBaseColor();
+	public abstract int getWavefrontColor();
 
 	private Team(int wallColor, int tempWallColor) {
 		this.wallColor = wallColor;
