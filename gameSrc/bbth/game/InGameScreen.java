@@ -145,7 +145,7 @@ public class InGameScreen extends UIScrollView {
 		sim.getMyUnitSelector().draw(canvas);
 
 		// Draw minimap
-		paint.setARGB(127, 0, 0, 0);
+		paint.setARGB(255, 0, 0, 0);
 		canvas.drawRect(this.minimapRect, paint);
 
 		paint.setColor(Color.WHITE);
