@@ -59,7 +59,7 @@ public class DefensiveAI extends UnitAI {
 		m_fsm_conditions.clear();
 		float dist = Float.MAX_VALUE;
 		if (target != null) {
-			//dist = MathUtils.getDistSqr(entity.getX(), entity.getY(), target.getX(), target.getY());
+			dist = MathUtils.getDistSqr(entity.getX(), entity.getY(), target.getX(), target.getY());
 		}
 		m_fsm_conditions.put("targetdist", dist);
 		fsm.update(m_fsm_conditions);
