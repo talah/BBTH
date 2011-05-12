@@ -1,4 +1,4 @@
-package zdavis.src.bbth.game.test;
+package zdavis;
 
 import android.graphics.*;
 import bbth.engine.ui.DefaultTransition;

@@ -33,11 +33,6 @@ public class UberUnit extends Unit {
 		if (isDead())
 			return;
 		
-//		if (!getStateName().equals("attacking")) {
-//			fireTarget = null;
-//			firing = false;
-//		}
-		
 		if (firing) {
 			if (!getStateName().equals("attacking") || fireTarget.isDead() || powerLevel < 0) {
 				powerLevel = Math.max(0f, powerLevel);
