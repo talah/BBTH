@@ -2,6 +2,7 @@ package bbth.game.units;
 
 import android.graphics.*;
 import android.util.FloatMath;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
@@ -10,8 +11,8 @@ public class DefendingUnit extends Unit {
 	private static final float DAMAGE_PER_SHOT = 25f;
 	private static final float LASER_DISPLAY_TIME = .05f;
 	
-	public DefendingUnit(UnitManager unitManager, Team team, Paint p) {
-		super(unitManager, team, p);
+	public DefendingUnit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
+		super(unitManager, team, p, particleSystem);
 	}
 	
 	boolean firing;
@@ -55,7 +56,7 @@ public class DefendingUnit extends Unit {
 	RectF rect = new RectF(-SQUARE_HALFWIDTH, -SQUARE_HALFWIDTH, SQUARE_HALFWIDTH, SQUARE_HALFWIDTH);
 
 	@Override
-	public void draw(Canvas canvas) {
+	public void drawChassis(Canvas canvas) {
 		float heading = getHeading();
 		
 		canvas.save();
@@ -89,21 +90,44 @@ public class DefendingUnit extends Unit {
 			float cannonEndY = CANNON_LENGTH*yComponent; 
 			
 			canvas.drawLine(TURRET_RADIUS*xComponent, TURRET_RADIUS*yComponent, cannonEndX, cannonEndY, paint);
-			if (timeSinceLastShot < LASER_DISPLAY_TIME) {
-				tempPaint.set(paint);
-				
-				paint.setColor(Color.GRAY);
-				
-				canvas.drawLine(cannonEndX, cannonEndY, endLength*xComponent, endLength*yComponent, paint);
-				
-				paint.setColor(Color.WHITE);
-				canvas.drawCircle(cannonEndX, cannonEndY, 1f, paint);
-				
-				paint.set(tempPaint);
-			}
 		}
 		
 		canvas.restore();
+	}
+	
+	@Override
+	public void drawEffects(Canvas canvas) {
+		if (firing && timeSinceLastShot < LASER_DISPLAY_TIME) {
+			float heading = getHeading();
+			
+			canvas.save();
+			canvas.translate(getX(), getY());
+			canvas.rotate(MathUtils.toDegrees(heading));
+			
+			tempPaint.set(paint);
+			paint.setColor(Color.GRAY);
+			
+			float targetX = fireTarget.getX() - getX();
+			float targetY = fireTarget.getY() - getY();
+			
+			float endLength = FloatMath.sqrt(targetX*targetX + targetY*targetY);
+			float headingToTarget = MathUtils.getAngle(0f, 0f, targetX, targetY);
+			
+			float xComponent = FloatMath.cos(headingToTarget - heading);
+			float yComponent = FloatMath.sin(headingToTarget - heading);
+			
+			float cannonEndX = CANNON_LENGTH*xComponent; 
+			float cannonEndY = CANNON_LENGTH*yComponent; 
+			
+			canvas.drawLine(cannonEndX, cannonEndY, endLength*xComponent, endLength*yComponent, paint);
+			
+			paint.setColor(Color.WHITE);
+			canvas.drawCircle(cannonEndX, cannonEndY, 1f, paint);
+			
+			paint.set(tempPaint);
+			
+			canvas.restore();
+		}
 	}
 
 	@Override
@@ -118,7 +142,7 @@ public class DefendingUnit extends Unit {
 
 	@Override
 	public float getRadius() {
-		return 4;
+		return 5;
 	}
 	
 	@Override

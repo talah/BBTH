@@ -7,6 +7,7 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import bbth.engine.particles.ParticleSystem;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
@@ -22,7 +23,7 @@ public class UnitSelector {
 	private Paint rectPaint, unitPaint;
 	private Unit attacker, defender;
 
-	public UnitSelector(Team team, UnitManager mom) {
+	public UnitSelector(Team team, UnitManager mom, ParticleSystem particles) {
 		currentUnitType = UnitType.ATTACKING;
 		rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		rectPaint.setARGB(127, 0, 0, 0);
@@ -34,11 +35,10 @@ public class UnitSelector {
 		unitPaint.setAntiAlias(true);
 		unitPaint.setStrokeCap(Cap.ROUND);
 
-		attacker = UnitType.ATTACKING.createUnit(mom, team, unitPaint);
+		attacker = UnitType.ATTACKING.createUnit(mom, team, unitPaint, particles);
 		attacker.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT / 2);
-		defender = UnitType.DEFENDING.createUnit(mom, team, unitPaint);
-		defender.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT + UNIT_HEIGHT
-				/ 2);
+		defender = UnitType.DEFENDING.createUnit(mom, team, unitPaint, particles);
+		defender.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT + UNIT_HEIGHT / 2);
 	}
 
 	public UnitType getUnitType() {
@@ -66,14 +66,14 @@ public class UnitSelector {
 		// TODO Fixme
 		if (this.currentUnitType == UnitType.ATTACKING) {
 			unitPaint.setColor(Color.WHITE);
-			attacker.draw(canvas);
+			attacker.drawChassis(canvas);
 			unitPaint.setColor(Color.GRAY);
-			defender.draw(canvas);
+			defender.drawChassis(canvas);
 		} else if (this.currentUnitType == UnitType.DEFENDING) {
 			unitPaint.setColor(Color.WHITE);
-			defender.draw(canvas);
+			defender.drawChassis(canvas);
 			unitPaint.setColor(Color.GRAY);
-			attacker.draw(canvas);
+			attacker.drawChassis(canvas);
 		}
 	}
 }

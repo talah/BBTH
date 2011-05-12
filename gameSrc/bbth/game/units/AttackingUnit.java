@@ -3,9 +3,12 @@ package bbth.game.units;
 import android.graphics.*;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.*;
 import bbth.engine.util.Envelope.OutOfBoundsHandler;
 import bbth.game.Team;
+
+import static bbth.game.Team.*;
 
 public class AttackingUnit extends Unit {
 //	private static final float DETONATION_WITHIN_DISTANCE = 1f;
@@ -24,25 +27,16 @@ public class AttackingUnit extends Unit {
 		RADIUS_ENVELOPE.addLinearSegment(DETONATION_TIME, DETONATION_MAX_RADIUS);
 	}
 	
-	public AttackingUnit(UnitManager unitManager, Team team, Paint p) {
-		super(unitManager, team, p);
+	public AttackingUnit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
+		super(unitManager, team, p, particleSystem);
 	}
 	
 	private static final float LINE_LENGTH = 6f;
 	
 	@Override
-	public void draw(Canvas canvas) {
-		if (detonating) {
-			tempPaint.set(paint);
-			
-			paint.setColor(Color.rgb(231, 80, 0));
-			paint.setStyle(Style.FILL);
-			
-			canvas.drawCircle(getX(), getY(), (float)RADIUS_ENVELOPE.getValueAtTime(detonationTime), paint);
-			
-			paint.set(tempPaint);
+	public void drawChassis(Canvas canvas) {
+		if (detonating)
 			return;
-		}
 		
 // uncomment to draw detection radius
 //tempPaint.set(paint);
@@ -54,6 +48,22 @@ public class AttackingUnit extends Unit {
 		
 		float heading = getHeading();
 		canvas.drawLine(getX(), getY(), getX() + LINE_LENGTH*FloatMath.cos(heading), getY() + LINE_LENGTH*FloatMath.sin(heading), paint);
+	}
+	
+	@Override
+	public void drawEffects(Canvas canvas) {
+		if (detonating) {
+			tempPaint.set(paint);
+			
+			paint.setColor(team == SERVER ? Color.rgb(231, 80, 0) : Color.rgb(0, 168, 231));
+			paint.setAlpha(200);
+			paint.setStyle(Style.FILL);
+			
+			canvas.drawCircle(getX(), getY(), (float)RADIUS_ENVELOPE.getValueAtTime(detonationTime), paint);
+			
+			paint.set(tempPaint);
+			return;
+		}
 	}
 
 	boolean detonating;
@@ -119,4 +129,5 @@ public class AttackingUnit extends Unit {
 	public void drawForMiniMap(Canvas canvas) {
 		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
 	}
+
 }

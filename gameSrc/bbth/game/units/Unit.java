@@ -1,10 +1,12 @@
 package bbth.game.units;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
+import android.graphics.Paint.Style;
 import bbth.engine.ai.fsm.FiniteState;
 import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.entity.BasicMovable;
+import bbth.engine.particles.ParticleSystem;
+import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
 /**
@@ -14,6 +16,7 @@ import bbth.game.Team;
 public abstract class Unit extends BasicMovable {
 	protected Team team;
 	protected Paint paint;
+	protected ParticleSystem particleSystem;
 	private FiniteStateMachine fsm;
 
 	protected Unit target;
@@ -21,7 +24,7 @@ public abstract class Unit extends BasicMovable {
 	
 	protected float health = getStartingHealth();
 
-	public Unit(UnitManager unitManager, Team team, Paint p) {
+	public Unit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
 		fsm = new FiniteStateMachine();
 		this.team = team;
 		this.unitManager = unitManager;
@@ -40,9 +43,36 @@ public abstract class Unit extends BasicMovable {
 //		super.setVelocity(vel, dir);
 //	}
 
-	public abstract void draw(Canvas canvas);
-
+	public abstract void drawChassis(Canvas canvas);
 	public abstract void drawForMiniMap(Canvas canvas);
+	public void drawEffects(Canvas canvas) {}
+	public void drawHealthBar(Canvas canvas) {
+		if (isDead())
+			return;
+		
+		tempPaint.set(paint);
+		paint.setStyle(Style.FILL);
+		
+		float radius = getRadius();
+		float border = 1f;
+		
+		float left = getX()-radius;
+		float top = getY()-(radius*2f);
+		float right = left + 2f*radius;
+		float bottom = top + radius/2f;
+		
+		paint.setColor(Color.WHITE);
+		canvas.drawRect(left-border, top-border, right+border, bottom+border, paint);
+		
+		paint.setColor(Color.RED);
+		canvas.drawRect(left, top, right, bottom, paint);
+		
+		paint.setColor(Color.GREEN);
+		float greenStopX = MathUtils.scale(0f, getStartingHealth(), left, right, getHealth());
+		canvas.drawRect(left, top, greenStopX, bottom, paint);
+		
+		paint.set(tempPaint);
+	}
 
 	public abstract UnitType getType();
 	public abstract float getStartingHealth();
@@ -93,9 +123,14 @@ public abstract class Unit extends BasicMovable {
 		if (!isDead()) {
 			health -= damage;
 			if (isDead()) {
+				onDead();
 				unitManager.notifyUnitDead(this);
 			}
 		}
+	}
+	
+	protected void onDead() {
+		
 	}
 	
 	protected static Paint tempPaint = new Paint();

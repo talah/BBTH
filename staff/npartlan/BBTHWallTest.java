@@ -116,7 +116,7 @@ public class BBTHWallTest extends GameScreen implements UnitManager {
 		m_paint_3.setTextSize(20);
 		m_paint_3.setAntiAlias(true);
             	
-		m_entity = new DefendingUnit(this, Team.SERVER, m_paint_1);
+		m_entity = new DefendingUnit(this, Team.SERVER, m_paint_1, null); // this may crash
 		m_entity.setTeam(Team.SERVER);
 		m_entity.setPosition(0, 100);
 		m_entity.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -207,7 +207,7 @@ public class BBTHWallTest extends GameScreen implements UnitManager {
 		ent.setPosition(ent.getX() + ent.getSpeed() * FloatMath.cos(ent.getHeading()) * timediff/1000.0f, ent.getY() + ent.getSpeed() * FloatMath.sin(ent.getHeading()) * timediff/1000.0f);
 		//******** PHYSICS AFTER AI *******//
 		
-		ent.draw(canvas);
+		ent.drawChassis(canvas);
 		
 		int size = m_graph_gen.walls.size();
 		for (int i = 0; i < size; i++) {

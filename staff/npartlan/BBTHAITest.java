@@ -16,6 +16,7 @@ import bbth.engine.core.GameScreen;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
@@ -118,9 +119,11 @@ public class BBTHAITest extends GameScreen implements UnitManager {
         randomizeEntities();
 	}
 	
+	ParticleSystem particles;
+	
 	private void randomizeEntities() {
 		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(this, Team.SERVER, m_paint_1);
+			Unit e = new DefendingUnit(this, Team.SERVER, m_paint_1, particles);
 			e.setTeam(Team.SERVER);
 			e.setPosition(0, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -133,7 +136,7 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 		}
 		
 		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(this, Team.CLIENT, m_paint_0);
+			Unit e = new DefendingUnit(this, Team.CLIENT, m_paint_0, particles);
 			e.setTeam(Team.CLIENT);
 			e.setPosition(BBTHGame.WIDTH, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
@@ -249,7 +252,11 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 			canvas.drawLine(rightx1, righty1, rightx2, righty2, m_paint_3);
 			*/
 			
-			ent.draw(canvas);
+			ent.drawChassis(canvas);
+		}
+		for (int i = 0; i < m_entities.size(); i++) {
+			Unit ent = m_entities.get(i);
+			ent.drawEffects(canvas);
 		}
 		
 		int size = m_graph_gen.walls.size();
