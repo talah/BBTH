@@ -32,11 +32,11 @@ public class InGameScreen extends UIScrollView {
 		MathUtils.resetRandom(0);
 
 		this.team = playerTeam;
-		
+
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		
+
 		serverHealthPaint.setColor(Team.SERVER.getBaseColor());
 		clientHealthPaint.setColor(Team.CLIENT.getBaseColor());
 
@@ -52,23 +52,24 @@ public class InGameScreen extends UIScrollView {
 		label.setSize(BBTHGame.WIDTH - 20, 10);
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
-		
-		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT);
+
+		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT);
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
-		
+
 		if (this.team == Team.SERVER) {
 			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2 - BBTHGame.HEIGHT);
 		} else {
 			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2);
 		}
-		
+
 		// Set up sound stuff
 		beatTrack = new BeatTrack(song);
 		beatTrack.startMusic();
-		
+
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
@@ -79,9 +80,13 @@ public class InGameScreen extends UIScrollView {
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
-		serverHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
-		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
+		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2
+				+ HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT
+				- HEALTHBAR_HEIGHT);
+		serverHealthRect = new RectF(minimapRect.left, minimapRect.top
+				- HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom,
+				minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -138,8 +143,8 @@ public class InGameScreen extends UIScrollView {
 				BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
-		
-		//Draw health bars
+
+		// Draw health bars
 		canvas.drawRect(serverHealthRect, serverHealthPaint);
 		canvas.drawRect(clientHealthRect, clientHealthPaint);
 	}
@@ -149,16 +154,33 @@ public class InGameScreen extends UIScrollView {
 		// Show the timestep for debugging
 		label.setText("" + sim.getTimestep());
 
-		// Go back to the menu and stop the music if we disconnect
+		// Stop the music if we disconnect
 		if (bluetooth.getState() != State.CONNECTED) {
 			beatTrack.stopMusic();
-			nextScreen = new GameSetupScreen();
+			nextScreen = BBTHGame.DISCONNECT_SCREEN;
+		}
+
+		// Update the game
+		sim.onUpdate(seconds);
+		
+		// Update healths
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
+				minimapRect.right - 1, sim.localPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
+				minimapRect.right - 1, sim.remotePlayer.getHealth());
+
+		// See whether we won or lost
+		if (sim.localPlayer.getHealth() <= 0.f) {
+			// We lost the game!
+			this.nextScreen = BBTHGame.LOSE_SCREEN;
+		} 
+		
+		if (sim.remotePlayer.getHealth() <= 0.f) {
+			// We won the game!
+			this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
 		
-		sim.onUpdate(seconds);
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.remotePlayer.getHealth());
-		
+		// Get new beats, yo
 		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
@@ -168,6 +190,7 @@ public class InGameScreen extends UIScrollView {
 					- BBTHGame.HEIGHT / 2);
 		}
 
+		// Shinies
 		particles.tick(seconds);
 	}
 
