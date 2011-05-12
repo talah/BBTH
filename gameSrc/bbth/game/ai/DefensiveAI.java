@@ -11,6 +11,8 @@ import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
+import bbth.game.BBTHSimulation;
+import bbth.game.Team;
 import bbth.game.units.Unit;
 
 public class DefensiveAI extends UnitAI {
@@ -91,13 +93,14 @@ public class DefensiveAI extends UnitAI {
 		if (!flock.hasLeader(entity)) {
 			Unit enemy = entity.getTarget();
 
+			float goal_x = entity.getX();
+			float goal_y = (entity.getTeam() == Team.SERVER ? BBTHSimulation.GAME_HEIGHT/4 : BBTHSimulation.GAME_HEIGHT - BBTHSimulation.GAME_HEIGHT/4);
+			
 			if (enemy != null) {
-				float goal_x = enemy.getX();
-				float goal_y = enemy.getY();
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
-
-				if (m_tester != null && !m_tester.isLineOfSightClear(start_point, end_point)) {
+				
+				if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
 					PointF start = getClosestNode(start_point);
 					PointF end = getClosestNode(end_point);
 
@@ -114,7 +117,7 @@ public class DefensiveAI extends UnitAI {
 
 					if (path.size() > 1) {
 						PointF goal_point = path.get(0);
-						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1))) {
+						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
 							goal_point = path.get(1);
 						}
 
@@ -131,12 +134,12 @@ public class DefensiveAI extends UnitAI {
 					// + start.x + ", " + start.y + " End: " + end.x + ", " +
 					// end.y);
 				}
-
-				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
-				float objectiveweighting = getObjectiveWeighting();
-				xcomp += objectiveweighting * FloatMath.cos(angle);
-				ycomp += objectiveweighting * FloatMath.sin(angle);
 			}
+			
+			float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
+			float objectiveweighting = getObjectiveWeighting();
+			xcomp += objectiveweighting * FloatMath.cos(angle);
+			ycomp += objectiveweighting * FloatMath.sin(angle);
 		}
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
@@ -154,40 +157,8 @@ public class DefensiveAI extends UnitAI {
 			actualchange = -1.0f * maxvelchange;
 		}
 
-		// Check if we are going to run into a wall:
 		float heading = entity.getHeading() + actualchange;
-		boolean clear = false;
-		int tries = 0;
-		while (!clear) {
-			if (tries > 150) {
-				break;
-			}
-
-			float s_x = start_x + 3.0f * FloatMath.cos(heading);
-			float s_y = start_y + 3.0f * FloatMath.sin(heading);
-
-			float stickoffsetx = 6.0f * FloatMath.cos(heading - MathUtils.PI / 2.0f);
-			float stickoffsety = 6.0f * FloatMath.sin(heading - MathUtils.PI / 2.0f);
-
-			float leftx1 = s_x + stickoffsetx;
-			float lefty1 = s_y + stickoffsety;
-			float leftx2 = leftx1 + 12.0f * FloatMath.cos(heading + MathUtils.PI / 6.0f);
-			float lefty2 = lefty1 + 12.0f * FloatMath.sin(heading + MathUtils.PI / 6.0f);
-
-			float rightx1 = s_x - stickoffsetx;
-			float righty1 = s_y - stickoffsety;
-			float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI / 6.0f);
-			float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI / 6.0f);
-
-			if (m_tester != null && m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2)
-					&& m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2)) {
-				clear = true;
-			} else {
-				heading += .05f * (actualchange > 0 ? 1 : -1);
-				tries++;
-			}
-		}
-
+		
 		entity.setVelocity(getMaxVel(), heading);
 	}
 

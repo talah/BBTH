@@ -1,17 +1,20 @@
-package bbth.engine.fastgraph;
+package bbth.game;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.graphics.PointF;
+import bbth.engine.fastgraph.LineOfSightTester;
+import bbth.engine.fastgraph.Wall;
 
-public class SimpleLineOfSightTester extends LineOfSightTester {
+public class FastLineOfSightTester extends LineOfSightTester {
 
-	private ArrayList<Wall> m_walls;
 	public float radius;
+	private GridAcceleration m_accel;
+	private HashSet<Wall> m_cachedWallSet = new HashSet<Wall>();
 
-	public SimpleLineOfSightTester(float f, ArrayList<Wall> walls) {
+	public FastLineOfSightTester(float f, GridAcceleration accel) {
 		radius = f;
-		m_walls = walls;
+		m_accel = accel;
 	}
 
 	@Override
@@ -25,8 +28,8 @@ public class SimpleLineOfSightTester extends LineOfSightTester {
 		float lineY = endy - starty;
 
 		// Loop over walls
-		for (int i = 0, wallCount = m_walls.size(); i < wallCount; i++) {
-			Wall wall = m_walls.get(i);
+		m_accel.getWallsInAABB(Math.min(startx, endx), Math.min(starty, endy), Math.max(startx, endx), Math.max(starty, endy), m_cachedWallSet);
+		for (Wall wall : m_cachedWallSet) {
 			float wallX = wall.b.x - wall.a.x;
 			float wallY = wall.b.y - wall.a.y;
 

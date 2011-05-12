@@ -27,7 +27,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	private Pathfinder m_pathfinder;
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
-	private GridAcceleration<Unit> accel = new GridAcceleration<Unit>(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
+	private GridAcceleration accel = new GridAcceleration(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -43,9 +43,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
 		
-		m_tester = new SimpleLineOfSightTester(15.0f);
-		m_tester.setBounds(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT);
-		m_tester.walls = m_graph_gen.walls;
+		m_tester = new SimpleLineOfSightTester(15.0f, m_graph_gen.walls);
 		
 		for (int i = 0; i < 2; i++) {
 			int length = m_rand.nextInt(100) + 30;
@@ -140,7 +138,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	public void onUpdate(float seconds) {
 		//******** SETUP FOR AI *******//
 		m_controller.update();
-		accel.clear();
+		accel.clearUnits();
 		accel.insertUnits(m_controller.getUnits());
 		//******** SETUP FOR AI *******//
 		
@@ -173,8 +171,6 @@ public class CombatTest extends GameScreen implements UnitManager {
 	public void addWall(Wall w) {
 		m_graph_gen.walls.add(w);
 		m_graph_gen.compute();
-		m_tester.updateWalls();
-
 	}
 
 	private PointF getClosestNode(PointF s) {
@@ -183,7 +179,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
 		for (PointF p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p)) {
+			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
 				bestdist = dist;
 			}
