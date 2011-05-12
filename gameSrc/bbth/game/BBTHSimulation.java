@@ -4,19 +4,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
+import bbth.engine.util.Bag;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
-public class BBTHSimulation extends Simulation {
+public class BBTHSimulation extends Simulation implements UnitManager {
 	private int timestep;
 	private Team team;
 	public Player localPlayer, remotePlayer;
@@ -25,9 +28,10 @@ public class BBTHSimulation extends Simulation {
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
-	private SimpleLineOfSightTester tester;
+	private FastLineOfSightTester tester;
 	private GridAcceleration accel;
-	private HashSet<Unit> localUnits;
+	private HashSet<Unit> cachedUnits;
+	private Paint paint = new Paint();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -46,8 +50,8 @@ public class BBTHSimulation extends Simulation {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController);
-		clientPlayer = new Player(Team.CLIENT, aiController);
+		serverPlayer = new Player(Team.SERVER, aiController, this);
+		clientPlayer = new Player(Team.CLIENT, aiController, this);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -56,15 +60,15 @@ public class BBTHSimulation extends Simulation {
 		playerMap.put(false, clientPlayer);
 
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		accel.insertWalls(graphGen.walls);
+
 		pathFinder = new Pathfinder(graphGen.graph);
-		tester = new SimpleLineOfSightTester(15.f);
-		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
-		tester.walls = graphGen.walls;
+		tester = new FastLineOfSightTester(15.f, accel);
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
 
-		localUnits = new HashSet<Unit>();
+		cachedUnits = new HashSet<Unit>();
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -117,9 +121,14 @@ public class BBTHSimulation extends Simulation {
 		if (w == null)
 			return;
 
-		graphGen.walls.add(w);
+		addWall(w);
+	}
+
+	private void addWall(Wall wall) {
+		graphGen.walls.add(wall);
 		graphGen.compute();
-		tester.updateWalls();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
 	}
 
 	@Override
@@ -133,29 +142,45 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
+		// update acceleration data structure
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
+
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 
-		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
-		for (Unit u : localUnits) {
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT)
 				serverPlayer.adjustHealth(-10);
 		}
 
-		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
-		for (Unit u : localUnits) {
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER)
 				clientPlayer.adjustHealth(-10);
 		}
 	}
 
+	private void drawGrid(Canvas canvas) {
+		paint.setColor(Color.DKGRAY);
+
+		// TODO: only draw lines on screen for speed
+		for (float x = 0; x < GAME_WIDTH; x += 60) {
+			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
+		}
+		for (float y = 0; y < GAME_HEIGHT; y += 60) {
+			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
+		}
+	}
+
 	public void draw(Canvas canvas) {
+		drawGrid(canvas);
+
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
 	}
@@ -163,5 +188,19 @@ public class BBTHSimulation extends Simulation {
 	public void drawForMiniMap(Canvas canvas) {
 		localPlayer.drawForMiniMap(canvas);
 		remotePlayer.drawForMiniMap(canvas);
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		return new Bag<Unit>();
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2, float y2) {
+		return new Bag<Unit>();
 	}
 }

@@ -1,15 +1,13 @@
 package npartlan;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
@@ -17,13 +15,16 @@ import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
-import bbth.game.units.*;
 import bbth.game.ai.AIController;
+import bbth.game.units.DefendingUnit;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 
-public class BBTHWallTest extends GameScreen {
+public class BBTHWallTest extends GameScreen implements UnitManager {
 	
 	Unit m_entity;
 	
@@ -66,10 +67,7 @@ public class BBTHWallTest extends GameScreen {
 						
 		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
-		
-		m_tester = new SimpleLineOfSightTester(15.0f);
-		m_tester.setBounds(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT);
-		m_tester.walls = m_graph_gen.walls;
+		m_tester = new SimpleLineOfSightTester(15.0f, m_graph_gen.walls);
 		
 		for (int i = 0; i < 2; i++) {
 			int length = m_rand.nextInt(100) + 30;
@@ -118,7 +116,7 @@ public class BBTHWallTest extends GameScreen {
 		m_paint_3.setTextSize(20);
 		m_paint_3.setAntiAlias(true);
             	
-		m_entity = new DefendingUnit(Team.SERVER, m_paint_1);
+		m_entity = new DefendingUnit(this, Team.SERVER, m_paint_1);
 		m_entity.setTeam(Team.SERVER);
 		m_entity.setPosition(0, 100);
 		m_entity.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -262,7 +260,6 @@ public class BBTHWallTest extends GameScreen {
 	public void addWall(Wall w) {
 		m_graph_gen.walls.add(w);
 		m_graph_gen.compute();
-		m_tester.updateWalls();
 	}
 	
 	@Override
@@ -274,5 +271,23 @@ public class BBTHWallTest extends GameScreen {
 	@Override
 	public void onTouchUp(float x, float y) {
 		addWall(new Wall(wall_start_x, wall_start_y, x, y));
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+		// DO NOTHING
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2,
+			float y2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

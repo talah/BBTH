@@ -15,20 +15,38 @@ public abstract class Unit extends BasicMovable {
 	protected Team team;
 	protected Paint paint;
 	private FiniteStateMachine fsm;
-	private Unit target;
 
-	public Unit(Team team, Paint p) {
+	protected Unit target;
+	protected UnitManager unitManager;
+	
+	protected float health = getStartingHealth();
+
+	public Unit(UnitManager unitManager, Team team, Paint p) {
 		fsm = new FiniteStateMachine();
 		this.team = team;
-		target = null;
+		this.unitManager = unitManager;
+
 		paint = p;
 	}
+	
+	@Override
+	public void setPosition(float x, float y) {
+		super.setPosition(x, y);
+	}
+
+	// why override just to call super
+//	@Override
+//	public void setVelocity(float vel, float dir) {
+//		super.setVelocity(vel, dir);
+//	}
 
 	public abstract void draw(Canvas canvas);
 
 	public abstract void drawForMiniMap(Canvas canvas);
 
 	public abstract UnitType getType();
+	public abstract float getStartingHealth();
+	public abstract float getRadius();
 
 	public Team getTeam() {
 		return this.team;
@@ -62,4 +80,23 @@ public abstract class Unit extends BasicMovable {
 	public Unit getTarget() {
 		return target;
 	}
+	
+	public float getHealth() {
+		return health;
+	}
+	
+	public boolean isDead() {
+		return health <= 0f;
+	}
+	
+	public void takeDamage(float damage) {
+		if (!isDead()) {
+			health -= damage;
+			if (isDead()) {
+				unitManager.notifyUnitDead(this);
+			}
+		}
+	}
+	
+	protected static Paint tempPaint = new Paint();
 }

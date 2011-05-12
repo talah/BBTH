@@ -20,6 +20,7 @@ public enum Team {
 			return Team.SERVER;
 		}
 		
+		@Override
 		public int getBaseColor() {
 			return Color.MAGENTA;
 		}
@@ -40,6 +41,7 @@ public enum Team {
 			return Team.CLIENT;
 		}
 		
+		@Override
 		public int getBaseColor() {
 			return Color.CYAN;
 		}
@@ -49,9 +51,7 @@ public enum Team {
 
 	// Scheme: Server -- RED, Client -- BLUE
 	public abstract int getUnitColor();
-
 	public abstract int getRandomShade();
-
 	public abstract Team getOppositeTeam();
 	
 	public abstract int getBaseColor();
@@ -67,5 +67,9 @@ public enum Team {
 
 	public int getTempWallColor() {
 		return this.tempWallColor;
+	}
+	
+	public boolean isEnemy(Team otherTeam) {
+		return otherTeam != this;
 	}
 }

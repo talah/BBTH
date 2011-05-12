@@ -1,23 +1,14 @@
 package bbth.game;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
-import android.graphics.Paint.Cap;
-import android.graphics.Paint.Join;
-import android.graphics.Paint.Style;
-import android.graphics.RectF;
+import android.graphics.*;
+import android.graphics.Paint.*;
 import android.util.FloatMath;
-import android.util.Log;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.bluetooth.State;
+import bbth.engine.net.bluetooth.*;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UIScrollView;
+import bbth.engine.ui.*;
 import bbth.engine.util.MathUtils;
 import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;

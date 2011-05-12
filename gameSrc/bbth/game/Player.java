@@ -9,7 +9,6 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
-import android.util.Log;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
@@ -17,6 +16,7 @@ import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 /**
@@ -35,11 +35,13 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 
-	private ArrayList<Wall> walls;
+	public ArrayList<Wall> walls;
 	private Wall currentWall;
+	private UnitManager unitManager;
 
-	public Player(Team team, AIController controller) {
+	public Player(Team team, AIController controller, UnitManager unitManager) {
 		this.team = team;
+		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
@@ -68,7 +70,7 @@ public class Player {
 		this.aiController = controller;
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
-		selector = new UnitSelector(team);
+		selector = new UnitSelector(team, unitManager);
 
 		walls = new ArrayList<Wall>();
 	}
@@ -111,7 +113,7 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
-		for (int i = 0; i < 40; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.cos(angle);
@@ -122,7 +124,8 @@ public class Player {
 					.color(team.getRandomShade());
 		}
 
-		Unit newUnit = selector.getUnitType().createUnit(team, paint);
+		Unit newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+		
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));

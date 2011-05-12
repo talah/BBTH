@@ -20,10 +20,12 @@ public class Edge {
 		this.p2 = p2;
 	}
 
+	@Override
 	public int hashCode() {
 		return p1.hashCode() ^ p2.hashCode();
 	}
 
+	@Override
 	public boolean equals(Object other) {
 		if (other == null)
 			return false;

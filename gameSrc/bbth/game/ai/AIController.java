@@ -1,22 +1,14 @@
 package bbth.game.ai;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 import android.graphics.PointF;
 import android.util.FloatMath;
-import bbth.engine.ai.ConnectedGraph;
-import bbth.engine.ai.FlockRulesCalculator;
-import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.LineOfSightTester;
-import bbth.engine.fastgraph.Wall;
+import bbth.engine.ai.*;
+import bbth.engine.fastgraph.*;
 import bbth.engine.util.MathUtils;
-import bbth.game.BBTHGame;
-import bbth.game.GridAcceleration;
-import bbth.game.Team;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitType;
+import bbth.game.*;
+import bbth.game.units.*;
 
 public class AIController {
 	ArrayList<Unit> m_units;
@@ -58,7 +50,7 @@ public class AIController {
 			m_last_updated.put(t, 0);
 			m_entities.put(t, new ArrayList<Unit>());
 		}
-   	}
+	}
 
 	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration accel) {
 		m_tester = tester;
@@ -180,19 +172,18 @@ public class AIController {
 						} else if (result2 != null) {
 							getTurnVector(entity, result2, heading);
 						}
-						
-						//canvas.drawLine(start_x, start_y, start_x + m_vec_result.x, start_y + m_vec_result.y, m_paint_3);
 												
+						// If we have no offset vector, any direction will do.
 						if (m_vec_result.x == 0 && m_vec_result.y == 0) {
-							clear = true;
+							m_vec_result.x = 0.01f;
+							m_vec_result.y = 0.01f;
+						}
+						
+						float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
+						if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
+							heading += .08f;
 						} else {
-							float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
-							if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
-								heading += .08f;
-							} else {
-								heading -= .08f;
-							}
-							//canvas.drawLine(start_x, start_y, start_x + 15 * FloatMath.cos(heading), start_y + 15 * FloatMath.sin(heading), m_paint_1);
+							heading -= .08f;
 						}
 						
 						tries++;
