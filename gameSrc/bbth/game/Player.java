@@ -25,15 +25,11 @@ import bbth.game.units.WallUnit;
  * A player is someone who is interacting with the game.
  */
 public class Player {
-	private static final int NUM_PARTICLES = 200;
-	private static final float PARTICLE_THRESHOLD = 0.5f;
-
 	private Team team;
 	public List<Unit> units;
 	public Base base;
 	private AIController aiController;
 	private Paint paint;
-	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
@@ -75,8 +71,6 @@ public class Player {
 		combo_circle = new ComboCircle(team);
 
 		this.aiController = controller;
-
-		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 		selector = new UnitSelector(team, unitManager);
 
 		walls = new ArrayList<WallUnit>();
@@ -126,7 +120,7 @@ public class Player {
 					* FloatMath.cos(angle);
 			float yVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.sin(angle);
-			particles.createParticle().circle().velocity(xVel, yVel)
+			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel)
 					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
 					.color(team.getRandomShade());
 		}
@@ -170,8 +164,6 @@ public class Player {
 	}
 
 	public void update(float seconds) {
-		particles.tick(seconds);
-
 		for (int i = 0; i < units.size(); i++) {
 			Unit unit = units.get(i);
 
@@ -214,7 +206,6 @@ public class Player {
 		}
 
 		paint.setStyle(Style.FILL);
-		particles.draw(canvas, paint);
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
