@@ -266,8 +266,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		if (isOnBeat) {
 			if (beatTrack.getCombo() >= BBTHSimulation.UBER_CIRCLE_THRESHOLD) {
 				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD * beatTrack.getCombo() + BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
-				setComboCircle(MathUtils.randInRange(pos_x + radius, pos_x + BBTHGame.WIDTH - radius),
-						MathUtils.randInRange(pos_y + radius, pos_y + BBTHGame.HEIGHT - radius), radius);
+				setComboCircle(MathUtils.randInRange(pos_x + (100 + radius), pos_x + BBTHGame.WIDTH - (100 + radius)),
+						MathUtils.randInRange(pos_y + (100 + radius), pos_y + BBTHGame.HEIGHT - (100 + radius)), radius);
 			}
 		} else {
 			clearComboCircle();
