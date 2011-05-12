@@ -205,10 +205,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	 */
 	@Override
 	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		float r2 = r * r;
 		cachedUnitBag.clear();
 		accel.getUnitsInAABB(x - r, y - r, x + r, y + r, cachedUnitSet);
 		for (Unit unit : cachedUnitSet) {
-			cachedUnitBag.add(unit);
+			float dx = x - unit.getX();
+			float dy = y - unit.getY();
+			if (dx * dx + dy * dy < r2) {
+				cachedUnitBag.add(unit);
+			}
 		}
 		return cachedUnitBag;
 	}
