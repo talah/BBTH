@@ -23,9 +23,9 @@ import bbth.game.Team;
 import bbth.game.units.*;
 import bbth.game.ai.AIController;
 
-public class BBTHAITest extends GameScreen {
+public class BBTHWallTest extends GameScreen {
 	
-	ArrayList<Unit> m_entities;
+	Unit m_entity;
 	
 	private Paint m_paint_0;
 	private Paint m_paint_1;
@@ -36,6 +36,11 @@ public class BBTHAITest extends GameScreen {
 	private Pathfinder m_pathfinder;
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
+	
+	PointF m_center_stick;
+	PointF m_wall;
+	PointF m_wall_to_player;
+	PointF m_vec_result;
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -50,9 +55,14 @@ public class BBTHAITest extends GameScreen {
 
 	private long m_time_since_step;
 	
-	public BBTHAITest(BBTHGame bbthGame) {
+	public BBTHWallTest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
     	m_rand = new Random();
+    	
+    	m_center_stick = new PointF();
+		m_wall = new PointF();
+		m_wall_to_player = new PointF();
+		m_vec_result = new PointF();
 						
 		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
@@ -107,38 +117,12 @@ public class BBTHAITest extends GameScreen {
 		m_paint_3.setStyle(Style.STROKE);
 		m_paint_3.setTextSize(20);
 		m_paint_3.setAntiAlias(true);
-        
-    	m_entities = new ArrayList<Unit>();
-    	
-        randomizeEntities();
-	}
-	
-	private void randomizeEntities() {
-		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(Team.SERVER, m_paint_1);
-			e.setTeam(Team.SERVER);
-			e.setPosition(0, 100);
-			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
-			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
-			m_entities.add(e);
-			
-			//******** SETUP FOR AI *******//
-			m_controller.addEntity(e);
-			//******** SETUP FOR AI *******//
-		}
-		
-		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(Team.CLIENT, m_paint_0);
-			e.setTeam(Team.CLIENT);
-			e.setPosition(BBTHGame.WIDTH, 100);
-			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
-			e.setVelocity(m_rand.nextFloat() * .01f, m_rand.nextFloat() * MathUtils.TWO_PI);
-			m_entities.add(e);
-			
-			//******** SETUP FOR AI *******//
-			m_controller.addEntity(e);
-			//******** SETUP FOR AI *******//
-		}
+            	
+		m_entity = new DefendingUnit(Team.SERVER, m_paint_1);
+		m_entity.setTeam(Team.SERVER);
+		m_entity.setPosition(0, 100);
+		m_entity.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
+		m_entity.setVelocity(10f, m_rand.nextFloat() * MathUtils.TWO_PI);
 	}
 
 	@Override
@@ -156,94 +140,76 @@ public class BBTHAITest extends GameScreen {
 		m_controller.update();
 		//******** SETUP FOR AI *******//
 		
-		// Draw the pathfinding connections graph
-		/*for (PointF point : m_graph_gen.graph.m_connections.keySet()) {
-			ArrayList<PointF> neighbors = m_graph_gen.graph.m_connections.get(point);
-			for (PointF neighbor : neighbors) {
-				canvas.drawLine(point.x, point.y, neighbor.x, neighbor.y, m_paint_3);
-			}
-		}*/
+		Unit ent = m_entity;
 		
-		// Draw the path found
-		/*Unit entity = m_entities.get(0);
-		Unit enemy = m_entities.get(1);
-		PointF start_point = new PointF();
-		PointF end_point = new PointF();
+		Unit entity = m_entity;
+		
 		float start_x = entity.getX();
 		float start_y = entity.getY();
-		float goal_x = enemy.getX();
-		float goal_y = enemy.getY();
-		start_point.set(start_x, start_y);
-		end_point.set(goal_x, goal_y);
-		
-		if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
-			PointF start = getClosestNode(start_point);
-			canvas.drawCircle(start.x, start.y, 3.0f, m_paint_3);
-			PointF end = getClosestNode(end_point);
-			
-			ArrayList<PointF> path = null;
-			
-			if (start != null && end != null) {
-				m_pathfinder.clearPath();
-				m_pathfinder.findPath(start, end);
+		// Check if we are going to run into a wall:
+		float heading = entity.getHeading();
+		float startheading = heading;
+		boolean clear = false;
+		int tries = 0;
+		while (!clear) {
+			if (tries > 100) {
+				heading = startheading + MathUtils.PI;
+				break;
 			}
 			
-			path = m_pathfinder.getPath();
+			float s_x = start_x + 3.0f * FloatMath.cos(heading);
+			float s_y = start_y + 3.0f * FloatMath.sin(heading);
 			
-			// TODO: avoid new-ing points each time here.
-			path.add(end_point);
-			
-			if (path.size() > 1) {
-				if (m_tester.isLineOfSightClear(start_point, path.get(1))) {
-					path.remove(0);
-				}
-				
-				canvas.drawLine(start_x, start_y, path.get(0).x, path.get(0).y, m_paint_0);
-				
-				int size = path.size();
-				for (int i = 0; i < size-1; i++) {
-					PointF curr = path.get(i);
-					PointF next = path.get(i+1);
-					canvas.drawLine(curr.x, curr.y, next.x, next.y, m_paint_1);
-				}
-			}
-			
-			//System.out.println("Team: " + entity.getTeam() + " Start: " + entity.getX() + ", " + entity.getY() + " = " + start.x + ", " + start.y + " End: " + end.x + ", " + end.y);
-		} else {
-			canvas.drawLine(start_x, start_y, goal_x, goal_y, m_paint_1);
-		}*/
-		
-		for (int i = 0; i < m_entities.size(); i++) {
-			Unit ent = m_entities.get(i);
-			
-			//******** PHYSICS AFTER AI *******//
-			ent.setPosition(ent.getX() + ent.getSpeed() * FloatMath.cos(ent.getHeading()) * timediff/1000.0f, ent.getY() + ent.getSpeed() * FloatMath.sin(ent.getHeading()) * timediff/1000.0f);
-			//******** PHYSICS AFTER AI *******//
-			
-			// Draw the stick-based obstacle avoidance
-			/*
-			float heading = ent.getHeading();
-			float start_x = ent.getX() + 3.0f * FloatMath.cos(heading);
-			float start_y = ent.getY() + 3.0f * FloatMath.sin(heading);
 			float stickoffsetx = 6.0f * FloatMath.cos(heading - MathUtils.PI/2.0f);
 			float stickoffsety = 6.0f * FloatMath.sin(heading - MathUtils.PI/2.0f);
 			
-			float leftx1 = start_x + stickoffsetx;
-			float lefty1 = start_y + stickoffsety;
+			float leftx1 = s_x + stickoffsetx;
+			float lefty1 = s_y + stickoffsety;
 			float leftx2 = leftx1 + 12.0f * FloatMath.cos(heading + MathUtils.PI/6.0f);
 			float lefty2 = lefty1 + 12.0f * FloatMath.sin(heading + MathUtils.PI/6.0f);
 			
-			float rightx1 = start_x - stickoffsetx;
-			float righty1 = start_y - stickoffsety;
+			float rightx1 = s_x - stickoffsetx;
+			float righty1 = s_y - stickoffsety;
 			float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI/6.0f);
 			float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI/6.0f);
 			
-			canvas.drawLine(leftx1, lefty1, leftx2, lefty2, m_paint_3);
-			canvas.drawLine(rightx1, righty1, rightx2, righty2, m_paint_3);
-			*/
+			Wall result = m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2);
+			Wall result2 = m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2);
 			
-			ent.draw(canvas);
+			if (result == null && result2 == null) {
+				clear = true;
+			} else {
+				if (result != null) {
+					getTurnVector(entity, result, heading);
+				} else if (result2 != null) {
+					getTurnVector(entity, result2, heading);
+				}
+				
+				//canvas.drawLine(start_x, start_y, start_x + m_vec_result.x, start_y + m_vec_result.y, m_paint_3);
+										
+				if (m_vec_result.x == 0 && m_vec_result.y == 0) {
+					clear = true;
+				} else {
+					float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
+					if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
+						heading += .08f;
+					} else {
+						heading -= .08f;
+					}
+					//canvas.drawLine(start_x, start_y, start_x + 15 * FloatMath.cos(heading), start_y + 15 * FloatMath.sin(heading), m_paint_1);
+				}
+				
+				tries++;
+			}
 		}
+		
+		entity.setVelocity(entity.getSpeed(), heading);
+		
+		//******** PHYSICS AFTER AI *******//
+		ent.setPosition(ent.getX() + ent.getSpeed() * FloatMath.cos(ent.getHeading()) * timediff/1000.0f, ent.getY() + ent.getSpeed() * FloatMath.sin(ent.getHeading()) * timediff/1000.0f);
+		//******** PHYSICS AFTER AI *******//
+		
+		ent.draw(canvas);
 		
 		int size = m_graph_gen.walls.size();
 		for (int i = 0; i < size; i++) {
@@ -254,24 +220,49 @@ public class BBTHAITest extends GameScreen {
 		m_last_time = curr_time;
 	}
 	
+	private PointF getTurnVector(Unit entity, Wall result, float heading) {
+		float start_x = entity.getX();
+		float start_y = entity.getY();
+		
+		m_center_stick.x = 15.0f * FloatMath.cos(heading);
+		m_center_stick.y = 15.0f * FloatMath.sin(heading);
+		
+		m_wall.x = result.b.x - result.a.x;
+		m_wall.y = result.b.y - result.a.y;
+		m_wall_to_player.x = start_x - result.a.x;
+		m_wall_to_player.y = start_y - result.a.y;
+		
+		// Project the center stick onto the wall.
+		MathUtils.getProjection(m_wall, m_center_stick, m_vec_result);
+		
+		// Normalize the result.
+		float len = FloatMath.sqrt(m_vec_result.x * m_vec_result.x + m_vec_result.y * m_vec_result.y);
+		
+		if (len == 0) {
+			m_vec_result.x = 0;
+			m_vec_result.y = 0;
+			return m_vec_result;
+		}
+		
+		// Find the projection of the vector from one of the endpoints on the normal of the wall.
+		float dist = MathUtils.dot(result.norm, m_wall_to_player);
+		
+		// Get the right length for the resulting vector.
+		float sticklen = FloatMath.sqrt(15.0f * 15.0f - dist * dist);
+		m_vec_result.x *= sticklen / len;
+		m_vec_result.y *= sticklen / len;
+		
+		// Add the result vector to the scaled normal.
+		m_vec_result.x += result.norm.x * dist * -1.0f;
+		m_vec_result.y += result.norm.y * dist * -1.0f;
+		
+		return m_vec_result;
+	}
+	
 	public void addWall(Wall w) {
 		m_graph_gen.walls.add(w);
 		m_graph_gen.compute();
 		m_tester.updateWalls();
-	}
-
-	private PointF getClosestNode(PointF s) {
-		float bestdist = 0;
-		PointF closest = null;
-		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
-		for (PointF p : connections.keySet()) {
-			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
-				closest = p;
-				bestdist = dist;
-			}
-		}
-		return closest;
 	}
 	
 	@Override

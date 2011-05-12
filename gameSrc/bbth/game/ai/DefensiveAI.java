@@ -22,7 +22,7 @@ public class DefensiveAI extends UnitAI {
 	private ConnectedGraph m_map_grid;
 	
 	private LineOfSightTester m_tester;
-	
+		
 	PointF start_point;
 	PointF end_point;
 
@@ -66,7 +66,7 @@ public class DefensiveAI extends UnitAI {
 		m_fsm_conditions.clear();
 		float dist = Float.MAX_VALUE;
 		if (target != null) {
-			dist = MathUtils.getDistSqr(entity.getX(), entity.getY(), target.getX(), target.getY());
+			//dist = MathUtils.getDistSqr(entity.getX(), entity.getY(), target.getX(), target.getY());
 		}
 		m_fsm_conditions.put("targetdist", dist);
 		fsm.update(m_fsm_conditions);
@@ -106,7 +106,7 @@ public class DefensiveAI extends UnitAI {
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
 				
-				if (m_tester != null && !m_tester.isLineOfSightClear(start_point, end_point)) {
+				if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
 					PointF start = getClosestNode(start_point);
 					PointF end = getClosestNode(end_point);
 					
@@ -123,7 +123,7 @@ public class DefensiveAI extends UnitAI {
 					
 					if (path.size() > 1) {
 						PointF goal_point = path.get(0);
-						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1))) {
+						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
 							goal_point = path.get(1);
 						}
 						
@@ -156,40 +156,8 @@ public class DefensiveAI extends UnitAI {
 		if (actualchange < -1.0f * maxvelchange) {
 			actualchange = -1.0f * maxvelchange;
 		}
-		
-		// Check if we are going to run into a wall:
+
 		float heading = entity.getHeading() + actualchange;
-		boolean clear = false;
-		int tries = 0;
-		while (!clear) {
-			if (tries > 150) {
-				break;
-			}
-			
-			float s_x = start_x + 3.0f * FloatMath.cos(heading);
-			float s_y = start_y + 3.0f * FloatMath.sin(heading);
-			
-			float stickoffsetx = 6.0f * FloatMath.cos(heading - MathUtils.PI/2.0f);
-			float stickoffsety = 6.0f * FloatMath.sin(heading - MathUtils.PI/2.0f);
-			
-			float leftx1 = s_x + stickoffsetx;
-			float lefty1 = s_y + stickoffsety;
-			float leftx2 = leftx1 + 12.0f * FloatMath.cos(heading + MathUtils.PI/6.0f);
-			float lefty2 = lefty1 + 12.0f * FloatMath.sin(heading + MathUtils.PI/6.0f);
-			
-			float rightx1 = s_x - stickoffsetx;
-			float righty1 = s_y - stickoffsety;
-			float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI/6.0f);
-			float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI/6.0f);
-			
-			if (m_tester != null && m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2) && 
-					m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2)) {
-				clear = true;
-			} else {
-				heading += .05f * (actualchange>0?1:-1);
-				tries++;
-			}
-		}
 		
 		entity.setVelocity(getMaxVel(), heading);
 	}
@@ -221,7 +189,7 @@ public class DefensiveAI extends UnitAI {
 		HashMap<PointF, ArrayList<PointF>> connections = m_map_grid.getGraph();
 		for (PointF p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p)) {
+			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
 				bestdist = dist;
 			}
