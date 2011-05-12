@@ -29,7 +29,6 @@ public enum UnitType {
 		switch (type) {
 		case 0: return UnitType.ATTACKING;
 		case 1: return UnitType.DEFENDING;
-		case 2: return UnitType.UBER;
 		}
 		
 		return null;
