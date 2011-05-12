@@ -56,7 +56,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
-			nextScreen = BBTHGame.SETUP_SCREEN;
+			nextScreen = new GameSetupScreen();
 		} else if (button == quit) {
 			// TODO Do something here, like quitting the game
 		}

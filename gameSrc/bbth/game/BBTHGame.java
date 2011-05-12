@@ -14,7 +14,6 @@ public class BBTHGame extends Game {
 			"Congratulations! You won!", null);
 	public static final GameStatusMessageScreen LOSE_SCREEN = new GameStatusMessageScreen(
 			"Oh noes, you lost :(", null);
-	public static final GameSetupScreen SETUP_SCREEN = new GameSetupScreen();
 	public static final TitleScreen TITLE_SCREEN = new TitleScreen();
 
 	public BBTHGame(Activity activity) {
@@ -29,7 +28,7 @@ public class BBTHGame extends Game {
 //				GameActivity.instance, new LockStepProtocol()),
 //				Song.DONKEY_KONG, new LockStepProtocol());
 		
-		currentScreen = SETUP_SCREEN;
+		currentScreen = new GameSetupScreen();
 	}
 	
 	@Override
