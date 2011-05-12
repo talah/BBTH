@@ -35,6 +35,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
 	private static final float HEALTHBAR_HEIGHT = 10;
 
+	private static final int SNAP_TO_MOST_ADVANCED = 0;
+	private static final int USER_SCROLLS_ON_MINIMAP = 1;
+	private int cameraInteraction = USER_SCROLLS_ON_MINIMAP;
+
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
@@ -43,9 +47,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private Timer drawUITimer = new Timer();
 
 	public ComboCircle combo_circle;
+	private boolean userScrolling;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
-			LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
 		this.team = playerTeam;
@@ -70,8 +74,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
 
-		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH,
-				BBTHSimulation.GAME_HEIGHT);
+		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT);
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
@@ -85,7 +88,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		// Set up sound stuff
 		beatTrack = new BeatTrack(song, this);
-		
+
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
@@ -96,13 +99,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2
-				+ HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT
-				- HEALTHBAR_HEIGHT);
-		serverHealthRect = new RectF(minimapRect.left, minimapRect.top
-				- HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
-		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom,
-				minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
+		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
+		serverHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -127,15 +126,12 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-					currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
 		drawParticleTimer.start();
-
 		particles.draw(canvas, paint);
-
 		drawParticleTimer.stop();
 
 		canvas.translate(this.pos_x, this.pos_y);
@@ -161,11 +157,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
-				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
 		paint.setColor(Color.WHITE);
-		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
-				BBTHGame.HEIGHT + this.pos_y, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
 		drawUITimer.stop();
@@ -180,35 +174,17 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		int x = 50;
 		int y = 20;
 		int jump = 11;
-		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds()
-				+ " ms", x, y += jump, paint);
-		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
-				+ " ms", x, y += jump, paint);
-		canvas.drawText(
-				"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
-						+ " ms", x, y += jump, paint);
-		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds()
-				+ " ms", x, y += jump, paint);
-		canvas.drawText(
-				"      - Controller: "
-						+ sim.aiControllerTimer.getMilliseconds() + " ms", x,
-				y += jump, paint);
-		canvas.drawText(
-				"      - Server player: "
-						+ sim.serverPlayerTimer.getMilliseconds() + " ms", x,
-				y += jump, paint);
-		canvas.drawText(
-				"      - Client player: "
-						+ sim.clientPlayerTimer.getMilliseconds() + " ms", x,
-				y += jump, paint);
-		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
-				+ " ms", x, y += jump * 2, paint);
-		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x,
-				y += jump, paint);
-		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds()
-				+ " ms", x, y += jump, paint);
-		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x,
-				y += jump, paint);
+		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
 		entireDrawTimer.stop();
 	}
 
@@ -229,16 +205,14 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		simUpdateTimer.start();
 		sim.onUpdate(seconds);
 		simUpdateTimer.stop();
-		
+
 		if (sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
 		// Update healths
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
-				minimapRect.right - 1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
-				minimapRect.right - 1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
 
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
@@ -255,10 +229,11 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
-		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
-		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
-					- BBTHGame.HEIGHT / 2);
+		if (cameraInteraction == SNAP_TO_MOST_ADVANCED) {
+			Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
+			if (mostAdvanced != null) {
+				this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			}
 		}
 
 		// Shinies
@@ -266,9 +241,20 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		entireUpdateTimer.stop();
 	}
 
+	private void moveCamera(float x, float y) {
+		float max_pos_y = BBTHSimulation.GAME_HEIGHT - BBTHGame.HEIGHT;
+		pos_y = MathUtils.clamp(0, max_pos_y, max_pos_y * (y - minimapRect.top) / minimapRect.height());
+	}
+
 	@Override
 	public void onTouchDown(float x, float y) {
-		super.onTouchDown(x, y);
+		if (cameraInteraction == USER_SCROLLS_ON_MINIMAP) {
+			if (minimapRect.contains(x, y)) {
+				moveCamera(x, y);
+				userScrolling = true;
+				return;
+			}
+		}
 
 		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 		if (unitType >= 0) {
@@ -294,7 +280,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 	@Override
 	public void onTouchMove(float x, float y) {
-		super.onTouchMove(x, y);
+		if (userScrolling) {
+			moveCamera(x, y);
+			return;
+		}
 
 		float worldX = x + this.pos_x;
 		float worldY = y + this.pos_y;
@@ -308,7 +297,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		super.onTouchUp(x, y);
+		if (userScrolling) {
+			userScrolling = false;
+			return;
+		}
 
 		float worldX = x + this.pos_x;
 		float worldY = y + this.pos_y;
