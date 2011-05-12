@@ -126,8 +126,15 @@ public class InGameScreen extends UIScrollView {
 		paint.setStrokeCap(Cap.BUTT);
 
 		drawParticleTimer.start();
+		
 		particles.draw(canvas, paint);
+
 		drawParticleTimer.stop();
+
+		sim.localPlayer.combo_circle.onDraw(canvas);
+		sim.remotePlayer.combo_circle.onDraw(canvas);
+		
+
 		canvas.translate(this.pos_x, this.pos_y);
 
 		drawUITimer.start();
