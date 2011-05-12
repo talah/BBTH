@@ -24,6 +24,10 @@ public class UIView extends GameScreen {
 	
 	protected Anchor anchor;
 
+	public UIView() {
+		this(null);
+	}
+	
 	public UIView(Object tag) {
 		subviews = new CopyOnWriteArrayList<UIView>();
 		this.anchor = Anchor.TOP_LEFT;

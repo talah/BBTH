@@ -15,6 +15,7 @@ public class BBTHGame extends Game {
 	public static final GameStatusMessageScreen LOSE_SCREEN = new GameStatusMessageScreen(
 			"Oh noes, you lost :(", null);
 	public static final GameSetupScreen SETUP_SCREEN = new GameSetupScreen();
+	public static final TitleScreen TITLE_SCREEN = new TitleScreen();
 
 	public BBTHGame(Activity activity) {
 //		currentScreen = new TitleScreen(null);
