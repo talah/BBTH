@@ -1,33 +1,20 @@
 package jardini;
 
-import static bbth.game.BBTHGame.HEIGHT;
-import static bbth.game.BBTHGame.WIDTH;
+import static bbth.game.BBTHGame.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import kvgishen.TitleScreen;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.core.GameScreen;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.sound.Beat;
-import bbth.engine.sound.BeatPattern;
-import bbth.engine.sound.BeatPatternParser;
-import bbth.engine.sound.BeatTracker;
-import bbth.engine.sound.CompositeBeatPattern;
-import bbth.engine.sound.MusicPlayer;
+import bbth.engine.sound.*;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SimpleBeatPattern;
-import bbth.engine.sound.SoundManager;
-import bbth.engine.util.ColorUtils;
-import bbth.engine.util.MathUtils;
+import bbth.engine.util.*;
 import bbth.game.R;
 
 /**

@@ -1,4 +1,4 @@
-package zdavis.src.bbth.game.test;
+package zdavis;
 
 import java.util.*;
 

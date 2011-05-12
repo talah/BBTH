@@ -19,19 +19,15 @@ public class BBTHGame extends Game {
 	public static final TitleScreen TITLE_SCREEN = new TitleScreen();
 
 	public BBTHGame(Activity activity) {
-		// currentScreen = new TitleScreen(null);
-		// currentScreen = new BBTHAITest(this);
-		// currentScreen = new MusicTestScreen(activity);
-		// currentScreen = new NetworkTestScreen();
-		// currentScreen = new TransitionTest();
-		// currentScreen = new GameSetupScreen();
-		// currentScreen = new CombatTest(this);
-		// currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-		// GameActivity.instance, new LockStepProtocol()),
-		// Song.DONKEY_KONG, new LockStepProtocol());
-
+//		currentScreen = new TitleScreen(null);
+//		currentScreen = new BBTHAITest(this);
+//		currentScreen = new MusicTestScreen(activity);
+//		currentScreen = new NetworkTestScreen();
+//		currentScreen = new TransitionTest();
+//		currentScreen = new GameSetupScreen();
+//		currentScreen = new CombatTest(this);
+//		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), Song.DONKEY_KONG, new LockStepProtocol());
 		currentScreen = new GameSetupScreen();
-		// currentScreen = TITLE_SCREEN;
 	}
 
 	@Override
