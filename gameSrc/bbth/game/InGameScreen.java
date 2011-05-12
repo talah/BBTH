@@ -154,10 +154,10 @@ public class InGameScreen extends UIScrollView {
 		// Show the timestep for debugging
 		label.setText("" + sim.getTimestep());
 
-		// Go back to the menu and stop the music if we disconnect
+		// Stop the music if we disconnect
 		if (bluetooth.getState() != State.CONNECTED) {
 			beatTrack.stopMusic();
-			nextScreen = new GameSetupScreen();
+			nextScreen = BBTHGame.DISCONNECT_SCREEN;
 		}
 
 		// Update the game
