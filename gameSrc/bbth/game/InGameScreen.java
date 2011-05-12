@@ -36,7 +36,6 @@ public class InGameScreen extends UIScrollView {
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
-	private Timer particleUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
 	private Timer drawParticleTimer = new Timer();
 	private Timer drawSimTimer = new Timer();
@@ -172,9 +171,10 @@ public class InGameScreen extends UIScrollView {
 		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("    - Accel tick: " + sim.accelTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Particles: " + particleUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
 		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
@@ -225,10 +225,7 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Shinies
-		particleUpdateTimer.start();
 		particles.tick(seconds);
-		particleUpdateTimer.stop();
-
 		entireUpdateTimer.stop();
 	}
 
