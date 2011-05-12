@@ -30,7 +30,9 @@ public class WallUnit extends Unit {
 
 	@Override
 	public void draw(Canvas canvas) {
+		paint.setAlpha((int) (health * 255 / HEALTH));
 		canvas.drawLine(wall.a.x, wall.a.y, wall.b.x, wall.b.y, paint);
+		paint.setAlpha(255);
 	}
 
 	@Override
