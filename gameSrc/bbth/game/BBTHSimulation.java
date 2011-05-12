@@ -15,6 +15,7 @@ import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -44,7 +45,12 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
+	
+	// Combo constants
 	public static final float UBER_UNIT_THRESHOLD = 10;
+	public static final float UBER_CIRCLE_THRESHOLD = 5;
+	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
+	private static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
@@ -101,9 +107,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		
 		// Update player combos.
 		if (isOnBeat) {
-			player.setCombo(player.getCombo() + 1);
+			float newcombo = player.getCombo() + 1;
+			player.setCombo(newcombo);
+			
+			if (newcombo >= UBER_CIRCLE_THRESHOLD) {
+				player.setComboCircle(MathUtils.randInRange(0, BBTHGame.WIDTH), MathUtils.randInRange(0, BBTHGame.HEIGHT), UBER_CIRCLE_SIZE_MOD * newcombo + UBER_CIRCLE_INIT_SIZE);
+			}
 		} else {
 			player.setCombo(0);
+			player.clearComboCircle();
 		}
 		
 		if (isHold) {
@@ -273,4 +285,5 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final boolean intervalsDontOverlap(float min1, float max1, float min2, float max2) {
 		return (min1 < min2 ? min2 - max1 : min1 - max2) > 0;
 	}
+
 }

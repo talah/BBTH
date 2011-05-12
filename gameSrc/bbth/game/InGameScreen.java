@@ -110,6 +110,10 @@ public class InGameScreen extends UIScrollView {
 		paint.setStrokeCap(Cap.BUTT);
 
 		particles.draw(canvas, paint);
+		
+		sim.localPlayer.combo_circle.onDraw(canvas);
+		sim.remotePlayer.combo_circle.onDraw(canvas);
+		
 		canvas.translate(this.pos_x, this.pos_y);
 
 		// Overlay the beat track
