@@ -325,17 +325,4 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
 	}
-
-	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
-		this.combo_circle.setPosition(center_x, center_y);
-		this.combo_circle.radius = _uber_circle_radius;
-	}
-
-	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
-		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
-	}
-
-	public void clearComboCircle() {
-		this.combo_circle.radius = -1.f;
-	}
 }
