@@ -64,4 +64,9 @@ public final class MathUtils {
 	public static float toRadians(float heading) {
 		return heading * PI/180;
 	}
+	
+	public static float scale(float min, float max, float target_min, float target_max, float val)
+	{
+		return (val / ((max - min) / (target_max - target_min))) + target_min;
+	}
 }

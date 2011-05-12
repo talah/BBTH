@@ -2,21 +2,21 @@ package bbth.game;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
-import bbth.game.R;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SoundManager;
 import bbth.engine.sound.SimpleBeatPattern;
+import bbth.engine.sound.SoundManager;
 
 /**
  * A complete beat track for a single song.  Handles music, hit and miss sounds, scoring.
@@ -41,7 +41,8 @@ public class BeatTrack {
 	private BeatTracker beatTracker;
 	private int combo;
 	private int score;
-	private String comboStr, scoreStr;
+	private String comboStr;
+	// scoreStr;
 	private BeatPattern beatPattern;
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
@@ -55,24 +56,28 @@ public class BeatTrack {
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
 			break;
 		case RETRO:
-			BeatPattern []patterns = new BeatPattern[2];
-			patterns[0] = new SimpleBeatPattern(350, 481, 4810 * 2);
+			BeatPattern []patterns = new BeatPattern[3];
+			patterns[0] = new SimpleBeatPattern(350, 481 * 2, 4810 * 4);
 			List<Beat> beats = new ArrayList<Beat>();
 			for (int phrase = 0; phrase < 4; ++phrase) {
 				for (int i = 0; i < 4; ++i) {
 					beats.add(Beat.tap(481));
 				}
-				for (int i = 0; i < 4; ++i) {
-					Beat.tap(240);
-					Beat.tap(241);
+				for (int i = 0; i < 2; ++i) {
+					beats.add(Beat.tap(240));
+					beats.add(Beat.tap(241));
 				}
-				for (int i = 0; i < 4; ++i) {
-					Beat.rest(481);
+				for (int i = 0; i < 6; ++i) {
+					beats.add(Beat.rest(481));
+				}
+				for (int i = 0; i < 2; ++i) {
+					beats.add(Beat.hold(481 * 2));
+					beats.add(Beat.rest(481 * 2));
 				}
 			}
-			beatPattern = new SimpleBeatPattern(0, beats);
-			//patterns[1] = new SimpleBeatPattern(0, beats);
-			//beatPattern = new CompositeBeatPattern(patterns);
+			patterns[1] = new SimpleBeatPattern(beats);
+			patterns[2] = new SimpleBeatPattern(0, 481 * 2, 4810 * 4);
+			beatPattern = new CompositeBeatPattern(patterns);
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
 			break;
 		}
@@ -95,15 +100,16 @@ public class BeatTrack {
 
 		// Setup score stuff
 		score = 0;
-		scoreStr = String.valueOf(score);
+		// scoreStr = String.valueOf(score);
 		combo = 0;
 		comboStr = String.valueOf(combo);
 
 		// Setup paint
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		paint = new Paint();
 		paint.setTextSize(10);
 		paint.setStrokeWidth(2.f);
 		paint.setStrokeCap(Cap.ROUND);
+		paint.setAntiAlias(true);
 	}
 
 	public void startMusic() {
@@ -137,7 +143,7 @@ public class BeatTrack {
 
 	public void refreshBeats() {
 		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-400, 1500);
+		beatsInRange = beatTracker.getBeatsInRange(-700, 1900);
 	}
 
 	public Beat.BeatType checkTouch(BBTHSimulation sim, float x, float y) {
@@ -147,7 +153,7 @@ public class BeatTrack {
 			soundManager.play(HIT_SOUND_ID);
 			++score;
 			++combo;
-			scoreStr = String.valueOf(score);
+			// scoreStr = String.valueOf(score);
 			comboStr = "x" + String.valueOf(combo);
 		} else {
 			soundManager.play(MISS_SOUND_ID);

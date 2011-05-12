@@ -26,8 +26,8 @@ public class Wall {
 		b = new PointF(bx, by);
 		updateLength();
 	}
-	
-	private void updateLength() {
+
+	public void updateLength() {
 		length = MathUtils.getDist(a.x, a.y, b.x, b.y);
 		float dx = b.x - a.x;
 		float dy = b.y - a.y;
@@ -42,5 +42,21 @@ public class Wall {
 		points.add(new PointF(a.x - dx + dy, a.y - dy - dx));
 		points.add(new PointF(b.x + dx - dy, b.y + dy + dx));
 		points.add(new PointF(b.x + dx + dy, b.y + dy - dx));
+	}
+
+	public float getMinX() {
+		return Math.min(a.x, b.x);
+	}
+
+	public float getMinY() {
+		return Math.min(a.y, b.y);
+	}
+
+	public float getMaxX() {
+		return Math.max(a.x, b.x);
+	}
+
+	public float getMaxY() {
+		return Math.max(a.y, b.y);
 	}
 }

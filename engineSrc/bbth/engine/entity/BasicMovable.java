@@ -1,7 +1,7 @@
 package bbth.engine.entity;
 
-import bbth.engine.util.MathUtils;
 import android.util.FloatMath;
+import bbth.engine.util.MathUtils;
 
 public class BasicMovable implements Movable {
 
@@ -9,7 +9,7 @@ public class BasicMovable implements Movable {
 	private float m_y;
 	private float m_x_vel;
 	private float m_y_vel;
-	
+
 	@Override
 	public void setPosition(float x, float y) {
 		m_x = x;

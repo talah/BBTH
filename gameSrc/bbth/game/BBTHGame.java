@@ -2,6 +2,10 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
+import bbth.engine.core.GameActivity;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.game.BeatTrack.Song;
 
 public class BBTHGame extends Game {
 	// This is the viewport width and height
@@ -14,7 +18,9 @@ public class BBTHGame extends Game {
 		// currentScreen = new MusicTestScreen(activity);
 		// currentScreen = new NetworkTestScreen();
 		// currentScreen = new TransitionTest();
-		currentScreen = new GameSetupScreen();
+		// currentScreen = new GameSetupScreen();
+		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), Song.DONKEY_KONG, 
+				new LockStepProtocol());
 	}
 
 	@Override

@@ -82,7 +82,7 @@ public class BBTHWallTest extends GameScreen {
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
 		//******** SETUP FOR AI *******//
-		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester);
+		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, null);
 
 		m_last_time = System.currentTimeMillis();
 		

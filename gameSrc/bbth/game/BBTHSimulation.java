@@ -1,8 +1,10 @@
 package bbth.game;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
@@ -17,26 +19,31 @@ import bbth.game.units.UnitType;
 public class BBTHSimulation extends Simulation {
 	private int timestep;
 	private Team team;
+	public Player localPlayer, remotePlayer;
 	private HashMap<Boolean, Player> playerMap;
-	private Player localPlayer, remotePlayer;
 	private Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
+	private GridAcceleration accel;
+	private HashSet<Unit> localUnits;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
-			boolean isServer) {
+	// Minimal length of a wall
+	public static final float MIN_WALL_LENGTH = 5.f;
+
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(6, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
+		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
 		serverPlayer = new Player(Team.SERVER, aiController);
@@ -54,8 +61,10 @@ public class BBTHSimulation extends Simulation {
 		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		tester.walls = graphGen.walls;
 
-		aiController.setPathfinder(pathFinder, graphGen.graph, tester);
+		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
+
+		localUnits = new HashSet<Unit>();
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -77,18 +86,22 @@ public class BBTHSimulation extends Simulation {
 	}
 
 	@Override
-	protected void simulateTapDown(float x, float y, boolean isServer,
-			boolean isHold, boolean isOnBeat) {
+	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-		player.startWall(x, y);
-		player.spawnUnit(x, y);
+
+		if (isHold) {
+			player.startWall(x, y);
+		} else {
+			player.spawnUnit(x, y);
+		}
 	}
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
-		
-		if (!player.settingWall()) return;
+
+		if (!player.settingWall())
+			return;
 		player.updateWall(x, y);
 	}
 
@@ -96,8 +109,13 @@ public class BBTHSimulation extends Simulation {
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
-		if (!player.settingWall()) return;
+		if (!player.settingWall())
+			return;
 		Wall w = player.endWall(x, y);
+
+		// // insanity check--the below should never do anything
+		if (w == null)
+			return;
 
 		graphGen.walls.add(w);
 		graphGen.compute();
@@ -115,9 +133,26 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
+		accel.clearUnits();
+		accel.insertUnits(serverPlayer.units);
+		accel.insertUnits(clientPlayer.units);
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
+		RectF sr = serverPlayer.base.getRect();
+		RectF cr = clientPlayer.base.getRect();
+
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.CLIENT)
+				serverPlayer.adjustHealth(-10);
+		}
+
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.SERVER)
+				clientPlayer.adjustHealth(-10);
+		}
 	}
 
 	public void draw(Canvas canvas) {
