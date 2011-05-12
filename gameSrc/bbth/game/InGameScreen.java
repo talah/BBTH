@@ -32,11 +32,15 @@ public class InGameScreen extends UIScrollView {
 	private ParticleSystem particles;
 	private Paint paint, serverHealthPaint, clientHealthPaint;
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
-	private Timer entireUpdateTimer = new Timer();
-	private Timer drawTimer = new Timer();
-	private Timer beatTrackTimer = new Timer();
-	private Timer particleUpdateTimer = new Timer();
 	private static final float HEALTHBAR_HEIGHT = 10;
+
+	private Timer entireUpdateTimer = new Timer();
+	private Timer simUpdateTimer = new Timer();
+	private Timer particleUpdateTimer = new Timer();
+	private Timer entireDrawTimer = new Timer();
+	private Timer drawParticleTimer = new Timer();
+	private Timer drawSimTimer = new Timer();
+	private Timer drawUITimer = new Timer();
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
@@ -106,12 +110,14 @@ public class InGameScreen extends UIScrollView {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		drawTimer.start();
+		entireDrawTimer.start();
 		super.onDraw(canvas);
 
 		// Draw the game
 		canvas.translate(-this.pos_x, -this.pos_y);
+		drawSimTimer.start();
 		sim.draw(canvas);
+		drawSimTimer.stop();
 
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
@@ -120,9 +126,12 @@ public class InGameScreen extends UIScrollView {
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
+		drawParticleTimer.start();
 		particles.draw(canvas, paint);
+		drawParticleTimer.stop();
 		canvas.translate(this.pos_x, this.pos_y);
 
+		drawUITimer.start();
 		// Overlay the beat track
 		beatTrack.draw(canvas);
 
@@ -148,6 +157,7 @@ public class InGameScreen extends UIScrollView {
 		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
+		drawUITimer.stop();
 
 		// Draw health bars
 		canvas.drawRect(serverHealthRect, serverHealthPaint);
@@ -155,15 +165,21 @@ public class InGameScreen extends UIScrollView {
 
 		// Draw timing information
 		paint.setColor(Color.argb(63, 255, 255, 255));
-		paint.setTextSize(10);
-		int y = 10;
-		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		canvas.drawText("- Accel update: " + sim.accelUpdateTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		canvas.drawText("- AI update: " + sim.aiUpdateTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		canvas.drawText("- Beat track: " + beatTrackTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		canvas.drawText("- Particles: " + particleUpdateTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		canvas.drawText("Entire draw: " + drawTimer.getMilliseconds() + " ms", 30, y += 15, paint);
-		drawTimer.stop();
+		paint.setTextSize(8);
+		int x = 50;
+		int y = 20;
+		int jump = 11;
+		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("    - Accel tick: " + sim.accelTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Particles: " + particleUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+		entireDrawTimer.stop();
 	}
 
 	@Override
@@ -180,7 +196,9 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Update the game
+		simUpdateTimer.start();
 		sim.onUpdate(seconds);
+		simUpdateTimer.stop();
 
 		// Update healths
 		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
@@ -189,18 +207,16 @@ public class InGameScreen extends UIScrollView {
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
-			this.nextScreen = BBTHGame.LOSE_SCREEN;
+			// this.nextScreen = BBTHGame.LOSE_SCREEN;
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
-			this.nextScreen = BBTHGame.WIN_SCREEN;
+			// this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
 
 		// Get new beats, yo
-		beatTrackTimer.start();
 		beatTrack.refreshBeats();
-		beatTrackTimer.stop();
 
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();

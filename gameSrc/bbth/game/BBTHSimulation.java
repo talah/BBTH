@@ -36,8 +36,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private Paint paint = new Paint();
 	private Bag<Unit> cachedUnitBag = new Bag<Unit>();
 	private HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
-	public Timer accelUpdateTimer = new Timer();
-	public Timer aiUpdateTimer = new Timer();
+	public Timer accelTickTimer = new Timer();
+	public Timer aiTickTimer = new Timer();
+	public Timer entireTickTimer = new Timer();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -48,10 +49,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float UBER_UNIT_THRESHOLD = 10;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
-		// 6 fine timesteps per coarse timestep
+		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
-		super(6, 0.1f, 2, protocol, isServer);
+		super(3, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -154,20 +155,21 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
+		entireTickTimer.start();
 		timestep++;
 
 		// update acceleration data structure
-		accelUpdateTimer.start();
+		accelTickTimer.start();
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
-		accelUpdateTimer.stop();
+		accelTickTimer.stop();
 
-		aiUpdateTimer.start();
+		aiTickTimer.start();
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
-		aiUpdateTimer.stop();
+		aiTickTimer.stop();
 
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
@@ -181,6 +183,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			if (u.getTeam() == Team.SERVER)
 				clientPlayer.adjustHealth(-10);
 		}
+		entireTickTimer.stop();
 	}
 
 	private void drawGrid(Canvas canvas) {
