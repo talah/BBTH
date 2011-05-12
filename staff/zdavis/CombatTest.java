@@ -9,6 +9,7 @@ import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
 import bbth.engine.fastgraph.*;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.*;
 import bbth.game.*;
 import bbth.game.ai.AIController;
@@ -28,6 +29,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
 	private GridAcceleration accel = new GridAcceleration(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
+	private ParticleSystem particleSystem = new ParticleSystem(100);
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -96,7 +98,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	}
 	
 	private void spawnUnit(UnitType unitType, Team team) {
-		Unit unit = unitType.createUnit(this, team, team == Team.SERVER ? redPaint : bluePaint);
+		Unit unit = unitType.createUnit(this, team, team == Team.SERVER ? redPaint : bluePaint, particleSystem);
 		
 		switch (team) {
 		case SERVER:
@@ -141,7 +143,6 @@ public class CombatTest extends GameScreen implements UnitManager {
 		accel.insertUnits(m_controller.getUnits());
 		//******** SETUP FOR AI *******//
 		
-		// do NOT precache size
 		for (int i=0; i < units.size(); ++i) {
 			Unit unit = units.get(i);
 			unit.update(seconds);
@@ -150,14 +151,24 @@ public class CombatTest extends GameScreen implements UnitManager {
 		while (!unitsToRemove.isEmpty()) {
 			units.remove(unitsToRemove.removeLast());
 		}
+		
+		particleSystem.tick(seconds);
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		for (int i = 0; i < units.size(); i++) {
 			Unit ent = units.get(i);
-			
-			ent.draw(canvas);
+			ent.drawChassis(canvas);
+		}
+		for (int i = 0; i < units.size(); i++) {
+			Unit ent = units.get(i);
+			ent.drawEffects(canvas);
+		}
+		particleSystem.draw(canvas, greenPaint);
+		for (int i = 0; i < units.size(); i++) {
+			Unit ent = units.get(i);
+			ent.drawHealthBar(canvas);
 		}
 		
 		int size = m_graph_gen.walls.size();
