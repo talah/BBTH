@@ -3,13 +3,12 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
@@ -46,7 +45,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 	public ComboCircle combo_circle;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
+			LockStepProtocol protocol) {
 		super(null);
 
 		this.team = playerTeam;
@@ -73,7 +73,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
 
-		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT);
+		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT);
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
@@ -99,9 +100,13 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
-		serverHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
-		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
+		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2
+				+ HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT
+				- HEALTHBAR_HEIGHT);
+		serverHealthRect = new RectF(minimapRect.left, minimapRect.top
+				- HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom,
+				minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -126,7 +131,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+					currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
@@ -161,9 +167,11 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				BBTHSimulation.GAME_HEIGHT, paint);
 		paint.setColor(Color.WHITE);
-		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
+				BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
 		drawUITimer.stop();
@@ -178,17 +186,35 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		int x = 50;
 		int y = 20;
 		int jump = 11;
-		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
-		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds()
+				+ " ms", x, y += jump, paint);
+		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
+				+ " ms", x, y += jump, paint);
+		canvas.drawText(
+				"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
+						+ " ms", x, y += jump, paint);
+		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds()
+				+ " ms", x, y += jump, paint);
+		canvas.drawText(
+				"      - Controller: "
+						+ sim.aiControllerTimer.getMilliseconds() + " ms", x,
+				y += jump, paint);
+		canvas.drawText(
+				"      - Server player: "
+						+ sim.serverPlayerTimer.getMilliseconds() + " ms", x,
+				y += jump, paint);
+		canvas.drawText(
+				"      - Client player: "
+						+ sim.clientPlayerTimer.getMilliseconds() + " ms", x,
+				y += jump, paint);
+		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
+				+ " ms", x, y += jump * 2, paint);
+		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x,
+				y += jump, paint);
+		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds()
+				+ " ms", x, y += jump, paint);
+		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x,
+				y += jump, paint);
 		entireDrawTimer.stop();
 	}
 
@@ -211,8 +237,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		simUpdateTimer.stop();
 
 		// Update healths
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
+				minimapRect.right - 1, sim.localPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
+				minimapRect.right - 1, sim.remotePlayer.getHealth());
 
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
@@ -231,7 +259,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
+					- BBTHGame.HEIGHT / 2);
 		}
 
 		// Shinies
@@ -265,9 +294,14 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// Update player combos.
 		if (isOnBeat) {
 			if (beatTrack.getCombo() >= BBTHSimulation.UBER_CIRCLE_THRESHOLD) {
-				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD * beatTrack.getCombo() + BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
-				setComboCircle(MathUtils.randInRange(pos_x + (100 + radius), pos_x + BBTHGame.WIDTH - (100 + radius)),
-						MathUtils.randInRange(pos_y + (100 + radius), pos_y + BBTHGame.HEIGHT - (100 + radius)), radius);
+				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD
+						* beatTrack.getCombo()
+						+ BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
+				setComboCircle(
+						MathUtils.randInRange(pos_x + (100 + radius), pos_x
+								+ BBTHGame.WIDTH - (100 + radius)),
+						MathUtils.randInRange(pos_y + (100 + radius), pos_y
+								+ BBTHGame.HEIGHT - (100 + radius)), radius);
 			}
 		} else {
 			clearComboCircle();
@@ -300,19 +334,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		if (currentWall != null) {
 			currentWall.b.set(worldX, worldY);
 			currentWall.updateLength();
+
 			if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
-				// Spawn particles
-				int numParticles = 40;
-
-				for (int i = 0; i < numParticles; i++) {
-					float posX = currentWall.a.x * i / numParticles + currentWall.b.x * (numParticles - i) / numParticles;
-					float posY = currentWall.a.y * i / numParticles + currentWall.b.y * (numParticles - i) / numParticles;
-					float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-					float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
-					float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-
-					particles.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(posX, posY).color(team.getRandomShade());
-				}
+				sim.generateParticlesForWall(currentWall, this.team);
 			}
 
 			currentWall = null;
@@ -343,13 +367,16 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		}
 	}
 
-	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
+	public void setComboCircle(float center_x, float center_y,
+			float _uber_circle_radius) {
 		this.combo_circle.setPosition(center_x, center_y);
 		this.combo_circle.radius = _uber_circle_radius;
 	}
 
-	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
-		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
+	public void setComboCircle(PointF _uber_circle_center,
+			float _uber_circle_radius) {
+		setComboCircle(_uber_circle_center.x, _uber_circle_center.y,
+				_uber_circle_radius);
 	}
 
 	public void clearComboCircle() {

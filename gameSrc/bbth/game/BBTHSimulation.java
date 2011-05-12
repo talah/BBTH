@@ -169,7 +169,31 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (w == null)
 			return;
 
+		if (player == remotePlayer) {
+			this.generateParticlesForWall(w, player.getTeam());
+		}
+
 		addWall(w);
+	}
+
+	public void generateParticlesForWall(Wall wall, Team team) {
+		int numParticles = 40;
+
+		for (int i = 0; i < numParticles; i++) {
+			float posX = wall.a.x * i / numParticles + wall.b.x
+					* (numParticles - i) / numParticles;
+			float posY = wall.a.y * i / numParticles + wall.b.y
+					* (numParticles - i) / numParticles;
+			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+			float xVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.sin(angle);
+
+			PARTICLES.createParticle().circle().velocity(xVel, yVel)
+					.shrink(0.1f, 0.15f).radius(3.0f).position(posX, posY)
+					.color(team.getRandomShade());
+		}
 	}
 
 	private void addWall(Wall wall) {

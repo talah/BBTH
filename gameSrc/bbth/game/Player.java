@@ -71,6 +71,10 @@ public class Player {
 		walls = new ArrayList<WallUnit>();
 	}
 
+	public Team getTeam() {
+		return this.team;
+	}
+	
 	public boolean settingWall() {
 		return currentWall != null;
 	}
