@@ -3,11 +3,11 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
@@ -37,6 +37,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
 	private static final float HEALTHBAR_HEIGHT = 10;
 
+	private static final int SNAP_TO_MOST_ADVANCED = 0;
+	private static final int USER_SCROLLS_ON_MINIMAP = 1;
+	private int cameraInteraction = USER_SCROLLS_ON_MINIMAP;
+
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
@@ -45,6 +49,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private Timer drawUITimer = new Timer();
 
 	public ComboCircle combo_circle;
+	private boolean userScrolling;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
@@ -131,9 +136,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setStrokeCap(Cap.BUTT);
 
 		drawParticleTimer.start();
-
 		particles.draw(canvas, paint);
-
 		drawParticleTimer.stop();
 
 		combo_circle.onDraw(canvas);
@@ -217,21 +220,23 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
-			// this.nextScreen = BBTHGame.LOSE_SCREEN;
+			this.nextScreen = BBTHGame.LOSE_SCREEN;
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
-			// this.nextScreen = BBTHGame.WIN_SCREEN;
+			this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
 
 		// Get new beats, yo
 		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
-		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
-		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+		if (cameraInteraction == SNAP_TO_MOST_ADVANCED) {
+			Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
+			if (mostAdvanced != null) {
+				this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
+			}
 		}
 
 		// Shinies
@@ -239,9 +244,20 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		entireUpdateTimer.stop();
 	}
 
+	private void moveCamera(float x, float y) {
+		float max_pos_y = BBTHSimulation.GAME_HEIGHT - BBTHGame.HEIGHT;
+		pos_y = MathUtils.clamp(0, max_pos_y, max_pos_y * (y - minimapRect.top) / minimapRect.height());
+	}
+
 	@Override
 	public void onTouchDown(float x, float y) {
-		super.onTouchDown(x, y);
+		if (cameraInteraction == USER_SCROLLS_ON_MINIMAP) {
+			if (minimapRect.contains(x, y)) {
+				moveCamera(x, y);
+				userScrolling = true;
+				return;
+			}
+		}
 
 		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 		if (unitType >= 0) {
@@ -278,7 +294,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 	@Override
 	public void onTouchMove(float x, float y) {
-		super.onTouchMove(x, y);
+		if (userScrolling) {
+			moveCamera(x, y);
+			return;
+		}
 
 		float worldX = x + this.pos_x;
 		float worldY = y + this.pos_y;
@@ -292,7 +311,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		super.onTouchUp(x, y);
+		if (userScrolling) {
+			userScrolling = false;
+			return;
+		}
 
 		float worldX = x + this.pos_x;
 		float worldY = y + this.pos_y;

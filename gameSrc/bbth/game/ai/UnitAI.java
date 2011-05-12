@@ -42,9 +42,10 @@ public abstract class UnitAI {
 	public abstract void update(Unit entity, AIController c, FlockRulesCalculator flock);
 
 	protected void calculateFlocking(Unit entity, AIController c, FlockRulesCalculator flock, PointF result) {
+		// flocking, we will miss you but you're just too slow T_T
 		result.x = 0;
 		result.y = 0;
-
+		/*
 		// Calculate flocking.
 		flock.getCohesionComponent(entity, m_result);
 
@@ -63,7 +64,7 @@ public abstract class UnitAI {
 
 		result.x /= 3;
 		result.y /= 3;
-
+		*/
 		return;
 	}
 
