@@ -29,7 +29,7 @@ public class BBTHGame extends Game {
 //				GameActivity.instance, new LockStepProtocol()),
 //				Song.DONKEY_KONG, new LockStepProtocol());
 		
-		currentScreen = SETUP_SCREEN;
+		currentScreen = TITLE_SCREEN;
 	}
 	
 	@Override
