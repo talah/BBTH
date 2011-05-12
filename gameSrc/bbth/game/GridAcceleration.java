@@ -4,25 +4,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import bbth.game.GridAcceleration.HasPosition;
+import bbth.engine.fastgraph.Wall;
+import bbth.game.units.Unit;
 
-public class GridAcceleration<T extends HasPosition> {
-
-	public static interface HasPosition {
-		public float getX();
-
-		public float getY();
-	}
-
-	private static class Cell<T> {
-		public ArrayList<T> entities = new ArrayList<T>();
+public class GridAcceleration {
+	private static class Cell {
+		public ArrayList<Unit> units = new ArrayList<Unit>();
+		public ArrayList<Wall> walls = new ArrayList<Wall>();
 	}
 
 	private int cellsInX;
 	private int cellsInY;
 	private float cellWidth;
 	private float cellHeight;
-	private ArrayList<Cell<T>> cells = new ArrayList<Cell<T>>();
+	private ArrayList<Cell> cells = new ArrayList<Cell>();
 
 	public GridAcceleration(float width, float height, float spacing) {
 		cellsInX = (int) Math.ceil(width / spacing);
@@ -30,29 +25,51 @@ public class GridAcceleration<T extends HasPosition> {
 		cellWidth = width / cellsInX;
 		cellHeight = height / cellsInY;
 		for (int i = 0, n = cellsInX * cellsInY; i < n; i++) {
-			cells.add(new Cell<T>());
+			cells.add(new Cell());
 		}
 	}
 
-	/**
-	 * Remove all entities.
-	 */
-	public void clear() {
+	public void clearUnits() {
 		for (int i = 0, n = cellsInX * cellsInY; i < n; i++) {
-			cells.get(i).entities.clear();
+			cells.get(i).units.clear();
+		}
+	}
+
+	public void clearWalls() {
+		for (int i = 0, n = cellsInX * cellsInY; i < n; i++) {
+			cells.get(i).walls.clear();
 		}
 	}
 
 	/**
-	 * Adds each entity to exactly one cell. Call this after calling clear()
-	 * when the positions of the entities have changed.
+	 * Adds each unit to exactly one cell. Call this after calling clearUnits()
+	 * when the positions of the units have changed.
 	 */
-	public void insertUnits(List<T> entities) {
-		for (int i = 0, n = entities.size(); i < n; i++) {
-			T entity = entities.get(i);
-			int x = Math.max(0, Math.min(cellsInX - 1, (int) (entity.getX() / cellWidth)));
-			int y = Math.max(0, Math.min(cellsInY - 1, (int) (entity.getY() / cellHeight)));
-			cells.get(x + y * cellsInX).entities.add(entity);
+	public void insertUnits(List<Unit> units) {
+		for (int i = 0, n = units.size(); i < n; i++) {
+			Unit unit = units.get(i);
+			int x = Math.max(0, Math.min(cellsInX - 1, (int) (unit.getX() / cellWidth)));
+			int y = Math.max(0, Math.min(cellsInY - 1, (int) (unit.getY() / cellHeight)));
+			cells.get(x + y * cellsInX).units.add(unit);
+		}
+	}
+
+	/**
+	 * Adds each wall to all cells in the axis-aligned bounding box. Call this
+	 * after calling clearWalls() when the positions of the walls have changed.
+	 */
+	public void insertWalls(List<Wall> walls) {
+		for (int i = 0, n = walls.size(); i < n; i++) {
+			Wall wall = walls.get(i);
+			int xmin = Math.max(0, (int) (wall.getMinX() / cellWidth));
+			int ymin = Math.max(0, (int) (wall.getMinY() / cellHeight));
+			int xmax = Math.min(cellsInX - 1, (int) (wall.getMaxX() / cellWidth));
+			int ymax = Math.min(cellsInY - 1, (int) (wall.getMaxY() / cellHeight));
+			for (int y = ymin; y <= ymax; y++) {
+				for (int x = xmin; x <= xmax; x++) {
+					cells.get(x + y * cellsInX).walls.add(wall);
+				}
+			}
 		}
 	}
 
@@ -61,22 +78,22 @@ public class GridAcceleration<T extends HasPosition> {
 	 * bounding box inside the given set (they might be slightly outside,
 	 * however). This will remove all existing entities in the set first.
 	 */
-	public void getEntitiesInAABB(float xmin_, float ymin_, float xmax_, float ymax_, HashSet<T> entities) {
+	public void getUnitsInAABB(float xmin_, float ymin_, float xmax_, float ymax_, HashSet<Unit> units) {
 		// Convert from game space to grid space
 		int xmin = Math.max(0, (int) (xmin_ / cellWidth));
 		int ymin = Math.max(0, (int) (ymin_ / cellHeight));
 		int xmax = Math.min(cellsInX - 1, (int) (xmax_ / cellWidth));
 		int ymax = Math.min(cellsInY - 1, (int) (ymax_ / cellHeight));
 
-		// Copy entities from all cells in the AABB into moveables
-		entities.clear();
+		// Copy units from all cells in the AABB into units
+		units.clear();
 		for (int y = ymin; y <= ymax; y++) {
 			for (int x = xmin; x <= xmax; x++) {
 				// Manually iterate over the collection for performance (instead
 				// of using addAll)
-				ArrayList<T> toAdd = cells.get(x + y * cellsInX).entities;
+				ArrayList<Unit> toAdd = cells.get(x + y * cellsInX).units;
 				for (int j = 0; j < toAdd.size(); j++) {
-					entities.add(toAdd.get(j));
+					units.add(toAdd.get(j));
 				}
 			}
 		}

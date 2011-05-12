@@ -26,7 +26,7 @@ public class BBTHSimulation extends Simulation {
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
 	private SimpleLineOfSightTester tester;
-	private GridAcceleration<Unit> accel;
+	private GridAcceleration accel;
 	private HashSet<Unit> localUnits;
 
 	// This is the virtual size of the game
@@ -35,16 +35,15 @@ public class BBTHSimulation extends Simulation {
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
-	
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
-			boolean isServer) {
+
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(6, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
-		accel = new GridAcceleration<Unit>(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
+		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
 		serverPlayer = new Player(Team.SERVER, aiController);
@@ -64,7 +63,7 @@ public class BBTHSimulation extends Simulation {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);
-		
+
 		localUnits = new HashSet<Unit>();
 	}
 
@@ -134,7 +133,7 @@ public class BBTHSimulation extends Simulation {
 	protected void update(float seconds) {
 		timestep++;
 
-		accel.clear();
+		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
 		aiController.update();
@@ -142,18 +141,16 @@ public class BBTHSimulation extends Simulation {
 		clientPlayer.update(seconds);
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
-		
-		accel.getEntitiesInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
-		for(Unit u : localUnits)
-		{
-			if(u.getTeam() == Team.CLIENT)
+
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.CLIENT)
 				serverPlayer.adjustHealth(-10);
 		}
-		
-		accel.getEntitiesInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
-		for(Unit u : localUnits)
-		{
-			if(u.getTeam() == Team.SERVER)
+
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, localUnits);
+		for (Unit u : localUnits) {
+			if (u.getTeam() == Team.SERVER)
 				clientPlayer.adjustHealth(-10);
 		}
 	}

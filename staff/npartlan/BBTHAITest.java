@@ -51,7 +51,7 @@ public class BBTHAITest extends GameScreen {
 
 	private long m_time_since_step;
 
-	private GridAcceleration<Unit> m_accel;
+	private GridAcceleration m_accel;
 	
 	public BBTHAITest(BBTHGame bbthGame) {
 		m_parent = bbthGame;
@@ -74,7 +74,7 @@ public class BBTHAITest extends GameScreen {
 		
 		//******** SETUP FOR AI *******//
 		m_controller = new AIController();
-		m_accel = new GridAcceleration<Unit>(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
+		m_accel = new GridAcceleration(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
 		//******** SETUP FOR AI *******//
 		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, m_accel);
 
@@ -119,7 +119,7 @@ public class BBTHAITest extends GameScreen {
 	
 	private void randomizeEntities() {
 		for (int i = 0; i < 10; i++) {
-			Unit e = new AttackingUnit(Team.SERVER, m_paint_1);
+			Unit e = new DefendingUnit(Team.SERVER, m_paint_1);
 			e.setTeam(Team.SERVER);
 			e.setPosition(0, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -157,7 +157,7 @@ public class BBTHAITest extends GameScreen {
 		}
 		
 		//******** SETUP FOR AI *******//
-		m_accel.clear();
+		m_accel.clearUnits();
 		m_accel.insertUnits(m_controller.getUnits());
 		m_controller.update();
 		//******** SETUP FOR AI *******//
@@ -272,7 +272,7 @@ public class BBTHAITest extends GameScreen {
 		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
 		for (PointF p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p)) {
+			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
 				bestdist = dist;
 			}
