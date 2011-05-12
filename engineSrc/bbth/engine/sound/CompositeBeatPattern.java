@@ -1,5 +1,8 @@
 package bbth.engine.sound;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A beat pattern composed of a sequence of smaller beat patterns
  * @author jardini
@@ -15,17 +18,23 @@ public class CompositeBeatPattern implements BeatPattern {
 	public CompositeBeatPattern(BeatPattern[] patterns) {
 		assert(patterns.length > 1);
 		
-		_patterns = patterns;
+		_patterns = new BeatPattern[patterns.length];
 		
 		// set indices/offsets
 		_endIndices = new int[patterns.length];
 		int duration = 0, size = 0;
+		List<Beat> beats = new ArrayList<Beat>();
 		for (int i = 0; i < patterns.length; ++i) {
+			beats.clear();
 			BeatPattern pattern = patterns[i];
 			// order important within this loop
 			for (int beat = 0; beat < pattern.size(); ++beat) {
-				pattern.getBeat(beat)._startTime += duration;
+				Beat oldBeat = pattern.getBeat(beat);
+				Beat newBeat = new Beat(oldBeat.type, oldBeat.duration);
+				newBeat._startTime = oldBeat._startTime + duration;
+				beats.add(newBeat);
 			}
+			_patterns[i] = new SimpleBeatPattern(duration, beats);
 			duration += pattern.getDuration();
 			size += pattern.size();
 			_endIndices[i] = size;

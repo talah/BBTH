@@ -15,24 +15,14 @@ public class SimpleBeatPattern implements BeatPattern {
 	private int _duration;
 	
 	// create a pattern from an list of beats and an offset
-	public SimpleBeatPattern(List<Beat> beats) {
+	public SimpleBeatPattern(int offset, List<Beat> beats) {
 		_beats = new Beat[beats.size()];	
 		_duration = 0;
 		for (int i = 0; i < beats.size(); ++i) {
-			_beats[i] = beats.get(i);
-			_beats[i]._startTime = _duration;
+			_beats[i] = new Beat(beats.get(i).type, beats.get(i).duration);
+			_beats[i]._startTime = offset + _duration;
 			_duration += _beats[i].duration;
 		}
-	}
-	
-	// create a pattern from an array of beats and an offset
-	public SimpleBeatPattern(Beat []beats) {
-		_duration = 0;
-		for (int i = 0; i < beats.length; ++i) {
-			beats[i]._startTime = _duration;
-			_duration += beats[i].duration;
-		}
-		_beats = beats;
 	}
 	
 	// offset, beat length and duration in milliseconds
