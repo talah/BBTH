@@ -136,7 +136,7 @@ public class BBTHSimulation extends Simulation {
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
-//		aiController.update();
+		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
 		RectF sr = serverPlayer.base.getRect();
