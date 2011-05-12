@@ -8,6 +8,30 @@ import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
+	public static class DisconnectScreen extends GameStatusMessageScreen {
+		public DisconnectScreen() {
+			super("You have been disconnected.", null);
+		}
+	}
+	
+	public static class WinScreen extends GameStatusMessageScreen {
+		public WinScreen() {
+			super("Congratulations! You win!", null);
+		}
+	}
+	
+	public static class LoseScreen extends GameStatusMessageScreen {
+		public LoseScreen() {
+			super("Oh noes, you lost the game :(", null);
+		}
+	}
+	
+	public static class TieScreen extends GameStatusMessageScreen {
+		public TieScreen() {
+			super("It's a tie!", null);
+		}
+	}
+	
 	private UILabel message;
 	private UIButton playAgain, quit;
 

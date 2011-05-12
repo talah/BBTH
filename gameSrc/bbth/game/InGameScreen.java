@@ -201,7 +201,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// Stop the music if we disconnect
 		if (bluetooth.getState() != State.CONNECTED) {
 			beatTrack.stopMusic();
-			nextScreen = BBTHGame.DISCONNECT_SCREEN;
+			nextScreen = new GameStatusMessageScreen.DisconnectScreen();
 		}
 
 		// Update the game
@@ -323,11 +323,11 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		float theirHealth = sim.remotePlayer.getHealth();
 		
 		if (myHealth < theirHealth) {
-			nextScreen = BBTHGame.LOSE_SCREEN; 
+			nextScreen = new GameStatusMessageScreen.LoseScreen(); 
 		} else if (myHealth > theirHealth) {
-			nextScreen = BBTHGame.WIN_SCREEN;
+			nextScreen = new GameStatusMessageScreen.WinScreen();
 		} else {
-			nextScreen = BBTHGame.TIE_SCREEN;
+			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
 	}
 }
