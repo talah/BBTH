@@ -100,6 +100,10 @@ public class UIButton extends UIControl {
 
 	}
 
+	public void setButtonDelegate(UIButtonDelegate delegate) {
+		this.delegate = delegate;
+	}
+	
 	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
         super.setBounds(left, top, right, bottom);

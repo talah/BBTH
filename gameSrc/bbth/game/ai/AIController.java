@@ -1,18 +1,14 @@
 package bbth.game.ai;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
-import bbth.engine.ai.ConnectedGraph;
-import bbth.engine.ai.FlockRulesCalculator;
-import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.LineOfSightTester;
-import bbth.game.BBTHGame;
-import bbth.game.GridAcceleration;
-import bbth.game.Team;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitType;
+import android.graphics.PointF;
+import android.util.FloatMath;
+import bbth.engine.ai.*;
+import bbth.engine.fastgraph.*;
+import bbth.engine.util.MathUtils;
+import bbth.game.*;
+import bbth.game.units.*;
 
 public class AIController {
 	ArrayList<Unit> m_units;
@@ -25,13 +21,23 @@ public class AIController {
 	UberAI m_uber;
 
 	Team[] m_teams;
-
-	private float m_fraction_to_update = 0.99f;
-
+		
+	private float m_fraction_to_update = 0.30f;
+	private LineOfSightTester m_tester;
+	
+	PointF m_center_stick;
+	PointF m_wall;
+	PointF m_wall_to_player;
+	PointF m_vec_result;
+	
 	public AIController() {
 		m_defensive = new DefensiveAI();
 		m_offensive = new OffensiveAI();
-		m_uber = new UberAI();
+		m_uber = new UberAI();		
+		m_center_stick = new PointF();
+		m_wall = new PointF();
+		m_wall_to_player = new PointF();
+		m_vec_result = new PointF();
 
 		m_units = new ArrayList<Unit>();
 		m_flocks = new EnumMap<Team, FlockRulesCalculator>(Team.class);
@@ -47,6 +53,7 @@ public class AIController {
 	}
 
 	public void setPathfinder(Pathfinder pathfinder, ConnectedGraph graph, LineOfSightTester tester, GridAcceleration accel) {
+		m_tester = tester;
 		m_defensive.setPathfinder(pathfinder, graph, tester, accel);
 		m_offensive.setPathfinder(pathfinder, graph, tester, accel);
 		m_uber.setPathfinder(pathfinder, graph, tester, accel);
@@ -119,6 +126,112 @@ public class AIController {
 		} else {
 			m_last_updated.put(team, i);
 		}
+		
+		if (m_tester != null) {
+			// Avoid letting the entities run into walls, if possible.
+			for (int c = 0; c < size; c++) {
+				Unit entity = entities.get(c);
+	
+				float start_x = entity.getX();
+				float start_y = entity.getY();
+				// Check if we are going to run into a wall:
+				float heading = entity.getHeading();
+				float startheading = heading;
+				boolean clear = false;
+				int tries = 0;
+				while (!clear) {
+					if (tries > 100) {
+						heading = startheading + MathUtils.PI;
+						break;
+					}
+					
+					float s_x = start_x + 3.0f * FloatMath.cos(heading);
+					float s_y = start_y + 3.0f * FloatMath.sin(heading);
+					
+					float stickoffsetx = 6.0f * FloatMath.cos(heading - MathUtils.PI/2.0f);
+					float stickoffsety = 6.0f * FloatMath.sin(heading - MathUtils.PI/2.0f);
+					
+					float leftx1 = s_x + stickoffsetx;
+					float lefty1 = s_y + stickoffsety;
+					float leftx2 = leftx1 + 12.0f * FloatMath.cos(heading + MathUtils.PI/6.0f);
+					float lefty2 = lefty1 + 12.0f * FloatMath.sin(heading + MathUtils.PI/6.0f);
+					
+					float rightx1 = s_x - stickoffsetx;
+					float righty1 = s_y - stickoffsety;
+					float rightx2 = rightx1 + 12.0f * FloatMath.cos(heading - MathUtils.PI/6.0f);
+					float righty2 = righty1 + 12.0f * FloatMath.sin(heading - MathUtils.PI/6.0f);
+					
+					Wall result = m_tester.isLineOfSightClear(rightx1, righty1, rightx2, righty2);
+					Wall result2 = m_tester.isLineOfSightClear(leftx1, lefty1, leftx2, lefty2);
+					
+					if (result == null && result2 == null) {
+						clear = true;
+					} else {
+						if (result != null) {
+							getTurnVector(entity, result, heading);
+						} else if (result2 != null) {
+							getTurnVector(entity, result2, heading);
+						}
+												
+						// If we have no offset vector, any direction will do.
+						if (m_vec_result.x == 0 && m_vec_result.y == 0) {
+							m_vec_result.x = 0.01f;
+							m_vec_result.y = 0.01f;
+						}
+						
+						float otherangle = MathUtils.getAngle(0, 0, m_vec_result.x, m_vec_result.y);
+						if (MathUtils.normalizeAngle(otherangle, startheading) - startheading > 0) {
+							heading += .08f;
+						} else {
+							heading -= .08f;
+						}
+						
+						tries++;
+					}
+				}
+				
+				entity.setVelocity(entity.getSpeed(), heading);
+			}
+		}
+	}
+
+	private PointF getTurnVector(Unit entity, Wall result, float heading) {
+		float start_x = entity.getX();
+		float start_y = entity.getY();
+		
+		m_center_stick.x = 15.0f * FloatMath.cos(heading);
+		m_center_stick.y = 15.0f * FloatMath.sin(heading);
+		
+		m_wall.x = result.b.x - result.a.x;
+		m_wall.y = result.b.y - result.a.y;
+		m_wall_to_player.x = start_x - result.a.x;
+		m_wall_to_player.y = start_y - result.a.y;
+		
+		// Project the center stick onto the wall.
+		MathUtils.getProjection(m_wall, m_center_stick, m_vec_result);
+		
+		// Normalize the result.
+		/*float len = FloatMath.sqrt(m_vec_result.x * m_vec_result.x + m_vec_result.y * m_vec_result.y);
+		
+		if (len == 0) {
+			m_vec_result.x = 0;
+			m_vec_result.y = 0;
+			return m_vec_result;
+		}
+		
+		// Find the projection of the vector from one of the endpoints on the normal of the wall.
+		float dist = MathUtils.dot(result.norm, m_wall_to_player);
+		
+		// Get the right length for the resulting vector.
+		float sticklen = FloatMath.sqrt(15.0f * 15.0f - dist * dist);
+		m_vec_result.x *= sticklen / len;
+		m_vec_result.y *= sticklen / len;
+		
+		// Add the result vector to the scaled normal.
+		m_vec_result.x += result.norm.x * dist * -1.0f;
+		m_vec_result.y += result.norm.y * dist * -1.0f;*/
+		
+		return m_vec_result;
 	}
 
 	public float getWidth() {

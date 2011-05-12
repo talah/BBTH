@@ -16,6 +16,7 @@ import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 /**
@@ -33,16 +34,20 @@ public class Player {
 	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
+	private float _combo;
 
-	private ArrayList<Wall> walls;
+	public ArrayList<Wall> walls;
 	private Wall currentWall;
+	private UnitManager unitManager;
 
-	public Player(Team team, AIController controller) {
+	public Player(Team team, AIController controller, UnitManager unitManager) {
 		this.team = team;
+		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
 		_health = 100;
+		setCombo(0);
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
@@ -67,7 +72,7 @@ public class Player {
 		this.aiController = controller;
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
-		selector = new UnitSelector(team);
+		selector = new UnitSelector(team, unitManager);
 
 		walls = new ArrayList<Wall>();
 	}
@@ -75,7 +80,7 @@ public class Player {
 	public boolean settingWall() {
 		return currentWall != null;
 	}
-	
+
 	public void startWall(float x, float y) {
 		currentWall = new Wall(x, y, x, y);
 	}
@@ -86,12 +91,12 @@ public class Player {
 
 	public Wall endWall(float x, float y) {
 		currentWall.b.set(x, y);
-		
+
 		currentWall.updateLength();
 		if (currentWall.length < BBTHSimulation.MIN_WALL_LENGTH) {
 			return null;
 		}
-		
+
 		walls.add(currentWall);
 
 		Wall toReturn = currentWall;
@@ -110,7 +115,7 @@ public class Player {
 	}
 
 	public void spawnUnit(float x, float y) {
-		for (int i = 0; i < 40; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.cos(angle);
@@ -121,7 +126,13 @@ public class Player {
 					.color(team.getRandomShade());
 		}
 
-		Unit newUnit = selector.getUnitType().createUnit(team, paint);
+		Unit newUnit = null;
+		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint);
+		} else {
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+		}
+		
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
 		// MathUtils.randInRange(0, MathUtils.TWO_PI));
@@ -140,14 +151,13 @@ public class Player {
 		Unit toReturn = null;
 
 		for (int i = 0; i < units.size(); i++) {
-			Unit curr_unit = units.get(i);
-
+			Unit currUnit = units.get(i);
 			if (toReturn == null
-					|| (team == Team.SERVER && curr_unit.getY() > toReturn
+					|| (team == Team.SERVER && currUnit.getY() > toReturn
 							.getY())
-					|| (team == Team.CLIENT && curr_unit.getY() < toReturn
+					|| (team == Team.CLIENT && currUnit.getY() < toReturn
 							.getY())) {
-				toReturn = curr_unit;
+				toReturn = currUnit;
 			}
 		}
 
@@ -175,6 +185,9 @@ public class Player {
 	}
 
 	public void draw(Canvas canvas) {
+		// Draw bases
+		base.onDraw(canvas);
+
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
@@ -182,12 +195,12 @@ public class Player {
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 
-//		// draw overlay wall
-//		if (currentWall != null) {
-//			paint.setColor(team.getTempWallColor());
-//			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-//					currentWall.b.y, paint);
-//		}
+		// // draw overlay wall
+		// if (currentWall != null) {
+		// paint.setColor(team.getTempWallColor());
+		// canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+		// currentWall.b.y, paint);
+		// }
 
 		// draw units
 		paint.setStyle(Style.STROKE);
@@ -208,7 +221,7 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawForMiniMap(canvas);
 		}
-		
+
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
@@ -216,19 +229,27 @@ public class Player {
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 	}
-	
-	public float getHealth()
-	{
+
+	public float getHealth() {
 		return _health;
 	}
-	
-	public void resetHealth()
-	{
+
+	public void resetHealth() {
 		_health = 100;
 	}
-	
-	public void adjustHealth(float delta)
-	{
+
+	public void adjustHealth(float delta) {
 		_health = MathUtils.clamp(0, 100, _health + delta);
+	}
+
+	public void setCombo(float _combo) {
+		if (_combo < 0) {
+			_combo = 0;
+		}
+		this._combo = _combo;
+	}
+
+	public float getCombo() {
+		return _combo;
 	}
 }

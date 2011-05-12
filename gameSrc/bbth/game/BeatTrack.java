@@ -130,6 +130,7 @@ public class BeatTrack {
 		if (isOnBeat) {
 			soundManager.play(HIT_SOUND_ID);
 			++score;
+			// NOTE: Combos should also be tracked in bbthSimulation
 			++combo;
 			// scoreStr = String.valueOf(score);
 			comboStr = "x" + String.valueOf(combo);

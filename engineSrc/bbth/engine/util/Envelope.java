@@ -116,8 +116,8 @@ public class Envelope {
 	}
 	
 	private void checkLengthOfTime(float lengthOfTime) {
-		if (lengthOfTime < 1)
-			throw new IllegalArgumentException("Length of time must be at least 1");
+		if (lengthOfTime <= 0)
+			throw new IllegalArgumentException("Length of time must be greater than 0");
 	}
 	
 	private double getEndValue() {

@@ -24,14 +24,13 @@ public class FastGraphGenerator {
 	public final ConnectedGraph graph = new ConnectedGraph();
 	public final ArrayList<Wall> walls = new ArrayList<Wall>();
 	public float radius;
-	
-	private float max_x;
-	private float max_y;
 
 	public FastGraphGenerator(float largestEntityRadius, float width, float height) {
 		radius = largestEntityRadius;
-		max_x = width;
-		max_y = height;
+		walls.add(new Wall(0, 0, 0, height));
+		walls.add(new Wall(width, 0, width, height));
+		walls.add(new Wall(0, 0, width, 0));
+		walls.add(new Wall(0, height, width, height));
 	}
 
 	public void compute() {
@@ -55,17 +54,7 @@ public class FastGraphGenerator {
 		Iterator<Edge> iter = edges.iterator();
 		while (iter.hasNext()) {
 			Edge edge = iter.next();
-			
-			if (edge.p1.x < 0 || edge.p1.x > max_x || edge.p1.y < 0 || edge.p1.y > max_y) {
-				iter.remove();
-				continue;
-			}
-			
-			if (edge.p2.x < 0 || edge.p2.x > max_x || edge.p2.y < 0 || edge.p2.y > max_y) {
-				iter.remove();
-				continue;
-			}
-			
+
 			float edgeX = edge.p2.x - edge.p1.x;
 			float edgeY = edge.p2.y - edge.p1.y;
 

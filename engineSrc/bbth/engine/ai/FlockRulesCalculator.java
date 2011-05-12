@@ -3,7 +3,6 @@ package bbth.engine.ai;
 import java.util.ArrayList;
 
 import android.graphics.PointF;
-import android.util.FloatMath;
 import bbth.engine.entity.Movable;
 import bbth.engine.util.MathUtils;
 

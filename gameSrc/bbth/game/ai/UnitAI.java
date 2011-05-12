@@ -134,7 +134,7 @@ public abstract class UnitAI {
 		HashMap<PointF, ArrayList<PointF>> connections = m_map_grid.getGraph();
 		for (PointF p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p)) {
+			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
 				bestdist = dist;
 			}
