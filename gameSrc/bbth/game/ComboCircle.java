@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
+import android.graphics.Paint.Style;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
 
@@ -24,6 +25,7 @@ public class ComboCircle extends UIView {
 		paint.setAntiAlias(true);
 		paint.setColor(team.getUnitColor());
 		paint.setStrokeCap(Cap.ROUND);
+		paint.setStyle(Style.STROKE);
 		
 		radius = -1.f;
 	}

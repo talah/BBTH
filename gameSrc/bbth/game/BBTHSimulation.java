@@ -117,7 +117,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			
 			if (newcombo >= UBER_CIRCLE_THRESHOLD) {
 				float radius = UBER_CIRCLE_SIZE_MOD * newcombo + UBER_CIRCLE_INIT_SIZE;
-				player.setComboCircle(MathUtils.randInRange(radius, BBTHGame.WIDTH-radius), MathUtils.randInRange(radius, BBTHGame.HEIGHT-radius), radius);
+				player.setComboCircle(MathUtils.randInRange(x + radius, x + BBTHGame.WIDTH-radius), MathUtils.randInRange(y + radius, y + BBTHGame.HEIGHT-radius), radius);
 			}
 		} else {
 			player.setCombo(0);
