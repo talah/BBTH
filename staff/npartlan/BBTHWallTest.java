@@ -15,14 +15,16 @@ import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
 import bbth.game.Team;
 import bbth.game.ai.AIController;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 
-public class BBTHWallTest extends GameScreen {
+public class BBTHWallTest extends GameScreen implements UnitManager {
 	
 	Unit m_entity;
 	
@@ -114,7 +116,7 @@ public class BBTHWallTest extends GameScreen {
 		m_paint_3.setTextSize(20);
 		m_paint_3.setAntiAlias(true);
             	
-		m_entity = new DefendingUnit(Team.SERVER, m_paint_1);
+		m_entity = new DefendingUnit(this, Team.SERVER, m_paint_1);
 		m_entity.setTeam(Team.SERVER);
 		m_entity.setPosition(0, 100);
 		m_entity.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -269,5 +271,23 @@ public class BBTHWallTest extends GameScreen {
 	@Override
 	public void onTouchUp(float x, float y) {
 		addWall(new Wall(wall_start_x, wall_start_y, x, y));
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+		// DO NOTHING
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2,
+			float y2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

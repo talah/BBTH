@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
@@ -16,6 +17,7 @@ import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 /**
@@ -33,16 +35,21 @@ public class Player {
 	private ParticleSystem particles;
 	private UnitSelector selector;
 	private float _health;
+	private float _combo;
+	public ComboCircle combo_circle;
 
 	public ArrayList<Wall> walls;
 	private Wall currentWall;
+	private UnitManager unitManager;
 
-	public Player(Team team, AIController controller) {
+	public Player(Team team, AIController controller, UnitManager unitManager) {
 		this.team = team;
+		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
 
 		base = new Base(this, team);
 		_health = 100;
+		setCombo(0);
 
 		paint = new Paint();
 		paint.setStrokeWidth(2.0f);
@@ -63,11 +70,13 @@ public class Player {
 			base.setPosition(0, 0);
 			break;
 		}
+		
+		combo_circle = new ComboCircle(team);
 
 		this.aiController = controller;
 
 		particles = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
-		selector = new UnitSelector(team);
+		selector = new UnitSelector(team, unitManager);
 
 		walls = new ArrayList<Wall>();
 	}
@@ -121,10 +130,12 @@ public class Player {
 					.color(team.getRandomShade());
 		}
 
-		if (true)
-			throw new UnsupportedOperationException("TODO: implement a UnitManager");
-		
-		Unit newUnit = selector.getUnitType().createUnit(null, team, paint);
+		Unit newUnit = null;
+		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint);
+		} else {
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+		}
 		
 		newUnit.setPosition(x, y);
 		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
@@ -201,7 +212,7 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).draw(canvas);
 		}
-
+		
 		// Derp
 		paint.setStyle(Style.FILL);
 		particles.draw(canvas, paint);
@@ -234,4 +245,29 @@ public class Player {
 	public void adjustHealth(float delta) {
 		_health = MathUtils.clamp(0, 100, _health + delta);
 	}
+
+	public void setCombo(float _combo) {
+		if (_combo < 0) {
+			_combo = 0;
+		}
+		this._combo = _combo;
+	}
+
+	public float getCombo() {
+		return _combo;
+	}
+
+	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
+		this.combo_circle.setPosition(center_x, center_y);
+		this.combo_circle.radius = _uber_circle_radius;
+	}
+	
+	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
+		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
+	}
+	
+	public void clearComboCircle() {
+		this.combo_circle.radius = -1.f;
+	}
+
 }

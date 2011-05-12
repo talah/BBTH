@@ -26,7 +26,8 @@ public class Beat {
 	int _startTime;
 	private boolean _tapped;
 
-	private Beat(BeatType beatType, int durationMillis) {
+	// package private
+	Beat(BeatType beatType, int durationMillis) {
 		type = beatType;
 		duration = durationMillis;
 		_startTime = -1;

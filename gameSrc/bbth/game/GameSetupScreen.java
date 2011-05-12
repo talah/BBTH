@@ -37,21 +37,21 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		serverButton.setAnchor(Anchor.CENTER_CENTER);
 		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 25);
 		serverButton.setSize(100, 15);
-		serverButton.delegate = this;
+		serverButton.setButtonDelegate(this);
 		addSubview(serverButton);
 
 		clientButton = new UIButton("Client", null);
 		clientButton.setAnchor(Anchor.CENTER_CENTER);
 		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2);
 		clientButton.setSize(100, 15);
-		clientButton.delegate = this;
+		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
 
 		disconnectButton = new UIButton("Disconnect", null);
 		disconnectButton.setAnchor(Anchor.CENTER_CENTER);
 		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 25);
 		disconnectButton.setSize(100, 15);
-		disconnectButton.delegate = this;
+		disconnectButton.setButtonDelegate(this);
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 

@@ -16,6 +16,7 @@ import bbth.engine.core.GameScreen;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.game.BBTHGame;
 import bbth.game.GridAcceleration;
@@ -23,8 +24,9 @@ import bbth.game.Team;
 import bbth.game.ai.AIController;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 
-public class BBTHAITest extends GameScreen {
+public class BBTHAITest extends GameScreen implements UnitManager {
 	
 	ArrayList<Unit> m_entities;
 	
@@ -118,7 +120,7 @@ public class BBTHAITest extends GameScreen {
 	
 	private void randomizeEntities() {
 		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(Team.SERVER, m_paint_1);
+			Unit e = new DefendingUnit(this, Team.SERVER, m_paint_1);
 			e.setTeam(Team.SERVER);
 			e.setPosition(0, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -131,7 +133,7 @@ public class BBTHAITest extends GameScreen {
 		}
 		
 		for (int i = 0; i < 10; i++) {
-			Unit e = new DefendingUnit(Team.CLIENT, m_paint_0);
+			Unit e = new DefendingUnit(this, Team.CLIENT, m_paint_0);
 			e.setTeam(Team.CLIENT);
 			e.setPosition(BBTHGame.WIDTH, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * m_parent.getHeight());
@@ -287,5 +289,24 @@ public class BBTHAITest extends GameScreen {
 	@Override
 	public void onTouchUp(float x, float y) {
 		addWall(new Wall(wall_start_x, wall_start_y, x, y));
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+		m_controller.removeEntity(unit);
+		m_entities.remove(unit);
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2,
+			float y2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
