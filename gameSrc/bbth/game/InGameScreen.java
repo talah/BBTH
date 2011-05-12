@@ -29,8 +29,8 @@ public class InGameScreen extends UIScrollView {
 	private BeatTrack beatTrack;
 	private Wall currentWall;
 	private ParticleSystem particles;
-	private Paint paint, opponentHealthPaint, healthPaint;
-	private final RectF minimapRect, opponentHealthRect, healthRect;
+	private Paint paint, serverHealthPaint, clientHealthPaint;
+	private final RectF minimapRect, serverHealthRect, clientHealthRect;
 	private final float HEALTHBAR_HEIGHT = 10;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
@@ -42,11 +42,11 @@ public class InGameScreen extends UIScrollView {
 		this.team = playerTeam;
 		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		opponentHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		healthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		
-		healthPaint.setColor(team.getBaseColor());
-		opponentHealthPaint.setColor(team.getOppositeTeam().getBaseColor());
+		serverHealthPaint.setColor(Team.SERVER.getBaseColor());
+		clientHealthPaint.setColor(Team.CLIENT.getBaseColor());
 
 		// Set up the scrolling!
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -81,8 +81,8 @@ public class InGameScreen extends UIScrollView {
 		particles = new ParticleSystem(200, 0.5f);
 
 		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
-		opponentHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
-		healthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
+		serverHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom+HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -141,8 +141,8 @@ public class InGameScreen extends UIScrollView {
 		canvas.restore();
 		
 		//Draw health bars
-		canvas.drawRect(opponentHealthRect, opponentHealthPaint);
-		canvas.drawRect(healthRect, healthPaint);
+		canvas.drawRect(serverHealthRect, serverHealthPaint);
+		canvas.drawRect(clientHealthRect, clientHealthPaint);
 	}
 
 	@Override
@@ -158,8 +158,8 @@ public class InGameScreen extends UIScrollView {
 
 		
 		sim.onUpdate(seconds);
-		healthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
-		opponentHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.remotePlayer.getHealth());
 		
 		beatTrack.refreshBeats();
 
