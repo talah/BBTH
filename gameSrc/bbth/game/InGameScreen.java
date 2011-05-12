@@ -3,6 +3,7 @@ package bbth.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
@@ -42,14 +43,12 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private Timer drawParticleTimer = new Timer();
 	private Timer drawSimTimer = new Timer();
 	private Timer drawUITimer = new Timer();
-
+	
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
-		MathUtils.resetRandom(0);
-
 		this.team = playerTeam;
-
+		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -128,15 +127,11 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setStrokeCap(Cap.BUTT);
 
 		drawParticleTimer.start();
-		
+
 		particles.draw(canvas, paint);
 
 		drawParticleTimer.stop();
-
-		sim.localPlayer.combo_circle.onDraw(canvas);
-		sim.remotePlayer.combo_circle.onDraw(canvas);
 		
-
 		canvas.translate(this.pos_x, this.pos_y);
 
 		drawUITimer.start();
@@ -201,7 +196,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// Stop the music if we disconnect
 		if (bluetooth.getState() != State.CONNECTED) {
 			beatTrack.stopMusic();
-			nextScreen = BBTHGame.DISCONNECT_SCREEN;
+			nextScreen = new GameStatusMessageScreen.DisconnectScreen();
 		}
 
 		// Update the game
@@ -244,7 +239,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 		if (unitType >= 0) {
-			sim.recordCustomEvent(unitType);
+			sim.recordCustomEvent(0, 0, unitType);
 			return;
 		}
 
@@ -321,13 +316,13 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	public void onCompletion(MusicPlayer mp) {
 		float myHealth = sim.localPlayer.getHealth();
 		float theirHealth = sim.remotePlayer.getHealth();
-		
+
 		if (myHealth < theirHealth) {
-			nextScreen = BBTHGame.LOSE_SCREEN; 
+			nextScreen = new GameStatusMessageScreen.LoseScreen();
 		} else if (myHealth > theirHealth) {
-			nextScreen = BBTHGame.WIN_SCREEN;
+			nextScreen = new GameStatusMessageScreen.WinScreen();
 		} else {
-			nextScreen = BBTHGame.TIE_SCREEN;
+			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
 	}
 }

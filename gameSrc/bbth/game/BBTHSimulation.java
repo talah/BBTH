@@ -2,6 +2,7 @@ package bbth.game;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,9 +14,9 @@ import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
-import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
@@ -23,6 +24,15 @@ import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
+	private static final int NUM_PARTICLES = 1000;
+	private static final float PARTICLE_THRESHOLD = 0.5f;
+
+	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+	public static final Paint PARTICLE_PAINT = new Paint();
+	static {
+		PARTICLE_PAINT.setStrokeWidth(2.f);
+	}
+
 	private int timestep;
 	private Team team;
 	public Player localPlayer, remotePlayer;
@@ -43,6 +53,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public Timer aiControllerTimer = new Timer();
 	public Timer serverPlayerTimer = new Timer();
 	public Timer clientPlayerTimer = new Timer();
+	private static final Random random = new Random();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -50,18 +61,22 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
-	
+
 	// Combo constants
 	public static final float UBER_UNIT_THRESHOLD = 10;
 	public static final float UBER_CIRCLE_THRESHOLD = 5;
 	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
-	private static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
+	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
+	public static final int UBER_CIRCLE_TAP = 67;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(3, 0.1f, 2, protocol, isServer);
+
+		// THIS IS IMPORTANT
+		random.setSeed(0);
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -106,24 +121,23 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		return timestep;
 	}
 
+	// Only use BBTHSimulation.randInRange() for things that are supposed to
+	// be synced (not particles!)
+	public static float randInRange(float min, float max) {
+		return (max - min) * random.nextFloat() + min;
+	}
+
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-		
-		// Update player combos.
+
 		if (isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
-			
-			if (newcombo >= UBER_CIRCLE_THRESHOLD) {
-				float radius = UBER_CIRCLE_SIZE_MOD * newcombo + UBER_CIRCLE_INIT_SIZE;
-				player.setComboCircle(MathUtils.randInRange(x + radius, x + BBTHGame.WIDTH-radius), MathUtils.randInRange(y + radius, y + BBTHGame.HEIGHT-radius), radius);
-			}
 		} else {
 			player.setCombo(0);
-			player.clearComboCircle();
 		}
-		
+
 		if (isHold) {
 			player.startWall(x, y);
 		} else {
@@ -163,11 +177,12 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected void simulateCustomEvent(int code, boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
 		UnitType type = UnitType.fromInt(code);
-		if (type != null) player.setUnitType(type);
+		if (type != null)
+			player.setUnitType(type);
 	}
 
 	@Override
@@ -183,37 +198,41 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accelTickTimer.stop();
 
 		aiTickTimer.start();
+
 		aiControllerTimer.start();
 		aiController.update();
 		aiControllerTimer.stop();
+
 		serverPlayerTimer.start();
 		serverPlayer.update(seconds);
 		serverPlayerTimer.stop();
+
 		clientPlayerTimer.start();
 		clientPlayer.update(seconds);
 		clientPlayerTimer.stop();
+
 		aiTickTimer.stop();
+
+		PARTICLES.tick(seconds);
 
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.CLIENT)
-			{
+			if (u.getTeam() == Team.CLIENT) {
 				serverPlayer.adjustHealth(-10);
 				clientPlayer.units.remove(u);
-			}else{
+			} else {
 				serverPlayer.units.remove(u);
 			}
 			aiController.removeEntity(u);
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.SERVER)
-			{
+			if (u.getTeam() == Team.SERVER) {
 				clientPlayer.adjustHealth(-10);
 				serverPlayer.units.remove(u);
-			}else{
+			} else {
 				clientPlayer.units.remove(u);
 			}
 			aiController.removeEntity(u);
@@ -238,6 +257,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
+
+		PARTICLES.draw(canvas, PARTICLE_PAINT);
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
@@ -247,8 +268,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	public void notifyUnitDead(Unit unit) {
-		localPlayer.units.remove(unit);
-		remotePlayer.units.remove(unit);
+		serverPlayer.units.remove(unit);
+		clientPlayer.units.remove(unit);
 		aiController.removeEntity(unit);
 	}
 
