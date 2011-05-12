@@ -48,7 +48,7 @@ public class OffensiveAI extends UnitAI {
 		if (statename == "moving") {
 			do_movement(entity, c, flock);
 		} else if (statename == "attacking") {
-			do_attack(entity, c, flock);
+			do_movement(entity, c, flock);
 		} else {
 			System.err.println("Error: entity in unknown state: " + statename);
 		}
@@ -65,16 +65,6 @@ public class OffensiveAI extends UnitAI {
 		}
 		m_fsm_conditions.put("targetdist", dist);
 		fsm.update(m_fsm_conditions);
-	}
-
-	private void do_attack(Unit entity, AIController c, FlockRulesCalculator flock) {
-		Unit target = entity.getTarget();
-		if (target == null) {
-			entity.setVelocity(0.0001f, 0.0f);
-			return;
-		}
-		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), target.getX(), target.getY());
-		entity.setVelocity(0.0001f, angle);
 	}
 
 	private void do_movement(Unit entity, AIController c, FlockRulesCalculator flock) {
@@ -96,6 +86,15 @@ public class OffensiveAI extends UnitAI {
 			if (entity.getTeam() == Team.SERVER) { 
 				goal_y = BBTHSimulation.GAME_HEIGHT;
 			}
+			
+			if (entity.getStateName().equals("attacking")) {
+				Unit target = entity.getTarget();
+				if (target != null) {
+					goal_x = target.getX();
+					goal_y = target.getY();
+				}
+			}
+			
 			start_point.set(start_x, start_y);
 			end_point.set(goal_x, goal_y);
 			
