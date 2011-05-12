@@ -17,6 +17,7 @@ import bbth.engine.net.simulation.Simulation;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
@@ -27,7 +28,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final int NUM_PARTICLES = 1000;
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
-	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+	public static final ParticleSystem PARTICLES = new ParticleSystem(
+			NUM_PARTICLES, PARTICLE_THRESHOLD);
 	public static final Paint PARTICLE_PAINT = new Paint();
 	static {
 		PARTICLE_PAINT.setStrokeWidth(2.f);
@@ -68,7 +70,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
 	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
+			boolean isServer) {
 		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
@@ -127,7 +130,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
+	protected void simulateTapDown(float x, float y, boolean isServer,
+			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
 		if (isOnBeat) {
@@ -176,7 +180,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code,
+			boolean isServer) {
 		Player player = playerMap.get(isServer);
 
 		UnitType type = UnitType.fromInt(code);
@@ -220,21 +225,17 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT) {
 				serverPlayer.adjustHealth(-10);
-				clientPlayer.units.remove(u);
-			} else {
-				serverPlayer.units.remove(u);
 			}
-			aiController.removeEntity(u);
+
+			this.notifyUnitDead(u);
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER) {
 				clientPlayer.adjustHealth(-10);
-				serverPlayer.units.remove(u);
-			} else {
-				clientPlayer.units.remove(u);
 			}
-			aiController.removeEntity(u);
+
+			this.notifyUnitDead(u);
 		}
 		entireTickTimer.stop();
 	}
@@ -267,6 +268,19 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	public void notifyUnitDead(Unit unit) {
+		for (int i = 0; i < 10; i++) {
+			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+			float xVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.sin(angle);
+
+			BBTHSimulation.PARTICLES.createParticle().circle()
+					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
+					.position(unit.getX(), unit.getY())
+					.color(unit.getTeam().getRandomShade());
+		}
+
 		serverPlayer.units.remove(unit);
 		clientPlayer.units.remove(unit);
 		aiController.removeEntity(unit);
@@ -294,7 +308,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	 * WILL RETURN THE SAME BAG OVER AND OVER
 	 */
 	@Override
-	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2, float y2) {
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2,
+			float y2) {
 		cachedUnitBag.clear();
 
 		// calculate axis vector
@@ -314,13 +329,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			lMax = temp;
 		}
 
-		accel.getUnitsInAABB(Math.min(x, y), Math.min(y, y2), Math.max(x2, x2), Math.max(y, y2), cachedUnitSet);
+		accel.getUnitsInAABB(Math.min(x, y), Math.min(y, y2), Math.max(x2, x2),
+				Math.max(y, y2), cachedUnitSet);
 
 		for (Unit unit : cachedUnitSet) {
 			// calculate projections
 			float projectedCenter = axisX * unit.getX() + axisY * unit.getY();
 			float radius = unit.getRadius();
-			if (!intervalsDontOverlap(projectedCenter - radius, projectedCenter + radius, lMin, lMax)) {
+			if (!intervalsDontOverlap(projectedCenter - radius, projectedCenter
+					+ radius, lMin, lMax)) {
 				cachedUnitBag.add(unit);
 			}
 		}
@@ -328,7 +345,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		return cachedUnitBag;
 	}
 
-	private static final boolean intervalsDontOverlap(float min1, float max1, float min2, float max2) {
+	private static final boolean intervalsDontOverlap(float min1, float max1,
+			float min2, float max2) {
 		return (min1 < min2 ? min2 - max1 : min1 - max2) > 0;
 	}
 
