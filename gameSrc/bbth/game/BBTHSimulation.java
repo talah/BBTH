@@ -35,6 +35,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private Paint paint = new Paint();
 	private Bag<Unit> cachedUnitBag = new Bag<Unit>();
 	private HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
+	public float accelUpdateTime;
+	public float aiUpdateTime;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -143,25 +145,29 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
+		long start;
 		timestep++;
 
 		// update acceleration data structure
+		start = System.nanoTime();
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
+		accelUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - accelUpdateTime) * 0.05f;
 
+		start = System.nanoTime();
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
+		aiUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - aiUpdateTime) * 0.05f;
+
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
-
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT)
 				serverPlayer.adjustHealth(-10);
 		}
-
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER)
