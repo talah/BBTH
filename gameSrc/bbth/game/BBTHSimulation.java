@@ -31,7 +31,7 @@ public class BBTHSimulation extends Simulation {
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
-	public static final float GAME_HEIGHT = BBTHGame.HEIGHT * 4;
+	public static final float GAME_HEIGHT = BBTHGame.HEIGHT + 400;
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
