@@ -11,6 +11,8 @@ import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
+import bbth.game.BBTHSimulation;
+import bbth.game.Team;
 import bbth.game.units.Unit;
 
 public class DefensiveAI extends UnitAI {
@@ -91,9 +93,10 @@ public class DefensiveAI extends UnitAI {
 		if (!flock.hasLeader(entity)) {
 			Unit enemy = entity.getTarget();
 
+			float goal_x = entity.getX();
+			float goal_y = (entity.getTeam() == Team.SERVER ? BBTHSimulation.GAME_HEIGHT/4 : BBTHSimulation.GAME_HEIGHT - BBTHSimulation.GAME_HEIGHT/4);
+			
 			if (enemy != null) {
-				float goal_x = enemy.getX();
-				float goal_y = enemy.getY();
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
 				
@@ -131,12 +134,12 @@ public class DefensiveAI extends UnitAI {
 					// + start.x + ", " + start.y + " End: " + end.x + ", " +
 					// end.y);
 				}
-
-				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
-				float objectiveweighting = getObjectiveWeighting();
-				xcomp += objectiveweighting * FloatMath.cos(angle);
-				ycomp += objectiveweighting * FloatMath.sin(angle);
 			}
+			
+			float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
+			float objectiveweighting = getObjectiveWeighting();
+			xcomp += objectiveweighting * FloatMath.cos(angle);
+			ycomp += objectiveweighting * FloatMath.sin(angle);
 		}
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
