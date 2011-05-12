@@ -13,11 +13,13 @@ import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
+import bbth.engine.util.Bag;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
-public class BBTHSimulation extends Simulation {
+public class BBTHSimulation extends Simulation implements UnitManager {
 	private int timestep;
 	private Team team;
 	public Player localPlayer, remotePlayer;
@@ -48,8 +50,8 @@ public class BBTHSimulation extends Simulation {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController);
-		clientPlayer = new Player(Team.CLIENT, aiController);
+		serverPlayer = new Player(Team.SERVER, aiController, this);
+		clientPlayer = new Player(Team.CLIENT, aiController, this);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -186,5 +188,19 @@ public class BBTHSimulation extends Simulation {
 	public void drawForMiniMap(Canvas canvas) {
 		localPlayer.drawForMiniMap(canvas);
 		remotePlayer.drawForMiniMap(canvas);
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		return new Bag<Unit>();
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2, float y2) {
+		return new Bag<Unit>();
 	}
 }

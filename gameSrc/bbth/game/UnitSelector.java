@@ -8,6 +8,7 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class UnitSelector {
@@ -20,26 +21,23 @@ public class UnitSelector {
 	private Paint rectPaint, unitPaint;
 	private Unit attacker, defender, uberer;
 
-	public UnitSelector(Team team) {
+	public UnitSelector(Team team, UnitManager mom) {
 		currentUnitType = UnitType.ATTACKING;
 		rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		rectPaint.setARGB(127, 0, 0, 0);
-		
+
 		unitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		unitPaint.setStrokeWidth(2.0f);
 		unitPaint.setStrokeJoin(Join.ROUND);
 		unitPaint.setStyle(Style.STROKE);
 		unitPaint.setAntiAlias(true);
 		unitPaint.setStrokeCap(Cap.ROUND);
-		
-		if (true)
-			throw new UnsupportedOperationException("TODO: implement a UnitManager");
-		
-		attacker = UnitType.ATTACKING.createUnit(null, team, unitPaint);
+
+		attacker = UnitType.ATTACKING.createUnit(mom, team, unitPaint);
 		attacker.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT / 2);
-		defender = UnitType.DEFENDING.createUnit(null, team, unitPaint);
+		defender = UnitType.DEFENDING.createUnit(mom, team, unitPaint);
 		defender.setPosition(DIMENSIONS.centerX(), UNIT_HEIGHT + UNIT_HEIGHT / 2);
-		uberer = UnitType.UBER.createUnit(null, team, unitPaint);
+		uberer = UnitType.UBER.createUnit(mom, team, unitPaint);
 		uberer.setPosition(DIMENSIONS.centerX(), 2 * UNIT_HEIGHT + UNIT_HEIGHT / 2);
 	}
 
@@ -52,8 +50,9 @@ public class UnitSelector {
 	}
 
 	public int checkUnitChange(float x, float y) {
-		if (!DIMENSIONS.contains(x, y)) return -1;
-		
+		if (!DIMENSIONS.contains(x, y))
+			return -1;
+
 		if (y < UNIT_HEIGHT) {
 			return 0;
 		} else if (y < UNIT_HEIGHT * 2) {
@@ -62,7 +61,7 @@ public class UnitSelector {
 			return 2;
 		}
 	}
-	
+
 	public void draw(Canvas canvas) {
 		canvas.drawRect(DIMENSIONS, rectPaint);
 
