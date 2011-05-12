@@ -15,6 +15,8 @@ import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
+import bbth.engine.sound.MusicPlayer;
+import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
@@ -22,7 +24,7 @@ import bbth.engine.util.Timer;
 import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;
 
-public class InGameScreen extends UIScrollView {
+public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	private BBTHSimulation sim;
 	private UILabel label;
 	private Bluetooth bluetooth;
@@ -36,7 +38,6 @@ public class InGameScreen extends UIScrollView {
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
-	private Timer particleUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
 	private Timer drawParticleTimer = new Timer();
 	private Timer drawSimTimer = new Timer();
@@ -82,7 +83,7 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Set up sound stuff
-		beatTrack = new BeatTrack(song);
+		beatTrack = new BeatTrack(song, this);
 		beatTrack.startMusic();
 
 		paint = new Paint();
@@ -146,7 +147,7 @@ public class InGameScreen extends UIScrollView {
 		sim.getMyUnitSelector().draw(canvas);
 
 		// Draw minimap
-		paint.setARGB(127, 0, 0, 0);
+		paint.setARGB(255, 0, 0, 0);
 		canvas.drawRect(this.minimapRect, paint);
 
 		paint.setColor(Color.WHITE);
@@ -179,9 +180,10 @@ public class InGameScreen extends UIScrollView {
 		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("    - Accel tick: " + sim.accelTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Particles: " + particleUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
 		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
 		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
@@ -232,10 +234,7 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Shinies
-		particleUpdateTimer.start();
 		particles.tick(seconds);
-		particleUpdateTimer.stop();
-
 		entireUpdateTimer.stop();
 	}
 
@@ -316,5 +315,19 @@ public class InGameScreen extends UIScrollView {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode) {
 		bluetooth.onActivityResult(requestCode, resultCode);
+	}
+
+	@Override
+	public void onCompletion(MusicPlayer mp) {
+		float myHealth = sim.localPlayer.getHealth();
+		float theirHealth = sim.remotePlayer.getHealth();
+		
+		if (myHealth < theirHealth) {
+			nextScreen = BBTHGame.LOSE_SCREEN; 
+		} else if (myHealth > theirHealth) {
+			nextScreen = BBTHGame.WIN_SCREEN;
+		} else {
+			nextScreen = BBTHGame.TIE_SCREEN;
+		}
 	}
 }

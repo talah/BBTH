@@ -40,6 +40,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public Timer accelTickTimer = new Timer();
 	public Timer aiTickTimer = new Timer();
 	public Timer entireTickTimer = new Timer();
+	public Timer aiControllerTimer = new Timer();
+	public Timer serverPlayerTimer = new Timer();
+	public Timer clientPlayerTimer = new Timer();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -180,9 +183,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accelTickTimer.stop();
 
 		aiTickTimer.start();
+		aiControllerTimer.start();
 		aiController.update();
+		aiControllerTimer.stop();
+		serverPlayerTimer.start();
 		serverPlayer.update(seconds);
+		serverPlayerTimer.stop();
+		clientPlayerTimer.start();
 		clientPlayer.update(seconds);
+		clientPlayerTimer.stop();
 		aiTickTimer.stop();
 
 		RectF sr = serverPlayer.base.getRect();
