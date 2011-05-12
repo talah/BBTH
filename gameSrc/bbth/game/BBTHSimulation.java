@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.SimpleLineOfSightTester;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
@@ -58,7 +57,7 @@ public class BBTHSimulation extends Simulation {
 		playerMap.put(true, serverPlayer);
 		playerMap.put(false, clientPlayer);
 
-		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH - 10, GAME_HEIGHT - 10);
+		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
 		accel.insertWalls(graphGen.walls);
 
 		pathFinder = new Pathfinder(graphGen.graph);
@@ -179,12 +178,6 @@ public class BBTHSimulation extends Simulation {
 
 	public void draw(Canvas canvas) {
 		drawGrid(canvas);
-
-		paint.setColor(Color.YELLOW);
-		for (int i = 0; i < graphGen.walls.size(); i++) {
-			Wall w = graphGen.walls.get(i);
-			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
-		}
 
 		localPlayer.draw(canvas);
 		remotePlayer.draw(canvas);
