@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
@@ -36,6 +37,7 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
+	public ComboCircle combo_circle;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
@@ -69,6 +71,8 @@ public class Player {
 			base.setPosition(0, 0);
 			break;
 		}
+		
+		combo_circle = new ComboCircle(team);
 
 		this.aiController = controller;
 
@@ -250,4 +254,18 @@ public class Player {
 	public float getCombo() {
 		return _combo;
 	}
+
+	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
+		this.combo_circle.setPosition(center_x, center_y);
+		this.combo_circle.radius = _uber_circle_radius;
+	}
+	
+	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
+		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
+	}
+	
+	public void clearComboCircle() {
+		this.combo_circle.radius = -1.f;
+	}
+
 }
