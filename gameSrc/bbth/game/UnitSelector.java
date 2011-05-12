@@ -65,6 +65,7 @@ public class UnitSelector {
 	public void draw(Canvas canvas) {
 		canvas.drawRect(DIMENSIONS, rectPaint);
 
+		// TODO Fixme
 		if (this.currentUnitType == UnitType.ATTACKING) {
 			unitPaint.setColor(Color.WHITE);
 			attacker.draw(canvas);

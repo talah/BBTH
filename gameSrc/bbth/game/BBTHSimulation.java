@@ -45,6 +45,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
+	public static final float UBER_UNIT_THRESHOLD = 10;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 6 fine timesteps per coarse timestep
@@ -98,7 +99,14 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
-
+		
+		// Update player combos.
+		if (isOnBeat) {
+			player.setCombo(player.getCombo() + 1);
+		} else {
+			player.setCombo(0);
+		}
+		
 		if (isHold) {
 			player.startWall(x, y);
 		} else {
