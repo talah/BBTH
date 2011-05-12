@@ -29,7 +29,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
 	private GridAcceleration accel = new GridAcceleration(BBTHGame.WIDTH, BBTHGame.HEIGHT, BBTHGame.WIDTH / 10);
-	private ParticleSystem particleSystem = new ParticleSystem(100);
+	private ParticleSystem particleSystem = new ParticleSystem(1000);
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -93,7 +93,6 @@ public class CombatTest extends GameScreen implements UnitManager {
 		greenPaint.setAntiAlias(true);
         
     	units = new Bag<Unit>();
-    	
         randomizeEntities();
 	}
 	
