@@ -21,6 +21,9 @@ public class UIView extends GameScreen {
 	protected UIDelegate delegate;
 	protected Point _position;
 	protected Rect _clip_rect;
+	protected float target_x, target_y;
+	float position_x_step, position_y_step, position_animation_duration;
+	public boolean isAnimatingPosition;
 	
 	protected Anchor anchor;
 
@@ -46,6 +49,7 @@ public class UIView extends GameScreen {
     		UIView e = subviews.get(idx);
     		e.onUpdate(seconds);
     	}
+    	linearInterpolatePosition(seconds);
 	}
 
 
@@ -217,4 +221,27 @@ public class UIView extends GameScreen {
 		}
 		    
     }
+    
+    public void animatePosition(float target_x, float target_y, float duration)
+	{
+		this.target_x = target_x;
+		this.target_y = target_y;
+		this.position_x_step = ((target_x - _position.x) / duration);
+		this.position_y_step = ((target_y - _position.y) / duration);
+		this.position_animation_duration = duration;
+		this.isAnimatingPosition = true;
+	}
+	
+	public void linearInterpolatePosition(float seconds)
+	{
+		if(isAnimatingPosition)
+		{
+			float new_x = (_position.x + position_x_step*seconds);
+			float new_y = (_position.y + position_y_step*seconds);
+			this.setPosition(new_x, new_y);
+			position_animation_duration -= seconds;
+			if(position_animation_duration <= 0)
+				isAnimatingPosition = false;
+		}
+	}
 }
