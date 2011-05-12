@@ -6,9 +6,9 @@ import bbth.engine.ui.UIView;
 
 // TODO Pretty graphics
 public class TitleScreen extends UIView {
-	private UILabel titleBar;  
+	private UILabel titleBar;
 	private float animDelay = 1.0f;
-	
+
 	public TitleScreen() {
 		titleBar = new UILabel("Beat Back the Horde!", this);
 		titleBar.setAnchor(Anchor.CENTER_CENTER);
@@ -17,14 +17,14 @@ public class TitleScreen extends UIView {
 		titleBar.animatePosition(160, 90, 3);
 		this.addSubview(titleBar);
 	}
-	
+
 	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
-			
-		if(!titleBar.isAnimatingPosition)
+
+		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
-			if(animDelay <= 0)
-				nextScreen = BBTHGame.SETUP_SCREEN;
+		if (animDelay <= 0)
+			nextScreen = new GameSetupScreen();
 	}
 }
