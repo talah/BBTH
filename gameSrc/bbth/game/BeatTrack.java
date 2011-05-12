@@ -85,7 +85,6 @@ public class BeatTrack {
 		// Setup paint
 		paint = new Paint();
 		paint.setTextSize(10);
-		paint.setStrokeWidth(2.f);
 		paint.setStrokeCap(Cap.ROUND);
 		paint.setAntiAlias(true);
 	}
@@ -100,9 +99,11 @@ public class BeatTrack {
 
 	public void draw(Canvas canvas) {
 		paint.setARGB(127, 0, 0, 0);
+		paint.setStrokeWidth(2.f);
 		canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
 
 		paint.setARGB(127, 255, 255, 255);
+		paint.setStrokeWidth(2.f);
 		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
 		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
 
@@ -110,6 +111,7 @@ public class BeatTrack {
 		
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
+		paint.setStrokeWidth(2.f);
 		canvas.drawCircle(BEAT_LINE_X, BEAT_LINE_Y, BEAT_CIRCLE_RADIUS, paint);
 		paint.setStyle(Style.FILL);
 		
