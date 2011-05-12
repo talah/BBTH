@@ -198,7 +198,7 @@ public class Player {
 	}
 
 	private void removeWall(int i) {
-		unitManager.removeWall(walls.get(i));
+		unitManager.removeWall(walls.get(i).getWall());
 		walls.remove(i);
 	}
 

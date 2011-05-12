@@ -265,4 +265,10 @@ public class CombatTest extends GameScreen implements UnitManager {
 		
 		return temp;
 	}
+
+	@Override
+	public void removeWall(Wall wall) {
+		// TODO Auto-generated method stub
+		
+	}
 }

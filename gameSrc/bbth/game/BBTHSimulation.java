@@ -67,7 +67,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float MIN_WALL_LENGTH = 5.f;
 
 	// Combo constants
-	public static final float UBER_UNIT_THRESHOLD = 10;
+	public static final float UBER_UNIT_THRESHOLD = 7;
 	public static final int TUTORIAL_DONE = 13;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
@@ -138,14 +138,14 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
+			
+			if (isHold) {
+				player.startWall(x, y);
+			} else {
+				player.spawnUnit(x, y);
+			}
 		} else {
 			player.setCombo(0);
-		}
-
-		if (isHold) {
-			player.startWall(x, y);
-		} else {
-			player.spawnUnit(x, y);
 		}
 	}
 
@@ -379,7 +379,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	public void removeWall(WallUnit wall) {
+	public void removeWall(Wall wall) {
 		graphGen.walls.remove(wall);
 		graphGen.compute();
 		accel.clearWalls();

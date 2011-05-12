@@ -108,7 +108,8 @@ public class AIController {
 			} else if (entity.getType() == UnitType.ATTACKING) {
 				m_offensive.update(entity, this, flock);
 			} else if (entity.getType() == UnitType.UBER) {
-				m_uber.update(entity, this, flock);
+				m_offensive.update(entity, this, flock);
+				//m_uber.update(entity, this, flock);
 			}
 
 			num_to_update--;

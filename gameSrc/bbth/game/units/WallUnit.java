@@ -57,4 +57,8 @@ public class WallUnit extends Unit {
 		return 0;
 	}
 
+	public Wall getWall() {
+		return wall;
+	}
+
 }

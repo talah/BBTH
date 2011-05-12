@@ -68,7 +68,7 @@ public class BeatTrack {
 				mp.play();
 			}
 		});
-//		musicPlayer.setOnCompletionListener(listener);
+		musicPlayer.setOnCompletionListener(listener);
 		
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);
