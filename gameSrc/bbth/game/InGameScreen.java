@@ -7,9 +7,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
-import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
@@ -56,8 +54,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		this.team = playerTeam;
 
-		combo_circle = new ComboCircle(this.team);
-
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -92,7 +88,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		// Set up sound stuff
 		beatTrack = new BeatTrack(song, this);
-		beatTrack.startMusic();
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
@@ -138,8 +133,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		drawParticleTimer.start();
 		particles.draw(canvas, paint);
 		drawParticleTimer.stop();
-
-		combo_circle.onDraw(canvas);
 
 		canvas.translate(this.pos_x, this.pos_y);
 
@@ -213,6 +206,10 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		sim.onUpdate(seconds);
 		simUpdateTimer.stop();
 
+		if (sim.isReady() && !beatTrack.isPlaying()) {
+			beatTrack.startMusic();
+		}
+
 		// Update healths
 		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
 		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
@@ -220,12 +217,12 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
-			this.nextScreen = BBTHGame.LOSE_SCREEN;
+			// this.nextScreen = BBTHGame.LOSE_SCREEN;
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
-			this.nextScreen = BBTHGame.WIN_SCREEN;
+			// this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
 
 		// Get new beats, yo
@@ -278,17 +275,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 			currentWall = new Wall(worldX, worldY, worldX, worldY);
 		}
 
-		// Update player combos.
-		if (isOnBeat) {
-			if (beatTrack.getCombo() >= BBTHSimulation.UBER_CIRCLE_THRESHOLD) {
-				float radius = BBTHSimulation.UBER_CIRCLE_SIZE_MOD * beatTrack.getCombo() + BBTHSimulation.UBER_CIRCLE_INIT_SIZE;
-				setComboCircle(MathUtils.randInRange(pos_x + (100 + radius), pos_x + BBTHGame.WIDTH - (100 + radius)),
-						MathUtils.randInRange(pos_y + (100 + radius), pos_y + BBTHGame.HEIGHT - (100 + radius)), radius);
-			}
-		} else {
-			clearComboCircle();
-		}
-
 		sim.recordTapDown(worldX, worldY, isHold, isOnBeat);
 	}
 
@@ -322,19 +308,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		if (currentWall != null) {
 			currentWall.b.set(worldX, worldY);
 			currentWall.updateLength();
+
 			if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
-				// Spawn particles
-				int numParticles = 40;
-
-				for (int i = 0; i < numParticles; i++) {
-					float posX = currentWall.a.x * i / numParticles + currentWall.b.x * (numParticles - i) / numParticles;
-					float posY = currentWall.a.y * i / numParticles + currentWall.b.y * (numParticles - i) / numParticles;
-					float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-					float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
-					float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-
-					particles.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(posX, posY).color(team.getRandomShade());
-				}
+				sim.generateParticlesForWall(currentWall, this.team);
 			}
 
 			currentWall = null;
@@ -363,18 +339,5 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		} else {
 			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
-	}
-
-	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
-		this.combo_circle.setPosition(center_x, center_y);
-		this.combo_circle.radius = _uber_circle_radius;
-	}
-
-	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
-		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
-	}
-
-	public void clearComboCircle() {
-		this.combo_circle.radius = -1.f;
 	}
 }

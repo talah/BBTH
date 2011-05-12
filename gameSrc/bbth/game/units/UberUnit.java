@@ -2,6 +2,7 @@ package bbth.game.units;
 
 import android.graphics.*;
 import android.graphics.Paint.Style;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
@@ -9,16 +10,16 @@ public class UberUnit extends Unit {
 	private static final float MAX_POWER_LEVEL = 9000f;
 	
 	private static final float CHARGE_RATE = 4000f;
-	private static final float DISCHARGE_RATE = CHARGE_RATE * 2f/7f;
-	private static final float DAMAGE_RATE = 500f;
+	private static final float DISCHARGE_RATE = CHARGE_RATE * .5f/7f;
+	private static final float DAMAGE_RATE = 200f;
 	
 	@Override
 	public float getStartingHealth() {
 		return 1337f;
 	}
 	
-	public UberUnit(UnitManager unitManager, Team team, Paint p) {
-		super(unitManager, team, p);
+	public UberUnit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
+		super(unitManager, team, p, particleSystem);
 	}
 	
 	boolean charging = true;
@@ -74,7 +75,7 @@ public class UberUnit extends Unit {
 	                          };
 	private static final float POWER_CIRCLE_RADIUS = 5f;
 	@Override
-	public void draw(Canvas canvas) {
+	public void drawChassis(Canvas canvas) {
 		canvas.save();
 		
 		canvas.translate(getX(), getY());
@@ -85,12 +86,28 @@ public class UberUnit extends Unit {
 		
 		canvas.restore();
 		
-		tempPaint.set(paint);
-		
-		paint.setStyle(Style.FILL);
-		float radius = POWER_CIRCLE_RADIUS*powerLevel/MAX_POWER_LEVEL;
-		if (radius > 0f) {
-			if (firing) {
+		if (!firing) {
+			float radius = POWER_CIRCLE_RADIUS*powerLevel/MAX_POWER_LEVEL;
+			if (radius > 0) {
+				tempPaint.set(paint);
+				
+				paint.setStyle(Style.FILL);
+				paint.setColor(Color.GRAY);
+				canvas.drawCircle(getX(), getY(), radius, paint);
+				
+				paint.set(tempPaint);
+			}
+		}
+	}
+	
+	@Override
+	public void drawEffects(Canvas canvas) {
+		if (firing) {
+			float radius = POWER_CIRCLE_RADIUS*powerLevel/MAX_POWER_LEVEL;
+			if (radius > 0f) {
+				tempPaint.set(paint);
+				
+				paint.setStyle(Style.FILL);
 				paint.setColor(Color.GRAY);
 				
 				paint.setStrokeWidth(radius);
@@ -104,13 +121,10 @@ public class UberUnit extends Unit {
 				
 				paint.setStrokeWidth(radius*.5f);
 				canvas.drawLine(getX(), getY(), fireTarget.getX(), fireTarget.getY(), paint);
-			} else {
-				paint.setColor(Color.GRAY);
-				canvas.drawCircle(getX(), getY(), radius, paint);
+				
+				paint.set(tempPaint);
 			}
 		}
-		
-		paint.set(tempPaint);
 	}
 
 	@Override

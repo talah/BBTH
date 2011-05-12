@@ -3,6 +3,7 @@ package bbth.game.units;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.particles.ParticleSystem;
 import bbth.game.Team;
 
 /**
@@ -16,8 +17,8 @@ public class WallUnit extends Unit {
 	
 	private Wall wall;
 
-	public WallUnit(Wall w, UnitManager m, Team team, Paint p) {
-		super(m, team, p);
+	public WallUnit(Wall w, UnitManager m, Team team, Paint p, ParticleSystem particleSystem) {
+		super(m, team, p, particleSystem);
 		wall = w;
 		unitManager.notifyUnitDead(this);
 	}
@@ -29,7 +30,7 @@ public class WallUnit extends Unit {
 	}
 
 	@Override
-	public void draw(Canvas canvas) {
+	public void drawChassis(Canvas canvas) {
 		paint.setAlpha((int) (health * 255 / HEALTH));
 		canvas.drawLine(wall.a.x, wall.a.y, wall.b.x, wall.b.y, paint);
 		paint.setAlpha(255);

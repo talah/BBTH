@@ -66,9 +66,13 @@ public class Player {
 		}
 
 		this.aiController = controller;
-		selector = new UnitSelector(team, unitManager);
+		selector = new UnitSelector(team, unitManager, BBTHSimulation.PARTICLES);
 
 		walls = new ArrayList<WallUnit>();
+	}
+
+	public Team getTeam() {
+		return this.team;
 	}
 
 	public boolean settingWall() {
@@ -91,7 +95,7 @@ public class Player {
 			return null;
 		}
 
-		walls.add(new WallUnit(currentWall, unitManager, team, paint));
+		walls.add(new WallUnit(currentWall, unitManager, team, paint, BBTHSimulation.PARTICLES));
 
 		Wall toReturn = currentWall;
 		currentWall = null;
@@ -111,25 +115,30 @@ public class Player {
 	public void spawnUnit(float x, float y) {
 		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
-					.color(team.getRandomShade());
+			float xVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f)
+					* FloatMath.sin(angle);
+			BBTHSimulation.PARTICLES.createParticle().circle()
+					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
+					.position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
 		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
-			newUnit = UnitType.UBER.createUnit(unitManager, team, paint);
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
 		} else {
-			newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
 		}
 
 		newUnit.setPosition(x, y);
-		if (team == Team.SERVER) {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), MathUtils.PI / 2.f);
-		} else {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), -MathUtils.PI / 2.f);
-		}
+//		if (team == Team.SERVER) {
+//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+//					MathUtils.PI / 2.f);
+//		} else {
+//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+//					-MathUtils.PI / 2.f);
+//		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
 	}
@@ -139,7 +148,11 @@ public class Player {
 
 		for (int i = 0; i < units.size(); i++) {
 			Unit currUnit = units.get(i);
-			if (toReturn == null || (team == Team.SERVER && currUnit.getY() > toReturn.getY()) || (team == Team.CLIENT && currUnit.getY() < toReturn.getY())) {
+			if (toReturn == null
+					|| (team == Team.SERVER && currUnit.getY() > toReturn
+							.getY())
+					|| (team == Team.CLIENT && currUnit.getY() < toReturn
+							.getY())) {
 				toReturn = currUnit;
 			}
 		}
@@ -179,17 +192,24 @@ public class Player {
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
-			walls.get(i).draw(canvas);
+			walls.get(i).drawChassis(canvas);
 		}
 
 		// draw units
 		paint.setStyle(Style.STROKE);
 		paint.setColor(team.getUnitColor());
 		for (int i = 0; i < units.size(); i++) {
-			units.get(i).draw(canvas);
+			units.get(i).drawChassis(canvas);
 		}
-
-		paint.setStyle(Style.FILL);
+		for (int i = 0; i < units.size(); i++) {
+			units.get(i).drawEffects(canvas);
+		}
+	}
+	
+	public void postDraw(Canvas canvas) {
+		for (int i = 0; i < units.size(); i++) {
+			units.get(i).drawHealthBar(canvas);
+		}
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
@@ -203,7 +223,7 @@ public class Player {
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
-			walls.get(i).draw(canvas);
+			walls.get(i).drawChassis(canvas);
 		}
 	}
 

@@ -149,4 +149,8 @@ public class BeatTrack {
 	public float getCombo() {
 		return combo;
 	}
+
+	public boolean isPlaying() {
+		return musicPlayer.isPlaying();
+	}
 }
