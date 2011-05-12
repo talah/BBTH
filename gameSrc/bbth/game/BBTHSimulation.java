@@ -16,6 +16,7 @@ import bbth.engine.net.simulation.Simulation;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -36,8 +37,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private Paint paint = new Paint();
 	private Bag<Unit> cachedUnitBag = new Bag<Unit>();
 	private HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
-	public float accelUpdateTime;
-	public float aiUpdateTime;
+	public Timer accelTickTimer = new Timer();
+	public Timer aiTickTimer = new Timer();
+	public Timer entireTickTimer = new Timer();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -53,10 +55,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
-		// 6 fine timesteps per coarse timestep
+		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
-		super(6, 0.1f, 2, protocol, isServer);
+		super(3, 0.1f, 2, protocol, isServer);
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -160,39 +162,51 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateCustomEvent(int code, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
-		player.setUnitType(UnitType.fromInt(code));
+		UnitType type = UnitType.fromInt(code);
+		if (type != null) player.setUnitType(type);
 	}
 
 	@Override
 	protected void update(float seconds) {
-		long start;
+		entireTickTimer.start();
 		timestep++;
 
 		// update acceleration data structure
-		start = System.nanoTime();
+		accelTickTimer.start();
 		accel.clearUnits();
 		accel.insertUnits(serverPlayer.units);
 		accel.insertUnits(clientPlayer.units);
-		accelUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - accelUpdateTime) * 0.05f;
+		accelTickTimer.stop();
 
-		start = System.nanoTime();
+		aiTickTimer.start();
 		aiController.update();
 		serverPlayer.update(seconds);
 		clientPlayer.update(seconds);
-		aiUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - aiUpdateTime) * 0.05f;
+		aiTickTimer.stop();
 
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT)
+			{
 				serverPlayer.adjustHealth(-10);
+				clientPlayer.units.remove(u);
+			}else{
+				serverPlayer.units.remove(u);
+			}
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER)
+			{
 				clientPlayer.adjustHealth(-10);
+				serverPlayer.units.remove(u);
+			}else{
+				clientPlayer.units.remove(u);
+			}
 		}
+		entireTickTimer.stop();
 	}
 
 	private void drawGrid(Canvas canvas) {

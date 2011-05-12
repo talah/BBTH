@@ -11,11 +11,10 @@ import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
+import bbth.engine.sound.BeatPatternParser;
 import bbth.engine.sound.BeatTracker;
-import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SimpleBeatPattern;
 import bbth.engine.sound.SoundManager;
 
 /**
@@ -52,32 +51,11 @@ public class BeatTrack {
 		// Setup song-specific stuff
 		switch (song) {
 		case DONKEY_KONG:
-			beatPattern = new SimpleBeatPattern(385, 571, 300000);
+			beatPattern = BeatPatternParser.parse(R.xml.track1);
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
 			break;
 		case RETRO:
-			BeatPattern []patterns = new BeatPattern[3];
-			patterns[0] = new SimpleBeatPattern(350, 481 * 2, 4810 * 4);
-			List<Beat> beats = new ArrayList<Beat>();
-			for (int phrase = 0; phrase < 4; ++phrase) {
-				for (int i = 0; i < 4; ++i) {
-					beats.add(Beat.tap(481));
-				}
-				for (int i = 0; i < 2; ++i) {
-					beats.add(Beat.tap(240));
-					beats.add(Beat.tap(241));
-				}
-				for (int i = 0; i < 6; ++i) {
-					beats.add(Beat.rest(481));
-				}
-				for (int i = 0; i < 2; ++i) {
-					beats.add(Beat.hold(481 * 2));
-					beats.add(Beat.rest(481 * 2));
-				}
-			}
-			patterns[1] = new SimpleBeatPattern(beats);
-			patterns[2] = new SimpleBeatPattern(0, 481 * 2, 4810 * 4);
-			beatPattern = new CompositeBeatPattern(patterns);
+			beatPattern = BeatPatternParser.parse(R.xml.track2);
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
 			break;
 		}

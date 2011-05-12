@@ -1,15 +1,24 @@
 package bbth.game;
 
-import android.graphics.*;
-import android.graphics.Paint.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.Paint.Cap;
+import android.graphics.Paint.Join;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.ui.*;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Timer;
 import bbth.game.BeatTrack.Song;
 import bbth.game.units.Unit;
 
@@ -23,9 +32,15 @@ public class InGameScreen extends UIScrollView {
 	private ParticleSystem particles;
 	private Paint paint, serverHealthPaint, clientHealthPaint;
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
-	private float entireUpdateTime;
-	private float drawTime;
 	private static final float HEALTHBAR_HEIGHT = 10;
+
+	private Timer entireUpdateTimer = new Timer();
+	private Timer simUpdateTimer = new Timer();
+	private Timer particleUpdateTimer = new Timer();
+	private Timer entireDrawTimer = new Timer();
+	private Timer drawParticleTimer = new Timer();
+	private Timer drawSimTimer = new Timer();
+	private Timer drawUITimer = new Timer();
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
@@ -95,12 +110,14 @@ public class InGameScreen extends UIScrollView {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		long start = System.nanoTime();
+		entireDrawTimer.start();
 		super.onDraw(canvas);
 
 		// Draw the game
 		canvas.translate(-this.pos_x, -this.pos_y);
+		drawSimTimer.start();
 		sim.draw(canvas);
+		drawSimTimer.stop();
 
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
@@ -109,13 +126,19 @@ public class InGameScreen extends UIScrollView {
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
-		particles.draw(canvas, paint);
+		drawParticleTimer.start();
 		
+		particles.draw(canvas, paint);
+
+		drawParticleTimer.stop();
+
 		sim.localPlayer.combo_circle.onDraw(canvas);
 		sim.remotePlayer.combo_circle.onDraw(canvas);
 		
+
 		canvas.translate(this.pos_x, this.pos_y);
 
+		drawUITimer.start();
 		// Overlay the beat track
 		beatTrack.draw(canvas);
 
@@ -141,24 +164,35 @@ public class InGameScreen extends UIScrollView {
 		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
+		drawUITimer.stop();
 
 		// Draw health bars
 		canvas.drawRect(serverHealthRect, serverHealthPaint);
 		canvas.drawRect(clientHealthRect, clientHealthPaint);
 
 		// Draw timing information
-		paint.setColor(Color.WHITE);
-		paint.setTextSize(10);
-		canvas.drawText("Entire update: " + (int) (entireUpdateTime * 1000) + " ms", 30, 25, paint);
-		canvas.drawText("- Accel update: " + (int) (sim.accelUpdateTime * 1000) + " ms", 30, 40, paint);
-		canvas.drawText("- AI update: " + (int) (sim.aiUpdateTime * 1000) + " ms", 30, 55, paint);
-		canvas.drawText("Entire draw: " + (int) (drawTime * 1000) + " ms", 30, 70, paint);
-		drawTime += ((System.nanoTime() - start) / 1000000000.0f - drawTime) * 0.05f;
+		paint.setColor(Color.argb(63, 255, 255, 255));
+		paint.setTextSize(8);
+		int x = 50;
+		int y = 20;
+		int jump = 11;
+		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("    - Accel tick: " + sim.accelTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Particles: " + particleUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+		entireDrawTimer.stop();
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
-		long start = System.nanoTime();
+		entireUpdateTimer.start();
+
 		// Show the timestep for debugging
 		label.setText("" + sim.getTimestep());
 
@@ -169,7 +203,9 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Update the game
+		simUpdateTimer.start();
 		sim.onUpdate(seconds);
+		simUpdateTimer.stop();
 
 		// Update healths
 		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
@@ -178,12 +214,12 @@ public class InGameScreen extends UIScrollView {
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
-			this.nextScreen = BBTHGame.LOSE_SCREEN;
+			// this.nextScreen = BBTHGame.LOSE_SCREEN;
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
-			this.nextScreen = BBTHGame.WIN_SCREEN;
+			// this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
 
 		// Get new beats, yo
@@ -196,8 +232,11 @@ public class InGameScreen extends UIScrollView {
 		}
 
 		// Shinies
+		particleUpdateTimer.start();
 		particles.tick(seconds);
-		entireUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - entireUpdateTime) * 0.05f;
+		particleUpdateTimer.stop();
+
+		entireUpdateTimer.stop();
 	}
 
 	@Override

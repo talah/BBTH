@@ -1,0 +1,34 @@
+<root>
+<pattern id="pattern1" bpm="481">
+    <rest type="whole" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <hold type="half" />
+    <rest type="half" />
+    <hold type="half" />
+    <rest type="half" />
+</pattern>
+
+<pattern id="pattern2" bpm="571">
+    <rest type="half" />
+    <beat type="quarter" />
+    <beat type="eighth" />
+    <beat type="eighth" />
+    <beat type="quarter" />
+    <rest type="whole" />
+    <beat type="half" />
+    <beat type="half_triplet" />
+    <beat type="half_triplet" />
+    <beat type="half_triplet" />
+    <hold type="half" />
+</pattern>
+
+<song>
+    <load-pattern id="pattern1" />
+    <load-pattern id="pattern2" />
+    <load-pattern id="pattern1" />
+    <load-pattern id="pattern2" />
+</song>
+</root>
