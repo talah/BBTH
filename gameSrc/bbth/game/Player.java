@@ -71,7 +71,7 @@ public class Player {
 			base.setPosition(0, 0);
 			break;
 		}
-		
+
 		combo_circle = new ComboCircle(team);
 
 		this.aiController = controller;
@@ -122,13 +122,9 @@ public class Player {
 	public void spawnUnit(float x, float y) {
 		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.sin(angle);
-			particles.createParticle().circle().velocity(xVel, yVel)
-					.shrink(0.1f, 0.15f).radius(3.0f).position(x, y)
-					.color(team.getRandomShade());
+			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
+			particles.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
@@ -137,16 +133,12 @@ public class Player {
 		} else {
 			newUnit = selector.getUnitType().createUnit(unitManager, team, paint);
 		}
-		
+
 		newUnit.setPosition(x, y);
-		// newUnit.setVelocity(MathUtils.randInRange(50, 100),
-		// MathUtils.randInRange(0, MathUtils.TWO_PI));
 		if (team == Team.SERVER) {
-			newUnit.setVelocity(MathUtils.randInRange(30, 70),
-					MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), MathUtils.PI / 2.f);
 		} else {
-			newUnit.setVelocity(MathUtils.randInRange(30, 70),
-					-MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), -MathUtils.PI / 2.f);
 		}
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
@@ -157,11 +149,7 @@ public class Player {
 
 		for (int i = 0; i < units.size(); i++) {
 			Unit currUnit = units.get(i);
-			if (toReturn == null
-					|| (team == Team.SERVER && currUnit.getY() > toReturn
-							.getY())
-					|| (team == Team.CLIENT && currUnit.getY() < toReturn
-							.getY())) {
+			if (toReturn == null || (team == Team.SERVER && currUnit.getY() > toReturn.getY()) || (team == Team.CLIENT && currUnit.getY() < toReturn.getY())) {
 				toReturn = currUnit;
 			}
 		}
@@ -182,7 +170,7 @@ public class Player {
 				aiController.removeEntity(unit);
 			}
 		}
-		
+
 		for (int i = walls.size() - 1; i >= 0; --i) {
 			walls.get(i).update(seconds);
 			if (walls.get(i).isDead()) {
@@ -259,11 +247,11 @@ public class Player {
 		this.combo_circle.setPosition(center_x, center_y);
 		this.combo_circle.radius = _uber_circle_radius;
 	}
-	
+
 	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
 		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
 	}
-	
+
 	public void clearComboCircle() {
 		this.combo_circle.radius = -1.f;
 	}

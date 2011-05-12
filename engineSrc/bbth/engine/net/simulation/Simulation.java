@@ -175,9 +175,9 @@ public abstract class Simulation {
 		case Event.TAP_UP:
 			simulateTapUp(event.x, event.y, isServer);
 			break;
-			
+
 		case Event.CUSTOM:
-			simulateCustomEvent(event.code, isServer);
+			simulateCustomEvent(event.x, event.y, event.code, isServer);
 			break;
 		}
 	}
@@ -188,8 +188,8 @@ public abstract class Simulation {
 
 	protected abstract void simulateTapUp(float x, float y, boolean isServer);
 
-	protected abstract void simulateCustomEvent(int code, boolean isServer);
-	
+	protected abstract void simulateCustomEvent(float x, float y, int code, boolean isServer);
+
 	/**
 	 * Called every fine timestep with the number of seconds since the last fine
 	 * timestep.
@@ -236,8 +236,8 @@ public abstract class Simulation {
 	public final void recordTapUp(float x, float y) {
 		currentStep.events.add(makeEvent(x, y, Event.TAP_UP, false, false, 0));
 	}
-	
-	public final void recordCustomEvent(int code) {
-		currentStep.events.add(makeEvent(0, 0, Event.CUSTOM, false, false, code));
+
+	public final void recordCustomEvent(float x, float y, int code) {
+		currentStep.events.add(makeEvent(x, y, Event.CUSTOM, false, false, code));
 	}
 }

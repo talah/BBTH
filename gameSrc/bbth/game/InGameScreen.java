@@ -46,8 +46,6 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
-		MathUtils.resetRandom(0);
-
 		this.team = playerTeam;
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -128,14 +126,13 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		paint.setStrokeCap(Cap.BUTT);
 
 		drawParticleTimer.start();
-		
+
 		particles.draw(canvas, paint);
 
 		drawParticleTimer.stop();
 
 		sim.localPlayer.combo_circle.onDraw(canvas);
 		sim.remotePlayer.combo_circle.onDraw(canvas);
-		
 
 		canvas.translate(this.pos_x, this.pos_y);
 
@@ -244,7 +241,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 
 		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 		if (unitType >= 0) {
-			sim.recordCustomEvent(unitType);
+			sim.recordCustomEvent(0, 0, unitType);
 			return;
 		}
 
@@ -321,9 +318,9 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 	public void onCompletion(MusicPlayer mp) {
 		float myHealth = sim.localPlayer.getHealth();
 		float theirHealth = sim.remotePlayer.getHealth();
-		
+
 		if (myHealth < theirHealth) {
-			nextScreen = new GameStatusMessageScreen.LoseScreen(); 
+			nextScreen = new GameStatusMessageScreen.LoseScreen();
 		} else if (myHealth > theirHealth) {
 			nextScreen = new GameStatusMessageScreen.WinScreen();
 		} else {
