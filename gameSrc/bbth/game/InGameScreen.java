@@ -23,10 +23,11 @@ public class InGameScreen extends UIScrollView {
 	private ParticleSystem particles;
 	private Paint paint, serverHealthPaint, clientHealthPaint;
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
-	private final float HEALTHBAR_HEIGHT = 10;
+	private float entireUpdateTime;
+	private float drawTime;
+	private static final float HEALTHBAR_HEIGHT = 10;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
-			LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		super(null);
 
 		MathUtils.resetRandom(0);
@@ -53,8 +54,7 @@ public class InGameScreen extends UIScrollView {
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
 
-		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH,
-				BBTHSimulation.GAME_HEIGHT);
+		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT);
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
@@ -80,13 +80,9 @@ public class InGameScreen extends UIScrollView {
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 
-		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2
-				+ HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT
-				- HEALTHBAR_HEIGHT);
-		serverHealthRect = new RectF(minimapRect.left, minimapRect.top
-				- HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
-		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom,
-				minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
+		minimapRect = new RectF(BBTHGame.WIDTH - 50, BBTHGame.HEIGHT / 2 + HEALTHBAR_HEIGHT, BBTHGame.WIDTH, BBTHGame.HEIGHT - HEALTHBAR_HEIGHT);
+		serverHealthRect = new RectF(minimapRect.left, minimapRect.top - HEALTHBAR_HEIGHT, minimapRect.right, minimapRect.top);
+		clientHealthRect = new RectF(minimapRect.left, minimapRect.bottom, minimapRect.right, minimapRect.bottom + HEALTHBAR_HEIGHT);
 	}
 
 	@Override
@@ -99,6 +95,7 @@ public class InGameScreen extends UIScrollView {
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		long start = System.nanoTime();
 		super.onDraw(canvas);
 
 		// Draw the game
@@ -108,8 +105,7 @@ public class InGameScreen extends UIScrollView {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-					currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
@@ -136,21 +132,29 @@ public class InGameScreen extends UIScrollView {
 
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
-				BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
 		paint.setColor(Color.WHITE);
-		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x,
-				BBTHGame.HEIGHT + this.pos_y, paint);
+		canvas.drawRect(this.pos_x, this.pos_y, BBTHGame.WIDTH + this.pos_x, BBTHGame.HEIGHT + this.pos_y, paint);
 		paint.setStyle(Style.FILL);
 		canvas.restore();
 
 		// Draw health bars
 		canvas.drawRect(serverHealthRect, serverHealthPaint);
 		canvas.drawRect(clientHealthRect, clientHealthPaint);
+
+		// Draw timing information
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(10);
+		canvas.drawText("Entire update: " + (int) (entireUpdateTime * 1000) + " ms", 30, 25, paint);
+		canvas.drawText("- Accel update: " + (int) (sim.accelUpdateTime * 1000) + " ms", 30, 40, paint);
+		canvas.drawText("- AI update: " + (int) (sim.aiUpdateTime * 1000) + " ms", 30, 55, paint);
+		canvas.drawText("Entire draw: " + (int) (drawTime * 1000) + " ms", 30, 70, paint);
+		drawTime += ((System.nanoTime() - start) / 1000000000.0f - drawTime) * 0.05f;
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
+		long start = System.nanoTime();
 		// Show the timestep for debugging
 		label.setText("" + sim.getTimestep());
 
@@ -162,36 +166,34 @@ public class InGameScreen extends UIScrollView {
 
 		// Update the game
 		sim.onUpdate(seconds);
-		
+
 		// Update healths
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
-				minimapRect.right - 1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1,
-				minimapRect.right - 1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
 
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
 			this.nextScreen = BBTHGame.LOSE_SCREEN;
-		} 
-		
+		}
+
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
 			this.nextScreen = BBTHGame.WIN_SCREEN;
 		}
-		
+
 		// Get new beats, yo
 		beatTrack.refreshBeats();
 
 		// Center the scroll on the most advanced enemy
 		Unit mostAdvanced = sim.getOpponentsMostAdvancedUnit();
 		if (mostAdvanced != null) {
-			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY()
-					- BBTHGame.HEIGHT / 2);
+			this.scrollTo(mostAdvanced.getX(), mostAdvanced.getY() - BBTHGame.HEIGHT / 2);
 		}
 
 		// Shinies
 		particles.tick(seconds);
+		entireUpdateTime += ((System.nanoTime() - start) / 1000000000.0f - entireUpdateTime) * 0.05f;
 	}
 
 	@Override
@@ -249,21 +251,13 @@ public class InGameScreen extends UIScrollView {
 				int numParticles = 40;
 
 				for (int i = 0; i < numParticles; i++) {
-					float posX = currentWall.a.x * i / numParticles
-							+ currentWall.b.x * (numParticles - i)
-							/ numParticles;
-					float posY = currentWall.a.y * i / numParticles
-							+ currentWall.b.y * (numParticles - i)
-							/ numParticles;
+					float posX = currentWall.a.x * i / numParticles + currentWall.b.x * (numParticles - i) / numParticles;
+					float posY = currentWall.a.y * i / numParticles + currentWall.b.y * (numParticles - i) / numParticles;
 					float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-					float xVel = MathUtils.randInRange(25.f, 50.f)
-							* FloatMath.cos(angle);
-					float yVel = MathUtils.randInRange(25.f, 50.f)
-							* FloatMath.sin(angle);
+					float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
+					float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
 
-					particles.createParticle().circle().velocity(xVel, yVel)
-							.shrink(0.1f, 0.15f).radius(3.0f)
-							.position(posX, posY).color(team.getRandomShade());
+					particles.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(posX, posY).color(team.getRandomShade());
 				}
 			}
 
