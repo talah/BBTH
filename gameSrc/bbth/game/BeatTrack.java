@@ -145,4 +145,8 @@ public class BeatTrack {
 
 		return beatType;
 	}
+
+	public float getCombo() {
+		return combo;
+	}
 }

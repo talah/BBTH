@@ -65,7 +65,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float UBER_UNIT_THRESHOLD = 10;
 	public static final float UBER_CIRCLE_THRESHOLD = 5;
 	public static final float UBER_CIRCLE_SIZE_MOD = 1.0f;
-	private static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
+	static final float UBER_CIRCLE_INIT_SIZE = 5.0f;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer) {
 		// 3 fine timesteps per coarse timestep
@@ -120,18 +120,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateTapDown(float x, float y, boolean isServer, boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 		
-		// Update player combos.
 		if (isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
-			
-			if (newcombo >= UBER_CIRCLE_THRESHOLD) {
-				float radius = UBER_CIRCLE_SIZE_MOD * newcombo + UBER_CIRCLE_INIT_SIZE;
-				player.setComboCircle(MathUtils.randInRange(x + radius, x + BBTHGame.WIDTH-radius), MathUtils.randInRange(y + radius, y + BBTHGame.HEIGHT-radius), radius);
-			}
 		} else {
 			player.setCombo(0);
-			player.clearComboCircle();
 		}
 		
 		if (isHold) {

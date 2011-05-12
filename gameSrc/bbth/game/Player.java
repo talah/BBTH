@@ -33,7 +33,6 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
-	public ComboCircle combo_circle;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
@@ -68,8 +67,6 @@ public class Player {
 			break;
 		}
 		
-		combo_circle = new ComboCircle(team);
-
 		this.aiController = controller;
 		selector = new UnitSelector(team, unitManager);
 
@@ -244,19 +241,6 @@ public class Player {
 
 	public float getCombo() {
 		return _combo;
-	}
-
-	public void setComboCircle(float center_x, float center_y, float _uber_circle_radius) {
-		this.combo_circle.setPosition(center_x, center_y);
-		this.combo_circle.radius = _uber_circle_radius;
-	}
-	
-	public void setComboCircle(PointF _uber_circle_center, float _uber_circle_radius) {
-		setComboCircle(_uber_circle_center.x, _uber_circle_center.y, _uber_circle_radius);
-	}
-	
-	public void clearComboCircle() {
-		this.combo_circle.radius = -1.f;
 	}
 
 }
