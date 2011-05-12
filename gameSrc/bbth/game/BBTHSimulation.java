@@ -205,6 +205,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			}else{
 				serverPlayer.units.remove(u);
 			}
+			aiController.removeEntity(u);
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
@@ -215,6 +216,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			}else{
 				clientPlayer.units.remove(u);
 			}
+			aiController.removeEntity(u);
 		}
 		entireTickTimer.stop();
 	}
