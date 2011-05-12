@@ -148,7 +148,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateCustomEvent(int code, boolean isServer) {
 		Player player = playerMap.get(isServer);
 
-		player.setUnitType(UnitType.fromInt(code));
+		UnitType type = UnitType.fromInt(code);
+		if (type != null) player.setUnitType(type);
 	}
 
 	@Override
