@@ -129,8 +129,8 @@ public class CombatTest extends GameScreen implements UnitManager {
 //			e.setPosition(BBTHGame.WIDTH, 100);
 		}
 		
-		spawnUnit(UnitType.UBER, Team.SERVER);
-		spawnUnit(UnitType.UBER, Team.CLIENT);
+//		spawnUnit(UnitType.UBER, Team.SERVER);
+//		spawnUnit(UnitType.UBER, Team.CLIENT);
 	}
 	
 	Bag<Unit> unitsToRemove = new Bag<Unit>();
