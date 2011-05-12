@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.util.Log;
 import bbth.engine.util.MathUtils;
 
 public class UIScrollView extends UIView {
@@ -245,6 +246,29 @@ public class UIScrollView extends UIView {
 		
 		if(max_x > 0)
 		_h_scroll_handle_rect.offsetTo(_h_track_rect.left + (pos_x/max_x) * max_offset_x, _h_scroll_handle_rect.top);
+	}
+	
+	public void setContentRect(float left, float top, float right, float bottom)
+	{
+		_hasAppeared = true;
+		
+		_content_bounds.left = left;
+		_content_bounds.top = top;
+		_content_bounds.right = right;
+		_content_bounds.bottom = bottom;
+		
+		_v_scroll_handle_rect.bottom = _v_scroll_handle_rect.top + getVerticalHandleHeight();
+		_h_scroll_handle_rect.right = _h_scroll_handle_rect.left + getHorizontalHandleWidth();
+		
+		max_y = Math.abs(_content_bounds.height() - _rect.height());
+		if(max_y > 0)
+			max_y += 8;
+		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
+		
+		max_x = Math.abs(_content_bounds.width() - _rect.width());
+		if(max_x > 0)
+			max_x += 8;
+		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
 	}
 
 

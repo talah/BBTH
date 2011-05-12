@@ -9,6 +9,7 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import android.util.Log;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
@@ -75,7 +76,7 @@ public class Player {
 	public boolean settingWall() {
 		return currentWall != null;
 	}
-	
+
 	public void startWall(float x, float y) {
 		currentWall = new Wall(x, y, x, y);
 	}
@@ -86,12 +87,12 @@ public class Player {
 
 	public Wall endWall(float x, float y) {
 		currentWall.b.set(x, y);
-		
+
 		currentWall.updateLength();
 		if (currentWall.length < BBTHSimulation.MIN_WALL_LENGTH) {
 			return null;
 		}
-		
+
 		walls.add(currentWall);
 
 		Wall toReturn = currentWall;
@@ -140,14 +141,13 @@ public class Player {
 		Unit toReturn = null;
 
 		for (int i = 0; i < units.size(); i++) {
-			Unit curr_unit = units.get(i);
-
+			Unit currUnit = units.get(i);
 			if (toReturn == null
-					|| (team == Team.SERVER && curr_unit.getY() > toReturn
+					|| (team == Team.SERVER && currUnit.getY() > toReturn
 							.getY())
-					|| (team == Team.CLIENT && curr_unit.getY() < toReturn
+					|| (team == Team.CLIENT && currUnit.getY() < toReturn
 							.getY())) {
-				toReturn = curr_unit;
+				toReturn = currUnit;
 			}
 		}
 
@@ -175,6 +175,9 @@ public class Player {
 	}
 
 	public void draw(Canvas canvas) {
+		// Draw bases
+		base.onDraw(canvas);
+
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
@@ -182,12 +185,12 @@ public class Player {
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 
-//		// draw overlay wall
-//		if (currentWall != null) {
-//			paint.setColor(team.getTempWallColor());
-//			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-//					currentWall.b.y, paint);
-//		}
+		// // draw overlay wall
+		// if (currentWall != null) {
+		// paint.setColor(team.getTempWallColor());
+		// canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+		// currentWall.b.y, paint);
+		// }
 
 		// draw units
 		paint.setStyle(Style.STROKE);
@@ -208,7 +211,7 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawForMiniMap(canvas);
 		}
-		
+
 		// draw walls
 		paint.setColor(team.getWallColor());
 		for (int i = 0; i < walls.size(); i++) {
@@ -216,19 +219,16 @@ public class Player {
 			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, paint);
 		}
 	}
-	
-	public float getHealth()
-	{
+
+	public float getHealth() {
 		return _health;
 	}
-	
-	public void resetHealth()
-	{
+
+	public void resetHealth() {
 		_health = 100;
 	}
-	
-	public void adjustHealth(float delta)
-	{
+
+	public void adjustHealth(float delta) {
 		_health = MathUtils.clamp(0, 100, _health + delta);
 	}
 }
