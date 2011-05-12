@@ -65,7 +65,7 @@ public class BeatTrack {
 			public void onCompletion(MusicPlayer mp) {
 				beatTracker = new BeatTracker(musicPlayer, beatPattern);
 				beatsInRange = new ArrayList<Beat>();
-				mp.loop();
+				mp.play();
 			}
 		});
 //		musicPlayer.setOnCompletionListener(listener);
@@ -91,7 +91,7 @@ public class BeatTrack {
 	}
 
 	public void startMusic() {
-		musicPlayer.loop();
+		musicPlayer.play();
 	}
 	
 	public void stopMusic() {
