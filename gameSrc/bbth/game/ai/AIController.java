@@ -172,9 +172,7 @@ public class AIController {
 						} else if (result2 != null) {
 							getTurnVector(entity, result2, heading);
 						}
-						
-						//canvas.drawLine(start_x, start_y, start_x + m_vec_result.x, start_y + m_vec_result.y, m_paint_3);
-						
+												
 						// If we have no offset vector, any direction will do.
 						if (m_vec_result.x == 0 && m_vec_result.y == 0) {
 							m_vec_result.x = 0.01f;
