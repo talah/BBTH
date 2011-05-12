@@ -6,32 +6,19 @@ import android.graphics.PointF;
 
 public class SimpleLineOfSightTester extends LineOfSightTester {
 
-	private ArrayList<Wall> m_walls = new ArrayList<Wall>();
-
+	private ArrayList<Wall> m_walls;
 	public float radius;
-	private float m_min_x;
-	private float m_min_y;
-	private float m_max_x;
-	private float m_max_y;
 
 	public SimpleLineOfSightTester(float f, ArrayList<Wall> walls) {
 		radius = f;
-		m_min_x = Float.MIN_VALUE;
-		m_max_x = Float.MAX_VALUE;
-		m_min_y = Float.MIN_VALUE;
-		m_max_y = Float.MAX_VALUE;
 		m_walls = walls;
 	}
 
-	public boolean isLineOfSightClear(PointF start, PointF end) {
+	public Wall isLineOfSightClear(PointF start, PointF end) {
 		return isLineOfSightClear(start.x, start.y, end.x, end.y);
 	}
 
-	public boolean isLineOfSightClear(float startx, float starty, float endx, float endy) {
-		if (endx < m_min_x || endx > m_max_x || endy < m_min_y || endy > m_max_y) {
-			return false;
-		}
-
+	public Wall isLineOfSightClear(float startx, float starty, float endx, float endy) {
 		float lineX = endx - startx;
 		float lineY = endy - starty;
 
@@ -49,18 +36,10 @@ public class SimpleLineOfSightTester extends LineOfSightTester {
 			// Line of sight isn't clear if they overlap
 			float padding = radius * 0.95f / wall.length;
 			if (t_line_on_wall >= 0 && t_line_on_wall <= 1 && t_wall_on_line >= 0 - padding && t_wall_on_line <= 1 + padding) {
-				return false;
+				return wall;
 			}
 		}
 
-		return true;
-	}
-
-	@Override
-	public void setBounds(float min_x, float min_y, float max_x, float max_y) {
-		m_min_x = min_x;
-		m_min_y = min_y;
-		m_max_x = max_x;
-		m_max_y = max_y;
+		return null;
 	}
 }

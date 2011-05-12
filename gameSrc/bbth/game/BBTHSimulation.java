@@ -54,10 +54,14 @@ public class BBTHSimulation extends Simulation {
 		playerMap.put(true, serverPlayer);
 		playerMap.put(false, clientPlayer);
 
-		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		graphGen = new FastGraphGenerator(15.0f);
+		graphGen.walls.add(new Wall(0, 0, 0, GAME_HEIGHT));
+		graphGen.walls.add(new Wall(GAME_WIDTH, 0, GAME_WIDTH, GAME_HEIGHT));
+		graphGen.walls.add(new Wall(0, 0, GAME_WIDTH, 0));
+		graphGen.walls.add(new Wall(0, GAME_HEIGHT, GAME_WIDTH, GAME_HEIGHT));
+
 		pathFinder = new Pathfinder(graphGen.graph);
 		tester = new FastLineOfSightTester(15.f, accel);
-		tester.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.3f);

@@ -21,7 +21,6 @@ import bbth.game.BBTHGame;
 import bbth.game.GridAcceleration;
 import bbth.game.Team;
 import bbth.game.ai.AIController;
-import bbth.game.units.AttackingUnit;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
 
@@ -58,11 +57,10 @@ public class BBTHAITest extends GameScreen {
 		m_parent = bbthGame;
     	m_rand = new Random();
 						
-		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		m_graph_gen = new FastGraphGenerator(15.0f);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
 		
 		m_tester = new SimpleLineOfSightTester(15.0f, m_graph_gen.walls);
-		m_tester.setBounds(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		for (int i = 0; i < 2; i++) {
 			int length = m_rand.nextInt(100) + 30;
@@ -119,7 +117,7 @@ public class BBTHAITest extends GameScreen {
 	
 	private void randomizeEntities() {
 		for (int i = 0; i < 10; i++) {
-			Unit e = new AttackingUnit(Team.SERVER, m_paint_1);
+			Unit e = new DefendingUnit(Team.SERVER, m_paint_1);
 			e.setTeam(Team.SERVER);
 			e.setPosition(0, 100);
 			e.setPosition(m_rand.nextFloat() * m_parent.getWidth()/4, m_rand.nextFloat() * m_parent.getHeight());
@@ -271,7 +269,7 @@ public class BBTHAITest extends GameScreen {
 		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
 		for (PointF p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
-			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p)) {
+			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
 				bestdist = dist;
 			}

@@ -9,11 +9,10 @@ import android.graphics.PointF;
 import bbth.engine.core.GameScreen;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
-import bbth.game.BBTHGame;
 
 public class TriangulationTestScreen extends GameScreen {
 
-	private FastGraphGenerator gen = new FastGraphGenerator(10, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+	private FastGraphGenerator gen = new FastGraphGenerator(10);
 	private Paint paint = new Paint();
 
 	public TriangulationTestScreen() {
