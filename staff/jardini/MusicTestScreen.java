@@ -19,6 +19,7 @@ import bbth.engine.core.GameScreen;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatPattern;
+import bbth.engine.sound.BeatPatternParser;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.CompositeBeatPattern;
 import bbth.engine.sound.MusicPlayer;
@@ -81,45 +82,9 @@ public class MusicTestScreen extends GameScreen {
 				nextScreen = new TitleScreen(null);
 			}
 		});
-		//_millisPerBeat = 571;
-		_millisPerBeat = 481;
-		
-		/*
-		BeatPattern simplePattern1 = new SimpleBeatPattern(350, _millisPerBeat, 3500);
-		BeatPattern simplePattern2 = new SimpleBeatPattern(0, _millisPerBeat, 35000);
-		BeatPattern []subpatterns = { simplePattern1, simplePattern2 };
-		BeatPattern compositePattern = new CompositeBeatPattern(subpatterns);
-		Beat[] beats = new Beat[10];
-		beats[0] = Beat.tap(571);
-		beats[1] = Beat.tap(571);
-		beats[2] = Beat.rest(571);
-		beats[3] = Beat.tap(285);
-		beats[4] = Beat.tap(286);
-		beats[5] = Beat.tap(571);
-		beats[6] = Beat.tap(190);
-		beats[7] = Beat.tap(190);
-		beats[8] = Beat.tap(191);
-		beats[9] = Beat.hold(1142);
-		
-		BeatPattern customPattern = new SimpleBeatPattern(385, beats);
-		_beatTracker = new BeatTracker(_musicPlayer, compositePattern);
-		*/
-		
-		List<Beat> beats = new ArrayList<Beat>();
-		for (int phrase = 0; phrase < 4; ++phrase) {
-			for (int i = 0; i < 4; ++i) {
-				beats.add(Beat.tap(481));
-			}
-			for (int i = 0; i < 4; ++i) {
-				beats.add(Beat.tap(240));
-				beats.add(Beat.tap(241));
-			}
-			for (int i = 0; i < 4; ++i) {
-				beats.add(Beat.rest(481));
-			}
-		}
-		
-		_beatTracker = new BeatTracker(_musicPlayer, new SimpleBeatPattern(beats));
+
+		BeatPattern p = BeatPatternParser.parse(R.xml.track2);
+		_beatTracker = new BeatTracker(_musicPlayer, p);
 		
 		_beats = new ArrayList<Beat>();
 		_musicPlayer.play();

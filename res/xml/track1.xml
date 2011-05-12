@@ -1,0 +1,19 @@
+<root>
+<pattern id="pattern1" bpm="571">
+    <rest type="whole" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <beat type="quarter" />
+    <hold type="half" />
+    <rest type="half" />
+    <hold type="half" />
+    <rest type="half" />
+</pattern>
+
+<song>
+    <load-pattern id ="pattern1" />
+    <load-pattern id ="pattern1" />
+    <load-pattern id ="pattern1" />
+</song>
+</root>
