@@ -259,6 +259,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		remotePlayer.draw(canvas);
 
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
+		
+		localPlayer.postDraw(canvas);
+		remotePlayer.postDraw(canvas);
 	}
 
 	public void drawForMiniMap(Canvas canvas) {

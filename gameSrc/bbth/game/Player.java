@@ -66,7 +66,7 @@ public class Player {
 		}
 
 		this.aiController = controller;
-		selector = new UnitSelector(team, unitManager);
+		selector = new UnitSelector(team, unitManager, BBTHSimulation.PARTICLES);
 
 		walls = new ArrayList<WallUnit>();
 	}
@@ -91,7 +91,7 @@ public class Player {
 			return null;
 		}
 
-		walls.add(new WallUnit(currentWall, unitManager, team, paint, particles));
+		walls.add(new WallUnit(currentWall, unitManager, team, paint, BBTHSimulation.PARTICLES));
 
 		Wall toReturn = currentWall;
 		currentWall = null;
@@ -119,9 +119,9 @@ public class Player {
 
 		Unit newUnit = null;
 		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
-			newUnit = UnitType.UBER.createUnit(unitManager, team, paint, particles);
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
 		} else {
-			newUnit = selector.getUnitType().createUnit(unitManager, team, paint, particles);
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
 		}
 
 		newUnit.setPosition(x, y);
@@ -191,10 +191,9 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawEffects(canvas);
 		}
-
-		paint.setStyle(Style.FILL);
-		particles.draw(canvas, paint);
-		
+	}
+	
+	public void postDraw(Canvas canvas) {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawHealthBar(canvas);
 		}
