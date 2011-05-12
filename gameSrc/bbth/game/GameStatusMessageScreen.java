@@ -58,7 +58,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		if (button == playAgain) {
 			nextScreen = new GameSetupScreen();
 		} else if (button == quit) {
-			// TODO Do something here, like quitting the game
+			System.exit(0);
 		}
 	}
 
