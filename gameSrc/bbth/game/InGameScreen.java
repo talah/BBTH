@@ -206,8 +206,8 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		}
 
 		// Update healths
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.clientPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.serverPlayer.getHealth());
 
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
