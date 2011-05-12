@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
@@ -32,6 +33,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private GridAcceleration accel;
 	private HashSet<Unit> cachedUnits;
 	private Paint paint = new Paint();
+	private Bag<Unit> cachedUnitBag = new Bag<Unit>();
+	private HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -192,15 +195,63 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	public void notifyUnitDead(Unit unit) {
+		localPlayer.units.remove(unit);
+		remotePlayer.units.remove(unit);
+		aiController.removeEntity(unit);
 	}
 
+	/**
+	 * WILL RETURN THE SAME BAG OVER AND OVER
+	 */
 	@Override
 	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
-		return new Bag<Unit>();
+		cachedUnitBag.clear();
+		accel.getUnitsInAABB(x - r, y - r, x + r, y + r, cachedUnitSet);
+		for (Unit unit : cachedUnitSet) {
+			cachedUnitBag.add(unit);
+		}
+		return cachedUnitBag;
 	}
 
+	/**
+	 * WILL RETURN THE SAME BAG OVER AND OVER
+	 */
 	@Override
 	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2, float y2) {
-		return new Bag<Unit>();
+		cachedUnitBag.clear();
+
+		// calculate axis vector
+		float axisX = -(y2 - y);
+		float axisY = x2 - x;
+
+		// normalize axis vector
+		float axisLen = FloatMath.sqrt(axisX * axisX + axisY * axisY);
+		axisX /= axisLen;
+		axisY /= axisLen;
+
+		float lMin = axisX * x + axisY * y;
+		float lMax = axisX * x2 + axisY * y2;
+		if (lMax < lMin) {
+			float temp = lMin;
+			lMin = lMax;
+			lMax = temp;
+		}
+
+		accel.getUnitsInAABB(Math.min(x, y), Math.min(y, y2), Math.max(x2, x2), Math.max(y, y2), cachedUnitSet);
+
+		for (Unit unit : cachedUnitSet) {
+			// calculate projections
+			float projectedCenter = axisX * unit.getX() + axisY * unit.getY();
+			float radius = unit.getRadius();
+			if (!intervalsDontOverlap(projectedCenter - radius, projectedCenter + radius, lMin, lMax)) {
+				cachedUnitBag.add(unit);
+			}
+		}
+
+		return cachedUnitBag;
+	}
+
+	private static final boolean intervalsDontOverlap(float min1, float max1, float min2, float max2) {
+		return (min1 < min2 ? min2 - max1 : min1 - max2) > 0;
 	}
 }
