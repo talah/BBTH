@@ -33,7 +33,7 @@ public class InGameScreen extends UIScrollView {
 	private final RectF minimapRect, opponentHealthRect, healthRect;
 	private final float HEALTHBAR_HEIGHT = 10;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth,
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
 		super(null);
 
@@ -67,7 +67,7 @@ public class InGameScreen extends UIScrollView {
 		this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
 
 		// Set up sound stuff
-		beatTrack = new BeatTrack(Song.RETRO);
+		beatTrack = new BeatTrack(song);
 		beatTrack.startMusic();
 		
 		paint = new Paint();
