@@ -111,7 +111,7 @@ public class AIController {
 				m_offensive.update(entity, this, flock);
 				//m_uber.update(entity, this, flock);
 			}
-
+			
 			num_to_update--;
 
 			if (i >= size - 1) {
@@ -121,7 +121,7 @@ public class AIController {
 			}
 		}
 
-		if (i >= size - 1) {
+		if (i > size - 1) {
 			m_last_updated.put(team, 0);
 		} else {
 			m_last_updated.put(team, i);

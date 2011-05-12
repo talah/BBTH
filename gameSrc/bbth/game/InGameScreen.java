@@ -218,11 +218,13 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
+			beatTrack.stopMusic();
 			this.nextScreen = new GameStatusMessageScreen.LoseScreen();
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
+			beatTrack.stopMusic();
 			this.nextScreen = new GameStatusMessageScreen.WinScreen();
 		}
 
