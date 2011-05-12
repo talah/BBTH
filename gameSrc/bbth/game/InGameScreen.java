@@ -9,6 +9,7 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.FloatMath;
+import android.util.Log;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
@@ -60,12 +61,19 @@ public class InGameScreen extends UIScrollView {
 		label.setSize(BBTHGame.WIDTH - 20, 10);
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
+		
+		this.setContentRect(0, 0, BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT);
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
-		this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
-
+		
+		if (this.team == Team.SERVER) {
+			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2 - BBTHGame.HEIGHT);
+		} else {
+			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2);
+		}
+		
 		// Set up sound stuff
 		beatTrack = new BeatTrack(song);
 		beatTrack.startMusic();
@@ -155,7 +163,6 @@ public class InGameScreen extends UIScrollView {
 			beatTrack.stopMusic();
 			nextScreen = new GameSetupScreen();
 		}
-
 		
 		sim.onUpdate(seconds);
 		healthRect.right = MathUtils.scale(0, 100, minimapRect.left+1, minimapRect.right-1, sim.localPlayer.getHealth());
