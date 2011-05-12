@@ -11,6 +11,8 @@ import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
+import bbth.game.BBTHSimulation;
+import bbth.game.Team;
 import bbth.game.units.Unit;
 
 public class UberAI extends UnitAI {
@@ -87,12 +89,14 @@ public class UberAI extends UnitAI {
 		ycomp = m_flock_dir.y;
 
 		// Calculate somewhere to go if it's a leader.
-		if (!flock.hasLeader(entity)) {
+		// Calculate somewhere to go if it's a leader.
+		//if (!flock.hasLeader(entity)) {
 			Unit enemy = entity.getTarget();
 
+			float goal_x = entity.getX();
+			float goal_y = (entity.getTeam() == Team.SERVER ? BBTHSimulation.GAME_HEIGHT/4 : BBTHSimulation.GAME_HEIGHT - BBTHSimulation.GAME_HEIGHT/4);
+			
 			if (enemy != null) {
-				float goal_x = enemy.getX();
-				float goal_y = enemy.getY();
 				start_point.set(start_x, start_y);
 				end_point.set(goal_x, goal_y);
 				
@@ -130,13 +134,13 @@ public class UberAI extends UnitAI {
 					// + start.x + ", " + start.y + " End: " + end.x + ", " +
 					// end.y);
 				}
-
-				float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
-				float objectiveweighting = getObjectiveWeighting();
-				xcomp += objectiveweighting * FloatMath.cos(angle);
-				ycomp += objectiveweighting * FloatMath.sin(angle);
 			}
-		}
+			
+			float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
+			float objectiveweighting = getObjectiveWeighting();
+			xcomp += objectiveweighting * FloatMath.cos(angle);
+			ycomp += objectiveweighting * FloatMath.sin(angle);
+		//}
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
 
