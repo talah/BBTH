@@ -22,7 +22,7 @@ public class AIController {
 
 	Team[] m_teams;
 		
-	private float m_fraction_to_update = 0.30f;
+	private float m_fraction_to_update = 1;
 	private LineOfSightTester m_tester;
 	
 	PointF m_center_stick;

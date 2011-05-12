@@ -80,7 +80,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		tester = new FastLineOfSightTester(15.f, accel);
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
-		aiController.setUpdateFraction(.3f);
+		aiController.setUpdateFraction(.1f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
