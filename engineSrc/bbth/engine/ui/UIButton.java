@@ -40,13 +40,16 @@ public class UIButton extends UIControl {
 	public void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
 	    
-		_paint.setStyle(Style.STROKE);
-		_paint.setColor(stroke_color);
-		canvas.drawRoundRect(_rect, corner_radius, corner_radius, _paint);
-		_paint.setStyle(Style.FILL);
+		
 		
 		if(isDisabled)
 		{
+			
+			_paint.setStyle(Style.STROKE);
+			_paint.setColor(UIDefaultConstants.UI_BUTTON_DISABLED_COLOR);
+			canvas.drawRoundRect(_rect, corner_radius, corner_radius, _paint);
+			_paint.setStyle(Style.FILL);
+			
 			_paint.setShader(disabled_state);
 			canvas.drawRoundRect(_rect, corner_radius, corner_radius, _paint);
 			_paint.setShader(null);
@@ -55,6 +58,11 @@ public class UIButton extends UIControl {
 			canvas.drawText(text, center.x, center.y + _paint.getTextSize() / 3.f, _paint);
 			return;
 		}
+		
+		_paint.setStyle(Style.STROKE);
+		_paint.setColor(stroke_color);
+		canvas.drawRoundRect(_rect, corner_radius, corner_radius, _paint);
+		_paint.setStyle(Style.FILL);
 		
 		if(isDown)
 		{
