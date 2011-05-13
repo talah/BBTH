@@ -116,7 +116,8 @@ public class BeatTrack {
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
 		paint.setStrokeWidth(2.f);
-		canvas.drawCircle(BEAT_LINE_X, BEAT_LINE_Y, BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, paint);
 		paint.setStyle(Style.FILL);
 
 		paint.setColor(Color.WHITE);

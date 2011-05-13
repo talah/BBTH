@@ -26,7 +26,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private BeatTrack beatTrack;
 	private Wall currentWall;
 	private ParticleSystem particles;
-	private Paint paint, serverHealthPaint, clientHealthPaint;
+	private Paint paint;
 	private UILabel label;
 	private static final boolean USE_UNIT_SELECTOR = false;
 
@@ -47,11 +47,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		tutorial = new Tutorial(team == Team.SERVER);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		clientHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-		serverHealthPaint.setColor(Team.SERVER.getBaseColor());
-		clientHealthPaint.setColor(Team.CLIENT.getBaseColor());
 
 		// Test labels
 		label = new UILabel("", null);

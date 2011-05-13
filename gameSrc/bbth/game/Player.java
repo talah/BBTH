@@ -41,7 +41,7 @@ public class Player {
 		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
 
-		base = new Base(this, team);
+		base = new Base(this);
 		_health = 100;
 		setCombo(0);
 
