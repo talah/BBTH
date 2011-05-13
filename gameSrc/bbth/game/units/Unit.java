@@ -9,6 +9,7 @@ import bbth.engine.entity.BasicMovable;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
 import bbth.game.*;
+import bbth.game.util.Hash;
 
 /**
  * A BBTH unit is one of the little dudes that walk around on the map and kill
@@ -150,4 +151,15 @@ public abstract class Unit extends BasicMovable {
 	}
 	
 	protected static Paint tempPaint = new Paint();
+
+	public int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, getX());
+		hash = Hash.mix(hash, getY());
+		hash = Hash.mix(hash, getXVel());
+		hash = Hash.mix(hash, getYVel());
+		hash = Hash.mix(hash, getHealth());
+		hash = Hash.mix(hash, getType().ordinal());
+		return hash;
+	}
 }

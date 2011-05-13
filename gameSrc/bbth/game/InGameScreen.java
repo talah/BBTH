@@ -164,6 +164,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					x, y += jump, paint);
 			entireDrawTimer.stop();
 		}
+
+		if (!sim.isSynced()) {
+			paint.setColor(Color.RED);
+			paint.setTextSize(40);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("NOT SYNCED!", BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2, paint);
+		}
 	}
 
 	@Override
