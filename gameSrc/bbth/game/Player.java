@@ -87,9 +87,7 @@ public class Player {
 		currentWall.b.set(x, y);
 	}
 
-	public Wall endWall(float x, float y) {
-		currentWall.b.set(x, y);
-
+	public Wall endWall() {
 		currentWall.updateLength();
 		if (currentWall.length < BBTHSimulation.MIN_WALL_LENGTH) {
 			return null;

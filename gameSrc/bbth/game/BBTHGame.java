@@ -12,7 +12,7 @@ public class BBTHGame extends Game {
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = true;
-	
+
 	/**
 	 * This is static because it would require a lot of changes otherwise :(
 	 */
@@ -26,10 +26,14 @@ public class BBTHGame extends Game {
 		// currentScreen = new TransitionTest();
 		// currentScreen = new GameSetupScreen();
 		// currentScreen = new CombatTest(this);
-		currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-				GameActivity.instance, new LockStepProtocol()),
-				Song.DONKEY_KONG, new LockStepProtocol());
-		// currentScreen = new GameSetupScreen();
+
+		if (IS_SINGLE_PLAYER) {
+			currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
+					GameActivity.instance, new LockStepProtocol()),
+					Song.DONKEY_KONG, new LockStepProtocol());
+		} else {
+			currentScreen = new GameSetupScreen();
+		}
 	}
 
 	@Override

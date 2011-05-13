@@ -64,7 +64,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// This is the virtual size of the game
 	public static final float GAME_X = BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_Y = 0;
-	public static final float GAME_WIDTH = BBTHGame.WIDTH - BeatTrack.BEAT_TRACK_WIDTH;
+	public static final float GAME_WIDTH = BBTHGame.WIDTH
+			- BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT;
 
 	// Minimal length of a wall
@@ -108,7 +109,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.10f);
-//		aiController.setUpdateFraction(.99f);
+		// aiController.setUpdateFraction(.99f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
@@ -142,6 +143,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
+		if (x < 0 || y < 0)
+			return;
+
 		if (BBTHGame.DEBUG || isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
@@ -162,26 +166,34 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		if (!player.settingWall())
 			return;
-		player.updateWall(x, y);
+
+		if (x < 0 || y < 0) {
+			generateWall(player);
+		} else {
+			player.updateWall(x, y);
+		}
 	}
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
+		generateWall(player);
+	}
 
-		if (!player.settingWall())
-			return;
-		Wall w = player.endWall(x, y);
-
-		// // insanity check--the below should never do anything
-		if (w == null)
-			return;
-
-		if (player == remotePlayer) {
+	/**
+	 * Creates a wall out of the given player, and lets the AI know about it.
+	 */
+	public void generateWall(Player player) {
+		if (!player.settingWall()) return; 
+		
+		Wall w = player.endWall();
+		if (w == null) return;
+		
+		if (player != localPlayer) {
 			this.generateParticlesForWall(w, player.getTeam());
 		}
-
-		addWall(w);
+		
+		addWallToAI(w);
 	}
 
 	public void generateParticlesForWall(Wall wall, Team team) {
@@ -204,7 +216,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	private void addWall(Wall wall) {
+	private void addWallToAI(Wall wall) {
 		graphGen.walls.add(wall);
 		graphGen.compute();
 		accel.clearWalls();
@@ -317,7 +329,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (BBTHGame.DEBUG) {
 			graphGen.draw(canvas);
 		}
-		
+
 		localPlayer.postDraw(canvas);
 		remotePlayer.postDraw(canvas);
 	}
