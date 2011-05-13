@@ -74,6 +74,11 @@ public abstract class Simulation {
 	public final boolean isServer;
 
 	/**
+	 * The hash of the internal state of each end, returned by getHash().
+	 */
+	private int remoteHash, localHash;
+
+	/**
 	 * @param finePerCoarse
 	 *            The number of fine timesteps per coarse timestep.
 	 * @param secondsPerCoarse
@@ -132,6 +137,10 @@ public abstract class Simulation {
 				// Add all the events to the queue
 				nextLocalStep.addEventsToQueue(incomingEvents);
 				nextRemoteStep.addEventsToQueue(incomingEvents);
+
+				// Hashes of internal state, so we can tell if we are synced
+				localHash = nextLocalStep.hash;
+				remoteHash = nextRemoteStep.hash;
 			}
 
 			// Process events for this timestep
@@ -190,6 +199,11 @@ public abstract class Simulation {
 	protected abstract void simulateCustomEvent(float x, float y, int code, boolean isServer);
 
 	/**
+	 * For state integrity checking.
+	 */
+	protected abstract int getHash();
+
+	/**
 	 * Called every fine timestep with the number of seconds since the last fine
 	 * timestep.
 	 */
@@ -199,6 +213,10 @@ public abstract class Simulation {
 	 * Called every coarse timestep.
 	 */
 	private final void endCurrentTimestep() {
+		// Package up a representation of our internal state so we can tell if
+		// we have desynced
+		currentStep.hash = getHash();
+
 		// Set the timestep to go off in the future
 		currentStep.coarseTime = currentCoarseTimestep + coarseLag;
 
@@ -239,5 +257,9 @@ public abstract class Simulation {
 
 	public final void recordCustomEvent(float x, float y, int code) {
 		currentStep.events.add(makeEvent(x, y, Event.CUSTOM, false, false, code));
+	}
+
+	public boolean isSynced() {
+		return remoteHash == localHash;
 	}
 }

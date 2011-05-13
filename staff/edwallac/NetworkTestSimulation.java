@@ -57,4 +57,9 @@ public class NetworkTestSimulation extends Simulation {
 		particles.tick(seconds);
 		timestep++;
 	}
+
+	@Override
+	protected int getHash() {
+		return 0;
+	}
 }

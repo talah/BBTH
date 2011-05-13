@@ -121,49 +121,42 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		if (!tutorial.isFinished()) {
 			tutorial.draw(canvas);
+		} else if (!sim.isReady()) {
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(20);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
 			// Draw timing information
 			paint.setColor(Color.argb(63, 255, 255, 255));
 			paint.setTextSize(8);
-			int x = 50;
-			int y = 20;
+			int x = 80;
+			int y = 30;
 			int jump = 11;
-			canvas.drawText(
-					"Entire update: " + entireUpdateTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
-					+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"      - Controller: "
-							+ sim.aiControllerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Server player: "
-							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Client player: "
-							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
-					+ " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"- Particles: " + drawParticleTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			entireDrawTimer.stop();
+			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
 		}
+
+		if (!sim.isSynced()) {
+			paint.setColor(Color.RED);
+			paint.setTextSize(40);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
+		}
+		entireDrawTimer.stop();
 	}
 
 	@Override
