@@ -70,6 +70,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		sim.setupSubviews(this);
+		BBTHSimulation.PARTICLES.reset();
 
 		if (this.team == Team.CLIENT) {
 			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
