@@ -11,7 +11,13 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 180 + 400;
+	public static final boolean DEBUG = true;
 	
+	/**
+	 * This is static because it would require a lot of changes otherwise :(
+	 */
+	public static boolean IS_SINGLE_PLAYER = DEBUG;
+
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);
 		// currentScreen = new BBTHAITest(this);

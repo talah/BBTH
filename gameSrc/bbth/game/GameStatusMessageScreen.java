@@ -14,34 +14,32 @@ import bbth.game.BeatTrack.Song;
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {
 		public DisconnectScreen() {
-			super("You have been disconnected.", null);
+			super("You have been disconnected.");
 		}
 	}
 	
 	public static class WinScreen extends GameStatusMessageScreen {
 		public WinScreen() {
-			super("Congratulations! You win!", null);
+			super("Congratulations! You win!");
 		}
 	}
 	
 	public static class LoseScreen extends GameStatusMessageScreen {
 		public LoseScreen() {
-			super("Oh noes, you lost the game :(", null);
+			super("Oh noes, you lost the game :(");
 		}
 	}
 	
 	public static class TieScreen extends GameStatusMessageScreen {
 		public TieScreen() {
-			super("It's a tie!", null);
+			super("It's a tie!");
 		}
 	}
 	
 	private UILabel message;
 	private UIButton playAgain, quit;
 
-	public GameStatusMessageScreen(String text, Object tag) {
-		super(tag);
-
+	public GameStatusMessageScreen(String text) {
 		message = new UILabel(text, tag);
 		message.setAnchor(Anchor.TOP_CENTER);
 		message.setPosition(BBTHGame.WIDTH / 2, 40);

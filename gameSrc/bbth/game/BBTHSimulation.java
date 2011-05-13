@@ -137,8 +137,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
-//		if (isOnBeat) {
-		if (true) {
+		if (BBTHGame.DEBUG || isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
 
@@ -228,9 +227,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
-		// if (!serverReady || !clientReady) {
-		// return;
-		// }
+		if (!isReady()) {
+			return;
+		}
 
 		entireTickTimer.start();
 		timestep++;
@@ -403,8 +402,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public boolean isReady() {
-		// return clientReady && serverReady;
-		return true;
+		return BBTHGame.IS_SINGLE_PLAYER || (clientReady && serverReady);
 	}
 
 	@Override
