@@ -18,24 +18,27 @@ import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.sound.SoundManager;
 
 /**
- * A complete beat track for a single song.  Handles music, hit and miss sounds, scoring.
+ * A complete beat track for a single song. Handles music, hit and miss sounds,
+ * scoring.
+ * 
  * @author jardini
- *
+ * 
  */
 public class BeatTrack {
 	public enum Song {
-		DONKEY_KONG, RETRO;
+		DONKEY_KONG,
+		RETRO;
 	}
-	
-	private static final int BEAT_TRACK_WIDTH = 50;
+
+	public static final int BEAT_TRACK_WIDTH = 50;
 	public static final float BEAT_LINE_X = 25;
-	public static final float BEAT_LINE_Y = 135;
+	public static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
 	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
 
 	private static final int MAX_SOUNDS = 8;
 	private static final int HIT_SOUND_ID = 0;
 	private static final int MISS_SOUND_ID = 1;
-	
+
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private int combo;
@@ -46,7 +49,7 @@ public class BeatTrack {
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
-	
+
 	public BeatTrack(Song song, OnCompletionListener listener) {
 		// Setup song-specific stuff
 		switch (song) {
@@ -59,8 +62,8 @@ public class BeatTrack {
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
 			break;
 		}
-		
-		// Setup general stuff		
+
+		// Setup general stuff
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
 				beatTracker = new BeatTracker(musicPlayer, beatPattern);
@@ -69,7 +72,7 @@ public class BeatTrack {
 			}
 		});
 		musicPlayer.setOnCompletionListener(listener);
-		
+
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);
 		soundManager.addSound(MISS_SOUND_ID, R.raw.drum2);
@@ -93,15 +96,15 @@ public class BeatTrack {
 	public void startMusic() {
 		musicPlayer.play();
 	}
-	
+
 	public void stopMusic() {
 		musicPlayer.stop();
 	}
 
 	public void draw(Canvas canvas) {
-		paint.setARGB(127, 0, 0, 0);
-		paint.setStrokeWidth(2.f);
-		canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
+		// paint.setARGB(127, 0, 0, 0);
+		// paint.setStrokeWidth(2.f);
+		// canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
 
 		paint.setARGB(127, 255, 255, 255);
 		paint.setStrokeWidth(2.f);
@@ -109,22 +112,22 @@ public class BeatTrack {
 		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
 
 		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
-		
+
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
 		paint.setStrokeWidth(2.f);
 		canvas.drawCircle(BEAT_LINE_X, BEAT_LINE_Y, BEAT_CIRCLE_RADIUS, paint);
 		paint.setStyle(Style.FILL);
-		
+
 		paint.setColor(Color.WHITE);
-		// canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);		
-		canvas.drawText(comboStr, 25, BBTHGame.HEIGHT - 10, paint);
+		// canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);
+		canvas.drawText(comboStr, 35, BBTHGame.HEIGHT - 10, paint);
 		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 	}
 
 	public void refreshBeats() {
 		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-700, 1900);
+		beatsInRange = beatTracker.getBeatsInRange(-700, 5000);
 	}
 
 	public Beat.BeatType checkTouch(BBTHSimulation sim, float x, float y) {
