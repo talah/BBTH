@@ -27,7 +27,7 @@ public class BeatTrack {
 		DONKEY_KONG, RETRO;
 	}
 	
-	private static final int BEAT_TRACK_WIDTH = 50;
+	public static final int BEAT_TRACK_WIDTH = 50;
 	public static final float BEAT_LINE_X = 25;
 	public static final float BEAT_LINE_Y = 135;
 	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
@@ -99,9 +99,9 @@ public class BeatTrack {
 	}
 
 	public void draw(Canvas canvas) {
-		paint.setARGB(127, 0, 0, 0);
-		paint.setStrokeWidth(2.f);
-		canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
+//		paint.setARGB(127, 0, 0, 0);
+//		paint.setStrokeWidth(2.f);
+//		canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
 
 		paint.setARGB(127, 255, 255, 255);
 		paint.setStrokeWidth(2.f);

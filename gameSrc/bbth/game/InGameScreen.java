@@ -93,7 +93,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		// Draw the game
 		drawSimTimer.start();
+		canvas.save();
+		canvas.translate(BBTHSimulation.GAME_X, BBTHSimulation.GAME_Y);
 		sim.draw(canvas);
+		canvas.restore();
 		drawSimTimer.stop();
 
 		paint.setColor(team.getTempWallColor());
@@ -218,6 +221,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
+
 		BeatType beatType = beatTrack.checkTouch(sim, x, y);
 
 		// Unpack!
@@ -242,6 +248,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
+
 		if (currentWall != null) {
 			currentWall.b.set(x, y);
 		}
@@ -264,6 +273,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			userScrolling = false;
 			return;
 		}
+
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
 
 		if (currentWall != null) {
 			currentWall.b.set(x, y);

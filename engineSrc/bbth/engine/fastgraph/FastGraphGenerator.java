@@ -27,6 +27,7 @@ public class FastGraphGenerator {
 	public final ConnectedGraph graph = new ConnectedGraph();
 	public final ArrayList<Wall> walls = new ArrayList<Wall>();
 	public float radius;
+	private static final Paint paint = new Paint();
 
 	public FastGraphGenerator(float largestEntityRadius, float width, float height) {
 		radius = largestEntityRadius;
@@ -93,12 +94,8 @@ public class FastGraphGenerator {
 		}
 	}
 
-	public void draw(Canvas canvas, Paint paint) {
-		paint.setColor(Color.RED);
-		for (Wall wall : walls) {
-			canvas.drawLine(wall.a.x, wall.a.y, wall.b.x, wall.b.y, paint);
-		}
-
+	public void draw(Canvas canvas) {
+		paint.setAntiAlias(true);
 		paint.setColor(Color.GREEN);
 		for (PointF point : graph.m_connections.keySet()) {
 			ArrayList<PointF> neighbors = graph.m_connections.get(point);

@@ -60,7 +60,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private boolean clientReady;
 
 	// This is the virtual size of the game
-	public static final float GAME_WIDTH = BBTHGame.WIDTH;
+	public static final float GAME_X = BeatTrack.BEAT_TRACK_WIDTH;
+	public static final float GAME_Y = 0;
+	public static final float GAME_WIDTH = BBTHGame.WIDTH - BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT;
 
 	// Minimal length of a wall
@@ -309,7 +311,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
 		if (BBTHGame.DEBUG) {
-			graphGen.draw(canvas, PARTICLE_PAINT);
+			graphGen.draw(canvas);
 		}
 		
 		localPlayer.postDraw(canvas);
