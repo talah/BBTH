@@ -1,25 +1,32 @@
 package jardini;
 
-import static bbth.game.BBTHGame.*;
+import static bbth.game.BBTHGame.HEIGHT;
+import static bbth.game.BBTHGame.WIDTH;
 
-import java.util.*;
+import java.util.List;
 
 import kvgishen.TitleScreen;
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.core.GameScreen;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.sound.*;
+import bbth.engine.sound.Beat;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.util.*;
+import bbth.engine.util.ColorUtils;
+import bbth.engine.util.MathUtils;
+import bbth.game.BeatTrack;
+import bbth.game.BeatTrack.Song;
 import bbth.game.R;
 
 /**
- * A simple test screen for music playback and tapping (I wanted this in the
- * sound package but Eclipse wasn't recognizing R.raw in there)
+ * A simple test screen for music playback and tapping
  * 
  * @author jardini
  */
@@ -31,20 +38,17 @@ public class MusicTestScreen extends GameScreen {
 	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
 	
-	private static final int HIT_SOUND_ID = 0;
-	private static final int MISS_SOUND_ID = 1;
+	private static final int HIT_SOUND_ID = R.raw.tambourine;
+	private static final int MISS_SOUND_ID = R.raw.drum;
 	
 	private Paint _paint;
 	private ParticleSystem _particles;
 	private RectF _comboBox;
 	
-	private MusicPlayer _musicPlayer;
-	private SoundManager _soundManager;
-	private BeatTracker _beatTracker;
-	private int _millisPerBeat;
+	private BeatTrack _beatTrack;
 	private int _score;
 	private int _combo;
-	private String _scoreStr, _comboStr;
+	private String _comboStr;
 	private List<Beat> _beats;
 	
 	public MusicTestScreen(Context context) {
@@ -53,33 +57,24 @@ public class MusicTestScreen extends GameScreen {
 		_paint.setTextSize(10);
 		
 		_score = _combo = 0;
-		_scoreStr = String.valueOf(_score);
 		_comboStr = "x" + String.valueOf(_combo);
 		
 		_comboBox = new RectF(0, 0, 0, 0);
 		_particles = new ParticleSystem(100, 0.5f);
 		
-		_soundManager = new SoundManager(context, 8);
-		_soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);
-		_soundManager.addSound(MISS_SOUND_ID, R.raw.drum2);
-		_musicPlayer = new MusicPlayer(context, R.raw.retrobit);
-		_musicPlayer.setOnCompletionListener(new OnCompletionListener() {
+		_beatTrack = new BeatTrack(Song.RETRO, new OnCompletionListener() {
 			@Override
 			public void onCompletion(MusicPlayer mp) {
 				nextScreen = new TitleScreen(null);
 			}
 		});
-
-		BeatPattern p = BeatPatternParser.parse(R.xml.track2);
-		_beatTracker = new BeatTracker(_musicPlayer, p);
 		
-		_beats = new ArrayList<Beat>();
-		_musicPlayer.play();
+		_beatTrack.startMusic();
 	}
 	
 	@Override
 	public void onUpdate(float seconds) {
-		_beats = _beatTracker.getBeatsInRange(-400, 1500);
+		_beatTrack.refreshBeats();
 		_particles.tick(seconds);
 	}
 	
@@ -97,41 +92,14 @@ public class MusicTestScreen extends GameScreen {
 				_comboBox.left = _comboBox.right;
 			}
 		} else {
-			
-			Beat.BeatType beatType = _beatTracker.onTouchDown();
-			boolean onBeat = (beatType != Beat.BeatType.REST);
-			if (onBeat) {
-				_soundManager.play(HIT_SOUND_ID);
-				++_score;
-				++_combo;
-				_scoreStr = String.valueOf(_score);
-				_comboStr = "x" + String.valueOf(_combo);
-				
-				if (_combo == 5) {
-					_comboBox.left = MathUtils.randInRange(WIDTH * 0.25f, WIDTH * 0.7f);
-					_comboBox.right = _comboBox.left + 10;
-					_comboBox.top = MathUtils.randInRange(0, HEIGHT * 0.8f);
-					_comboBox.bottom = _comboBox.top + 10;
-				} else if (_combo > 5) {
-					_comboBox.left -= 1;
-					_comboBox.right += 1;
-					_comboBox.top -= 1;
-					_comboBox.bottom += 1;
-				}
-			} else {
-				_soundManager.play(MISS_SOUND_ID);
-				_combo = 0;
-				_comboStr = "x" + String.valueOf(_combo);
-				_comboBox.bottom = _comboBox.top;
-				_comboBox.left = _comboBox.right;
-			}
+			_beatTrack.checkTouch(x, y);
 		}
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
 		// draw beats section
-		_beatTracker.drawBeats(_beats, BEAT_LINE_X, BEAT_LINE_Y, canvas, _paint);
+		_beatTrack.draw(canvas);
 		_paint.setColor(Color.WHITE);
 		canvas.drawLine(0, BEAT_LINE_Y - Beat.RADIUS, 50, BEAT_LINE_Y - Beat.RADIUS, _paint);
 		canvas.drawLine(0, BEAT_LINE_Y + Beat.RADIUS, 50, BEAT_LINE_Y + Beat.RADIUS, _paint);
@@ -165,11 +133,11 @@ public class MusicTestScreen extends GameScreen {
 	
 	@Override
 	public void onStart() {
-		_musicPlayer.play();
+		_beatTrack.startMusic();
 	}
 	
 	@Override
 	public void onStop() {
-		_musicPlayer.pause();
+		_beatTrack.stopMusic();
 	}
 }

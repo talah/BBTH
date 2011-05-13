@@ -10,8 +10,6 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
-import bbth.engine.sound.BeatPattern;
-import bbth.engine.sound.BeatPatternParser;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
@@ -33,37 +31,29 @@ public class BeatTrack {
 	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
 
 	private static final int MAX_SOUNDS = 8;
-	private static final int HIT_SOUND_ID = 0;
-	private static final int MISS_SOUND_ID = 1;
+	private final int HIT_SOUND_ID;
+	private final int MISS_SOUND_ID;
 	
+	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private int combo;
 	private int score;
 	private String comboStr;
 	// scoreStr;
-	private BeatPattern beatPattern;
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
 	
-	public BeatTrack(Song song, OnCompletionListener listener) {
-		// Setup song-specific stuff
-		switch (song) {
-		case DONKEY_KONG:
-			beatPattern = BeatPatternParser.parse(R.xml.track1);
-			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
-			break;
-		case RETRO:
-			beatPattern = BeatPatternParser.parse(R.xml.track2);
-			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
-			break;
-		}
+	public BeatTrack(Song s, OnCompletionListener listener) {
+		song = s;
+		loadSong(s);
+		beatsInRange = new ArrayList<Beat>();
 		
 		// Setup general stuff		
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
-				beatTracker = new BeatTracker(musicPlayer, beatPattern);
+				loadSong(song);
 				beatsInRange = new ArrayList<Beat>();
 				mp.play();
 			}
@@ -71,11 +61,8 @@ public class BeatTrack {
 		musicPlayer.setOnCompletionListener(listener);
 		
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
-		soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);
-		soundManager.addSound(MISS_SOUND_ID, R.raw.drum2);
-
-		beatTracker = new BeatTracker(musicPlayer, beatPattern);
-		beatsInRange = new ArrayList<Beat>();
+		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
+		MISS_SOUND_ID = soundManager.addSound(R.raw.drum);
 
 		// Setup score stuff
 		score = 0;
@@ -88,6 +75,20 @@ public class BeatTrack {
 		paint.setTextSize(10);
 		paint.setStrokeCap(Cap.ROUND);
 		paint.setAntiAlias(true);
+	}
+	
+	public final void loadSong(Song song) {
+		// Setup song-specific stuff
+		switch (song) {
+		case DONKEY_KONG:
+			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
+			beatTracker = new BeatTracker(musicPlayer, R.xml.track1);
+			break;
+		case RETRO:
+			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
+			beatTracker = new BeatTracker(musicPlayer, R.xml.track2);
+			break;
+		}
 	}
 
 	public void startMusic() {
@@ -127,7 +128,7 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-700, 1900);
 	}
 
-	public Beat.BeatType checkTouch(BBTHSimulation sim, float x, float y) {
+	public Beat.BeatType checkTouch(float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {

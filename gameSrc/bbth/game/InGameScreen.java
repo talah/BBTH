@@ -273,7 +273,7 @@ public class InGameScreen extends UIScrollView implements OnCompletionListener {
 		float worldX = x + this.pos_x;
 		float worldY = y + this.pos_y;
 
-		BeatType beatType = beatTrack.checkTouch(sim, worldX, worldY);
+		BeatType beatType = beatTrack.checkTouch(worldX, worldY);
 
 		// Unpack!
 		boolean isHold = (beatType == BeatType.HOLD);

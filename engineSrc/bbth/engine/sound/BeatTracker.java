@@ -21,20 +21,21 @@ public class BeatTracker {
 	public static final float TOLERANCE = 100; // millisecond difference in what is still considered a valid touch
 
 	private MusicPlayer _musicPlayer;
-	private BeatPattern _beatPattern;
-	private List<Beat> _beats;
+	private Beat[] _allBeats;
+	private List<Beat> _nearbyBeats;
 	private int _currentBeatIndex;
 	
-	public BeatTracker(MusicPlayer player, BeatPattern pattern) {
+	public BeatTracker(MusicPlayer player, int beatPatternXml) {
 		_musicPlayer = player;
-		_beatPattern = pattern;
 		_currentBeatIndex = 0;
-		_beats = new ArrayList<Beat>();
+		_allBeats = BeatPatternParser.parse(beatPatternXml);
+		_nearbyBeats = new ArrayList<Beat>();
 	}
 
 	// returns whether a beat was successfully tapped
 	public Beat.BeatType onTouchDown() {
-		Beat beat = getClosestBeat();
+		updateCurrentBeatIndex();
+		Beat beat = _allBeats[_currentBeatIndex];
 		if (beat != null && beat.onTouchDown(_musicPlayer.getCurrentPosition())) {
 			return beat.type;
 		}
@@ -47,49 +48,51 @@ public class BeatTracker {
 	}
 		
 	// return index into BeatPattern for closest beat
-	public Beat getClosestBeat() {
+	public final void updateCurrentBeatIndex() {
 		int currTime = _musicPlayer.getCurrentPosition();
-		Beat beat = _beatPattern.getBeat(_currentBeatIndex);
-		Beat nextBeat = _beatPattern.getBeat(_currentBeatIndex + 1);
-		while (beat != null && nextBeat != null && Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
-			++_currentBeatIndex;
-			beat = _beatPattern.getBeat(_currentBeatIndex);
-			nextBeat = _beatPattern.getBeat(_currentBeatIndex + 1);
+		Beat beat = _allBeats[_currentBeatIndex];
+		if (_currentBeatIndex == _allBeats.length - 1) {
+			return;
 		}
 		
-		return beat;
+		Beat nextBeat = _allBeats[_currentBeatIndex + 1];
+		while (Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
+			++_currentBeatIndex;
+			beat = nextBeat;
+			if (_currentBeatIndex == _allBeats.length - 1) {
+				return;
+			}
+			nextBeat = _allBeats[_currentBeatIndex + 1];
+		}
 	}
 	
 	// get all the beats in a time window relative to the current time in the song being played
-	public List<Beat> getBeatsInRange(int lowerBound, int upperBound) {
-		_beats.clear();
+	public final List<Beat> getBeatsInRange(int lowerBound, int upperBound) {
+		_nearbyBeats.clear();
 		
-		Beat beat = getClosestBeat();
+		updateCurrentBeatIndex();
 		int i = _currentBeatIndex;
 		int currTime = _musicPlayer.getCurrentPosition();
 		
-		while (beat != null && beat.getEndTime() - currTime > lowerBound) {
-			_beats.add(beat);
+		while (i >= 0 && _allBeats[i].getEndTime() - currTime > lowerBound) {
+			_nearbyBeats.add(_allBeats[i]);
 			--i;
-			beat = _beatPattern.getBeat(i);
 		}
 		
 		i = _currentBeatIndex + 1;
-		beat = _beatPattern.getBeat(i);
-		while (beat != null && beat._startTime - currTime < upperBound) {
-			_beats.add(beat);
+		while (i < _allBeats.length && _allBeats[i]._startTime - currTime < upperBound) {
+			_nearbyBeats.add(_allBeats[i]);
 			++i;
-			beat = _beatPattern.getBeat(i);
 		}
 		
-		return _beats;
+		return _nearbyBeats;
 	}
 	
 	// draw a list of beats, likely obtained from getBeatsInRange
 	public void drawBeats(List<Beat> beats, float xMid, float yMid, Canvas canvas, Paint paint) {
 		int time = _musicPlayer.getCurrentPosition();
 		for (int i = 0; i < beats.size(); ++i) {
-			_beats.get(i).draw(time, xMid, yMid, canvas, paint);
+			_nearbyBeats.get(i).draw(time, xMid, yMid, canvas, paint);
 		}
 	}
 }

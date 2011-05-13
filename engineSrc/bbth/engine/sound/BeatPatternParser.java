@@ -19,11 +19,11 @@ import android.util.Log;
  */
 public class BeatPatternParser {
 
-	// parse an entire pattern
-    public static BeatPattern parse(int resourceId) {
+	// parse an entire pattern into an array of beats
+    public static Beat[] parse(int resourceId) {
     	XmlResourceParser parser = GameActivity.instance.getResources().getXml(resourceId);
-    	Map<String, BeatPattern> patterns = new HashMap<String, BeatPattern>();
-    	List<BeatPattern> song = new ArrayList<BeatPattern>();
+    	Map<String, List<Beat>> patterns = new HashMap<String, List<Beat>>();
+    	List<Beat> song = new ArrayList<Beat>();
     	try {
         	int eventType = parser.next(); // skip start of document
         	
@@ -53,13 +53,13 @@ public class BeatPatternParser {
     		Log.e("BBTH", "Error parsing beat track");	
     	}
     	
-    	BeatPattern []songArray = new BeatPattern[song.size()];
+    	Beat []songArray = new Beat[song.size()];
     	song.toArray(songArray);
-    	return new CompositeBeatPattern(songArray);
+    	return songArray;
     }
     
-    // parse a subpattern
-    private static BeatPattern parseSubpattern(XmlResourceParser parser) throws IOException, XmlPullParserException {
+    // parse a subpattern into a List of beats
+    private static List<Beat> parseSubpattern(XmlResourceParser parser) throws IOException, XmlPullParserException {
     	 ArrayList<Beat> beats = new ArrayList<Beat>();
     	 int bpm = Integer.parseInt(parser.getAttributeValue(null, "bpm"));
     	 
@@ -105,7 +105,7 @@ public class BeatPatternParser {
     		 parser.next();
     	 }
 
-    	 return new SimpleBeatPattern(0, beats);
+    	 return beats;
     }
     
     // parse a note type
@@ -136,9 +136,9 @@ public class BeatPatternParser {
     }
     
     // parse the song
-    private static List<BeatPattern> parseSong(XmlResourceParser parser, 
-    	Map<String, BeatPattern> patterns) throws IOException, XmlPullParserException {
-    	List<BeatPattern> song = new ArrayList<BeatPattern>();
+    private static List<Beat> parseSong(XmlResourceParser parser, 
+    	Map<String, List<Beat>> patterns) throws IOException, XmlPullParserException {
+    	List<Beat> song = new ArrayList<Beat>();
 
     	while (true) {
     		parser.next();
@@ -150,7 +150,7 @@ public class BeatPatternParser {
     				if (!patterns.containsKey(id)) {
     					throw new XmlPullParserException("bad load-pattern tag");
     				}
-    				song.add(patterns.get(id));
+    				song.addAll(patterns.get(id));
     				// skip the end tag
     				parser.next();
     			} else {
