@@ -31,12 +31,14 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
+	private boolean _isLocal;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
 
-	public Player(Team team, AIController controller, UnitManager unitManager) {
+	public Player(Team team, AIController controller, UnitManager unitManager, boolean isLocal) {
+		_isLocal = isLocal;
 		this.team = team;
 		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
@@ -277,5 +279,9 @@ public class Player {
 
 	public float getCombo() {
 		return _combo;
+	}
+
+	public boolean isLocal() {
+		return _isLocal;
 	}
 }

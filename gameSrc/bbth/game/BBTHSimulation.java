@@ -7,8 +7,8 @@ import java.util.Random;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
@@ -92,8 +92,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController, this);
-		clientPlayer = new Player(Team.CLIENT, aiController, this);
+		serverPlayer = new Player(Team.SERVER, aiController, this, team == Team.SERVER);
+		clientPlayer = new Player(Team.CLIENT, aiController, this, team == Team.CLIENT);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -340,10 +340,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawWavefronts(Canvas canvas) {
 		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
 		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
-		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10
-				: 0;
-		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10
-				: 0;
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : BBTHSimulation.GAME_HEIGHT;
 		paint.setStyle(Style.FILL);
 
 		// server wavefront

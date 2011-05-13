@@ -27,7 +27,8 @@ public class Base extends UIView {
 		paint.setColor(team.getBaseColor());
 		canvas.drawRect(_rect, paint);
 		paint.setColor(Color.WHITE);
-		canvas.drawText("Health: " + (int) player.getHealth(), (_rect.left + _rect.right) / 2, _rect.top + 13, paint);
+		String text = (player.isLocal() ? "Your" : "Enemy") + " health: " + (int) player.getHealth();
+		canvas.drawText(text, (_rect.left + _rect.right) / 2, _rect.top + 13, paint);
 	}
 
 	public RectF getRect() {
