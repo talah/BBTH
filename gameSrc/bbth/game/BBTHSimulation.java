@@ -25,6 +25,7 @@ import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
+	private static final float DEBUG_SPAWN_TIMER = 1.f;
 	private static final int NUM_PARTICLES = 1000;
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
@@ -104,6 +105,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.10f);
+//		aiController.setUpdateFraction(.99f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
@@ -257,8 +259,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// Spawn dudes
 		elapsedTime += seconds;
-		if (elapsedTime > 1.f) {
-			elapsedTime -= 1.f;
+		if (elapsedTime > DEBUG_SPAWN_TIMER) {
+			elapsedTime -= DEBUG_SPAWN_TIMER;
 			remotePlayer
 					.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
 		}
