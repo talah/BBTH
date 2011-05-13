@@ -17,25 +17,25 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 			super("You have been disconnected.");
 		}
 	}
-	
+
 	public static class WinScreen extends GameStatusMessageScreen {
 		public WinScreen() {
 			super("Congratulations! You win!");
 		}
 	}
-	
+
 	public static class LoseScreen extends GameStatusMessageScreen {
 		public LoseScreen() {
 			super("Oh noes, you lost the game :(");
 		}
 	}
-	
+
 	public static class TieScreen extends GameStatusMessageScreen {
 		public TieScreen() {
 			super("It's a tie!");
 		}
 	}
-	
+
 	private UILabel message;
 	private UIButton playAgain, quit;
 
@@ -82,11 +82,14 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
-//			nextScreen = new GameSetupScreen();
-			nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-					GameActivity.instance, new LockStepProtocol()),
-					Song.DONKEY_KONG, new LockStepProtocol());
-			
+			if (BBTHGame.IS_SINGLE_PLAYER) {
+				nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
+						GameActivity.instance, new LockStepProtocol()),
+						Song.DONKEY_KONG, new LockStepProtocol());
+			} else {
+				nextScreen = new GameSetupScreen();
+			}
+
 		} else if (button == quit) {
 			System.exit(0);
 		}
