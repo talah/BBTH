@@ -91,10 +91,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		drawSimTimer.start();
 		canvas.save();
 		canvas.translate(BBTHSimulation.GAME_X, BBTHSimulation.GAME_Y);
+		
 		sim.draw(canvas);
-		canvas.restore();
-		drawSimTimer.stop();
-
+		
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
@@ -107,6 +106,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles.draw(canvas, paint);
 		drawParticleTimer.stop();
 
+		canvas.restore();
+		drawSimTimer.stop();
+		
 		drawUITimer.start();
 		// Overlay the beat track
 		beatTrack.draw(canvas);
@@ -247,7 +249,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-
+		
 		if (isOnBeat && isHold && x > 0 && y > 0) {
 			currentWall = new Wall(x, y, x, y);
 		}
@@ -266,10 +268,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
+		// We moved offscreen!
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
 
-		// We moved offscreen!
 		if (x < 0 || y < 0) {
 			simulateWallGeneration();
 		} else if (currentWall != null) {
@@ -295,10 +297,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		simulateWallGeneration();
-
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
+
+		simulateWallGeneration();
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapUp(x, y, true);
