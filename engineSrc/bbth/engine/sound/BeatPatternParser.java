@@ -50,7 +50,7 @@ public class BeatPatternParser {
     	} catch (XmlPullParserException e) {
     		Log.e("BBTH", "Error parsing beat track");
     	} catch (IOException e) {
-    		Log.e("BBTH", "Error parsing beat track");	
+    		Log.e("BBTH", "Error parsing beat track");
     	}
     	
     	Beat []songArray = new Beat[song.size()];
@@ -65,7 +65,7 @@ public class BeatPatternParser {
     	 
 		 parser.next();
 		 String name = parser.getName();
-		 boolean patternOver = false;    	
+		 boolean patternOver = false;
 		 
     	 while (!patternOver) {
     		 if (parser.getEventType() == XmlPullParser.START_TAG) {
@@ -150,7 +150,13 @@ public class BeatPatternParser {
     				if (!patterns.containsKey(id)) {
     					throw new XmlPullParserException("bad load-pattern tag");
     				}
-    				song.addAll(patterns.get(id));
+    				
+    				// copy the pattern
+    				List<Beat> subpattern = patterns.get(id);
+    				for (int i = 0; i < subpattern.size(); ++i) {
+    					song.add(new Beat(subpattern.get(i).type, subpattern.get(i).duration));
+    				}
+    				
     				// skip the end tag
     				parser.next();
     			} else {
@@ -161,6 +167,13 @@ public class BeatPatternParser {
     			parser.next();
     			break;
     		}
+    	}
+    	
+    	// set starting times
+    	int currTime = 0;
+    	for (int i = 0; i < song.size(); ++i) {
+    		song.get(i)._startTime = currTime;
+    		currTime += song.get(i).duration;
     	}
 
    	 	return song;

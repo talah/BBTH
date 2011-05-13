@@ -41,7 +41,7 @@ public class Player {
 		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
 
-		base = new Base(this, team);
+		base = new Base(this);
 		_health = 100;
 		setCombo(0);
 
@@ -148,13 +148,14 @@ public class Player {
 		}
 
 		newUnit.setPosition(x, y);
-//		if (team == Team.SERVER) {
-//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-//					MathUtils.PI / 2.f);
-//		} else {
-//			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-//					-MathUtils.PI / 2.f);
-//		}
+		if (team == Team.SERVER) {
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+					MathUtils.PI / 2.f);
+		} else {
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
+					-MathUtils.PI / 2.f);
+		}
+		
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
 	}

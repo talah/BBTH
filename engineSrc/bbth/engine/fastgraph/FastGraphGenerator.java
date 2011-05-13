@@ -8,6 +8,9 @@ import org.processing.wiki.triangulate.Edge;
 import org.processing.wiki.triangulate.Triangle;
 import org.processing.wiki.triangulate.Triangulate;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import bbth.engine.ai.ConnectedGraph;
 
@@ -24,6 +27,7 @@ public class FastGraphGenerator {
 	public final ConnectedGraph graph = new ConnectedGraph();
 	public final ArrayList<Wall> walls = new ArrayList<Wall>();
 	public float radius;
+	private static final Paint paint = new Paint();
 
 	public FastGraphGenerator(float largestEntityRadius, float width, float height) {
 		radius = largestEntityRadius;
@@ -87,6 +91,17 @@ public class FastGraphGenerator {
 			Edge edge = iter.next();
 			graph.addConnection(edge.p1, edge.p2);
 			graph.addConnection(edge.p2, edge.p1);
+		}
+	}
+
+	public void draw(Canvas canvas) {
+		paint.setAntiAlias(true);
+		paint.setColor(Color.GREEN);
+		for (PointF point : graph.m_connections.keySet()) {
+			ArrayList<PointF> neighbors = graph.m_connections.get(point);
+			for (PointF neighbor : neighbors) {
+				canvas.drawLine(point.x, point.y, neighbor.x, neighbor.y, paint);
+			}
 		}
 	}
 }

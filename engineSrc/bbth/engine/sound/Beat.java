@@ -53,7 +53,7 @@ public class Beat {
 
 	// returns true if this noted was tapped, false if the note was missed
 	boolean onTouchDown(int songTime) {
-		if (type == BeatType.REST)
+		if (_tapped || type == BeatType.REST)
 			return false;
 
 		boolean changed = false;

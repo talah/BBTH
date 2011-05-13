@@ -1,7 +1,6 @@
 package bbth.engine.sound;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import android.graphics.Canvas;
@@ -36,7 +35,7 @@ public class BeatTracker {
 	public Beat.BeatType onTouchDown() {
 		updateCurrentBeatIndex();
 		Beat beat = _allBeats[_currentBeatIndex];
-		if (beat != null && beat.onTouchDown(_musicPlayer.getCurrentPosition())) {
+		if (beat.onTouchDown(_musicPlayer.getCurrentPosition())) {
 			return beat.type;
 		}
 		return Beat.BeatType.REST;
@@ -50,37 +49,40 @@ public class BeatTracker {
 	// return index into BeatPattern for closest beat
 	public final void updateCurrentBeatIndex() {
 		int currTime = _musicPlayer.getCurrentPosition();
+
 		Beat beat = _allBeats[_currentBeatIndex];
 		if (_currentBeatIndex == _allBeats.length - 1) {
 			return;
 		}
-		
 		Beat nextBeat = _allBeats[_currentBeatIndex + 1];
+
 		while (Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
 			++_currentBeatIndex;
-			beat = nextBeat;
+			beat = _allBeats[_currentBeatIndex];
 			if (_currentBeatIndex == _allBeats.length - 1) {
 				return;
 			}
 			nextBeat = _allBeats[_currentBeatIndex + 1];
 		}
 	}
-	
+
 	// get all the beats in a time window relative to the current time in the song being played
-	public final List<Beat> getBeatsInRange(int lowerBound, int upperBound) {
+	public final List<Beat> getBeatsInRange(int lowerOffset, int upperOffset) {
 		_nearbyBeats.clear();
 		
 		updateCurrentBeatIndex();
 		int i = _currentBeatIndex;
 		int currTime = _musicPlayer.getCurrentPosition();
+		int lowerBound = currTime + lowerOffset;
+		int upperBound = currTime + upperOffset;
 		
-		while (i >= 0 && _allBeats[i].getEndTime() - currTime > lowerBound) {
+		while (i >= 0 && _allBeats[i].getEndTime() > lowerBound) {
 			_nearbyBeats.add(_allBeats[i]);
 			--i;
 		}
 		
 		i = _currentBeatIndex + 1;
-		while (i < _allBeats.length && _allBeats[i]._startTime - currTime < upperBound) {
+		while (i < _allBeats.length && _allBeats[i]._startTime < upperBound) {
 			_nearbyBeats.add(_allBeats[i]);
 			++i;
 		}
