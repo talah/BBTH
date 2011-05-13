@@ -18,6 +18,7 @@ import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 import bbth.game.units.WallUnit;
+import bbth.game.util.Hash;
 
 /**
  * A player is someone who is interacting with the game.
@@ -283,5 +284,14 @@ public class Player {
 
 	public boolean isLocal() {
 		return _isLocal;
+	}
+	
+	public int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, _health);
+		for (int i = 0; i < units.size(); i++) {
+			hash = Hash.mix(hash, units.get(i).getHash());
+		}
+		return hash;
 	}
 }

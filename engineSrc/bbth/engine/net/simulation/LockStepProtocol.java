@@ -38,6 +38,7 @@ public class LockStepProtocol implements Protocol {
 	public void readFrom(DataInputStream in) throws IOException, InterruptedException {
 		LockStep step = new LockStep();
 		int count = in.readByte();
+		step.hash = in.readInt();
 		step.coarseTime = in.readInt();
 
 		for (int i = 0; i < count; i++) {
@@ -63,6 +64,7 @@ public class LockStepProtocol implements Protocol {
 	public void writeTo(DataOutputStream out) throws IOException, InterruptedException {
 		LockStep step = outgoing.take();
 		out.writeByte(step.events.size());
+		out.writeInt(step.hash);
 		out.writeInt(step.coarseTime);
 
 		for (int i = 0, count = step.events.size(); i < count; i++) {

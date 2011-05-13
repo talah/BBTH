@@ -24,6 +24,7 @@ import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
+import bbth.game.util.Hash;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final float DEBUG_SPAWN_TIMER = 1.f;
@@ -463,4 +464,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel.insertWalls(graphGen.walls);
 	}
 
+	@Override
+	protected int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, serverPlayer.getHash());
+		hash = Hash.mix(hash, clientPlayer.getHash());
+		return hash;
+	}
 }
