@@ -248,7 +248,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
-		BeatType beatType = beatTrack.checkTouch(sim, x, y);
+		BeatType beatType = beatTrack.checkTouch(x, y);
 
 		// Unpack!
 		boolean isHold = (beatType == BeatType.HOLD);

@@ -1,7 +1,5 @@
 package bbth.engine.sound;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -14,38 +12,39 @@ import android.media.SoundPool;
 public class SoundManager {
 	
 	private SoundPool _soundPool;
-	private HashMap<Integer, Integer> _soundMap;
-	private AudioManager _audioManager;
 	private Context _context;
 	
 	public SoundManager(Context context, int maxSimultaneousSounds) {
 		_soundPool = new SoundPool(maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);
-		_soundMap = new HashMap<Integer, Integer>();
-		_audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		_context = context;
 	}
 		
-	public void addSound(int index, int resourceId) {
-	    _soundMap.put(index, _soundPool.load(_context, resourceId, 1));
+	public int addSound(int resourceId) {
+	    return _soundPool.load(_context, resourceId, 1);
 	}
 
 	// plays a sound once
-	public void play(int index) {
-		float streamVolume = _audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		streamVolume /= _audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		_soundPool.play(_soundMap.get(index), streamVolume, streamVolume, 1, 0, 1.f);
+	public void play(int soundId) {
+		_soundPool.play(soundId, 1.f, 1.f, 1, 0, 1.f);
+	}
+	
+	public void play(int soundId, float volume) {
+		_soundPool.play(soundId, volume, volume, 1, 0, 1.f);
 	}
 	
 	// loops a sound
-	public void loop(int index) {
-		float streamVolume = _audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		streamVolume /= _audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		_soundPool.play(_soundMap.get(index), streamVolume, streamVolume, 1, -1, 1.f);
+	public void loop(int soundId) {
+		_soundPool.play(soundId, 1.f, 1.f, 1, -1, 1.f);
 	}
 
+	// loops a sound
+	public void loop(int soundId, float volume) {
+		_soundPool.play(soundId, volume, volume, 1, -1, 1.f);
+	}
+	
 	// stops a sound
-	public void stop(int index) {
-		_soundPool.stop(_soundMap.get(index));
+	public void stop(int soundId) {
+		_soundPool.stop(soundId);
 	}
 
 	// release the resources used by the sound manager
