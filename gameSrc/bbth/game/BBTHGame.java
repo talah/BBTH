@@ -1,6 +1,5 @@
 package bbth.game;
 
-import zdavis.CombatTest;
 import android.app.Activity;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;

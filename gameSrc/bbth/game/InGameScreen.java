@@ -1,7 +1,6 @@
 package bbth.game;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
@@ -16,7 +15,6 @@ import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
-import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.BeatTrack.Song;
