@@ -10,7 +10,7 @@ import bbth.game.BeatTrack.Song;
 public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
-	public static final float HEIGHT = 180 + 400;
+	public static final float HEIGHT = 440;
 	public static final boolean DEBUG = true;
 	
 	/**

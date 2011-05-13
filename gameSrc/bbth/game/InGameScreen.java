@@ -221,9 +221,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
-		x -= BBTHSimulation.GAME_X;
-		y -= BBTHSimulation.GAME_Y;
-
 		BeatType beatType = beatTrack.checkTouch(sim, x, y);
 
 		// Unpack!
@@ -233,6 +230,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		if (isOnBeat && isHold) {
 			currentWall = new Wall(x, y, x, y);
 		}
+
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapDown(x, y, true, isHold, isOnBeat);
@@ -248,12 +248,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		x -= BBTHSimulation.GAME_X;
-		y -= BBTHSimulation.GAME_Y;
-
 		if (currentWall != null) {
 			currentWall.b.set(x, y);
 		}
+
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapMove(x, y, true);
@@ -274,9 +274,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		x -= BBTHSimulation.GAME_X;
-		y -= BBTHSimulation.GAME_Y;
-
 		if (currentWall != null) {
 			currentWall.b.set(x, y);
 			currentWall.updateLength();
@@ -287,6 +284,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 			currentWall = null;
 		}
+
+		x -= BBTHSimulation.GAME_X;
+		y -= BBTHSimulation.GAME_Y;
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapUp(x, y, true);
