@@ -12,11 +12,7 @@ public class BBTHGame extends Game {
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = true;
-
-	/**
-	 * This is static because it would require a lot of changes otherwise :(
-	 */
-	public static boolean IS_SINGLE_PLAYER = DEBUG;
+	public static final boolean IS_SINGLE_PLAYER = false;
 
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);
