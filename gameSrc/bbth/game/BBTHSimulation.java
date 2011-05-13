@@ -109,7 +109,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.10f);
-		// aiController.setUpdateFraction(.99f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
@@ -184,15 +183,17 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	 * Creates a wall out of the given player, and lets the AI know about it.
 	 */
 	public void generateWall(Player player) {
-		if (!player.settingWall()) return; 
-		
+		if (!player.settingWall())
+			return;
+
 		Wall w = player.endWall();
-		if (w == null) return;
-		
+		if (w == null)
+			return;
+
 		if (player != localPlayer) {
 			this.generateParticlesForWall(w, player.getTeam());
 		}
-		
+
 		addWallToAI(w);
 	}
 
@@ -273,11 +274,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.stop();
 
 		// Spawn dudes
-		elapsedTime += seconds;
-		if (elapsedTime > DEBUG_SPAWN_TIMER) {
-			elapsedTime -= DEBUG_SPAWN_TIMER;
-			remotePlayer
-					.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			elapsedTime += seconds;
+			if (elapsedTime > DEBUG_SPAWN_TIMER) {
+				elapsedTime -= DEBUG_SPAWN_TIMER;
+				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH),
+						GAME_HEIGHT - 50);
+			}
 		}
 
 		aiTickTimer.stop();
@@ -337,22 +340,27 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawWavefronts(Canvas canvas) {
 		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
 		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
-		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
-		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : 0;
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10
+				: 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10
+				: 0;
 		paint.setStyle(Style.FILL);
 
 		// server wavefront
 		paint.setColor(Team.SERVER.getWavefrontColor());
-		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, Math.min(clientWavefrontY, serverWavefrontY), paint);
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				Math.min(clientWavefrontY, serverWavefrontY), paint);
 
 		// client wavefront
 		paint.setColor(Team.CLIENT.getWavefrontColor());
-		canvas.drawRect(0, Math.max(clientWavefrontY, serverWavefrontY), BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+		canvas.drawRect(0, Math.max(clientWavefrontY, serverWavefrontY),
+				BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
 
 		// overlapped wavefronts
 		if (serverWavefrontY > clientWavefrontY) {
 			paint.setColor(Color.rgb(63, 0, 63));
-			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
+			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
+					serverWavefrontY, paint);
 		}
 	}
 
