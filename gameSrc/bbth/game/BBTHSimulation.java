@@ -225,6 +225,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
+	private float elapsedTime = 0;
+	
 	@Override
 	protected void update(float seconds) {
 //		if (!self_ready) {
@@ -263,6 +265,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			clientPlayer.update(seconds);
 			clientPlayerTimer.stop();
 	
+			// Spawn dudes
+			elapsedTime += seconds;
+			if (elapsedTime > 1.f) {
+				elapsedTime -= 1.f;
+				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
+			}
+			
 			aiTickTimer.stop();
 	
 			PARTICLES.tick(seconds);
