@@ -10,10 +10,9 @@ import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
-import bbth.game.BeatTrack.Song;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
-
+	
 	private LockStepProtocol protocol;
 	private Bluetooth bluetooth;
 
@@ -68,7 +67,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		label.setText("Status: " + bluetooth.getString());
 
 		if (bluetooth.getState() == State.CONNECTED) {
-			nextScreen = new InGameScreen(playerTeam, bluetooth, Song.DONKEY_KONG, protocol);
+			nextScreen = new InGameScreen(playerTeam, bluetooth, BBTHGame.SONG, protocol);
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
 			clientButton.isDisabled = false;
