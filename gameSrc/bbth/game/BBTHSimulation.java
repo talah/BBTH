@@ -137,7 +137,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
-		if (isOnBeat) {
+//		if (isOnBeat) {
+		if (true) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
 
