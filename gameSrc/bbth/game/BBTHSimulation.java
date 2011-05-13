@@ -62,7 +62,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
-	public static final float GAME_HEIGHT = BBTHGame.HEIGHT + 400;
+	public static final float GAME_HEIGHT = BBTHGame.HEIGHT;
 
 	// Minimal length of a wall
 	public static final float MIN_WALL_LENGTH = 5.f;
@@ -227,18 +227,18 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
-		if (!self_ready) {
-			tutorial.update();
-			if (tutorial.isFinished()) {
-				recordCustomEvent(0, 0, TUTORIAL_DONE);
-			}
-		} else if (!other_ready) {
-			tutorial.displayWait();
-		} else {
-			tutorial.hide();
-		}
+//		if (!self_ready) {
+//			tutorial.update();
+//			if (tutorial.isFinished()) {
+//				recordCustomEvent(0, 0, TUTORIAL_DONE);
+//			}
+//		} else if (!other_ready) {
+//			tutorial.displayWait();
+//		} else {
+//			tutorial.hide();
+//		}
 		
-		if (other_ready && self_ready) {
+		if (true || other_ready && self_ready) {
 			entireTickTimer.start();
 			timestep++;
 	
@@ -251,10 +251,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	
 			aiTickTimer.start();
 	
-			aiControllerTimer.start();
-			aiController.update();
-			aiControllerTimer.stop();
-	
+//			aiControllerTimer.start();
+//			aiController.update();
+//			aiControllerTimer.stop();
+			
 			serverPlayerTimer.start();
 			serverPlayer.update(seconds);
 			serverPlayerTimer.stop();
@@ -403,7 +403,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public boolean isReady() {
-		return self_ready && other_ready;
+		return true || self_ready && other_ready;
 	}
 
 }
