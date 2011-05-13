@@ -33,32 +33,32 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		protocol = new LockStepProtocol();
 		bluetooth = new Bluetooth(GameActivity.instance, protocol);
 
-		serverButton = new UIButton("Server", null);
+		serverButton = new UIButton("Create a Game", null);
 		serverButton.setAnchor(Anchor.CENTER_CENTER);
-		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 25);
-		serverButton.setSize(100, 15);
+		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 65);
+		serverButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		serverButton.setButtonDelegate(this);
 		addSubview(serverButton);
 
-		clientButton = new UIButton("Client", null);
+		clientButton = new UIButton("Join a Game", null);
 		clientButton.setAnchor(Anchor.CENTER_CENTER);
 		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2);
-		clientButton.setSize(100, 15);
+		clientButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
 
-		disconnectButton = new UIButton("Disconnect", null);
+		disconnectButton = new UIButton("Cancel", null);
 		disconnectButton.setAnchor(Anchor.CENTER_CENTER);
-		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 25);
-		disconnectButton.setSize(100, 15);
+		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 65);
+		disconnectButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		disconnectButton.setButtonDelegate(this);
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 
 		label = new UILabel("", null);
-		label.setTextSize(10);
-		label.setPosition(10, 10);
-		label.setSize(BBTHGame.WIDTH - 20, 10);
+		label.setTextSize(15);
+		label.setPosition(5, 30);
+		label.setSize(BBTHGame.WIDTH - 10, 10);
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
 	}

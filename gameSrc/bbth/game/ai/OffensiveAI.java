@@ -119,7 +119,7 @@ public class OffensiveAI extends UnitAI {
 			path = m_pathfinder.getPath();
 
 			path.add(end_point);
-			Log.i("game", "trying to find path");
+//			Log.i("game", "trying to find path");
 
 			if (path.size() > 1) {
 				PointF goal_point = path.get(0);
@@ -129,8 +129,8 @@ public class OffensiveAI extends UnitAI {
 					goal_point = path.get(1);
 				}
 
-				Log.i("game", "Next point: " + goal_point.x + ", "
-						+ goal_point.y);
+//				Log.i("game", "Next point: " + goal_point.x + ", "
+//						+ goal_point.y);
 				goal_x = goal_point.x;
 				goal_y = goal_point.y;
 			}

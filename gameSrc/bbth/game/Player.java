@@ -31,12 +31,14 @@ public class Player {
 	private UnitSelector selector;
 	private float _health;
 	private float _combo;
+	private boolean _isLocal;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
 
-	public Player(Team team, AIController controller, UnitManager unitManager) {
+	public Player(Team team, AIController controller, UnitManager unitManager, boolean isLocal) {
+		_isLocal = isLocal;
 		this.team = team;
 		this.unitManager = unitManager;
 		units = new ArrayList<Unit>();
@@ -87,9 +89,7 @@ public class Player {
 		currentWall.b.set(x, y);
 	}
 
-	public Wall endWall(float x, float y) {
-		currentWall.b.set(x, y);
-
+	public Wall endWall() {
 		currentWall.updateLength();
 		if (currentWall.length < BBTHSimulation.MIN_WALL_LENGTH) {
 			return null;
@@ -226,23 +226,20 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawEffects(canvas);
 		}
-		
-		// draw my wavefront
-		paint.setColor(team.getWavefrontColor());
-		paint.setStyle(Style.FILL);
-		Unit advUnit = getMostAdvancedUnit();
-		if (advUnit != null) {
-			if (team == Team.CLIENT) {
-				canvas.drawRect(0, advUnit.getY(), BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
-			} else {
-				canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, advUnit.getY(), paint);
-			}
-		}
 	}
 	
 	public void postDraw(Canvas canvas) {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawHealthBar(canvas);
+		}
+
+		// draw my wavefront
+		Unit advUnit = getMostAdvancedUnit();
+		if (advUnit != null) {
+			paint.setColor(team.getUnitColor());
+			paint.setStyle(Style.FILL);
+			float y = advUnit.getY() + (team == Team.CLIENT ? -10 : 10);
+			canvas.drawLine(0, y, BBTHSimulation.GAME_WIDTH, y, paint);
 		}
 	}
 
@@ -282,5 +279,9 @@ public class Player {
 
 	public float getCombo() {
 		return _combo;
+	}
+
+	public boolean isLocal() {
+		return _isLocal;
 	}
 }

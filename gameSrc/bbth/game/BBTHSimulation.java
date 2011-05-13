@@ -7,6 +7,7 @@ import java.util.Random;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
@@ -63,7 +64,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// This is the virtual size of the game
 	public static final float GAME_X = BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_Y = 0;
-	public static final float GAME_WIDTH = BBTHGame.WIDTH - BeatTrack.BEAT_TRACK_WIDTH;
+	public static final float GAME_WIDTH = BBTHGame.WIDTH
+			- BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT;
 
 	// Minimal length of a wall
@@ -90,8 +92,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController, this);
-		clientPlayer = new Player(Team.CLIENT, aiController, this);
+		serverPlayer = new Player(Team.SERVER, aiController, this, team == Team.SERVER);
+		clientPlayer = new Player(Team.CLIENT, aiController, this, team == Team.CLIENT);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -107,7 +109,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.10f);
-//		aiController.setUpdateFraction(.99f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
@@ -141,6 +142,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			boolean isHold, boolean isOnBeat) {
 		Player player = playerMap.get(isServer);
 
+		if (x < 0 || y < 0)
+			return;
+
 		if (BBTHGame.DEBUG || isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
@@ -161,26 +165,36 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		if (!player.settingWall())
 			return;
-		player.updateWall(x, y);
+
+		if (x < 0 || y < 0) {
+			generateWall(player);
+		} else {
+			player.updateWall(x, y);
+		}
 	}
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
+		generateWall(player);
+	}
 
+	/**
+	 * Creates a wall out of the given player, and lets the AI know about it.
+	 */
+	public void generateWall(Player player) {
 		if (!player.settingWall())
 			return;
-		Wall w = player.endWall(x, y);
 
-		// // insanity check--the below should never do anything
+		Wall w = player.endWall();
 		if (w == null)
 			return;
 
-		if (player == remotePlayer) {
+		if (player != localPlayer) {
 			this.generateParticlesForWall(w, player.getTeam());
 		}
 
-		addWall(w);
+		addWallToAI(w);
 	}
 
 	public void generateParticlesForWall(Wall wall, Team team) {
@@ -203,7 +217,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	private void addWall(Wall wall) {
+	private void addWallToAI(Wall wall) {
 		graphGen.walls.add(wall);
 		graphGen.compute();
 		accel.clearWalls();
@@ -260,11 +274,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.stop();
 
 		// Spawn dudes
-		elapsedTime += seconds;
-		if (elapsedTime > DEBUG_SPAWN_TIMER) {
-			elapsedTime -= DEBUG_SPAWN_TIMER;
-			remotePlayer
-					.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			elapsedTime += seconds;
+			if (elapsedTime > DEBUG_SPAWN_TIMER) {
+				elapsedTime -= DEBUG_SPAWN_TIMER;
+				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH),
+						GAME_HEIGHT - 50);
+			}
 		}
 
 		aiTickTimer.stop();
@@ -305,6 +321,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public void draw(Canvas canvas) {
+		drawWavefronts(canvas);
 		drawGrid(canvas);
 
 		localPlayer.draw(canvas);
@@ -315,9 +332,34 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (BBTHGame.DEBUG) {
 			graphGen.draw(canvas);
 		}
-		
+
 		localPlayer.postDraw(canvas);
 		remotePlayer.postDraw(canvas);
+	}
+
+	private void drawWavefronts(Canvas canvas) {
+		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
+		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : BBTHSimulation.GAME_HEIGHT;
+		paint.setStyle(Style.FILL);
+
+		// server wavefront
+		paint.setColor(Team.SERVER.getWavefrontColor());
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH,
+				Math.min(clientWavefrontY, serverWavefrontY), paint);
+
+		// client wavefront
+		paint.setColor(Team.CLIENT.getWavefrontColor());
+		canvas.drawRect(0, Math.max(clientWavefrontY, serverWavefrontY),
+				BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+
+		// overlapped wavefronts
+		if (serverWavefrontY > clientWavefrontY) {
+			paint.setColor(Color.rgb(63, 0, 63));
+			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
+					serverWavefrontY, paint);
+		}
 	}
 
 	public void drawForMiniMap(Canvas canvas) {

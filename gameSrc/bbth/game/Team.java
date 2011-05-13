@@ -27,7 +27,7 @@ public enum Team {
 		
 		@Override
 		public int getWavefrontColor() {
-			return Color.argb(80, 0, 0, 127);
+			return Color.rgb(0, 0, 63);
 		}
 	},
 	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71)) {
@@ -53,7 +53,7 @@ public enum Team {
 		
 		@Override
 		public int getWavefrontColor() {
-			return Color.argb(80, 127, 0, 0);
+			return Color.rgb(63, 0, 0);
 		}
 	};
 

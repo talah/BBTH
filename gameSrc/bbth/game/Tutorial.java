@@ -70,8 +70,10 @@ public class Tutorial {
 	}
 
 	public void touchDown(float x, float y) {
-		// skip the tutorial
-		frame = 5;
+		if (BBTHGame.DEBUG) {
+			// skip the tutorial
+			frame = 5;
+		}
 	}
 
 	public void touchMove(float x, float y) {
