@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
@@ -317,6 +318,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public void draw(Canvas canvas) {
+		drawWavefronts(canvas);
 		drawGrid(canvas);
 
 		localPlayer.draw(canvas);
@@ -330,6 +332,28 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		localPlayer.postDraw(canvas);
 		remotePlayer.postDraw(canvas);
+	}
+
+	private void drawWavefronts(Canvas canvas) {
+		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
+		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : 0;
+		paint.setStyle(Style.FILL);
+
+		// server wavefront
+		paint.setColor(Team.SERVER.getWavefrontColor());
+		canvas.drawRect(0, 0, BBTHSimulation.GAME_WIDTH, Math.min(clientWavefrontY, serverWavefrontY), paint);
+
+		// client wavefront
+		paint.setColor(Team.CLIENT.getWavefrontColor());
+		canvas.drawRect(0, Math.max(clientWavefrontY, serverWavefrontY), BBTHSimulation.GAME_WIDTH, BBTHSimulation.GAME_HEIGHT, paint);
+
+		// overlapped wavefronts
+		if (serverWavefrontY > clientWavefrontY) {
+			paint.setColor(Color.rgb(63, 0, 63));
+			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
+		}
 	}
 
 	public void drawForMiniMap(Canvas canvas) {
