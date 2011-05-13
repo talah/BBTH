@@ -308,6 +308,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
+		if (BBTHGame.DEBUG) {
+			graphGen.draw(canvas, PARTICLE_PAINT);
+		}
+		
 		localPlayer.postDraw(canvas);
 		remotePlayer.postDraw(canvas);
 	}

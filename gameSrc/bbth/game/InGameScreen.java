@@ -28,6 +28,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private ParticleSystem particles;
 	private Paint paint, serverHealthPaint, clientHealthPaint;
 	private UILabel label;
+	private static final boolean USE_UNIT_SELECTOR = false;
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
@@ -111,7 +112,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		beatTrack.draw(canvas);
 
 		// Overlay the unit selector
-		sim.getMyUnitSelector().draw(canvas);
+		if (USE_UNIT_SELECTOR) {
+			sim.getMyUnitSelector().draw(canvas);
+		}
 		drawUITimer.stop();
 
 		if (!tutorial.isFinished()) {
@@ -203,14 +206,16 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
-		if (unitType >= 0) {
-			if (BBTHGame.IS_SINGLE_PLAYER) {
-				sim.simulateCustomEvent(0, 0, unitType, true);
-			} else {
-				sim.recordCustomEvent(0, 0, unitType);
+		if (USE_UNIT_SELECTOR) {
+			int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
+			if (unitType >= 0) {
+				if (BBTHGame.IS_SINGLE_PLAYER) {
+					sim.simulateCustomEvent(0, 0, unitType, true);
+				} else {
+					sim.recordCustomEvent(0, 0, unitType);
+				}
+				return;
 			}
-			return;
 		}
 
 		BeatType beatType = beatTrack.checkTouch(sim, x, y);
