@@ -41,7 +41,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean userScrolling;
 	private Tutorial tutorial;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
+			LockStepProtocol protocol) {
 		this.team = playerTeam;
 		tutorial = new Tutorial(team == Team.SERVER);
 
@@ -59,7 +60,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		label.setSize(BBTHGame.WIDTH - 20, 10);
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
-		
+
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.reset();
@@ -102,7 +103,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
+					currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
@@ -131,17 +133,38 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			int x = 50;
 			int y = 20;
 			int jump = 11;
-			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText(
+					"Entire update: " + entireUpdateTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
+					+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"      - Controller: "
+							+ sim.aiControllerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Server player: "
+							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Client player: "
+							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
+					+ " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"- Particles: " + drawParticleTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
 			entireDrawTimer.stop();
 		}
 	}
@@ -227,12 +250,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
 
-		if (isOnBeat && isHold) {
-			currentWall = new Wall(x, y, x, y);
-		}
-
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
+
+		if (isOnBeat && isHold && x > 0 && y > 0) {
+			currentWall = new Wall(x, y, x, y);
+		}
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapDown(x, y, true, isHold, isOnBeat);
@@ -248,12 +271,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		if (currentWall != null) {
-			currentWall.b.set(x, y);
-		}
-
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
+
+		// We moved offscreen!
+		if (x < 0 || y < 0) {
+			simulateWallGeneration();
+		} else if (currentWall != null) {
+			currentWall.b.set(x, y);
+		}
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapMove(x, y, true);
@@ -274,16 +300,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
-		if (currentWall != null) {
-			currentWall.b.set(x, y);
-			currentWall.updateLength();
-
-			if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
-				sim.generateParticlesForWall(currentWall, this.team);
-			}
-
-			currentWall = null;
-		}
+		simulateWallGeneration();
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
@@ -293,6 +310,19 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else {
 			sim.recordTapUp(x, y);
 		}
+	}
+
+	public void simulateWallGeneration() {
+		if (currentWall == null)
+			return;
+		
+		currentWall.updateLength();
+
+		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
+			sim.generateParticlesForWall(currentWall, this.team);
+		}
+
+		currentWall = null;
 	}
 
 	/**
