@@ -28,7 +28,7 @@ public abstract class UnitAI {
 	private PointF m_result;
 	private float m_max_vel_change = 0.5f;
 	private float m_objective_weighting = 0.05f;
-	private float m_max_vel = 50.0f;
+	private float m_max_vel = 35.0f;
 
 	protected Pathfinder m_pathfinder;
 	protected ConnectedGraph m_map_grid;

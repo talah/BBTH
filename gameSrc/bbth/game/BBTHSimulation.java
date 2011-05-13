@@ -39,7 +39,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private Team team;
 	public Player localPlayer, remotePlayer;
 	private HashMap<Boolean, Player> playerMap;
-	private Player serverPlayer, clientPlayer;
+	public Player serverPlayer, clientPlayer;
 	private AIController aiController;
 	private Pathfinder pathFinder;
 	private FastGraphGenerator graphGen;
@@ -56,9 +56,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public Timer serverPlayerTimer = new Timer();
 	public Timer clientPlayerTimer = new Timer();
 	private static final Random random = new Random();
-	private Tutorial tutorial;
-	private boolean other_ready;
-	private boolean self_ready;
+	private boolean serverReady;
+	private boolean clientReady;
 
 	// This is the virtual size of the game
 	public static final float GAME_WIDTH = BBTHGame.WIDTH;
@@ -68,7 +67,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float MIN_WALL_LENGTH = 5.f;
 
 	// Combo constants
-	public static final float UBER_UNIT_THRESHOLD = 10;
+	public static final float UBER_UNIT_THRESHOLD = 7;
 	public static final int TUTORIAL_DONE = 13;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
@@ -80,10 +79,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// THIS IS IMPORTANT
 		random.setSeed(0);
-		
-		tutorial = new Tutorial();
-		other_ready = true;
-		self_ready = false;
+
+		serverReady = true;
+		clientReady = false;
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -105,7 +103,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		tester = new FastLineOfSightTester(15.f, accel);
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
-		aiController.setUpdateFraction(.1f);
+		aiController.setUpdateFraction(.10f);
 
 		cachedUnits = new HashSet<Unit>();
 	}
@@ -142,14 +140,14 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (isOnBeat) {
 			float newcombo = player.getCombo() + 1;
 			player.setCombo(newcombo);
+
+			if (isHold) {
+				player.startWall(x, y);
+			} else {
+				player.spawnUnit(x, y);
+			}
 		} else {
 			player.setCombo(0);
-		}
-
-		if (isHold) {
-			player.startWall(x, y);
-		} else {
-			player.spawnUnit(x, y);
 		}
 	}
 
@@ -217,85 +215,77 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (type != null) {
 			player.setUnitType(type);
 		} else if (code == TUTORIAL_DONE) {
-			if (player == remotePlayer) {
-				other_ready = true;
+			if (isServer) {
+				serverReady = true;
 			} else {
-				self_ready = true;
+				clientReady = true;
 			}
 		}
 	}
 
 	private float elapsedTime = 0;
-	
+
 	@Override
 	protected void update(float seconds) {
-//		if (!self_ready) {
-//			tutorial.update();
-//			if (tutorial.isFinished()) {
-//				recordCustomEvent(0, 0, TUTORIAL_DONE);
-//			}
-//		} else if (!other_ready) {
-//			tutorial.displayWait();
-//		} else {
-//			tutorial.hide();
-//		}
-		
-		if (true || other_ready && self_ready) {
-			entireTickTimer.start();
-			timestep++;
-	
-			// update acceleration data structure
-			accelTickTimer.start();
-			accel.clearUnits();
-			accel.insertUnits(serverPlayer.units);
-			accel.insertUnits(clientPlayer.units);
-			accelTickTimer.stop();
-	
-			aiTickTimer.start();
-	
-//			aiControllerTimer.start();
-//			aiController.update();
-//			aiControllerTimer.stop();
-			
-			serverPlayerTimer.start();
-			serverPlayer.update(seconds);
-			serverPlayerTimer.stop();
-	
-			clientPlayerTimer.start();
-			clientPlayer.update(seconds);
-			clientPlayerTimer.stop();
-	
-			// Spawn dudes
-			elapsedTime += seconds;
-			if (elapsedTime > 1.f) {
-				elapsedTime -= 1.f;
-				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
-			}
-			
-			aiTickTimer.stop();
-	
-			PARTICLES.tick(seconds);
-	
-			RectF sr = serverPlayer.base.getRect();
-			RectF cr = clientPlayer.base.getRect();
-			accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
-			for (Unit u : cachedUnits) {
-				if (u.getTeam() == Team.CLIENT) {
-					serverPlayer.adjustHealth(-10);
-				}
+		// if (!serverReady || !clientReady) {
+		// return;
+		// }
 
-				this.notifyUnitDead(u);
-			}
-			accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
-			for (Unit u : cachedUnits) {
-				if (u.getTeam() == Team.SERVER) {
-					clientPlayer.adjustHealth(-10);
-				}
+		entireTickTimer.start();
+		timestep++;
 
-				this.notifyUnitDead(u);
-			}
-			entireTickTimer.stop();
+		// update acceleration data structure
+		accelTickTimer.start();
+		accel.clearUnits();
+		accel.insertUnits(serverPlayer.units);
+		accel.insertUnits(clientPlayer.units);
+		accelTickTimer.stop();
+
+		aiTickTimer.start();
+
+		aiControllerTimer.start();
+		aiController.update();
+		aiControllerTimer.stop();
+
+		serverPlayerTimer.start();
+		serverPlayer.update(seconds);
+		serverPlayerTimer.stop();
+
+		clientPlayerTimer.start();
+		clientPlayer.update(seconds);
+		clientPlayerTimer.stop();
+
+		// Spawn dudes
+		elapsedTime += seconds;
+		if (elapsedTime > 1.f) {
+			elapsedTime -= 1.f;
+			remotePlayer
+					.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
 		}
+
+		aiTickTimer.stop();
+
+		PARTICLES.tick(seconds);
+
+		RectF sr = serverPlayer.base.getRect();
+		RectF cr = clientPlayer.base.getRect();
+		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
+			if (u.getTeam() == Team.CLIENT) {
+				serverPlayer.adjustHealth(-10);
+			}
+
+			this.notifyUnitDead(u);
+		}
+		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
+		for (Unit u : cachedUnits) {
+			if (u.getTeam() == Team.SERVER) {
+				clientPlayer.adjustHealth(-10);
+			}
+
+			this.notifyUnitDead(u);
+		}
+		entireTickTimer.stop();
 	}
 
 	private void drawGrid(Canvas canvas) {
@@ -317,7 +307,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		remotePlayer.draw(canvas);
 
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
-		
+
 		localPlayer.postDraw(canvas);
 		remotePlayer.postDraw(canvas);
 	}
@@ -412,7 +402,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public boolean isReady() {
-		return true || self_ready && other_ready;
+		// return clientReady && serverReady;
+		return true;
+	}
+
+	@Override
+	public void removeWall(Wall wall) {
+		graphGen.walls.remove(wall);
+		graphGen.compute();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
 	}
 
 }

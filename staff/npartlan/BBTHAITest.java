@@ -26,6 +26,7 @@ import bbth.game.ai.AIController;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
+import bbth.game.units.WallUnit;
 
 public class BBTHAITest extends GameScreen implements UnitManager {
 	
@@ -315,5 +316,11 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 			float y2) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void removeWall(Wall wall) {
+		// TODO Auto-generated method stub
+		
 	}
 }

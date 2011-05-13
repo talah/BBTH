@@ -23,6 +23,11 @@ public abstract class Simulation {
 	private PriorityQueue<Event> incomingEvents = new PriorityQueue<Event>();
 
 	/**
+	 * Events are ordered by ID to avoid race conditions.
+	 */
+	private int nextID;
+
+	/**
 	 * The number of fine timesteps per coarse timestep.
 	 */
 	private final int finePerCoarse;
@@ -120,19 +125,13 @@ public abstract class Simulation {
 					return;
 				}
 
+				// Actually remove the local steps from the queues
 				nextLocalStep = incomingLocalSteps.remove();
 				nextRemoteStep = incomingRemoteSteps.remove();
 
-				// In case there is a tie (two events occurring at the same
-				// time), add events to the queue in the same order on both
-				// clients.
-				if (isServer) {
-					nextLocalStep.addEventsToQueue(incomingEvents);
-					nextRemoteStep.addEventsToQueue(incomingEvents);
-				} else {
-					nextRemoteStep.addEventsToQueue(incomingEvents);
-					nextLocalStep.addEventsToQueue(incomingEvents);
-				}
+				// Add all the events to the queue
+				nextLocalStep.addEventsToQueue(incomingEvents);
+				nextRemoteStep.addEventsToQueue(incomingEvents);
 			}
 
 			// Process events for this timestep
@@ -216,6 +215,7 @@ public abstract class Simulation {
 	 */
 	private final Event makeEvent(float x, float y, int type, boolean isHold, boolean isOnBeat, int code) {
 		Event event = new Event();
+		event.id = nextID++;
 		event.type = type;
 		event.flags = (isServer ? Event.IS_SERVER : 0) | (isHold ? Event.IS_HOLD : 0) | (isOnBeat ? Event.IS_ON_BEAT : 0);
 		event.fineTime = currentFineTimestep + coarseLag * finePerCoarse;

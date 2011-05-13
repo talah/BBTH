@@ -103,15 +103,15 @@ public class AIController {
 		while (num_to_update > 0) {
 			Unit entity = entities.get(i);
 
-			// TODO: Use the correct AI for the individual unit.
 			if (entity.getType() == UnitType.DEFENDING) {
 				m_defensive.update(entity, this, flock);
 			} else if (entity.getType() == UnitType.ATTACKING) {
 				m_offensive.update(entity, this, flock);
 			} else if (entity.getType() == UnitType.UBER) {
-				m_uber.update(entity, this, flock);
+				m_offensive.update(entity, this, flock);
+				//m_uber.update(entity, this, flock);
 			}
-
+			
 			num_to_update--;
 
 			if (i >= size - 1) {
@@ -121,7 +121,7 @@ public class AIController {
 			}
 		}
 
-		if (i >= size - 1) {
+		if (i > size - 1) {
 			m_last_updated.put(team, 0);
 		} else {
 			m_last_updated.put(team, i);

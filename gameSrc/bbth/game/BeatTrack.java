@@ -28,9 +28,9 @@ public class BeatTrack {
 	}
 	
 	private static final int BEAT_TRACK_WIDTH = 50;
-	private static final float BEAT_LINE_X = 25;
-	private static final float BEAT_LINE_Y = 135;
-	private static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
+	public static final float BEAT_LINE_X = 25;
+	public static final float BEAT_LINE_Y = 135;
+	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
 
 	private static final int MAX_SOUNDS = 8;
 	private static final int HIT_SOUND_ID = 0;
@@ -68,7 +68,7 @@ public class BeatTrack {
 				mp.play();
 			}
 		});
-//		musicPlayer.setOnCompletionListener(listener);
+		musicPlayer.setOnCompletionListener(listener);
 		
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		soundManager.addSound(HIT_SOUND_ID, R.raw.tambourine);

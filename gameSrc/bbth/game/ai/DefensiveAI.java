@@ -90,7 +90,7 @@ public class DefensiveAI extends UnitAI {
 		ycomp = m_flock_dir.y;
 
 		// Calculate somewhere to go if it's a leader.
-		if (!flock.hasLeader(entity)) {
+		//if (!flock.hasLeader(entity)) {
 			Unit enemy = entity.getTarget();
 
 			float goal_x = entity.getX();
@@ -140,7 +140,7 @@ public class DefensiveAI extends UnitAI {
 			float objectiveweighting = getObjectiveWeighting();
 			xcomp += objectiveweighting * FloatMath.cos(angle);
 			ycomp += objectiveweighting * FloatMath.sin(angle);
-		}
+		//}
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
 

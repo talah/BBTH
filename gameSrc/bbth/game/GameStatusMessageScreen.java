@@ -1,11 +1,15 @@
 package bbth.game;
 
 import android.graphics.Paint.Align;
+import bbth.engine.core.GameActivity;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
+import bbth.game.BeatTrack.Song;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {
@@ -80,7 +84,11 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
-			nextScreen = new GameSetupScreen();
+//			nextScreen = new GameSetupScreen();
+			nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
+					GameActivity.instance, new LockStepProtocol()),
+					Song.DONKEY_KONG, new LockStepProtocol());
+			
 		} else if (button == quit) {
 			System.exit(0);
 		}

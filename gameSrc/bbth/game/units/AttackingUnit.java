@@ -12,7 +12,7 @@ import static bbth.game.Team.*;
 
 public class AttackingUnit extends Unit {
 //	private static final float DETONATION_WITHIN_DISTANCE = 1f;
-	private static final float DETONATION_WITHIN_DISTANCE = 6f;
+	private static final float DETONATION_WITHIN_DISTANCE = 15f;
 	private static final float DETONATION_MAX_RADIUS = 40f;
 	private static final float DETONATION_TIME = .3f;
 	private static final float MIN_DAMAGE = 30f;

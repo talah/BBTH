@@ -16,13 +16,13 @@ import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
+import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.BeatTrack.Song;
 
 public class InGameScreen extends UIView implements OnCompletionListener {
 	private BBTHSimulation sim;
-	private UILabel label;
 	private Bluetooth bluetooth;
 	private Team team;
 	private BeatTrack beatTrack;
@@ -31,6 +31,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Paint paint, serverHealthPaint, clientHealthPaint;
 	private final RectF minimapRect, serverHealthRect, clientHealthRect;
 	private static final float HEALTHBAR_HEIGHT = 10;
+	
+	private UILabel label;
 
 //	private static final int SNAP_TO_MOST_ADVANCED = 0;
 //	private static final int USER_SCROLLS_ON_MINIMAP = 1;
@@ -45,11 +47,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
+	private Tutorial tutorial;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 //		super(null);
 
 		this.team = playerTeam;
+		tutorial = new Tutorial(team == Team.SERVER);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		serverHealthPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -76,11 +80,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 //		sim.setupSubviews(this);
+		BBTHSimulation.PARTICLES.reset();
 
-//		if (this.team == Team.SERVER) {
-//			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2 - BBTHGame.HEIGHT);
+//		if (this.team == Team.CLIENT) {
+//			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT);
 //		} else {
-//			this.scrollTo(0, BBTHSimulation.GAME_HEIGHT / 2);
+//			this.scrollTo(0, 0);
 //		}
 
 		// Set up sound stuff
@@ -166,24 +171,28 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		canvas.drawRect(serverHealthRect, serverHealthPaint);
 		canvas.drawRect(clientHealthRect, clientHealthPaint);
 
-		// Draw timing information
-		paint.setColor(Color.argb(63, 255, 255, 255));
-		paint.setTextSize(8);
-		int x = 50;
-		int y = 20;
-		int jump = 11;
-		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
-		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
-		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
-		entireDrawTimer.stop();
+		if (!tutorial.isFinished()) {
+			tutorial.draw(canvas);
+		}
+
+//		// Draw timing information
+//		paint.setColor(Color.argb(63, 255, 255, 255));
+//		paint.setTextSize(8);
+//		int x = 50;
+//		int y = 20;
+//		int jump = 11;
+//		canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+//		canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+//		entireDrawTimer.stop();
 	}
 
 	@Override
@@ -204,23 +213,34 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		sim.onUpdate(seconds);
 		simUpdateTimer.stop();
 
+		// Update the tutorial
+		if (!tutorial.isFinished()) {
+			tutorial.update(seconds);
+			if (tutorial.isFinished()) {
+				sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
+			}
+		}
+
+		// Start the music
 		if (sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
 		// Update healths
-		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.localPlayer.getHealth());
-		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.remotePlayer.getHealth());
+		clientHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.clientPlayer.getHealth());
+		serverHealthRect.right = MathUtils.scale(0, 100, minimapRect.left + 1, minimapRect.right - 1, sim.serverPlayer.getHealth());
 
 		// See whether we won or lost
 		if (sim.localPlayer.getHealth() <= 0.f) {
 			// We lost the game!
-			// this.nextScreen = BBTHGame.LOSE_SCREEN;
+			beatTrack.stopMusic();
+			this.nextScreen = new GameStatusMessageScreen.LoseScreen();
 		}
 
 		if (sim.remotePlayer.getHealth() <= 0.f) {
 			// We won the game!
-			// this.nextScreen = BBTHGame.WIN_SCREEN;
+			beatTrack.stopMusic();
+			this.nextScreen = new GameStatusMessageScreen.WinScreen();
 		}
 
 		// Get new beats, yo
@@ -248,6 +268,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onTouchDown(float x, float y) {
+		if (!tutorial.isFinished()) {
+			tutorial.touchDown(x, y);
+			return;
+		}
+
 //		if (cameraInteraction == USER_SCROLLS_ON_MINIMAP) {
 //			if (minimapRect.contains(x, y)) {
 //				moveCamera(x, y);
@@ -285,6 +310,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onTouchMove(float x, float y) {
+		if (!tutorial.isFinished()) {
+			tutorial.touchMove(x, y);
+			return;
+		}
+
 //		if (userScrolling) {
 //			moveCamera(x, y);
 //			return;
@@ -306,6 +336,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onTouchUp(float x, float y) {
+		if (!tutorial.isFinished()) {
+			tutorial.touchUp(x, y);
+			return;
+		}
+
 		if (userScrolling) {
 			userScrolling = false;
 			return;

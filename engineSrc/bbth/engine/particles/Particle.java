@@ -28,6 +28,7 @@ public class Particle {
 	float _xVel, _yVel;
 	int _color;
 	float _threshold;
+	float _width;
 	
 	// Package private constructor
 	Particle(float threshold) {
@@ -40,7 +41,10 @@ public class Particle {
 	
 	// Returns whether alive next tick or not
 	boolean tick(float seconds) {
-		_radius *= Math.pow(_shrink, seconds);
+		float shrinkFactor = (float)Math.pow(_shrink, seconds);
+		_radius *= shrinkFactor;
+		if (_width > 0f)
+			_width *= shrinkFactor;
 		_yVel -= _gravity * seconds;
 		_xPos += _xVel * seconds;
 		_yPos += _yVel * seconds;
@@ -50,6 +54,9 @@ public class Particle {
 
 	void draw(Canvas canvas, Paint paint) {
 		paint.setColor(_color);
+		float oldWidth = paint.getStrokeWidth();
+		if (_width > 0f)
+			paint.setStrokeWidth(_width);
 		switch(_type) {
 		case CIRCLE:
 			canvas.drawCircle(_xPos, _yPos, _radius, paint);
@@ -73,13 +80,15 @@ public class Particle {
 			canvas.drawLines(lines, paint);
 			break;
 		}
+		if (_width > 0f)
+			paint.setStrokeWidth(oldWidth);
 	}
 
 
 	// All operations support chaining for easy modification
-	public final Particle circle() { _type = CIRCLE; return this; }	
-	public final Particle triangle() { _type = TRIANGLE; return this; }
-	public final Particle line() { _type = LINE; return this; }
+	public final Particle circle() { _type = CIRCLE; _width = 0f; return this; }	
+	public final Particle triangle() { _type = TRIANGLE; _width = 0f; return this; }
+	public final Particle line() { _type = LINE; _width = 0f; return this; }
 	public final Particle color(int color) { _color = color; return this; }
 	public final Particle radius(float radius) { _radius = radius; return this; };
 	public final Particle radius(float min, float max) { _radius = MathUtils.randInRange(min, max); return this; }
@@ -93,4 +102,5 @@ public class Particle {
 	public final Particle gravity(float min, float max) { _gravity = MathUtils.randInRange(min, max); return this; }
 	public final Particle position(float x, float y) { _xPos = x; _yPos = y; return this; };
 	public final Particle velocity(float x, float y) { _xVel = x; _yVel = y; return this; };
+	public final Particle width(float width) { _width = width; return this; }
 }
