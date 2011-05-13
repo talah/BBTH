@@ -10,6 +10,7 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
@@ -18,7 +19,6 @@ import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 import bbth.game.units.WallUnit;
-import bbth.game.util.Hash;
 
 /**
  * A player is someone who is interacting with the game.

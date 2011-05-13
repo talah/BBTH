@@ -13,6 +13,7 @@ import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.particles.ParticleSystem;
@@ -24,7 +25,6 @@ import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
-import bbth.game.util.Hash;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final float DEBUG_SPAWN_TIMER = 1.f;
@@ -85,9 +85,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// THIS IS IMPORTANT
 		random.setSeed(0);
-
-		serverReady = true;
-		clientReady = false;
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);

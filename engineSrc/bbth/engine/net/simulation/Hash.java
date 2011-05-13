@@ -1,4 +1,4 @@
-package bbth.game.util;
+package bbth.engine.net.simulation;
 
 public class Hash {
 
