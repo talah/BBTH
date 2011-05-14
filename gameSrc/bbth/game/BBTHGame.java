@@ -12,7 +12,7 @@ public class BBTHGame extends Game {
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = true;
 	public static final boolean IS_SINGLE_PLAYER = true;
-	public static final Song SONG = Song.GERUDO;
+	public static final Song SONG = Song.RETRO;
 
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);

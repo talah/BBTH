@@ -234,9 +234,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
-		BeatType beatType = beatTrack.checkTouch(x, y);
+		BeatType beatType = beatTrack.onTouchDown(x, y);
 
-		// Unpack!
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
 
@@ -285,6 +284,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			return;
 		}
 
+		beatTrack.onTouchUp(x, y);
+		
 		if (userScrolling) {
 			userScrolling = false;
 			return;

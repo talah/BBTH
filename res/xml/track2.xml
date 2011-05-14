@@ -30,5 +30,7 @@
     <load-pattern id="pattern2" />
     <load-pattern id="pattern1" />
     <load-pattern id="pattern2" />
+    <load-pattern id="pattern1" />
+    <load-pattern id="pattern1" />
 </song>
 </root>
