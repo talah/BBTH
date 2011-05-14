@@ -149,6 +149,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.STROKE);
 			paint.setTextSize(18.0f);
+			paint.setStrokeCap(Cap.ROUND);
 			paint.setAlpha((int) (255 - (time_since_hint_start/4%255)));
 			canvas.drawText("Tap further right ", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 20, paint);
 			canvas.drawText("to make units!", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 45, paint);
