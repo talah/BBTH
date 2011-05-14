@@ -22,8 +22,8 @@ import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 import bbth.game.BeatTrack;
-import bbth.game.BeatTrack.Song;
 import bbth.game.R;
+import bbth.game.Song;
 
 /**
  * A simple test screen for music playback and tapping

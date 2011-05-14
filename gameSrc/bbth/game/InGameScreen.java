@@ -17,7 +17,7 @@ import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
-import bbth.game.BeatTrack.Song;
+import bbth.game.Song;
 
 public class InGameScreen extends UIView implements OnCompletionListener {
 	private BBTHSimulation sim;

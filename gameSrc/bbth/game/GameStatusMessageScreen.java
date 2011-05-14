@@ -9,7 +9,6 @@ import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
-import bbth.game.BeatTrack.Song;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {
@@ -85,7 +84,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 			if (BBTHGame.IS_SINGLE_PLAYER) {
 				nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
 						GameActivity.instance, new LockStepProtocol()),
-						Song.DONKEY_KONG, new LockStepProtocol());
+						BBTHGame.SONG, new LockStepProtocol());
 			} else {
 				nextScreen = new GameSetupScreen();
 			}
