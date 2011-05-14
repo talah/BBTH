@@ -6,7 +6,7 @@ package bbth.game;
  *
  */
 public enum Song {
-	DONKEY_KONG(R.raw.bonusroom, R.xml.track1),
+	DONKEY_KONG(R.raw.bonusroom, R.xml.donkey_kong),
 	RETRO(R.raw.retrobit, R.xml.track2),
 	GERUDO(R.raw.gerudovalley, R.xml.track2),
 	SONG_OF_STORMS_TECHNO(R.raw.stormoftechno, R.xml.track2),

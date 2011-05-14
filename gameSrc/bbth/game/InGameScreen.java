@@ -32,6 +32,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final boolean USE_UNIT_SELECTOR = false;
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
+	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
@@ -45,6 +46,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Tutorial tutorial;
 	private boolean recordedDone;
 	private long tap_location_hint_time;
+	private long drag_tip_start_time;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
@@ -182,6 +184,20 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					BBTHGame.HEIGHT * .25f + 20, paint);
 			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .25f + 45, paint);
+		}
+		
+		// Draw wall drag hint if necessary.
+		time_since_hint_start = System.currentTimeMillis()
+				- drag_tip_start_time;
+		if (time_since_hint_start < DRAG_HINT_DISPLAY_LENGTH) {
+			paint.setColor(Color.WHITE);
+			paint.setStyle(Style.FILL);
+			paint.setTextSize(18.0f);
+			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -373,7 +389,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	public void simulateWallGeneration() {
 		currentWall.updateLength();
-
+		
+		if (currentWall.length <= BBTHSimulation.MIN_WALL_LENGTH) {
+			// Display a tip about dragging!
+			drag_tip_start_time = System.currentTimeMillis();
+		}
+		
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
 			BBTHSimulation.generateParticlesForWall(currentWall, this.team);
 		}
