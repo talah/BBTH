@@ -75,6 +75,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// Combo constants
 	public static final float UBER_UNIT_THRESHOLD = 5;
 	public static final int TUTORIAL_DONE = 13;
+	
+	long placement_tip_start_time;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
 			boolean isServer) {
@@ -144,6 +146,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		if (x < 0 || y < 0)
 			return;
+		
+		if (placement_tip_start_time == 0 && player.getMostAdvancedUnit() != null) {
+			if (((isServer && y > player.getMostAdvancedUnit().getY()) || 
+					(!isServer && y < player.getMostAdvancedUnit().getY()))) {
+				placement_tip_start_time = System.currentTimeMillis();
+			}
+		}
 
 		if (BBTHGame.DEBUG || isOnBeat) {
 			if (isHold) {
