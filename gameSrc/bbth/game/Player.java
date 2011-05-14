@@ -242,21 +242,6 @@ public class Player {
 		}
 	}
 
-	public void drawForMiniMap(Canvas canvas) {
-		// draw units
-		paint.setStyle(Style.FILL);
-		paint.setColor(team.getUnitColor());
-		for (int i = 0; i < units.size(); i++) {
-			units.get(i).drawForMiniMap(canvas);
-		}
-
-		// draw walls
-		paint.setColor(team.getWallColor());
-		for (int i = 0; i < walls.size(); i++) {
-			walls.get(i).drawChassis(canvas);
-		}
-	}
-
 	public float getHealth() {
 		return _health;
 	}

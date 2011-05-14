@@ -358,11 +358,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	public void drawForMiniMap(Canvas canvas) {
-		localPlayer.drawForMiniMap(canvas);
-		remotePlayer.drawForMiniMap(canvas);
-	}
-
 	@Override
 	public void notifyUnitDead(Unit unit) {
 		for (int i = 0; i < 10; i++) {
