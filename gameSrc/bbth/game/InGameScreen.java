@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
+import android.graphics.Paint.Style;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
@@ -29,6 +30,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Paint paint;
 	private UILabel label;
 	private static final boolean USE_UNIT_SELECTOR = false;
+	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
@@ -40,6 +42,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
 	private Tutorial tutorial;
+	private long tap_location_hint_time;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
@@ -47,6 +50,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		tutorial = new Tutorial(team == Team.SERVER);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		
+		tap_location_hint_time = 0;
 
 		// Test labels
 		label = new UILabel("", null);
@@ -129,6 +134,20 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2,
 					BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2,
 					paint);
+		}
+		
+		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
+		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
+			paint.setColor(Color.WHITE);
+			paint.setStyle(Style.STROKE);
+			paint.setTextSize(18.0f);
+			paint.setAlpha((int) (255 - (time_since_hint_start/4%255)));
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawRect(BBTHGame.WIDTH/4, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 65, paint);
+			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
+			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -267,6 +286,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
+		
+		if (x < 0) {
+			// Display a message saying they should tap in-bounds
+			tap_location_hint_time = System.currentTimeMillis();
+		}
 
 		if (isOnBeat && isHold && x > 0 && y > 0) {
 			currentWall = new Wall(x, y, x, y);
