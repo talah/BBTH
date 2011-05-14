@@ -3,15 +3,14 @@ package bbth.game.ai;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
-import android.util.Log;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.fsm.FiniteState;
 import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 import bbth.game.BBTHSimulation;
 import bbth.game.Team;
 import bbth.game.units.Unit;
@@ -20,18 +19,18 @@ public class OffensiveAI extends UnitAI {
 
 	private static final float WALL_EPS = 5.f;
 
-	private PointF m_flock_dir;
+	private Point m_flock_dir;
 
-	PointF start_point;
-	PointF end_point;
+	Point start_point;
+	Point end_point;
 
 	private HashMap<String, Float> m_fsm_conditions;
 
 	public OffensiveAI() {
 		super();
-		m_flock_dir = new PointF();
-		start_point = new PointF();
-		end_point = new PointF();
+		m_flock_dir = new Point();
+		start_point = new Point();
+		end_point = new Point();
 		m_fsm_conditions = new HashMap<String, Float>();
 	}
 
@@ -86,7 +85,6 @@ public class OffensiveAI extends UnitAI {
 		ycomp = m_flock_dir.y;
 
 		// Calculate somewhere to go if it's a leader.
-		// if (!flock.hasLeader(entity)) {
 		float goal_x = BBTHSimulation.GAME_WIDTH / 2.0f;
 		float goal_y = WALL_EPS;
 		if (entity.getTeam() == Team.SERVER) {
@@ -104,12 +102,11 @@ public class OffensiveAI extends UnitAI {
 		start_point.set(start_x, start_y);
 		end_point.set(goal_x, goal_y);
 
-		if (m_tester != null
-				&& m_tester.isLineOfSightClear(start_point, end_point) != null) {
-			PointF start = getClosestNode(start_point);
-			PointF end = getClosestNode(end_point);
+		if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
+			Point start = getClosestNode(start_point);
+			Point end = getClosestNode(end_point);
 
-			ArrayList<PointF> path = null;
+			ArrayList<Point> path = null;
 
 			if (start != null && end != null) {
 				m_pathfinder.clearPath();
@@ -117,35 +114,23 @@ public class OffensiveAI extends UnitAI {
 			}
 
 			path = m_pathfinder.getPath();
-
 			path.add(end_point);
-//			Log.i("game", "trying to find path");
 
 			if (path.size() > 1) {
-				PointF goal_point = path.get(0);
-				if (path.size() > 1
-						&& m_tester
-								.isLineOfSightClear(start_point, path.get(1)) == null) {
+				Point goal_point = path.get(0);
+				if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
 					goal_point = path.get(1);
 				}
 
-//				Log.i("game", "Next point: " + goal_point.x + ", "
-//						+ goal_point.y);
 				goal_x = goal_point.x;
 				goal_y = goal_point.y;
 			}
-
-			// System.out.println("Team: " + entity.getTeam() + " Start: " +
-			// entity.getX() + ", " + entity.getY() + " = " + start.x + ", "
-			// + start.y + " End: " + end.x + ", " + end.y);
 		}
 
-		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x,
-				goal_y);
+		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
 		float objectiveweighting = getObjectiveWeighting();
 		xcomp += objectiveweighting * FloatMath.cos(angle);
 		ycomp += objectiveweighting * FloatMath.sin(angle);
-		// }
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
 

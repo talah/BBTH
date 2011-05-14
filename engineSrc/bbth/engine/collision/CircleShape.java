@@ -1,9 +1,9 @@
 package bbth.engine.collision;
 
-import bbth.engine.collision.Point;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.FloatMath;
+import bbth.engine.util.Point;
 
 public class CircleShape extends Shape {
 

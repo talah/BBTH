@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import bbth.engine.core.GameScreen;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Point;
 import bbth.game.BBTHGame;
 
 public class TriangulationTestScreen extends GameScreen {
@@ -33,9 +33,9 @@ public class TriangulationTestScreen extends GameScreen {
 		}
 
 		paint.setColor(Color.GREEN);
-		for (PointF point : gen.graph.m_connections.keySet()) {
-			ArrayList<PointF> neighbors = gen.graph.m_connections.get(point);
-			for (PointF neighbor : neighbors) {
+		for (Point point : gen.graph.m_connections.keySet()) {
+			ArrayList<Point> neighbors = gen.graph.m_connections.get(point);
+			for (Point neighbor : neighbors) {
 				canvas.drawLine(point.x, point.y, neighbor.x, neighbor.y, paint);
 			}
 		}

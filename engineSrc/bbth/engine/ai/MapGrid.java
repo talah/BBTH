@@ -1,9 +1,9 @@
 package bbth.engine.ai;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public class MapGrid extends ConnectedGraph {
-	private PointF[][] m_points;
+	private Point[][] m_points;
 	int m_width;
 	int m_height;
 	int m_x_size;
@@ -19,16 +19,16 @@ public class MapGrid extends ConnectedGraph {
 	}
 	
 	private void clear() {
-		m_points = new PointF[m_y_size][m_x_size];
+		m_points = new Point[m_y_size][m_x_size];
 		
 		// Initialize all the transitions.
 		for (int r = 0; r < m_y_size; r++) {
 			for (int c = 0; c < m_x_size; c++) {
 				if (m_points[r][c] == null) {
-					m_points[r][c] = new PointF(r, c);
+					m_points[r][c] = new Point(r, c);
 				}
 				
-				PointF currpoint = m_points[r][c];
+				Point currpoint = m_points[r][c];
 				
 				for (int r2off = -1; r2off <= 1; r2off++) {
 					for (int c2off = -1; c2off <= 1; c2off++) {
@@ -48,7 +48,7 @@ public class MapGrid extends ConnectedGraph {
 						}
 						
 						if (m_points[r2][c2] == null) {
-							m_points[r2][c2] = new PointF(r2, c2);
+							m_points[r2][c2] = new Point(r2, c2);
 						}
 						
 						addConnection(currpoint, m_points[r2][c2]);
@@ -67,7 +67,7 @@ public class MapGrid extends ConnectedGraph {
 	}
 	
 	public void markPassable(int r, int c) {
-		PointF currpoint = m_points[r][c];
+		Point currpoint = m_points[r][c];
 		
 		for (int r2off = -1; r2off <= 1; r2off++) {
 			for (int c2off = -1; c2off <= 1; c2off++) {
@@ -92,7 +92,7 @@ public class MapGrid extends ConnectedGraph {
 	}
 	
 	public void markImpassable(int r, int c) {
-		PointF currpoint = m_points[r][c];
+		Point currpoint = m_points[r][c];
 		
 		for (int r2off = -1; r2off <= 1; r2off++) {
 			for (int c2off = -1; c2off <= 1; c2off++) {
@@ -116,7 +116,7 @@ public class MapGrid extends ConnectedGraph {
 		}
 	}
 	
-	public PointF getBin(float x, float y) {
+	public Point getBin(float x, float y) {
 		return m_points[getYBin(y)][getXBin(x)];
 	}
 	

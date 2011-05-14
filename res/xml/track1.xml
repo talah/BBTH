@@ -1,5 +1,5 @@
-<root>
-<pattern id="pattern1" bpm="571">
+<root mpb="571">
+<pattern id="pattern1">
     <rest type="whole" />
     <beat type="quarter" />
     <beat type="quarter" />

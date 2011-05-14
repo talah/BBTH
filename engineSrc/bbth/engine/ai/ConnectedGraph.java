@@ -3,61 +3,63 @@ package bbth.engine.ai;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import bbth.engine.util.Point;
+
 import android.graphics.PointF;
 
 public class ConnectedGraph {
-	public HashMap<PointF, ArrayList<PointF>> m_connections;
+	public HashMap<Point, ArrayList<Point>> m_connections;
 
 	public ConnectedGraph() {
-		m_connections = new HashMap<PointF, ArrayList<PointF>>();
+		m_connections = new HashMap<Point, ArrayList<Point>>();
 	}
 	
-	public void addConnection(PointF p, PointF p2) {
+	public void addConnection(Point p, Point p2) {
 		if (!m_connections.containsKey(p)) {
-			m_connections.put(p, new ArrayList<PointF>());
+			m_connections.put(p, new ArrayList<Point>());
 		}
 		if (!m_connections.containsKey(p2)) {
-			m_connections.put(p2, new ArrayList<PointF>());
+			m_connections.put(p2, new ArrayList<Point>());
 		}
-		ArrayList<PointF> list = m_connections.get(p);
+		ArrayList<Point> list = m_connections.get(p);
 		list.add(p2);
 	}
 	
 	public void addConnection(float x, float y, float x2, float y2) {
-		PointF key = getPointAtCoords(x, y);
-		PointF value = getPointAtCoords(x2, y2);
+		Point key = getPointAtCoords(x, y);
+		Point value = getPointAtCoords(x2, y2);
 
 		if (key == null) {
-			key = new PointF(x, y);
-			m_connections.put(key, new ArrayList<PointF>());
+			key = new Point(x, y);
+			m_connections.put(key, new ArrayList<Point>());
 		}
 		
-		ArrayList<PointF> list = m_connections.get(key);
+		ArrayList<Point> list = m_connections.get(key);
 		
 		if (value == null) {
-			value = new PointF(x2, y2);
+			value = new Point(x2, y2);
 		}
 		list.add(value);
 		
 		if (!m_connections.containsKey(value)) {
-			m_connections.put(value, new ArrayList<PointF>());
+			m_connections.put(value, new ArrayList<Point>());
 		}
 	}
 	
 	public void removeConnection(PointF p, PointF p2) {
-		ArrayList<PointF> list = m_connections.get(p);
+		ArrayList<Point> list = m_connections.get(p);
 		list.remove(p2);
 	}
 	
 	public void removeConnection(float x, float y, float x2, float y2) {
-		PointF key = getPointAtCoords(x, y);
-		PointF value = getPointAtCoords(x2, y2);
+		Point key = getPointAtCoords(x, y);
+		Point value = getPointAtCoords(x2, y2);
 
 		if (key == null) {
 			return;
 		}
 		
-		ArrayList<PointF> list = m_connections.get(key);
+		ArrayList<Point> list = m_connections.get(key);
 		
 		if (value == null) {
 			return;
@@ -65,15 +67,15 @@ public class ConnectedGraph {
 		list.remove(value);
 	}
 	
-	public HashMap<PointF, ArrayList<PointF>> getGraph() {
+	public HashMap<Point, ArrayList<Point>> getGraph() {
 		return m_connections;
 	}
 	
-	public ArrayList<PointF> getNeighbors(PointF start) {
+	public ArrayList<Point> getNeighbors(PointF start) {
 		return m_connections.get(start);
 	}
 	
-	public ArrayList<PointF> getNeighbors(float startx, float starty) {
+	public ArrayList<Point> getNeighbors(float startx, float starty) {
 		PointF point = getPointAtCoords(startx, starty);
 		if (point == null) {
 			return null;
@@ -81,16 +83,16 @@ public class ConnectedGraph {
 		return m_connections.get(point);
 	}
 	
-	public boolean contains(PointF p) {
+	public boolean contains(Point p) {
 		return m_connections.containsKey(p);
 	}
 	
-	public PointF getPointAtCoords(float x, float y) {
+	public Point getPointAtCoords(float x, float y) {
 		return getPointAtCoords(x, y, 0.05f, 0.05f);
 	}
 	
-	public PointF getPointAtCoords(float x, float y, float xtolerance, float ytolerance) {
-		for (PointF p : m_connections.keySet()) {
+	public Point getPointAtCoords(float x, float y, float xtolerance, float ytolerance) {
+		for (Point p : m_connections.keySet()) {
 			if (Math.abs(p.x - x) < xtolerance && Math.abs(p.y - y) < ytolerance) {
 				return p;
 			}
@@ -99,10 +101,10 @@ public class ConnectedGraph {
 		return null;
 	}
 
-	public PointF getClosestNode(float x, float y) {
+	public Point getClosestNode(float x, float y) {
 		float bestdist = 0;
-		PointF closest = null;
-		for (PointF p : m_connections.keySet()) {
+		Point closest = null;
+		for (Point p : m_connections.keySet()) {
 			float dist = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
 			if (closest == null || dist < bestdist) {
 				closest = p;

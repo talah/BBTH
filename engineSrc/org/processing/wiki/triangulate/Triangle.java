@@ -1,10 +1,10 @@
 package org.processing.wiki.triangulate;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public class Triangle {
 
-	public PointF p1, p2, p3;
+	public Point p1, p2, p3;
 
 	public Triangle() {
 		p1 = null;
@@ -12,7 +12,7 @@ public class Triangle {
 		p3 = null;
 	}
 
-	public Triangle(PointF p1, PointF p2, PointF p3) {
+	public Triangle(Point p1, Point p2, Point p3) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.p3 = p3;

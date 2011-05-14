@@ -1,7 +1,7 @@
 package bbth.engine.collision;
 
-import bbth.engine.collision.Point;
 import android.util.FloatMath;
+import bbth.engine.util.Point;
 
 public class Transform {
 

@@ -6,8 +6,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import bbth.engine.collision.Point;
 import bbth.engine.core.GameScreen;
+import bbth.engine.util.Point;
 
 public class UIView extends GameScreen {
 

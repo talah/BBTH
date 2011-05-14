@@ -1,6 +1,6 @@
 package org.processing.wiki.triangulate;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 /**
  * A tuple that compares equal if it contains the same two points disregarding
@@ -8,14 +8,14 @@ import android.graphics.PointF;
  */
 public class Edge {
 
-	public PointF p1, p2;
+	public Point p1, p2;
 
 	public Edge() {
 		p1 = null;
 		p2 = null;
 	}
 
-	public Edge(PointF p1, PointF p2) {
+	public Edge(Point p1, Point p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 	}

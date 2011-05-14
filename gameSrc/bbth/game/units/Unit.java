@@ -37,7 +37,7 @@ public abstract class Unit extends BasicMovable {
 	public abstract void drawChassis(Canvas canvas);
 	public abstract void drawForMiniMap(Canvas canvas);
 	public void drawEffects(Canvas canvas) {}
-	public void drawHealthBar(Canvas canvas) {
+	public void drawHealthBar(Canvas canvas, boolean isLocal) {
 		if (isDead())
 			return;
 		
@@ -48,7 +48,7 @@ public abstract class Unit extends BasicMovable {
 		float border = 1f;
 		
 		float left = getX()-radius;
-		float top = getY()-(radius*2f);
+		float top = (isLocal) ? getY() + (radius*2f) : getY() + (radius*2f);
 		float right = left + 2f*radius;
 		float bottom = top + radius/2f;
 		

@@ -2,28 +2,28 @@ package bbth.engine.fastgraph;
 
 import java.util.ArrayList;
 
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.util.MathUtils;
-
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public class Wall {
 
-	public PointF a;
-	public PointF b;
+	public Point a;
+	public Point b;
 	public float length;
-	public PointF norm;
+	public Point norm;
 
-	public Wall(PointF a, PointF b) {
-		norm = new PointF();
+	public Wall(Point a, Point b) {
+		norm = new Point();
 		this.a = a;
 		this.b = b;
 		updateLength();
 	}
 
 	public Wall(float ax, float ay, float bx, float by) {
-		norm = new PointF();
-		a = new PointF(ax, ay);
-		b = new PointF(bx, by);
+		norm = new Point();
+		a = new Point(ax, ay);
+		b = new Point(bx, by);
 		updateLength();
 	}
 
@@ -35,13 +35,13 @@ public class Wall {
 		norm.y = dx / length;
 	}
 
-	public void addPoints(ArrayList<PointF> points, float radius) {
+	public void addPoints(ArrayList<Point> points, float radius) {
 		float dx = (b.x - a.x) * radius / length;
 		float dy = (b.y - a.y) * radius / length;
-		points.add(new PointF(a.x - dx - dy, a.y - dy + dx));
-		points.add(new PointF(a.x - dx + dy, a.y - dy - dx));
-		points.add(new PointF(b.x + dx - dy, b.y + dy + dx));
-		points.add(new PointF(b.x + dx + dy, b.y + dy - dx));
+		points.add(new Point(a.x - dx - dy, a.y - dy + dx));
+		points.add(new Point(a.x - dx + dy, a.y - dy - dx));
+		points.add(new Point(b.x + dx - dy, b.y + dy + dx));
+		points.add(new Point(b.x + dx + dy, b.y + dy - dx));
 	}
 
 	public float getMinX() {
@@ -58,5 +58,17 @@ public class Wall {
 
 	public float getMaxY() {
 		return Math.max(a.y, b.y);
+	}
+
+	public int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, a.x);
+		hash = Hash.mix(hash, a.y);
+		hash = Hash.mix(hash, b.x);
+		hash = Hash.mix(hash, b.y);
+		hash = Hash.mix(hash, length);
+		hash = Hash.mix(hash, norm.x);
+		hash = Hash.mix(hash, norm.y);
+		return 0;
 	}
 }

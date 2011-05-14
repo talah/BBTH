@@ -2,6 +2,7 @@ package bbth.engine.collision;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import bbth.engine.util.Point;
 
 public abstract class Shape {
 

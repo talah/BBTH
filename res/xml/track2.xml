@@ -1,5 +1,5 @@
-<root>
-<pattern id="pattern1" bpm="481">
+<root mpb="481">
+<pattern id="pattern1">
     <rest type="whole" />
     <beat type="quarter" />
     <beat type="quarter" />
@@ -30,5 +30,7 @@
     <load-pattern id="pattern2" />
     <load-pattern id="pattern1" />
     <load-pattern id="pattern2" />
+    <load-pattern id="pattern1" />
+    <load-pattern id="pattern1" />
 </song>
 </root>

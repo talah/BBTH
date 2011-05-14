@@ -1,19 +1,32 @@
 package zdavis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
-import bbth.engine.fastgraph.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.LineOfSightTester;
+import bbth.engine.fastgraph.SimpleLineOfSightTester;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.util.*;
-import bbth.game.*;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
+import bbth.game.BBTHGame;
+import bbth.game.GridAcceleration;
+import bbth.game.Team;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
 
 public class CombatTest extends GameScreen implements UnitManager {
 	
@@ -167,7 +180,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		particleSystem.draw(canvas, greenPaint);
 		for (int i = 0; i < units.size(); i++) {
 			Unit ent = units.get(i);
-			ent.drawHealthBar(canvas);
+			ent.drawHealthBar(canvas, false);
 		}
 		
 		int size = m_graph_gen.walls.size();
@@ -182,11 +195,11 @@ public class CombatTest extends GameScreen implements UnitManager {
 		m_graph_gen.compute();
 	}
 
-	private PointF getClosestNode(PointF s) {
+	private Point getClosestNode(Point s) {
 		float bestdist = 0;
-		PointF closest = null;
-		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
-		for (PointF p : connections.keySet()) {
+		Point closest = null;
+		HashMap<Point, ArrayList<Point>> connections = m_graph_gen.graph.getGraph();
+		for (Point p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
 			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;

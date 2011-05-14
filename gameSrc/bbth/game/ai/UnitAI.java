@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import android.graphics.PointF;
 import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 import bbth.game.GridAcceleration;
 import bbth.game.Team;
 import bbth.game.units.Unit;
@@ -25,7 +25,7 @@ public abstract class UnitAI {
 	// Cached hash set of units to avoid allocations
 	private final HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
 
-	private PointF m_result;
+	private Point m_result;
 	private float m_max_vel_change = 0.5f;
 	private float m_objective_weighting = 0.05f;
 	private float m_max_vel = 35.0f;
@@ -36,12 +36,12 @@ public abstract class UnitAI {
 	protected GridAcceleration m_accel;
 
 	public UnitAI() {
-		m_result = new PointF();
+		m_result = new Point();
 	}
 
 	public abstract void update(Unit entity, AIController c, FlockRulesCalculator flock);
 
-	protected void calculateFlocking(Unit entity, AIController c, FlockRulesCalculator flock, PointF result) {
+	protected void calculateFlocking(Unit entity, AIController c, FlockRulesCalculator flock, Point result) {
 		// flocking, we will miss you but you're just too slow T_T
 		result.x = 0;
 		result.y = 0;
@@ -128,12 +128,12 @@ public abstract class UnitAI {
 		return bestunit;
 	}
 
-	protected final PointF getClosestNode(PointF s) {
+	protected final Point getClosestNode(Point s) {
 		// TODO: speed this up
 		float bestdist = 0;
-		PointF closest = null;
-		HashMap<PointF, ArrayList<PointF>> connections = m_map_grid.getGraph();
-		for (PointF p : connections.keySet()) {
+		Point closest = null;
+		HashMap<Point, ArrayList<Point>> connections = m_map_grid.getGraph();
+		for (Point p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
 			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;
