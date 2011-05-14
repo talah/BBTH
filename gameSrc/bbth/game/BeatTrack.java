@@ -74,7 +74,7 @@ public class BeatTrack {
 
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
-		MISS_SOUND_ID = soundManager.addSound(R.raw.drum);
+		MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
 		HOLD_SOUND_ID = soundManager.addSound(R.raw.jazzcym);
 		isHolding = false;
 
