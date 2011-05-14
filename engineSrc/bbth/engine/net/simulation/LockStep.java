@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 
 public class LockStep implements Comparable<LockStep> {
 
+	public int hash;
 	public int coarseTime;
 	public ArrayList<Event> events = new ArrayList<Event>();
 

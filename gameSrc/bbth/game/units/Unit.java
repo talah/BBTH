@@ -6,6 +6,7 @@ import android.util.FloatMath;
 import bbth.engine.ai.fsm.FiniteState;
 import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.entity.BasicMovable;
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
 import bbth.game.*;
@@ -32,17 +33,6 @@ public abstract class Unit extends BasicMovable {
 		this.paint = p;
 		fsm = new FiniteStateMachine();
 	}
-	
-	@Override
-	public void setPosition(float x, float y) {
-		super.setPosition(x, y);
-	}
-
-	// why override just to call super
-//	@Override
-//	public void setVelocity(float vel, float dir) {
-//		super.setVelocity(vel, dir);
-//	}
 
 	public abstract void drawChassis(Canvas canvas);
 	public abstract void drawForMiniMap(Canvas canvas);
@@ -150,4 +140,15 @@ public abstract class Unit extends BasicMovable {
 	}
 	
 	protected static Paint tempPaint = new Paint();
+
+	public int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, getX());
+		hash = Hash.mix(hash, getY());
+		hash = Hash.mix(hash, getXVel());
+		hash = Hash.mix(hash, getYVel());
+		hash = Hash.mix(hash, getHealth());
+		hash = Hash.mix(hash, getType().ordinal());
+		return hash;
+	}
 }

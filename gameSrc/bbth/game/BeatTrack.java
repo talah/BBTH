@@ -24,10 +24,6 @@ import bbth.engine.sound.SoundManager;
  * 
  */
 public class BeatTrack {
-	public enum Song {
-		DONKEY_KONG,
-		RETRO;
-	}
 
 	public static final int BEAT_TRACK_WIDTH = 50;
 	public static final float BEAT_LINE_X = 25;
@@ -58,7 +54,6 @@ public class BeatTrack {
 	private String combo_brag_text;
 	
 	public BeatTrack(Song s, OnCompletionListener listener) {
-		song = s;
 		loadSong(s);
 		beatsInRange = new ArrayList<Beat>();
 		
@@ -95,18 +90,11 @@ public class BeatTrack {
 		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
 	}
 	
-	public final void loadSong(Song song) {
-		// Setup song-specific stuff
-		switch (song) {
-		case DONKEY_KONG:
-			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.bonusroom);
-			beatTracker = new BeatTracker(musicPlayer, R.xml.track1);
-			break;
-		case RETRO:
-			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.retrobit);
-			beatTracker = new BeatTracker(musicPlayer, R.xml.track2);
-			break;
-		}
+	// loads a song and an associated beat track
+	public final void loadSong(Song s) {
+		song = s;
+		musicPlayer = new MusicPlayer(GameActivity.instance, s.songId);
+		beatTracker = new BeatTracker(musicPlayer, s.trackId);
 	}
 
 	public void startMusic() {

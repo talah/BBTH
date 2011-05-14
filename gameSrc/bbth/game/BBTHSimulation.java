@@ -13,6 +13,7 @@ import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.particles.ParticleSystem;
@@ -84,9 +85,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// THIS IS IMPORTANT
 		random.setSeed(0);
-
-		serverReady = true;
-		clientReady = false;
 
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
@@ -460,4 +458,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel.insertWalls(graphGen.walls);
 	}
 
+	@Override
+	protected int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, serverPlayer.getHash());
+		hash = Hash.mix(hash, clientPlayer.getHash());
+		return hash;
+	}
 }

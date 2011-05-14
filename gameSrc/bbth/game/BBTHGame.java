@@ -5,14 +5,14 @@ import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.game.BeatTrack.Song;
 
 public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = true;
-	public static final boolean IS_SINGLE_PLAYER = false;
+	public static final boolean IS_SINGLE_PLAYER = true;
+	public static final Song SONG = Song.GERUDO;
 
 	public BBTHGame(Activity activity) {
 		// currentScreen = new TitleScreen(null);
@@ -26,7 +26,7 @@ public class BBTHGame extends Game {
 		if (IS_SINGLE_PLAYER) {
 			currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
 					GameActivity.instance, new LockStepProtocol()),
-					Song.DONKEY_KONG, new LockStepProtocol());
+					SONG, new LockStepProtocol());
 		} else {
 			currentScreen = new GameSetupScreen();
 		}

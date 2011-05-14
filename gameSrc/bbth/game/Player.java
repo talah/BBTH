@@ -10,6 +10,7 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
@@ -149,11 +150,9 @@ public class Player {
 
 		newUnit.setPosition(x, y);
 		if (team == Team.SERVER) {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-					MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), MathUtils.PI / 2.f);
 		} else {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-					-MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), -MathUtils.PI / 2.f);
 		}
 		
 		aiController.addEntity(newUnit);
@@ -283,5 +282,14 @@ public class Player {
 
 	public boolean isLocal() {
 		return _isLocal;
+	}
+	
+	public int getHash() {
+		int hash = 0;
+		hash = Hash.mix(hash, _health);
+		for (int i = 0; i < units.size(); i++) {
+			hash = Hash.mix(hash, units.get(i).getHash());
+		}
+		return hash;
 	}
 }
