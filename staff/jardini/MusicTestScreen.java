@@ -92,7 +92,7 @@ public class MusicTestScreen extends GameScreen {
 				_comboBox.left = _comboBox.right;
 			}
 		} else {
-			_beatTrack.checkTouch(x, y);
+			_beatTrack.onTouchDown(x, y);
 		}
 	}
 	

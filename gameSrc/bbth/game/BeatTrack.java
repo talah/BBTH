@@ -36,10 +36,13 @@ public class BeatTrack {
 	private static final int MAX_SOUNDS = 8;
 	private final int HIT_SOUND_ID;
 	private final int MISS_SOUND_ID;
+	private final int HOLD_SOUND_ID;
 	
 	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
+	private boolean isHolding;
+	private int holdId;
 	private int combo;
 	private int score;
 	private String comboStr;
@@ -73,6 +76,8 @@ public class BeatTrack {
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		MISS_SOUND_ID = soundManager.addSound(R.raw.drum);
+		HOLD_SOUND_ID = soundManager.addSound(R.raw.jazzcym);
+		isHolding = false;
 
 		// Setup score stuff
 		score = 0;
@@ -156,11 +161,16 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-700, 5000);
 	}
 
-	public Beat.BeatType checkTouch(float x, float y) {
+	public Beat.BeatType onTouchDown(float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
-			soundManager.play(HIT_SOUND_ID);
+			if (beatType == Beat.BeatType.HOLD){
+				isHolding = true;
+				holdId = soundManager.loop(HOLD_SOUND_ID);
+			} else {
+				soundManager.play(HIT_SOUND_ID);
+			}
 			++score;
 			// scoreStr = String.valueOf(score);
 			// NOTE: Combos should also be tracked in bbthSimulation
@@ -176,6 +186,13 @@ public class BeatTrack {
 		}
 
 		return beatType;
+	}
+	
+	public void onTouchUp(float x, float y) {
+		if (isHolding) {
+			soundManager.stop(holdId);
+			isHolding = false;
+		}
 	}
 
 	public float getCombo() {
