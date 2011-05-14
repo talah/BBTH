@@ -72,7 +72,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float MIN_WALL_LENGTH = 5.f;
 
 	// Combo constants
-	public static final float UBER_UNIT_THRESHOLD = 7;
+	public static final float UBER_UNIT_THRESHOLD = 5;
 	public static final int TUTORIAL_DONE = 13;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
@@ -278,8 +278,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			elapsedTime += seconds;
 			if (elapsedTime > DEBUG_SPAWN_TIMER) {
 				elapsedTime -= DEBUG_SPAWN_TIMER;
-				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH),
-						GAME_HEIGHT - 50);
+				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH), GAME_HEIGHT - 50);
 			}
 		}
 
