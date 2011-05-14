@@ -14,6 +14,9 @@ import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
@@ -44,7 +47,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
 		this.team = playerTeam;
-		tutorial = new Tutorial(team == Team.SERVER);
+		tutorial = new Tutorial(this);
+		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT  / 2.f);
+		tutorial.setAnchor(Anchor.CENTER_CENTER);
+		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
+		addSubview(tutorial);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -120,7 +127,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		drawUITimer.stop();
 
 		if (!tutorial.isFinished()) {
-			tutorial.draw(canvas);
+			tutorial.onDraw(canvas);
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
@@ -181,7 +188,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		// Update the tutorial
 		if (!tutorial.isFinished()) {
-			tutorial.update(seconds);
+			tutorial.onUpdate(seconds);
 			if (tutorial.isFinished()) {
 				sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
 			}
@@ -216,7 +223,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchDown(float x, float y) {
 		if (!tutorial.isFinished()) {
-			tutorial.touchDown(x, y);
+			tutorial.onTouchDown(x, y);
 			return;
 		}
 
@@ -255,7 +262,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchMove(float x, float y) {
 		if (!tutorial.isFinished()) {
-			tutorial.touchMove(x, y);
+			tutorial.onTouchMove(x, y);
 			return;
 		}
 
@@ -279,7 +286,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchUp(float x, float y) {
 		if (!tutorial.isFinished()) {
-			tutorial.touchUp(x, y);
+			tutorial.onTouchUp(x, y);
 			return;
 		}
 
@@ -336,5 +343,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack.stopMusic();
 			nextScreen = new GameStatusMessageScreen.TieScreen();
 		}
+	}
+	
+	public void startGame()
+	{
+		removeSubview(tutorial);
+		if(BBTHGame.IS_SINGLE_PLAYER)
+		{
+			sim.setClientReady(true);
+			sim.setServerReady(true);
+		}else if(team == Team.SERVER)
+			sim.setServerReady(true);
+		else
+			sim.setClientReady(true);
 	}
 }

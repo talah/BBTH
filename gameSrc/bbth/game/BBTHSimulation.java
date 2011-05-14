@@ -442,7 +442,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public boolean isReady() {
-		return BBTHGame.IS_SINGLE_PLAYER || (clientReady && serverReady);
+		return (clientReady && serverReady);
 	}
 
 	@Override
@@ -459,5 +459,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		hash = Hash.mix(hash, serverPlayer.getHash());
 		hash = Hash.mix(hash, clientPlayer.getHash());
 		return hash;
+	}
+	
+	public void setClientReady(boolean val)
+	{
+		clientReady = val;
+	}
+	
+	public void setServerReady(boolean val)
+	{
+		serverReady = true;
 	}
 }

@@ -170,4 +170,12 @@ public class UIButton extends UIControl {
 	{
 		txt_color = color;
 	}
+	
+	public void setBold(boolean value)
+	{
+		_paint.setFakeBoldText(value);
+		float width = _paint.measureText(text);
+		if(width > _width)
+			_paint.setTextSize((_width - padding) / width * _paint.getTextSize());
+	}
 }

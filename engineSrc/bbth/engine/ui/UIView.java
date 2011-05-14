@@ -104,6 +104,9 @@ public class UIView extends GameScreen {
 		_rect.top = top;
 		_rect.right = right;
 		_rect.bottom = bottom;
+		
+		center.x = _rect.left + _h_width;
+        center.y = _rect.top + _h_height;
 	}
 
 	public void addSubview(UIView subview)
@@ -131,7 +134,7 @@ public class UIView extends GameScreen {
 	public void willAppear(boolean animated)
 	{
 		_hasAppeared = true;
-		layoutSubviews();
+		layoutSubviews(false);
 	}
 
 	public void willHide(boolean animated)
@@ -168,8 +171,6 @@ public class UIView extends GameScreen {
             case BOTTOM_CENTER: this.setBounds(center.x - _h_width, _rect.bottom - _height, center.x + _h_width, _rect.bottom); break;
             case BOTTOM_RIGHT: this.setBounds(_rect.right - _width, _rect.bottom - _height, _rect.right, _rect.bottom); break;
         }
-        center.x = _rect.left + _h_width;
-        center.y = _rect.top + _h_height;
     }
     
     public void setPosition(float x, float y)
@@ -186,8 +187,6 @@ public class UIView extends GameScreen {
             case BOTTOM_CENTER: this.setBounds(x - _h_width, y - _height, x + _h_width, y); break;
             case BOTTOM_RIGHT: this.setBounds(x - _width, y - _height, x, y); break;
         }
-        center.x = _rect.left + _h_width;
-        center.y = _rect.top + _h_height;
         
         _position.x = x; _position.y = y;
     }
@@ -207,16 +206,17 @@ public class UIView extends GameScreen {
         this.delegate = delegate;
     }
     
-    protected void layoutSubviews()
+    protected void layoutSubviews(boolean force)
     {
     	int idx = subviewCount;
 		while(idx-- > 0){
     		UIView e = subviews.get(idx);
-    		if(!e._layedOut)
+    		if(force || !e._layedOut)
     		{
     			e._rect.offset(_rect.left, _rect.top);
     			e.center.x = e._rect.centerX();
     			e.center.y = e._rect.centerY();
+    			e.layoutSubviews(force);
     		}
 		}
 		    

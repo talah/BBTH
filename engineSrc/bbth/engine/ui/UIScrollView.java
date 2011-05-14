@@ -200,17 +200,18 @@ public class UIScrollView extends UIView {
 	}
 	
 	@Override
-	protected void layoutSubviews()
+	protected void layoutSubviews(boolean force)
 	{
 		_content_bounds.set(_rect);
 		int idx = subviewCount;
 		while(idx-- > 0){
     		UIView e = subviews.get(idx);
-    		if(!e._layedOut)
+    		if(force || !e._layedOut)
     		{
     			e._rect.offset(_rect.left, _rect.top);
     			e.center.x = e._rect.centerX();
     			e.center.y = e._rect.centerY();
+    			e.layoutSubviews(force);
     		}
     		_content_bounds.union(e._rect);
 		}
