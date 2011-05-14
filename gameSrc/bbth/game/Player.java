@@ -14,6 +14,7 @@ import bbth.engine.net.simulation.Hash;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Vibrate;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -252,6 +253,9 @@ public class Player {
 
 	public void adjustHealth(float delta) {
 		_health = MathUtils.clamp(0, 100, _health + delta);
+		if (_isLocal) {
+			Vibrate.vibrate(0.1f);
+		}
 	}
 
 	public void setCombo(float _combo) {

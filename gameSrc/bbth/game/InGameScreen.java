@@ -61,7 +61,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		label.setPosition(50, 100);
 		label.setSize(BBTHGame.WIDTH - 20, 10);
 		label.setTextAlign(Align.CENTER);
-		addSubview(label);
+		if (BBTHGame.DEBUG) {
+			addSubview(label);
+		}
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
@@ -147,7 +149,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 				- tap_location_hint_time;
 		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
-			paint.setStyle(Style.STROKE);
+			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
 			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
@@ -173,7 +175,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 				- sim.placement_tip_start_time;
 		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
-			paint.setStyle(Style.STROKE);
+			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
@@ -186,41 +188,21 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			// Draw timing information
 			paint.setColor(Color.argb(63, 255, 255, 255));
 			paint.setTextSize(8);
+			paint.setStyle(Style.FILL);
 			int x = 80;
 			int y = 30;
 			int jump = 11;
-			canvas.drawText(
-					"Entire update: " + entireUpdateTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
-					+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"      - Controller: "
-							+ sim.aiControllerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Server player: "
-							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Client player: "
-							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
-					+ " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"- Particles: " + drawParticleTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
+			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
 		}
 
 		if (BBTHGame.DEBUG && !sim.isSynced()) {
