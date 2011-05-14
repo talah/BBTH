@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
+import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
@@ -28,6 +29,9 @@ public class BeatTrack {
 	public static final float BEAT_LINE_X = 25;
 	public static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
 	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
+	
+	public static final long COMBO_PULSE_TIME = 500;
+	public static final long COMBO_BRAG_TIME = 2000;
 
 	private static final int MAX_SOUNDS = 8;
 	private final int HIT_SOUND_ID;
@@ -44,9 +48,17 @@ public class BeatTrack {
 	private List<Beat> beatsInRange;
 	private Paint paint;
 	
+	private long last_combo_time;
+	private float brag_text_pos;
+	private boolean display_uber_brag;
+	private String combo_brag_text;
+	
 	public BeatTrack(Song s, OnCompletionListener listener) {
 		loadSong(s);
 		beatsInRange = new ArrayList<Beat>();
+		
+		last_combo_time = 0;
+		display_uber_brag = false;
 		
 		// Setup general stuff		
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
@@ -66,13 +78,16 @@ public class BeatTrack {
 		score = 0;
 		// scoreStr = String.valueOf(score);
 		combo = 0;
-		comboStr = String.valueOf(combo);
+		comboStr = "x" + String.valueOf(combo);
 
 		// Setup paint
 		paint = new Paint();
-		paint.setTextSize(10);
+		paint.setTextSize(20.0f);
+		paint.setFakeBoldText(true);
 		paint.setStrokeCap(Cap.ROUND);
 		paint.setAntiAlias(true);
+		
+		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
 	}
 	
 	// loads a song and an associated beat track
@@ -111,7 +126,28 @@ public class BeatTrack {
 
 		paint.setColor(Color.WHITE);
 		// canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);
-		canvas.drawText(comboStr, 35, BBTHGame.HEIGHT - 10, paint);
+		//canvas.drawText("Combo", 3, BBTHGame.HEIGHT - 25, paint);
+		long timesincecombo = System.currentTimeMillis() - last_combo_time;
+		float old_text_size = paint.getTextSize();
+		if (timesincecombo < COMBO_PULSE_TIME) {
+			paint.setTextSize(30.0f - (timesincecombo*10.0f/COMBO_PULSE_TIME));
+		}
+		canvas.drawText(comboStr, 15, BBTHGame.HEIGHT - 10, paint);
+		
+		if (combo >= BBTHSimulation.UBER_UNIT_THRESHOLD && combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
+			display_uber_brag = true;
+			combo_brag_text = "COMBO " + comboStr + ": UBER UNIT!";
+		}
+		
+		if (display_uber_brag && timesincecombo < COMBO_BRAG_TIME) {
+			paint.setTextSize(20.0f);
+			paint.setAlpha((int) (255 - (timesincecombo/2%255)));
+			canvas.drawText(combo_brag_text, brag_text_pos, BBTHGame.HEIGHT/2.0f, paint);
+		} else if (display_uber_brag) {
+			display_uber_brag = false;
+		}
+		paint.setTextSize(old_text_size);
+
 		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 	}
 
@@ -128,6 +164,7 @@ public class BeatTrack {
 			++score;
 			// NOTE: Combos should also be tracked in bbthSimulation
 			++combo;
+			last_combo_time = System.currentTimeMillis();
 			// scoreStr = String.valueOf(score);
 			comboStr = "x" + String.valueOf(combo);
 		} else {
