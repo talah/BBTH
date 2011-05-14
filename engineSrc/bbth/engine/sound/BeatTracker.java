@@ -47,21 +47,21 @@ public class BeatTracker {
 	}
 		
 	// return index into BeatPattern for closest beat
-	public final void updateCurrentBeatIndex() {
+	public final void updateCurrentBeatIndex() {		
 		int currTime = _musicPlayer.getCurrentPosition();
 
-		Beat beat = _allBeats[_currentBeatIndex];
 		if (_currentBeatIndex == _allBeats.length - 1) {
 			return;
 		}
+		Beat beat = _allBeats[_currentBeatIndex];
 		Beat nextBeat = _allBeats[_currentBeatIndex + 1];
 
 		while (Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
 			++_currentBeatIndex;
-			beat = _allBeats[_currentBeatIndex];
 			if (_currentBeatIndex == _allBeats.length - 1) {
 				return;
 			}
+			beat = _allBeats[_currentBeatIndex];
 			nextBeat = _allBeats[_currentBeatIndex + 1];
 		}
 	}
