@@ -24,12 +24,12 @@ public class SoundManager {
 	}
 
 	// plays a sound once
-	public void play(int soundId) {
-		_soundPool.play(soundId, 1.f, 1.f, 1, 0, 1.f);
+	public int play(int soundId) {
+		return _soundPool.play(soundId, 1.f, 1.f, 1, 0, 1.f);
 	}
 	
-	public void play(int soundId, float volume) {
-		_soundPool.play(soundId, volume, volume, 1, 0, 1.f);
+	public int play(int soundId, float volume) {
+		return _soundPool.play(soundId, volume, volume, 1, 0, 1.f);
 	}
 	
 	// loops a sound

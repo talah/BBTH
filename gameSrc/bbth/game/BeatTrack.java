@@ -75,7 +75,8 @@ public class BeatTrack {
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
-		HOLD_SOUND_ID = soundManager.addSound(R.raw.jazzcym);
+		// TODO: Find a good hold sound
+		HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		isHolding = false;
 
 		// Setup score stuff
@@ -157,7 +158,7 @@ public class BeatTrack {
 
 	public void refreshBeats() {
 		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-700, 5000);
+		beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
 	}
 
 	public Beat.BeatType onTouchDown(float x, float y) {
@@ -166,7 +167,7 @@ public class BeatTrack {
 		if (isOnBeat) {
 			if (beatType == Beat.BeatType.HOLD){
 				isHolding = true;
-				holdId = soundManager.loop(HOLD_SOUND_ID);
+				holdId = soundManager.play(HOLD_SOUND_ID);
 			} else {
 				soundManager.play(HIT_SOUND_ID);
 			}
