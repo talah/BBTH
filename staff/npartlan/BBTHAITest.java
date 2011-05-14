@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
-import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
@@ -19,6 +18,7 @@ import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 import bbth.game.BBTHGame;
 import bbth.game.GridAcceleration;
 import bbth.game.Team;
@@ -26,7 +26,6 @@ import bbth.game.ai.AIController;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
-import bbth.game.units.WallUnit;
 
 public class BBTHAITest extends GameScreen implements UnitManager {
 	
@@ -168,9 +167,9 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 		//******** SETUP FOR AI *******//
 		
 		// Draw the pathfinding connections graph
-		/*for (PointF point : m_graph_gen.graph.m_connections.keySet()) {
-			ArrayList<PointF> neighbors = m_graph_gen.graph.m_connections.get(point);
-			for (PointF neighbor : neighbors) {
+		/*for (Point point : m_graph_gen.graph.m_connections.keySet()) {
+			ArrayList<Point> neighbors = m_graph_gen.graph.m_connections.get(point);
+			for (Point neighbor : neighbors) {
 				canvas.drawLine(point.x, point.y, neighbor.x, neighbor.y, m_paint_3);
 			}
 		}*/
@@ -178,8 +177,8 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 		// Draw the path found
 		/*Unit entity = m_entities.get(0);
 		Unit enemy = m_entities.get(1);
-		PointF start_point = new PointF();
-		PointF end_point = new PointF();
+		Point start_point = new Point();
+		Point end_point = new Point();
 		float start_x = entity.getX();
 		float start_y = entity.getY();
 		float goal_x = enemy.getX();
@@ -188,11 +187,11 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 		end_point.set(goal_x, goal_y);
 		
 		if (!m_tester.isLineOfSightClear(start_point, end_point) && m_pathfinder != null) {
-			PointF start = getClosestNode(start_point);
+			Point start = getClosestNode(start_point);
 			canvas.drawCircle(start.x, start.y, 3.0f, m_paint_3);
-			PointF end = getClosestNode(end_point);
+			Point end = getClosestNode(end_point);
 			
-			ArrayList<PointF> path = null;
+			ArrayList<Point> path = null;
 			
 			if (start != null && end != null) {
 				m_pathfinder.clearPath();
@@ -213,8 +212,8 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 				
 				int size = path.size();
 				for (int i = 0; i < size-1; i++) {
-					PointF curr = path.get(i);
-					PointF next = path.get(i+1);
+					Point curr = path.get(i);
+					Point next = path.get(i+1);
 					canvas.drawLine(curr.x, curr.y, next.x, next.y, m_paint_1);
 				}
 			}
@@ -274,11 +273,11 @@ public class BBTHAITest extends GameScreen implements UnitManager {
 		m_graph_gen.compute();
 	}
 
-	private PointF getClosestNode(PointF s) {
+	private Point getClosestNode(Point s) {
 		float bestdist = 0;
-		PointF closest = null;
-		HashMap<PointF, ArrayList<PointF>> connections = m_graph_gen.graph.getGraph();
-		for (PointF p : connections.keySet()) {
+		Point closest = null;
+		HashMap<Point, ArrayList<Point>> connections = m_graph_gen.graph.getGraph();
+		for (Point p : connections.keySet()) {
 			float dist = MathUtils.getDistSqr(p.x, p.y, s.x, s.y);
 			if ((closest == null || dist < bestdist) && m_tester.isLineOfSightClear(s, p) == null) {
 				closest = p;

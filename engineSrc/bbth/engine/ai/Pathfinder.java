@@ -1,49 +1,50 @@
 package bbth.engine.ai;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 import java.util.HashMap;
 import java.util.HashSet;
-import android.graphics.PointF;
+import java.util.PriorityQueue;
+
+import bbth.engine.util.Point;
 
 public class Pathfinder {
 	ConnectedGraph m_graph;
-	HashMap<PointF, AStarEntry> m_entries;
-	HashSet<PointF> m_closed_set;
-	HashMap<PointF, PointF> m_came_from;
+	HashMap<Point, AStarEntry> m_entries;
+	HashSet<Point> m_closed_set;
+	HashMap<Point, Point> m_came_from;
 	PriorityQueue<AStarEntry> m_open_set;
-	private ArrayList<PointF> m_found_path;
+	private ArrayList<Point> m_found_path;
 	
 	public Pathfinder(ConnectedGraph cg) {
 		m_graph = cg;
 		
-		m_entries = new HashMap<PointF, AStarEntry>();
-		for (PointF p : cg.getGraph().keySet()) {
+		m_entries = new HashMap<Point, AStarEntry>();
+		for (Point p : cg.getGraph().keySet()) {
 			m_entries.put(p, new AStarEntry(p));
 		}
 		
-		m_closed_set = new HashSet<PointF>();
-		m_came_from = new HashMap<PointF, PointF>();
+		m_closed_set = new HashSet<Point>();
+		m_came_from = new HashMap<Point, Point>();
 		m_open_set = new PriorityQueue<AStarEntry>();
-		m_found_path = new ArrayList<PointF>();
+		m_found_path = new ArrayList<Point>();
 	}
 	
-	public boolean findPath(PointF start, PointF goal) {
+	public boolean findPath(Point start, Point goal) {
 		return findPath(start, goal, null, 1.0f);
 	}
 	
-	public boolean findPath(PointF start, PointF goal, Heuristic se) {
+	public boolean findPath(Point start, Point goal, Heuristic se) {
 		return findPath(start, goal, se, 1.0f);
 	}
 	
-	public boolean findPath(PointF start, PointF goal, Heuristic se, float tolerance) {
+	public boolean findPath(Point start, Point goal, Heuristic se, float tolerance) {
 		m_closed_set.clear();
 		m_came_from.clear();
 		m_open_set.clear();
 		m_found_path.clear();
 		
 		// Reset all the scores.
-		for (PointF p : m_graph.getGraph().keySet()) {
+		for (Point p : m_graph.getGraph().keySet()) {
 			if (!m_entries.containsKey(p)) {
 				m_entries.put(p, new AStarEntry(p));
 			} else {
@@ -80,14 +81,14 @@ public class Pathfinder {
 			m_closed_set.add(current.m_point);
 			
 			// Find neighbors.
-			ArrayList<PointF> neighbors = m_graph.getNeighbors(current.m_point);
+			ArrayList<Point> neighbors = m_graph.getNeighbors(current.m_point);
 			if (neighbors == null) {
 				continue;
 			}
 			
 			int size = neighbors.size();
 			for (int i = 0; i < size; i++) {
-				PointF neighbor = neighbors.get(i);
+				Point neighbor = neighbors.get(i);
 				if (m_closed_set.contains(neighbor)) {
 					continue;
 				}
@@ -112,18 +113,18 @@ public class Pathfinder {
 		return false;
 	}
 
-	private void reconstructPath(PointF current) {
+	private void reconstructPath(Point current) {
 		if (m_came_from.containsKey(current)) {
 			reconstructPath(m_came_from.get(current));
 		}
 		m_found_path.add(current);
 	}
 	
-	public ArrayList<PointF> getPath() {
+	public ArrayList<Point> getPath() {
 		return m_found_path;
 	}
 
-	private int estimateHScore(Heuristic se, AStarEntry start, PointF goal) {
+	private int estimateHScore(Heuristic se, AStarEntry start, Point goal) {
 		if (se == null) {
 			return (int)getDistSqr(start, goal);
 		} else {
@@ -131,7 +132,7 @@ public class Pathfinder {
 		}
 	}
 	
-	private float getDistSqr(AStarEntry current, PointF goal) {
+	private float getDistSqr(AStarEntry current, Point goal) {
 		float dx = current.m_point.x - goal.x;
 		float dy = current.m_point.y - goal.y;
 		return dx * dx + dy * dy;

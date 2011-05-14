@@ -11,8 +11,8 @@ import org.processing.wiki.triangulate.Triangulate;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import bbth.engine.ai.ConnectedGraph;
+import bbth.engine.util.Point;
 
 /**
  * Generates a minimal graph around a collection of walls. Given an enemy
@@ -39,7 +39,7 @@ public class FastGraphGenerator {
 
 	public void compute() {
 		// Triangulate the points into triangles
-		ArrayList<PointF> points = new ArrayList<PointF>();
+		ArrayList<Point> points = new ArrayList<Point>();
 		for (int i = 0, n = walls.size(); i < n; i++) {
 			walls.get(i).addPoints(points, radius);
 		}
@@ -97,9 +97,9 @@ public class FastGraphGenerator {
 	public void draw(Canvas canvas) {
 		paint.setAntiAlias(true);
 		paint.setColor(Color.GREEN);
-		for (PointF point : graph.m_connections.keySet()) {
-			ArrayList<PointF> neighbors = graph.m_connections.get(point);
-			for (PointF neighbor : neighbors) {
+		for (Point point : graph.m_connections.keySet()) {
+			ArrayList<Point> neighbors = graph.m_connections.get(point);
+			for (Point neighbor : neighbors) {
 				canvas.drawLine(point.x, point.y, neighbor.x, neighbor.y, paint);
 			}
 		}

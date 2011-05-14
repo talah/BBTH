@@ -3,7 +3,6 @@ package bbth.game.ai;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.ai.FlockRulesCalculator;
 import bbth.engine.ai.fsm.FiniteState;
@@ -11,23 +10,24 @@ import bbth.engine.ai.fsm.FiniteStateMachine;
 import bbth.engine.ai.fsm.SimpleGreaterTransition;
 import bbth.engine.ai.fsm.SimpleLessTransition;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 import bbth.game.BBTHSimulation;
 import bbth.game.Team;
 import bbth.game.units.Unit;
 
 public class UberAI extends UnitAI {
-	private PointF m_flock_dir;
+	private Point m_flock_dir;
 
-	PointF start_point;
-	PointF end_point;
+	Point start_point;
+	Point end_point;
 
 	private HashMap<String, Float> m_fsm_conditions;
 
 	public UberAI() {
 		super();
-		m_flock_dir = new PointF();
-		start_point = new PointF();
-		end_point = new PointF();
+		m_flock_dir = new Point();
+		start_point = new Point();
+		end_point = new Point();
 		m_fsm_conditions = new HashMap<String, Float>();
 	}
 
@@ -101,10 +101,10 @@ public class UberAI extends UnitAI {
 				end_point.set(goal_x, goal_y);
 				
 				if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
-					PointF start = getClosestNode(start_point);
-					PointF end = getClosestNode(end_point);
+					Point start = getClosestNode(start_point);
+					Point end = getClosestNode(end_point);
 
-					ArrayList<PointF> path = null;
+					ArrayList<Point> path = null;
 
 					if (start != null && end != null) {
 						m_pathfinder.clearPath();
@@ -116,7 +116,7 @@ public class UberAI extends UnitAI {
 					path.add(end_point);
 
 					if (path.size() > 1) {
-						PointF goal_point = path.get(0);
+						Point goal_point = path.get(0);
 						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
 							goal_point = path.get(1);
 						}

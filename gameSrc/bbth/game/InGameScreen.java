@@ -40,6 +40,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
 	private Tutorial tutorial;
+	private boolean recordedDone;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
@@ -51,7 +52,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Test labels
 		label = new UILabel("", null);
 		label.setTextSize(10);
-		label.setPosition(10, 10);
+		label.setPosition(50, 100);
 		label.setSize(BBTHGame.WIDTH - 20, 10);
 		label.setTextAlign(Align.CENTER);
 		addSubview(label);
@@ -85,7 +86,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onDraw(Canvas canvas) {
 		entireDrawTimer.start();
-		super.onDraw(canvas);
 
 		// Draw the game
 		drawSimTimer.start();
@@ -154,8 +154,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
 			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
-					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
+					+ BBTHSimulation.GAME_HEIGHT / 2 + 40, paint);
 		}
+		super.onDraw(canvas);
 		entireDrawTimer.stop();
 	}
 
@@ -164,7 +165,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		entireUpdateTimer.start();
 
 		// Show the timestep for debugging
-		label.setText("" + sim.getTimestep());
+		label.setText("Timestep: " + sim.getTimestep());
 
 		if (!BBTHGame.IS_SINGLE_PLAYER) {
 			// Stop the music if we disconnect
@@ -182,9 +183,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Update the tutorial
 		if (!tutorial.isFinished()) {
 			tutorial.update(seconds);
-			if (tutorial.isFinished()) {
-				sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
-			}
+		} else if (!recordedDone) {
+			sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
+			recordedDone = true;
 		}
 
 		// Start the music
@@ -193,16 +194,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// See whether we won or lost
-		if (sim.localPlayer.getHealth() <= 0.f) {
-			// We lost the game!
-			beatTrack.stopMusic();
-			this.nextScreen = new GameStatusMessageScreen.LoseScreen();
-		}
-
-		if (sim.remotePlayer.getHealth() <= 0.f) {
-			// We won the game!
-			beatTrack.stopMusic();
-			this.nextScreen = new GameStatusMessageScreen.WinScreen();
+		if (sim.localPlayer.getHealth() <= 0.f || sim.remotePlayer.getHealth() <= 0.f) {
+			onCompletion(null);
 		}
 
 		// Get new beats, yo
@@ -307,7 +300,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		currentWall.updateLength();
 
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
-			sim.generateParticlesForWall(currentWall, this.team);
+			BBTHSimulation.generateParticlesForWall(currentWall, this.team);
 		}
 
 		currentWall = null;

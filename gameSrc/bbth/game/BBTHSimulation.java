@@ -1,5 +1,6 @@
 package bbth.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -8,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
@@ -100,6 +102,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		playerMap.put(false, clientPlayer);
 
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		graphGen.walls.clear();
+		graphGen.walls.add(new Wall(100, 100, 200, 200));
+		graphGen.compute();
 		accel.insertWalls(graphGen.walls);
 
 		pathFinder = new Pathfinder(graphGen.graph);
@@ -192,10 +197,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			this.generateParticlesForWall(w, player.getTeam());
 		}
 
-		addWallToAI(w);
+		addWall(w);
 	}
 
-	public void generateParticlesForWall(Wall wall, Team team) {
+	public static void generateParticlesForWall(Wall wall, Team team) {
 		int numParticles = 40;
 
 		for (int i = 0; i < numParticles; i++) {
@@ -215,8 +220,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	private void addWallToAI(Wall wall) {
+	private void addWall(Wall wall) {
 		graphGen.walls.add(wall);
+		graphGen.compute();
+		accel.clearWalls();
+		accel.insertWalls(graphGen.walls);
+	}
+
+	@Override
+	public void removeWall(Wall wall) {
+		graphGen.walls.remove(wall);
 		graphGen.compute();
 		accel.clearWalls();
 		accel.insertWalls(graphGen.walls);
@@ -446,18 +459,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	public void removeWall(Wall wall) {
-		graphGen.walls.remove(wall);
-		graphGen.compute();
-		accel.clearWalls();
-		accel.insertWalls(graphGen.walls);
-	}
-
-	@Override
 	protected int getHash() {
 		int hash = 0;
 		hash = Hash.mix(hash, serverPlayer.getHash());
 		hash = Hash.mix(hash, clientPlayer.getHash());
+		for (int i = 0, n = graphGen.walls.size(); i < n; i++) {
+			hash = Hash.mix(hash, graphGen.walls.get(i).getHash());
+		}
 		return hash;
 	}
 }

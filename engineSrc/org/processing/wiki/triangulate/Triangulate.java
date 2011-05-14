@@ -13,7 +13,7 @@ package org.processing.wiki.triangulate;
  *      Tom Carden, tom (at) tom-carden.co.uk 17th January 2006
  *
  *      adapted to get rid of those ugly Vector and Point3f objects. it now takes an
- *      ArrayList of PointF objects and return an ArrayList of Triangles objects.
+ *      ArrayList of Point objects and return an ArrayList of Triangles objects.
  *      see what Sun thinks about Vector objects here:
  *      http://java.sun.com/developer/technicalArticles/Collections/Using/index.html
  *      antiplastik, 28 june 2010, paris-france
@@ -26,15 +26,15 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
+import bbth.engine.util.Point;
 
 public class Triangulate {
 
   private static final float EPSILON = 1e-8f;
 
   private static class Circle {
-	public PointF center = new PointF();
+	public Point center = new Point();
 	public float radius;
   }
   
@@ -55,9 +55,9 @@ public class Triangulate {
         return(0);
     }
   */
-  private static class XComparator implements Comparator<PointF> {
+  private static class XComparator implements Comparator<Point> {
     
-    public int compare(PointF p1, PointF p2) {
+    public int compare(Point p1, Point p2) {
       if (p1.x < p2.x) {
         return -1;
       }
@@ -76,7 +76,7 @@ public class Triangulate {
     The circumcircle centre is returned in (xc,yc) and the radius r
     NOTE: A point on the edge is inside the circumcircle
   */
-  private static boolean circumCircle(PointF p, Triangle t, Circle circle) {
+  private static boolean circumCircle(Point p, Triangle t, Circle circle) {
 
     float m1,m2,mx1,mx2,my1,my2;
     float dx,dy,rsqr,drsqr;
@@ -127,27 +127,27 @@ public class Triangulate {
 
   /*
     Triangulation subroutine
-    Takes as input vertices (PointFs) in ArrayList pxyz
+    Takes as input vertices (Points) in ArrayList pxyz
     Returned is a list of triangular faces in the ArrayList triangles 
     These triangles are arranged in a consistent clockwise order.
   */
-  public static ArrayList<Triangle> triangulate( ArrayList<PointF> pxyz ) {
+  public static ArrayList<Triangle> triangulate( ArrayList<Point> pxyz ) {
   
     // sort vertex array in increasing x values
     Collections.sort(pxyz, new XComparator());
-    		
+
     /*
       Find the maximum and minimum vertex bounds.
       This is to allow calculation of the bounding triangle
     */
-    float xmin = ((PointF)pxyz.get(0)).x;
-    float ymin = ((PointF)pxyz.get(0)).y;
+    float xmin = ((Point)pxyz.get(0)).x;
+    float ymin = ((Point)pxyz.get(0)).y;
     float xmax = xmin;
     float ymax = ymin;
     
-    Iterator<PointF> pIter = pxyz.iterator();
+    Iterator<Point> pIter = pxyz.iterator();
     while (pIter.hasNext()) {
-      PointF p = (PointF)pIter.next();
+      Point p = (Point)pIter.next();
       if (p.x < xmin) xmin = p.x;
       if (p.x > xmax) xmax = p.x;
       if (p.y < ymin) ymin = p.y;
@@ -171,9 +171,9 @@ public class Triangulate {
       the triangle list.
     */
     Triangle superTriangle = new Triangle();
-    superTriangle.p1 = new PointF( xmid - 2.0f * dmax, ymid - dmax );
-    superTriangle.p2 = new PointF( xmid, ymid + 2.0f * dmax );
-    superTriangle.p3 = new PointF( xmid + 2.0f * dmax, ymid - dmax );
+    superTriangle.p1 = new Point( xmid - 2.0f * dmax, ymid - dmax );
+    superTriangle.p2 = new Point( xmid, ymid + 2.0f * dmax );
+    superTriangle.p3 = new Point( xmid + 2.0f * dmax, ymid - dmax );
     triangles.add(superTriangle);
     
     /*
@@ -183,7 +183,7 @@ public class Triangulate {
     pIter = pxyz.iterator();
     while (pIter.hasNext()) {
     
-      PointF p = (PointF)pIter.next();
+      Point p = (Point)pIter.next();
       
       edges.clear();
       

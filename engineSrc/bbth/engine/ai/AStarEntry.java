@@ -1,14 +1,14 @@
 package bbth.engine.ai;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public class AStarEntry implements Comparable<AStarEntry> {
-	PointF m_point;
+	Point m_point;
 	int m_f_score;
 	int m_g_score;
 	int m_h_score;
 	
-	public AStarEntry(PointF p) {
+	public AStarEntry(Point p) {
 		m_point = p;
 	}
 
