@@ -189,7 +189,7 @@ public class AIController {
 						tries++;
 					}
 				}
-				
+
 				entity.setVelocity(entity.getSpeed(), heading);
 			}
 		}
