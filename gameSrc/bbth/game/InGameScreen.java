@@ -31,6 +31,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private UILabel label;
 	private static final boolean USE_UNIT_SELECTOR = false;
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
+	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
+
 
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
@@ -154,6 +156,17 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 65, paint);
 			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
 			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
+		}
+		
+		// Draw unit placement hint if necessary.
+		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
+		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
+			paint.setColor(Color.WHITE);
+			paint.setStyle(Style.STROKE);
+			paint.setTextSize(18.0f);
+			paint.setAlpha((int) (255 - (time_since_hint_start/4%255)));
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
