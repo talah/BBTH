@@ -10,7 +10,8 @@ public enum Song {
 	RETRO(R.raw.retrobit, R.xml.track2),
 	GERUDO(R.raw.gerudovalley, R.xml.track2),
 	SONG_OF_STORMS_TECHNO(R.raw.stormoftechno, R.xml.track2),
-	FAST_SPEED(R.raw.fastspeed, R.xml.track2);
+	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.track2),
+	HIFI(R.raw.hifi, R.xml.track2);
 	
 	private Song(int song, int track) {
 		songId = song;
