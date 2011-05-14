@@ -162,11 +162,13 @@ public class BeatTrack {
 		if (isOnBeat) {
 			soundManager.play(HIT_SOUND_ID);
 			++score;
-			// NOTE: Combos should also be tracked in bbthSimulation
-			++combo;
-			last_combo_time = System.currentTimeMillis();
 			// scoreStr = String.valueOf(score);
-			comboStr = "x" + String.valueOf(combo);
+			// NOTE: Combos should also be tracked in bbthSimulation
+			if (beatType != Beat.BeatType.HOLD) {
+				++combo;
+				last_combo_time = System.currentTimeMillis();
+				comboStr = "x" + String.valueOf(combo);
+			}
 		} else {
 			soundManager.play(MISS_SOUND_ID);
 			combo = 0;

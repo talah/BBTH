@@ -146,13 +146,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			return;
 
 		if (BBTHGame.DEBUG || isOnBeat) {
-			float newcombo = player.getCombo() + 1;
-			player.setCombo(newcombo);
-
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
 				player.spawnUnit(x, y);
+
+				float newcombo = player.getCombo() + 1;
+				player.setCombo(newcombo);
 			}
 		} else {
 			player.setCombo(0);
