@@ -1,0 +1,110 @@
+<root>
+	<pattern id="wtfix" bpm="571">
+		<rest type="eighth" />
+	</pattern>
+
+	<pattern id="measure-rest" bpm="571">
+		<rest type="whole" />
+	</pattern>
+
+	<pattern id="first-section-rest" bpm="571">
+		<rest type="whole" />
+		<rest type="eighth" />
+	</pattern>
+
+	<pattern id="second-section-rest" bpm="571">
+		<rest type="half" />
+		<rest type="quarter" />
+		<rest type="eighth" />
+	</pattern>
+
+	<pattern id="four-quarter" bpm="571">
+		<beat type="quarter" />
+		<beat type="quarter" />
+		<beat type="quarter" />
+		<beat type="quarter" />
+	</pattern>
+
+	<pattern id="double-hold" bpm="571">
+		<hold type="quarter" />
+		<rest type="quarter" />
+		<hold type="quarter" />
+		<rest type="quarter" />
+	</pattern>
+
+	<pattern id="boring-halves" bpm="571">
+		<beat type="half" />
+		<beat type="half" />
+		<beat type="half" />
+		<beat type="half" />
+		<beat type="half" />
+		<beat type="half" />
+	</pattern>
+
+	<pattern id="tootie-doo" bpm="571">
+		<beat type="eighth" />
+		<beat type="sixteenth" />
+		<beat type="sixteenth" />
+		<rest type="quarter" />
+		<rest type="half" />
+	</pattern>
+
+	<pattern id="tootie-doo-2" bpm="571">
+		<beat type="eighth" />
+		<beat type="sixteenth" />
+		<beat type="sixteenth" />
+		<rest type="eighth" />
+		<beat type="eighth" />
+		<rest type="half" />
+	</pattern>
+
+	<pattern id="seven-eighths-rest" bpm="571">
+		<rest type="half" />
+		<rest type="quarter" />
+		<rest type="eighth" />
+	</pattern>
+
+	<pattern id="six-eighths" bpm="571">
+		<beat type="eighth" />
+		<beat type="eighth" />
+		<beat type="eighth" />
+		<beat type="eighth" />
+		<beat type="eighth" />
+		<beat type="eighth" />
+		<rest type="quarter" />
+	</pattern>
+
+	<song>
+		<load-pattern id="wtfix" />
+
+		<load-pattern id="measure-rest" />
+
+		<load-pattern id="four-quarter" />
+		<load-pattern id="four-quarter" />
+		<load-pattern id="double-hold" />
+		<load-pattern id="measure-rest" />
+		<load-pattern id="boring-halves" />
+
+		<load-pattern id="first-section-rest" />
+
+		<load-pattern id="tootie-doo" />
+		<load-pattern id="tootie-doo" />
+		<load-pattern id="tootie-doo" />
+
+		<load-pattern id="second-section-rest" />
+
+		<load-pattern id="four-quarter" />
+		<load-pattern id="four-quarter" />
+		<load-pattern id="double-hold" />
+		<load-pattern id="measure-rest" />
+		<load-pattern id="boring-halves" />
+
+		<load-pattern id="first-section-rest" />
+
+		<load-pattern id="tootie-doo-2" />
+		<load-pattern id="tootie-doo-2" />
+		<load-pattern id="seven-eighths-rest" />
+		<load-pattern id="six-eighths" />
+
+	</song>
+</root>
