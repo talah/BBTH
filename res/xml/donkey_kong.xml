@@ -64,14 +64,18 @@
 		<rest type="eighth" />
 	</pattern>
 
-	<pattern id="six-eighths" bpm="571">
-		<beat type="eighth" />
-		<beat type="eighth" />
-		<beat type="eighth" />
-		<beat type="eighth" />
-		<beat type="eighth" />
-		<beat type="eighth" />
-		<rest type="quarter" />
+	<pattern id="coda" bpm="571">
+		<beat type="eighth_triplet" />
+		<beat type="eighth_triplet" />
+		<beat type="eighth_triplet" />
+		
+		<beat type="eighth_triplet" />
+		<beat type="eighth_triplet" />
+		<beat type="eighth_triplet" />
+		
+		<beat type="quarter" />
+		
+		<beat type="quarter" />
 	</pattern>
 
 	<song>
@@ -104,7 +108,7 @@
 		<load-pattern id="tootie-doo-2" />
 		<load-pattern id="tootie-doo-2" />
 		<load-pattern id="seven-eighths-rest" />
-		<load-pattern id="six-eighths" />
+		<load-pattern id="coda" />
 
 	</song>
 </root>
