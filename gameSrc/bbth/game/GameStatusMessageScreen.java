@@ -41,22 +41,22 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	public GameStatusMessageScreen(String text) {
 		message = new UILabel(text, tag);
 		message.setAnchor(Anchor.TOP_CENTER);
-		message.setPosition(BBTHGame.WIDTH / 2, 40);
-		message.setTextSize(20);
+		message.setTextSize(20.f);
+		message.setPosition(BBTHGame.WIDTH / 2.f, 80);
 		message.setTextAlign(Align.CENTER);
 		this.addSubview(message);
 
 		playAgain = new UIButton("Play Again", tag);
-		playAgain.setAnchor(Anchor.BOTTOM_CENTER);
-		playAgain.setPosition(BBTHGame.WIDTH / 2, 140);
-		playAgain.setSize(120, 40);
+		playAgain.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		playAgain.setAnchor(Anchor.CENTER_CENTER);
+		playAgain.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
 		playAgain.setButtonDelegate(this);
 		this.addSubview(playAgain);
 
 		quit = new UIButton("Quit", tag);
-		quit.setAnchor(Anchor.BOTTOM_CENTER);
-		quit.setPosition(BBTHGame.WIDTH / 2, 200);
-		quit.setSize(120, 40);
+		quit.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		quit.setAnchor(Anchor.CENTER_CENTER);
+		quit.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
 		quit.setButtonDelegate(this);
 		this.addSubview(quit);
 

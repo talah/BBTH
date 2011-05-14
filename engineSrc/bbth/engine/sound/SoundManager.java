@@ -33,18 +33,18 @@ public class SoundManager {
 	}
 	
 	// loops a sound
-	public void loop(int soundId) {
-		_soundPool.play(soundId, 1.f, 1.f, 1, -1, 1.f);
+	public int loop(int soundId) {
+		return _soundPool.play(soundId, 1.f, 1.f, 1, -1, 1.f);
 	}
 
 	// loops a sound
-	public void loop(int soundId, float volume) {
-		_soundPool.play(soundId, volume, volume, 1, -1, 1.f);
+	public int loop(int soundId, float volume) {
+		return _soundPool.play(soundId, volume, volume, 1, -1, 1.f);
 	}
 	
 	// stops a sound
-	public void stop(int soundId) {
-		_soundPool.stop(soundId);
+	public void stop(int streamId) {
+		_soundPool.stop(streamId);
 	}
 
 	// release the resources used by the sound manager

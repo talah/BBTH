@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
-import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
@@ -36,10 +35,13 @@ public class BeatTrack {
 	private static final int MAX_SOUNDS = 8;
 	private final int HIT_SOUND_ID;
 	private final int MISS_SOUND_ID;
+	private final int HOLD_SOUND_ID;
 	
 	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
+	private boolean isHolding;
+	private int holdId;
 	private int combo;
 	private int score;
 	private String comboStr;
@@ -73,6 +75,8 @@ public class BeatTrack {
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		MISS_SOUND_ID = soundManager.addSound(R.raw.drum);
+		HOLD_SOUND_ID = soundManager.addSound(R.raw.jazzcym);
+		isHolding = false;
 
 		// Setup score stuff
 		score = 0;
@@ -156,17 +160,24 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-700, 5000);
 	}
 
-	public Beat.BeatType checkTouch(float x, float y) {
+	public Beat.BeatType onTouchDown(float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
-			soundManager.play(HIT_SOUND_ID);
+			if (beatType == Beat.BeatType.HOLD){
+				isHolding = true;
+				holdId = soundManager.loop(HOLD_SOUND_ID);
+			} else {
+				soundManager.play(HIT_SOUND_ID);
+			}
 			++score;
-			// NOTE: Combos should also be tracked in bbthSimulation
-			++combo;
-			last_combo_time = System.currentTimeMillis();
 			// scoreStr = String.valueOf(score);
-			comboStr = "x" + String.valueOf(combo);
+			// NOTE: Combos should also be tracked in bbthSimulation
+			if (beatType != Beat.BeatType.HOLD) {
+				++combo;
+				last_combo_time = System.currentTimeMillis();
+				comboStr = "x" + String.valueOf(combo);
+			}
 		} else {
 			soundManager.play(MISS_SOUND_ID);
 			combo = 0;
@@ -174,6 +185,13 @@ public class BeatTrack {
 		}
 
 		return beatType;
+	}
+	
+	public void onTouchUp(float x, float y) {
+		if (isHolding) {
+			soundManager.stop(holdId);
+			isHolding = false;
+		}
 	}
 
 	public float getCombo() {

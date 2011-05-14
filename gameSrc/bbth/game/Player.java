@@ -206,9 +206,9 @@ public class Player {
 		return this.selector;
 	}
 
-	public void draw(Canvas canvas) {
+	public void draw(Canvas canvas, boolean serverDraw) {
 		// Draw bases
-		base.onDraw(canvas);
+		base.draw(canvas, serverDraw);
 
 		// draw walls
 		paint.setColor(team.getWallColor());
@@ -229,7 +229,7 @@ public class Player {
 	
 	public void postDraw(Canvas canvas) {
 		for (int i = 0; i < units.size(); i++) {
-			units.get(i).drawHealthBar(canvas);
+			units.get(i).drawHealthBar(canvas, _isLocal);
 		}
 
 		// draw my wavefront
