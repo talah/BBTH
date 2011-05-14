@@ -15,15 +15,15 @@ public class Tutorial {
 		this.isServer = isServer;
 		paint = new Paint();
 		paint.setAntiAlias(true);
-		paint.setTextSize(12);
+		paint.setTextSize(16);
 	}
 
 	public boolean isFinished() {
-		return (frame > 5);
+		return (frame > 3);
 	}
 
 	public void update(float seconds) {
-		frame += seconds * 0.25f;
+		frame += seconds * 0.2f;
 	}
 
 	private void drawArrow(Canvas canvas, float startX, float startY, float endX, float endY) {
@@ -44,27 +44,20 @@ public class Tutorial {
 
 		if (frame < 1) {
 			paint.setTextAlign(Align.LEFT);
-			canvas.drawText("Tap with beat to make a unit", 80, 100, paint);
-			drawArrow(canvas, 80, 100, BeatTrack.BEAT_LINE_X + BeatTrack.BEAT_CIRCLE_RADIUS, BeatTrack.BEAT_LINE_Y - BeatTrack.BEAT_CIRCLE_RADIUS);
+			canvas.drawText("Tap anywhere with the beat ", 80, 100, paint);
+			canvas.drawText("to make a unit there!", 80, 130, paint);
 		} else if (frame < 2) {
 			paint.setTextAlign(Align.LEFT);
-			canvas.drawText("Hold long notes for walls", 80, 100, paint);
-			drawArrow(canvas, 80, 100, BeatTrack.BEAT_LINE_X + BeatTrack.BEAT_CIRCLE_RADIUS, BeatTrack.BEAT_LINE_Y - BeatTrack.BEAT_CIRCLE_RADIUS);
-		} else if (frame < 3) {
-			paint.setTextAlign(Align.RIGHT);
-			canvas.drawText("Switch between attacking and defending", 260, 50, paint);
-			drawArrow(canvas, 270, 45, 300, 40);
-		} else if (frame < 4) {
-			paint.setTextAlign(Align.RIGHT);
-			canvas.drawText("Scroll around with the minimap", 240, 100, paint);
-			drawArrow(canvas, 240, 100, 300, 130);
+			canvas.drawText("Drag finger during ", 80, 100, paint);
+			canvas.drawText("long notes for walls", 80, 130, paint);
 		} else {
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("Don't let enemies get to your base!", 150, 90, paint);
+			canvas.drawText("Don't let enemies ", 150, 90, paint);
+			canvas.drawText("get to your base!", 150, 120, paint);
 			if (isServer) {
 				drawArrow(canvas, 150, 70, 150, 10);
 			} else {
-				drawArrow(canvas, 150, 100, 150, 160);
+				drawArrow(canvas, 150, 130, 150, 160);
 			}
 		}
 	}
@@ -72,7 +65,7 @@ public class Tutorial {
 	public void touchDown(float x, float y) {
 		if (BBTHGame.DEBUG) {
 			// skip the tutorial
-			frame = 5;
+			frame = 4;
 		}
 	}
 

@@ -150,11 +150,9 @@ public class Player {
 
 		newUnit.setPosition(x, y);
 		if (team == Team.SERVER) {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-					MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), MathUtils.PI / 2.f);
 		} else {
-			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70),
-					-MathUtils.PI / 2.f);
+			newUnit.setVelocity(BBTHSimulation.randInRange(30, 70), -MathUtils.PI / 2.f);
 		}
 		
 		aiController.addEntity(newUnit);
@@ -241,21 +239,6 @@ public class Player {
 			paint.setStyle(Style.FILL);
 			float y = advUnit.getY() + (team == Team.CLIENT ? -10 : 10);
 			canvas.drawLine(0, y, BBTHSimulation.GAME_WIDTH, y, paint);
-		}
-	}
-
-	public void drawForMiniMap(Canvas canvas) {
-		// draw units
-		paint.setStyle(Style.FILL);
-		paint.setColor(team.getUnitColor());
-		for (int i = 0; i < units.size(); i++) {
-			units.get(i).drawForMiniMap(canvas);
-		}
-
-		// draw walls
-		paint.setColor(team.getWallColor());
-		for (int i = 0; i < walls.size(); i++) {
-			walls.get(i).drawChassis(canvas);
 		}
 	}
 

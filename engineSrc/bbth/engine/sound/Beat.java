@@ -14,7 +14,7 @@ import android.graphics.Paint;
 public class Beat {
 	public final static float RADIUS = 8.f;
 	private final static int OFFSET_DENOM = 12;
-	private static final int TAPPED_COLOR = Color.GREEN;
+	private static final int TAPPED_COLOR = Color.rgb(0, 150, 0);
 	private static final int INCOMING_COLOR = Color.GRAY;
 	private static final int MISSED_COLOR = Color.DKGRAY;
 

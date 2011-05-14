@@ -73,7 +73,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final float MIN_WALL_LENGTH = 5.f;
 
 	// Combo constants
-	public static final float UBER_UNIT_THRESHOLD = 7;
+	public static final float UBER_UNIT_THRESHOLD = 5;
 	public static final int TUTORIAL_DONE = 13;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
@@ -90,8 +90,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController, this, team == Team.SERVER);
-		clientPlayer = new Player(Team.CLIENT, aiController, this, team == Team.CLIENT);
+		serverPlayer = new Player(Team.SERVER, aiController, this,
+				team == Team.SERVER);
+		clientPlayer = new Player(Team.CLIENT, aiController, this,
+				team == Team.CLIENT);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -144,13 +146,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			return;
 
 		if (BBTHGame.DEBUG || isOnBeat) {
-			float newcombo = player.getCombo() + 1;
-			player.setCombo(newcombo);
-
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
 				player.spawnUnit(x, y);
+
+				float newcombo = player.getCombo() + 1;
+				player.setCombo(newcombo);
 			}
 		} else {
 			player.setCombo(0);
@@ -290,17 +292,24 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.CLIENT) {
-				serverPlayer.adjustHealth(-10);
+				if (!BBTHGame.DEBUG) {
+					serverPlayer.adjustHealth(-10);
+				}
+				
 				this.notifyUnitDead(u);
 			}
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == Team.SERVER) {
-				clientPlayer.adjustHealth(-10);
+				if (!BBTHGame.DEBUG) {
+					clientPlayer.adjustHealth(-10);
+				}
+				
 				this.notifyUnitDead(u);
 			}
 		}
+
 		entireTickTimer.stop();
 	}
 
@@ -336,8 +345,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawWavefronts(Canvas canvas) {
 		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
 		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
-		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
-		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : BBTHSimulation.GAME_HEIGHT;
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10
+				: 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10
+				: BBTHSimulation.GAME_HEIGHT;
 		paint.setStyle(Style.FILL);
 
 		// server wavefront
@@ -356,11 +367,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
 					serverWavefrontY, paint);
 		}
-	}
-
-	public void drawForMiniMap(Canvas canvas) {
-		localPlayer.drawForMiniMap(canvas);
-		remotePlayer.drawForMiniMap(canvas);
 	}
 
 	@Override

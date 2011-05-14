@@ -91,9 +91,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		drawSimTimer.start();
 		canvas.save();
 		canvas.translate(BBTHSimulation.GAME_X, BBTHSimulation.GAME_Y);
-		
+
 		sim.draw(canvas);
-		
+
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
@@ -108,7 +108,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		canvas.restore();
 		drawSimTimer.stop();
-		
+
 		drawUITimer.start();
 		// Overlay the beat track
 		beatTrack.draw(canvas);
@@ -125,8 +125,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
-					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
+			canvas.drawText("Waiting for other player...",
+					BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2,
+					BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2,
+					paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -136,24 +138,46 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			int x = 80;
 			int y = 30;
 			int jump = 11;
-			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText(
+					"Entire update: " + entireUpdateTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
+					+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"      - Controller: "
+							+ sim.aiControllerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Server player: "
+							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Client player: "
+							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
+					+ " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"- Particles: " + drawParticleTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
 		}
 
-		if (!sim.isSynced()) {
+		if (BBTHGame.DEBUG && !sim.isSynced()) {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X
+					+ BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 		entireDrawTimer.stop();
@@ -212,12 +236,14 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles.tick(seconds);
 		entireUpdateTimer.stop();
 
-		sim.update(seconds);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			sim.update(seconds);
+		}
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		if (!tutorial.isFinished()) {
+		if (!BBTHGame.DEBUG && !tutorial.isFinished()) {
 			tutorial.touchDown(x, y);
 			return;
 		}
@@ -241,7 +267,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-		
+
 		if (isOnBeat && isHold && x > 0 && y > 0) {
 			currentWall = new Wall(x, y, x, y);
 		}
@@ -306,7 +332,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void simulateWallGeneration() {
 		if (currentWall == null)
 			return;
-		
+
 		currentWall.updateLength();
 
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
