@@ -22,13 +22,22 @@ public class Base extends UIView {
 		paint.setTextAlign(Align.CENTER);
 	}
 
-	@Override
-	public void onDraw(Canvas canvas) {
+	public void draw(Canvas canvas, boolean serverDraw) {
 		paint.setColor(team.getBaseColor());
 		canvas.drawRect(_rect, paint);
 		paint.setColor(Color.WHITE);
 		String text = (player.isLocal() ? "Your" : "Enemy") + " health: " + (int) player.getHealth();
-		canvas.drawText(text, (_rect.left + _rect.right) / 2, _rect.top + 13, paint);
+		
+		canvas.save();
+		canvas.translate((_rect.left + _rect.right) / 2, _rect.top + 13);
+		if (serverDraw) {
+			canvas.scale(1.f, -1.f);
+			canvas.translate(0, paint.getTextSize() / 2);
+		}
+		
+		canvas.drawText(text, 0, 0, paint);
+		canvas.restore();
+		
 	}
 
 	public RectF getRect() {

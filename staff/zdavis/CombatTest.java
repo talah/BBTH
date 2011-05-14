@@ -167,7 +167,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		particleSystem.draw(canvas, greenPaint);
 		for (int i = 0; i < units.size(); i++) {
 			Unit ent = units.get(i);
-			ent.drawHealthBar(canvas);
+			ent.drawHealthBar(canvas, false);
 		}
 		
 		int size = m_graph_gen.walls.size();
