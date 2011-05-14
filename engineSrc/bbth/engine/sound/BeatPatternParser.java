@@ -24,6 +24,8 @@ public class BeatPatternParser {
     	XmlResourceParser parser = GameActivity.instance.getResources().getXml(resourceId);
     	Map<String, List<Beat>> patterns = new HashMap<String, List<Beat>>();
     	List<Beat> song = new ArrayList<Beat>();
+    	int millisPerBeat = 0;
+    	
     	try {
         	int eventType = parser.next(); // skip start of document
         	
@@ -33,12 +35,16 @@ public class BeatPatternParser {
     				if (name.equals("pattern")) {
     					Log.d("BBTH", "Starting pattern");
     					String id = parser.getAttributeValue(null, "id");
-    					patterns.put(id, parseSubpattern(parser));
+    					patterns.put(id, parseSubpattern(parser, millisPerBeat));
     					eventType = parser.getEventType();
     				} else if (name.equals("song")) {
     					Log.d("BBTH", "Starting song");
     					song = parseSong(parser, patterns);
     					eventType = parser.getEventType();
+    				} else if (name.equals("root")) {
+    					String mpb = parser.getAttributeValue(null, "mpb");
+    					millisPerBeat = Integer.parseInt(mpb);
+    					eventType = parser.next();
     				} else {
     					eventType = parser.next();
     				}
@@ -59,9 +65,8 @@ public class BeatPatternParser {
     }
     
     // parse a subpattern into a List of beats
-    private static List<Beat> parseSubpattern(XmlResourceParser parser) throws IOException, XmlPullParserException {
+    private static List<Beat> parseSubpattern(XmlResourceParser parser, int millisPerBeat) throws IOException, XmlPullParserException {
     	 ArrayList<Beat> beats = new ArrayList<Beat>();
-    	 int bpm = Integer.parseInt(parser.getAttributeValue(null, "bpm"));
     	 
 		 parser.next();
 		 String name = parser.getName();
@@ -74,7 +79,7 @@ public class BeatPatternParser {
     			 Log.d("BBTH", type);
     			 int duration;
     			 if (type != null) {
-    				 duration = parseNoteType(type, bpm);
+    				 duration = parseNoteType(type, millisPerBeat);
     			 } else {
     				 // check for manual duration entry
     				 String durationStr = parser.getAttributeValue(null, "duration");
@@ -109,30 +114,30 @@ public class BeatPatternParser {
     }
     
     // parse a note type
-    private static int parseNoteType(String type, int bpm) {
+    private static int parseNoteType(String type, int millisPerBeat) {
     	if (type.equals("sixteenth")) {
-    		return bpm / 4;
+    		return millisPerBeat / 4;
     	}
     	if (type.equals("eighth")) {
-    		return bpm / 2;
+    		return millisPerBeat / 2;
     	}
     	if (type.equals("quarter")) {
-    		return bpm;
+    		return millisPerBeat;
     	}
     	if (type.equals("half")) {
-    		return bpm * 2;
+    		return millisPerBeat * 2;
     	}
     	if (type.equals("whole")) {
-    		return bpm * 4;
+    		return millisPerBeat * 4;
     	}
     	if (type.equals("eighth_triplet")) {
-    		return bpm / 3;
+    		return millisPerBeat / 3;
     	}
     	if (type.equals("quarter_triplet")) {
-    		return bpm * 2 / 3;
+    		return millisPerBeat * 2 / 3;
     	}
     	
-    	return bpm;
+    	return millisPerBeat;
     }
     
     // parse the song

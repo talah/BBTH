@@ -1,38 +1,38 @@
-<root>
-	<pattern id="wtfix" bpm="571">
+<root mpb="571">
+	<pattern id="wtfix">
 		<rest type="eighth" />
 	</pattern>
 
-	<pattern id="measure-rest" bpm="571">
+	<pattern id="measure-rest">
 		<rest type="whole" />
 	</pattern>
 
-	<pattern id="first-section-rest" bpm="571">
+	<pattern id="first-section-rest">
 		<rest type="whole" />
 		<rest type="eighth" />
 	</pattern>
 
-	<pattern id="second-section-rest" bpm="571">
+	<pattern id="second-section-rest">
 		<rest type="half" />
 		<rest type="quarter" />
 		<rest type="eighth" />
 	</pattern>
 
-	<pattern id="four-quarter" bpm="571">
+	<pattern id="four-quarter">
 		<beat type="quarter" />
 		<beat type="quarter" />
 		<beat type="quarter" />
 		<beat type="quarter" />
 	</pattern>
 
-	<pattern id="double-hold" bpm="571">
+	<pattern id="double-hold">
 		<hold type="quarter" />
 		<rest type="quarter" />
 		<hold type="quarter" />
 		<rest type="quarter" />
 	</pattern>
 
-	<pattern id="boring-halves" bpm="571">
+	<pattern id="boring-halves">
 		<beat type="half" />
 		<beat type="half" />
 		<beat type="half" />
@@ -41,7 +41,7 @@
 		<beat type="half" />
 	</pattern>
 
-	<pattern id="tootie-doo" bpm="571">
+	<pattern id="tootie-doo">
 		<beat type="eighth" />
 		<beat type="sixteenth" />
 		<beat type="sixteenth" />
@@ -49,7 +49,7 @@
 		<rest type="half" />
 	</pattern>
 
-	<pattern id="tootie-doo-2" bpm="571">
+	<pattern id="tootie-doo-2">
 		<beat type="eighth" />
 		<beat type="sixteenth" />
 		<beat type="sixteenth" />
@@ -58,13 +58,13 @@
 		<rest type="half" />
 	</pattern>
 
-	<pattern id="seven-eighths-rest" bpm="571">
+	<pattern id="seven-eighths-rest">
 		<rest type="half" />
 		<rest type="quarter" />
 		<rest type="eighth" />
 	</pattern>
 
-	<pattern id="coda" bpm="571">
+	<pattern id="coda">
 		<beat type="eighth_triplet" />
 		<beat type="eighth_triplet" />
 		<beat type="eighth_triplet" />
