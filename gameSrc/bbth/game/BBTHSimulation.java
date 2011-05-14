@@ -295,7 +295,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				if (!BBTHGame.DEBUG) {
 					serverPlayer.adjustHealth(-10);
 				}
-				
+
 				this.notifyUnitDead(u);
 			}
 		}
@@ -305,7 +305,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				if (!BBTHGame.DEBUG) {
 					clientPlayer.adjustHealth(-10);
 				}
-				
+
 				this.notifyUnitDead(u);
 			}
 		}
@@ -329,8 +329,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		drawWavefronts(canvas);
 		drawGrid(canvas);
 
-		localPlayer.draw(canvas);
-		remotePlayer.draw(canvas);
+		localPlayer.draw(canvas, team == Team.SERVER);
+		remotePlayer.draw(canvas, team == Team.SERVER);
 
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 

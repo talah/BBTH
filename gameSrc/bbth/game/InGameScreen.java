@@ -91,6 +91,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		drawSimTimer.start();
 		canvas.save();
 		canvas.translate(BBTHSimulation.GAME_X, BBTHSimulation.GAME_Y);
+		
+		if (team == Team.SERVER) {
+			canvas.translate(0, BBTHSimulation.GAME_HEIGHT / 2);
+			canvas.scale(1.f, -1.f);
+			canvas.translate(0, -BBTHSimulation.GAME_HEIGHT / 2);
+		}
 
 		sim.draw(canvas);
 
@@ -268,6 +274,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
+		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
 
 		if (isOnBeat && isHold && x > 0 && y > 0) {
 			currentWall = new Wall(x, y, x, y);
@@ -290,7 +297,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// We moved offscreen!
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-
+		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
+		
 		if (x < 0 || y < 0) {
 			simulateWallGeneration();
 		} else if (currentWall != null) {
@@ -318,7 +326,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-
+		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
+		
 		simulateWallGeneration();
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
