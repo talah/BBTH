@@ -325,7 +325,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onTouchMove(float x, float y) {
-		if (!tutorial.isFinished()) {
+		if (!BBTHGame.DEBUG && !tutorial.isFinished()) {
 			tutorial.touchMove(x, y);
 			return;
 		}
@@ -350,7 +350,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if (!tutorial.isFinished()) {
+		if (!BBTHGame.DEBUG && !tutorial.isFinished()) {
 			tutorial.touchUp(x, y);
 			return;
 		}
