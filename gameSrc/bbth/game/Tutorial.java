@@ -126,7 +126,7 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 
 	public void onDraw(Canvas canvas) {
 		//Draw Overlay
-		paint.setARGB(165, 0, 0, 0);
+		paint.setARGB(128, 0, 0, 0);
 		paint.setShader(null);
 		canvas.drawRect(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT, paint);
 		
