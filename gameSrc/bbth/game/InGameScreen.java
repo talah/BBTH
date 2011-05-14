@@ -33,7 +33,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 
-
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
@@ -53,7 +52,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		tutorial = new Tutorial(team == Team.SERVER);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		
+
 		tap_location_hint_time = 0;
 
 		// Test labels
@@ -98,7 +97,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		drawSimTimer.start();
 		canvas.save();
 		canvas.translate(BBTHSimulation.GAME_X, BBTHSimulation.GAME_Y);
-		
+
 		if (team == Team.SERVER) {
 			canvas.translate(0, BBTHSimulation.GAME_HEIGHT / 2);
 			canvas.scale(1.f, -1.f);
@@ -143,31 +142,44 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2,
 					paint);
 		}
-		
-		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
+
+		long time_since_hint_start = System.currentTimeMillis()
+				- tap_location_hint_time;
 		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.STROKE);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			paint.setAlpha((int) (255 - (time_since_hint_start/4%255)));
-			canvas.drawText("Tap further right ", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText("to make units!", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .75f + 45, paint);
-			canvas.drawRect(BBTHGame.WIDTH/4, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
-			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH/4 + 30, BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH/4 + 40, BBTHGame.HEIGHT * .75f + 65, paint);
+			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60,
+					BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
+					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 30,
+					BBTHGame.HEIGHT * .75f + 65, paint);
+			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
+					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 40,
+					BBTHGame.HEIGHT * .75f + 65, paint);
+			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
+					BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH / 4 + 40,
+					BBTHGame.HEIGHT * .75f + 65, paint);
 		}
-		
+
 		// Draw unit placement hint if necessary.
-		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
+		time_since_hint_start = System.currentTimeMillis()
+				- sim.placement_tip_start_time;
 		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.STROKE);
 			paint.setTextSize(18.0f);
-			paint.setAlpha((int) (255 - (time_since_hint_start/4%255)));
-			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText("influence to make units!", BBTHGame.WIDTH/4.0f, BBTHGame.HEIGHT * .25f + 45, paint);
+			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
+					BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -215,7 +227,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X
+					+ BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2 + 40, paint);
 		}
 		super.onDraw(canvas);
@@ -256,7 +269,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// See whether we won or lost
-		if (sim.localPlayer.getHealth() <= 0.f || sim.remotePlayer.getHealth() <= 0.f) {
+		if (sim.localPlayer.getHealth() <= 0.f
+				|| sim.remotePlayer.getHealth() <= 0.f) {
 			onCompletion(null);
 		}
 
@@ -298,7 +312,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
+		if (team == Team.SERVER)
+			y = BBTHSimulation.GAME_HEIGHT - y;
 
 		if (x < 0) {
 			// Display a message saying they should tap in-bounds
@@ -326,12 +341,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// We moved offscreen!
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
-		
-		if (x < 0 || y < 0) {
-			simulateWallGeneration();
-		} else if (currentWall != null) {
-			currentWall.b.set(x, y);
+		if (team == Team.SERVER)
+			y = BBTHSimulation.GAME_HEIGHT - y;
+
+		if (currentWall != null) {
+			if (x < 0 || y < 0) {
+				simulateWallGeneration();
+			} else {
+				currentWall.b.set(x, y);
+			}
 		}
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
@@ -349,7 +367,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		beatTrack.onTouchUp(x, y);
-		
+
 		if (userScrolling) {
 			userScrolling = false;
 			return;
@@ -357,9 +375,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
-		if (team == Team.SERVER) y = BBTHSimulation.GAME_HEIGHT - y;
-		
-		simulateWallGeneration();
+		if (team == Team.SERVER)
+			y = BBTHSimulation.GAME_HEIGHT - y;
+
+		if (currentWall != null) {
+			simulateWallGeneration();
+		}
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			sim.simulateTapUp(x, y, true);
@@ -369,9 +390,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	}
 
 	public void simulateWallGeneration() {
-		if (currentWall == null)
-			return;
-
 		currentWall.updateLength();
 
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
