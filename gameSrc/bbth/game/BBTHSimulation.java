@@ -104,8 +104,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		playerMap.put(false, clientPlayer);
 
 		graphGen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
-		graphGen.walls.clear();
-		graphGen.walls.add(new Wall(100, 100, 200, 200));
 		graphGen.compute();
 		accel.insertWalls(graphGen.walls);
 
