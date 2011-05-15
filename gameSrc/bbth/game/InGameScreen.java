@@ -159,7 +159,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .75f + 20, paint);
 			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f,
@@ -184,7 +184,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .25f + 20, paint);
 			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
@@ -198,7 +198,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .5f + 20, paint);
 			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f,
