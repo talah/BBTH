@@ -1,7 +1,7 @@
 package bbth.game;
 
-import bbth.engine.util.ColorUtils;
 import android.graphics.Color;
+import bbth.engine.util.ColorUtils;
 
 public enum Team {
 	CLIENT(Color.argb(255, 123, 160, 255), Color.argb(127, 123, 160, 255)) {

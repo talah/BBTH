@@ -23,7 +23,6 @@ import bbth.game.ai.AIController;
 import bbth.game.units.DefendingUnit;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
-import bbth.game.units.WallUnit;
 
 public class BBTHWallTest extends GameScreen implements UnitManager {
 	

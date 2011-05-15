@@ -22,7 +22,6 @@ import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.ai.PlayerAI;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
@@ -202,7 +201,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			return;
 
 		if (player != localPlayer) {
-			this.generateParticlesForWall(w, player.getTeam());
+			BBTHSimulation.generateParticlesForWall(w, player.getTeam());
 		}
 
 		addWall(w);
@@ -323,7 +322,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawGrid(Canvas canvas) {
 		paint.setColor(Color.DKGRAY);
 
-		// TODO: only draw lines on screen for speed
 		for (float x = 0; x < GAME_WIDTH; x += 60) {
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
 		}
@@ -474,14 +472,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 		return hash;
 	}
-	
-	public void setClientReady(boolean val)
-	{
-		clientReady = val;
-	}
-	
-	public void setServerReady(boolean val)
-	{
-		serverReady = true;
+
+	public void setBothPlayersReady() {
+		clientReady = serverReady = true;
 	}
 }

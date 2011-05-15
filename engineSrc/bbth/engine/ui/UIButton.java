@@ -1,8 +1,12 @@
 package bbth.engine.ui;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.Shader;
 
 public class UIButton extends UIControl {
 	Paint _paint;

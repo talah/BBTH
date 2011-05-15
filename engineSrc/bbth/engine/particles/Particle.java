@@ -1,10 +1,10 @@
 package bbth.engine.particles;
 
-import bbth.engine.util.MathUtils;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.FloatMath;
+import bbth.engine.util.MathUtils;
 
 /**
  * Represents a single particle.  Many methods & the constructor are package-private

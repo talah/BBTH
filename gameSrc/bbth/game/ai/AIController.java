@@ -1,14 +1,22 @@
 package bbth.game.ai;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
 import android.graphics.PointF;
 import android.util.FloatMath;
-import bbth.engine.ai.*;
-import bbth.engine.fastgraph.*;
+import bbth.engine.ai.ConnectedGraph;
+import bbth.engine.ai.FlockRulesCalculator;
+import bbth.engine.ai.Pathfinder;
+import bbth.engine.fastgraph.LineOfSightTester;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.util.MathUtils;
-import bbth.game.*;
-import bbth.game.units.*;
+import bbth.game.BBTHGame;
+import bbth.game.GridAcceleration;
+import bbth.game.Team;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 public class AIController {
 	ArrayList<Unit> m_units;

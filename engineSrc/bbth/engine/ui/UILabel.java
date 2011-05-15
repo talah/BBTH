@@ -2,12 +2,10 @@ package bbth.engine.ui;
 
 import java.util.ArrayList;
 
-import bbth.game.BBTHActivity;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.util.Log;
+import bbth.game.BBTHActivity;
 
 public class UILabel extends UIControl {
 	

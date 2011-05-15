@@ -1,6 +1,8 @@
 package bbth.game.units;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;

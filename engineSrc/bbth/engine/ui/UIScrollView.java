@@ -1,6 +1,10 @@
 package bbth.engine.ui;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Region;
 import bbth.engine.util.MathUtils;
 
 public class UIScrollView extends UIView {

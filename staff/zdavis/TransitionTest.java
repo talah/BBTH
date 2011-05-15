@@ -1,6 +1,7 @@
 package zdavis;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import bbth.engine.ui.DefaultTransition;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;

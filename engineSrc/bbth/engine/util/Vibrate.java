@@ -1,8 +1,8 @@
 package bbth.engine.util;
 
-import bbth.engine.core.GameActivity;
 import android.content.Context;
 import android.os.Vibrator;
+import bbth.engine.core.GameActivity;
 
 public class Vibrate {
 
