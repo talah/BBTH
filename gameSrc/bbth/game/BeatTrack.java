@@ -161,6 +161,11 @@ public class BeatTrack {
 		beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
 	}
 
+	// returns the closest beat in the touch zone, Beat.REST means no beat
+	public Beat.BeatType getTouchZoneBeat() {
+		return beatTracker.getTouchZoneBeat();
+	}
+	
 	public Beat.BeatType onTouchDown(float x, float y) {
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);

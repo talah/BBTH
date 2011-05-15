@@ -64,6 +64,11 @@ public class Beat {
 
 		return changed;
 	}
+	
+	// returns true if in the touch zone
+	boolean inTouchZone(int songTime) {
+		return Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE;
+	}
 
 	int getEndTime() {
 		if (type == BeatType.HOLD) {

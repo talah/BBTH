@@ -41,6 +41,16 @@ public class BeatTracker {
 		return Beat.BeatType.REST;
 	}
 	
+	// returns whether a beat was successfully tapped
+	public Beat.BeatType getTouchZoneBeat() {
+		updateCurrentBeatIndex();
+		Beat beat = _allBeats[_currentBeatIndex];
+		if (beat.inTouchZone(_musicPlayer.getCurrentPosition())) {
+			return beat.type;
+		}
+		return Beat.BeatType.REST;
+	}
+	
 	// handle a release
 	public void onTouchUp() {
 		// does nothing for now
