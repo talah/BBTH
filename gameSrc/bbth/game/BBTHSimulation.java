@@ -22,12 +22,12 @@ import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
+import bbth.game.ai.PlayerAI;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
-	private static final float DEBUG_SPAWN_TIMER = 1.f;
 	private static final int NUM_PARTICLES = 1000;
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
@@ -114,6 +114,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		aiController.setUpdateFraction(.10f);
 
 		cachedUnits = new HashSet<Unit>();
+		
 	}
 
 	public void setupSubviews(UIScrollView view) {
@@ -259,8 +260,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	private float elapsedTime = 0;
-
 	@Override
 	protected void update(float seconds) {
 		if (!isReady()) {
@@ -290,16 +289,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.start();
 		clientPlayer.update(seconds);
 		clientPlayerTimer.stop();
-
-		// Spawn dudes
-		if (BBTHGame.IS_SINGLE_PLAYER) {
-			elapsedTime += seconds;
-			if (elapsedTime > DEBUG_SPAWN_TIMER) {
-				elapsedTime -= DEBUG_SPAWN_TIMER;
-				remotePlayer.spawnUnit(randInRange(0, GAME_WIDTH),
-						GAME_HEIGHT - 50);
-			}
-		}
 
 		aiTickTimer.stop();
 

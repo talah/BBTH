@@ -22,6 +22,7 @@ import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
 import bbth.game.Song;
+import bbth.game.ai.PlayerAI;
 
 public class InGameScreen extends UIView implements OnCompletionListener {
 	private BBTHSimulation sim;
@@ -50,6 +51,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean recordedDone;
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
+	private PlayerAI player_ai;
+
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
@@ -90,6 +93,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
+		
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack);
+		}
 	}
 
 	@Override
@@ -255,6 +262,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
+		// Update the single-player AI
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			player_ai.update(seconds);
+		}
+		
 		// Update the game
 		simUpdateTimer.start();
 		sim.onUpdate(seconds);
