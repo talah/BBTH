@@ -3,12 +3,9 @@ package bbth.engine.sound;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-<<<<<<< HEAD:engineSrc/bbth/engine/sound/Beat.java
-import android.util.Log;
-=======
-import android.graphics.RectF;
 import android.graphics.Paint.Style;
->>>>>>> f6322f4fbb355c37823cfb390c5fee346ce0b972:engineSrc/bbth/engine/sound/Beat.java
+import android.graphics.RectF;
+import android.util.Log;
 
 /**
  * Represents either a tap or a hold. All times are in terms of milliseconds
@@ -93,11 +90,8 @@ public class Beat {
 		if (type == BeatType.REST)
 			return;
 
-<<<<<<< HEAD:engineSrc/bbth/engine/sound/Beat.java
-		float offset = songTime - _startTime;
-=======
 		float stroke = paint.getStrokeWidth();
-		int offset = songTime - _startTime;
+		float offset = songTime - _startTime;
 		float y1 = yMiddle + offset / OFFSET_DENOM;
 		float y2 = yMiddle + (offset - duration) / OFFSET_DENOM;
 
@@ -110,7 +104,6 @@ public class Beat {
 		}
 
 		// Set the tap color
->>>>>>> f6322f4fbb355c37823cfb390c5fee346ce0b972:engineSrc/bbth/engine/sound/Beat.java
 		if (_tapped) {
 			paint.setColor(TAPPED_COLOR);
 		} else if (offset > BeatTracker.TOLERANCE) {
