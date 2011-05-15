@@ -1,6 +1,7 @@
 package bbth.game;
 
 import bbth.engine.core.GameActivity;
+import bbth.engine.core.GameScreen;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.Anchor;
@@ -12,7 +13,9 @@ import bbth.engine.ui.UIView;
 
 public class SongSelectionScreen extends UIScrollView implements
 		UIButtonDelegate {
-	public SongSelectionScreen() {
+	private UIButtonDelegate delegate;
+
+	public SongSelectionScreen(UIButtonDelegate delegate) {
 		super(null);
 
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -23,22 +26,29 @@ public class SongSelectionScreen extends UIScrollView implements
 		title.setPosition(BBTHGame.WIDTH / 2.f, 80);
 		this.addSubview(title);
 
-		addButton(Song.DONKEY_KONG, "Donkey Kong", 0);
-		addButton(Song.RETRO, "Retro", 1);
-		addButton(Song.MISTAKE_THE_GETAWAY, "Mistake the Getaway", 2);
-		addButton(Song.JAVLA_SLADDER, "Javla Sladder", 3);
-		addButton(Song.ODINS_KRAFT, "Odin's Kraft", 4);
-		addButton(Song.MIGHT_AND_MAGIC, "Might and Magic", 5);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			this.delegate = delegate;
+		} else {
+			this.delegate = null;
+		}
+
+		this.addSubview(makeButton(Song.DONKEY_KONG, "Donkey Kong", 0));
+		this.addSubview(makeButton(Song.RETRO, "Retro", 1));
+		this.addSubview(makeButton(Song.MISTAKE_THE_GETAWAY,
+				"Mistake the Getaway", 2));
+		this.addSubview(makeButton(Song.JAVLA_SLADDER, "Javla Sladder", 3));
+		this.addSubview(makeButton(Song.ODINS_KRAFT, "Odin's Kraft", 4));
+		this.addSubview(makeButton(Song.MIGHT_AND_MAGIC, "Might and Magic", 5));
 	}
 
-	private void addButton(Song song, String title, int idx) {
+	private UIButton makeButton(Song song, String title, int idx) {
 		UIButton button = new UIButton(title, song);
 		button.setAnchor(Anchor.CENTER_CENTER);
 		button.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		button.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + (idx - 1)
 				* 65);
-		button.setButtonDelegate(this);
-		this.addSubview(button);
+		button.setButtonDelegate((BBTHGame.IS_SINGLE_PLAYER) ? this : delegate);
+		return button;
 	}
 
 	@Override
@@ -61,13 +71,9 @@ public class SongSelectionScreen extends UIScrollView implements
 
 	@Override
 	public void onClick(UIButton button) {
-		if (BBTHGame.IS_SINGLE_PLAYER) {
-			LockStepProtocol lsp = new LockStepProtocol();
+		LockStepProtocol lsp = new LockStepProtocol();
 
-			nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-					GameActivity.instance, lsp), (Song) button.tag, lsp);
-		} else {
-
-		}
+		nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
+				GameActivity.instance, lsp), (Song) button.tag, lsp);
 	}
 }
