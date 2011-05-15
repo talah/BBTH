@@ -1,6 +1,8 @@
 package bbth.game.units;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.fsm.FiniteState;
@@ -9,7 +11,7 @@ import bbth.engine.entity.BasicMovable;
 import bbth.engine.net.simulation.Hash;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.util.MathUtils;
-import bbth.game.*;
+import bbth.game.Team;
 
 /**
  * A BBTH unit is one of the little dudes that walk around on the map and kill

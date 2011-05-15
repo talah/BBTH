@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import bbth.engine.util.Point;
 
-import android.graphics.PointF;
-
 public class ConnectedGraph {
 	public HashMap<Point, ArrayList<Point>> m_connections;
 
@@ -46,7 +44,7 @@ public class ConnectedGraph {
 		}
 	}
 	
-	public void removeConnection(PointF p, PointF p2) {
+	public void removeConnection(Point p, Point p2) {
 		ArrayList<Point> list = m_connections.get(p);
 		list.remove(p2);
 	}
@@ -71,12 +69,12 @@ public class ConnectedGraph {
 		return m_connections;
 	}
 	
-	public ArrayList<Point> getNeighbors(PointF start) {
+	public ArrayList<Point> getNeighbors(Point start) {
 		return m_connections.get(start);
 	}
 	
 	public ArrayList<Point> getNeighbors(float startx, float starty) {
-		PointF point = getPointAtCoords(startx, starty);
+		Point point = getPointAtCoords(startx, starty);
 		if (point == null) {
 			return null;
 		}

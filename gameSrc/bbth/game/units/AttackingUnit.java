@@ -1,14 +1,16 @@
 package bbth.game.units;
 
-import android.graphics.*;
+import static bbth.game.Team.SERVER;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.util.*;
+import bbth.engine.util.Envelope;
 import bbth.engine.util.Envelope.OutOfBoundsHandler;
+import bbth.engine.util.MathUtils;
 import bbth.game.Team;
-
-import static bbth.game.Team.*;
 
 public class AttackingUnit extends Unit {
 	private static final float DETONATION_WITHIN_DISTANCE = 15f;

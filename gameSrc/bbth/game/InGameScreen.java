@@ -40,7 +40,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
 	private Tutorial tutorial;
-	private boolean recordedDone;
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
@@ -227,7 +226,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
 		}
 
-		if (BBTHGame.DEBUG && !sim.isSynced()) {
+		if (!sim.isSynced()) {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
@@ -295,8 +294,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchDown(float x, float y) {
 
-		if (!tutorial.isFinished())
+		// We don't want to interact with the game if the tutorial is running!
+		if (!tutorial.isFinished()) {
 			tutorial.onTouchDown(x, y);
+			return;
+		}
 
 		if (USE_UNIT_SELECTOR) {
 			int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
@@ -339,8 +341,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchMove(float x, float y) {
 
-		if (!tutorial.isFinished())
+		// We don't want to interact with the game if the tutorial is running!
+		if (!tutorial.isFinished()) {
 			tutorial.onTouchMove(x, y);
+			return;
+		}
 
 		// We moved offscreen!
 		x -= BBTHSimulation.GAME_X;
@@ -366,8 +371,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onTouchUp(float x, float y) {
 
-		if (!tutorial.isFinished())
+		// We don't want to interact with the game if the tutorial is running!
+		if (!tutorial.isFinished()) {
 			tutorial.onTouchUp(x, y);
+			return;
+		}
 
 		beatTrack.onTouchUp(x, y);
 
@@ -436,14 +444,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	{
 		removeSubview(tutorial);
 		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
-		recordedDone = true;
-		if(BBTHGame.IS_SINGLE_PLAYER)
-		{
-			sim.setClientReady(true);
-			sim.setServerReady(true);
-		}else if(team == Team.SERVER)
-			sim.setServerReady(true);
-		else
-			sim.setClientReady(true);
+		if (BBTHGame.IS_SINGLE_PLAYER)
+			sim.setBothPlayersReady();
 	}
 }

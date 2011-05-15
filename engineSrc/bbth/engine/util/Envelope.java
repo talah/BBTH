@@ -4,7 +4,7 @@
 
 package bbth.engine.util;
 
-import static bbth.engine.util.Envelope.OutOfBoundsHandler.*;
+import static bbth.engine.util.Envelope.OutOfBoundsHandler.THROW_EXCEPTION;
 
 public class Envelope {
 	public static final Envelope ALWAYS_ZERO = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);

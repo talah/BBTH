@@ -99,17 +99,6 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 		return isFinished;
 	}
 
-	private void drawArrow(Canvas canvas, float startX, float startY, float endX, float endY) {
-		float dx = endX - startX;
-		float dy = endY - startY;
-		float a = 6;
-		float b = 10;
-		canvas.drawLine(endX, endY, endX - dx / a - dy / b, endY - dy / a + dx / b, paint);
-		canvas.drawLine(endX, endY, endX - dx / a + dy / b, endY - dy / a - dx / b, paint);
-		canvas.drawLine(endX - dx / a - dy / b, endY - dy / a + dx / b, endX - dx / a + dy / b, endY - dy / a - dx / b, paint);
-		canvas.drawLine(startX, startY, endX, endY, paint);
-	}
-	
 	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);

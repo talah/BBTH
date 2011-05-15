@@ -8,9 +8,10 @@ import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import bbth.engine.core.GameActivity;
+
 import android.content.res.XmlResourceParser;
 import android.util.Log;
+import bbth.engine.core.GameActivity;
 
 /**
  * Parse an XML beat pattern
