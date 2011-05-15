@@ -176,7 +176,7 @@ public class BeatTrack {
 				isHolding = true;
 				holdId = soundManager.play(HOLD_SOUND_ID);
 			} else {
-				soundManager.play(HIT_SOUND_ID);
+				//soundManager.play(HIT_SOUND_ID);
 			}
 			++score;
 			// scoreStr = String.valueOf(score);

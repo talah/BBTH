@@ -1,7 +1,6 @@
-<root mpb="425.25">
+<root mpb="425.8">
 
 	<pattern id="intro">
-		<rest type="quarter" />
 		<rest type="eighth" />
 		<beat type="quarter" />
 		<beat type="quarter" />
@@ -206,6 +205,7 @@
 		<load-pattern id="two-hit" />
 		<load-pattern id="whole-rest" />
 		<load-pattern id="four-hit" />
+		<load-pattern id="whole-rest" />
 		
 		<load-pattern id="whole-hold" />
 		<load-pattern id="pickup-hold" />
@@ -228,6 +228,7 @@
 		<load-pattern id="whole-rest" />
 		<load-pattern id="drum-fill1" />
 		<load-pattern id="drum-fill2" />
+		<load-pattern id="whole-rest" />
 		
 		<load-pattern id="post-drum1" />
 		<load-pattern id="post-drum2" />
