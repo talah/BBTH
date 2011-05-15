@@ -25,7 +25,7 @@ public class BeatPatternParser {
     	XmlResourceParser parser = GameActivity.instance.getResources().getXml(resourceId);
     	Map<String, List<Beat>> patterns = new HashMap<String, List<Beat>>();
     	List<Beat> song = new ArrayList<Beat>();
-    	int millisPerBeat = 0;
+    	float millisPerBeat = 0;
     	
     	try {
         	int eventType = parser.next(); // skip start of document
@@ -44,7 +44,7 @@ public class BeatPatternParser {
     					eventType = parser.getEventType();
     				} else if (name.equals("root")) {
     					String mpb = parser.getAttributeValue(null, "mpb");
-    					millisPerBeat = Integer.parseInt(mpb);
+    					millisPerBeat = Float.parseFloat(mpb);
     					eventType = parser.next();
     				} else {
     					eventType = parser.next();
@@ -66,7 +66,7 @@ public class BeatPatternParser {
     }
     
     // parse a subpattern into a List of beats
-    private static List<Beat> parseSubpattern(XmlResourceParser parser, int millisPerBeat) throws IOException, XmlPullParserException {
+    private static List<Beat> parseSubpattern(XmlResourceParser parser, float millisPerBeat) throws IOException, XmlPullParserException {
     	 ArrayList<Beat> beats = new ArrayList<Beat>();
     	 
 		 parser.next();
@@ -77,8 +77,7 @@ public class BeatPatternParser {
     		 if (parser.getEventType() == XmlPullParser.START_TAG) {
 
     			 String type = parser.getAttributeValue(null, "type");
-    			 Log.d("BBTH", type);
-    			 int duration;
+    			 float duration;
     			 if (type != null) {
     				 duration = parseNoteType(type, millisPerBeat);
     			 } else {
@@ -115,27 +114,27 @@ public class BeatPatternParser {
     }
     
     // parse a note type
-    private static int parseNoteType(String type, int millisPerBeat) {
+    private static float parseNoteType(String type, float millisPerBeat) {
     	if (type.equals("sixteenth")) {
-    		return millisPerBeat / 4;
+    		return millisPerBeat * 0.25f;
     	}
     	if (type.equals("eighth")) {
-    		return millisPerBeat / 2;
+    		return millisPerBeat * 0.5f;
     	}
     	if (type.equals("quarter")) {
     		return millisPerBeat;
     	}
     	if (type.equals("half")) {
-    		return millisPerBeat * 2;
+    		return millisPerBeat * 2.f;
     	}
     	if (type.equals("whole")) {
-    		return millisPerBeat * 4;
+    		return millisPerBeat * 4.f;
     	}
     	if (type.equals("eighth_triplet")) {
-    		return millisPerBeat / 3;
+    		return millisPerBeat / 3.f;
     	}
     	if (type.equals("quarter_triplet")) {
-    		return millisPerBeat * 2 / 3;
+    		return millisPerBeat * 2.f / 3.f;
     	}
     	
     	return millisPerBeat;

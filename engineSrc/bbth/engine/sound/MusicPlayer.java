@@ -24,6 +24,7 @@ public class MusicPlayer {
 	
 	private MediaPlayer _mediaPlayer;
 	private int _state;
+	private long _startTime;
 	
 	public MusicPlayer(Context context, int resourceId) {
 		_mediaPlayer = MediaPlayer.create(context, resourceId);
@@ -41,17 +42,19 @@ public class MusicPlayer {
 	}
 	
 	public int getCurrentPosition() {
-		return _mediaPlayer.getCurrentPosition();
+		return (int) (System.currentTimeMillis() - _startTime);
 	}
 	
 	// plays the song once
 	public void play() {
 		if (_state == IDLE || _state == PAUSED) {
+			_startTime = System.currentTimeMillis();
 			_mediaPlayer.start();
 			_state = PLAYING;
 		} else if (_state == STOPPED) {
 			try {
 				_mediaPlayer.prepare();
+				_startTime = System.currentTimeMillis();
 				_mediaPlayer.start();
 				_state = PLAYING;
 			} catch (IOException e) {

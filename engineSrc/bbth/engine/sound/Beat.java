@@ -3,8 +3,12 @@ package bbth.engine.sound;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+<<<<<<< HEAD:engineSrc/bbth/engine/sound/Beat.java
+import android.util.Log;
+=======
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
+>>>>>>> f6322f4fbb355c37823cfb390c5fee346ce0b972:engineSrc/bbth/engine/sound/Beat.java
 
 /**
  * Represents either a tap or a hold. All times are in terms of milliseconds
@@ -27,30 +31,32 @@ public class Beat {
 	}
 
 	final BeatType type;
-	final int duration;
+	final float duration;
+	
+	static int debugAverage = 0;
 
 	// start time internally used by this and BeatTracker only
-	int _startTime;
+	float _startTime;
 	private boolean _tapped;
 	private RectF cachedRect = new RectF();
 
 	// package private
-	Beat(BeatType beatType, int durationMillis) {
+	Beat(BeatType beatType, float durationMillis) {
 		type = beatType;
 		duration = durationMillis;
 		_startTime = -1;
 		_tapped = false;
 	}
 
-	public static Beat tap(int duration) {
+	public static Beat tap(float duration) {
 		return new Beat(BeatType.TAP, duration);
 	}
 
-	public static Beat hold(int duration) {
+	public static Beat hold(float duration) {
 		return new Beat(BeatType.HOLD, duration);
 	}
 
-	public static Beat rest(int duration) {
+	public static Beat rest(float duration) {
 		return new Beat(BeatType.REST, duration);
 	}
 
@@ -60,6 +66,8 @@ public class Beat {
 			return false;
 
 		boolean changed = false;
+		debugAverage += songTime - _startTime;
+		Log.d("BBTH", String.valueOf(debugAverage));
 		if (Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE) {
 			_tapped = true;
 			changed = true;
@@ -73,7 +81,7 @@ public class Beat {
 		return Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE;
 	}
 
-	int getEndTime() {
+	float getEndTime() {
 		if (type == BeatType.HOLD) {
 			return _startTime + duration;
 		}
@@ -85,6 +93,9 @@ public class Beat {
 		if (type == BeatType.REST)
 			return;
 
+<<<<<<< HEAD:engineSrc/bbth/engine/sound/Beat.java
+		float offset = songTime - _startTime;
+=======
 		float stroke = paint.getStrokeWidth();
 		int offset = songTime - _startTime;
 		float y1 = yMiddle + offset / OFFSET_DENOM;
@@ -99,6 +110,7 @@ public class Beat {
 		}
 
 		// Set the tap color
+>>>>>>> f6322f4fbb355c37823cfb390c5fee346ce0b972:engineSrc/bbth/engine/sound/Beat.java
 		if (_tapped) {
 			paint.setColor(TAPPED_COLOR);
 		} else if (offset > BeatTracker.TOLERANCE) {

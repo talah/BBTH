@@ -5,6 +5,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import bbth.engine.achievements.Achievements;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.bluetooth.*;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -251,6 +252,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 		super.onDraw(canvas);
 		entireDrawTimer.stop();
+		
+		// draw achievement stuff
+		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
 
 	@Override
@@ -308,6 +312,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 			beatTrack.stopMusic();
 		}
+		
+		// Update achievement stuff
+		// Achievements.INSTANCE.tick(seconds);
 	}
 
 	@Override
@@ -335,6 +342,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
+		
+		if (isHold) {
+			Achievements.INSTANCE.unlock("Test Success");
+		}
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
