@@ -1,9 +1,7 @@
 package bbth.game;
 
 import android.app.Activity;
-import bbth.engine.core.*;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.core.Game;
 
 public class BBTHGame extends Game {
 	// This is the viewport width and height
@@ -15,7 +13,7 @@ public class BBTHGame extends Game {
 
 	public BBTHGame(Activity activity) {
 		if (IS_SINGLE_PLAYER) {
-			currentScreen = new SongSelectionScreen();
+			currentScreen = new SongSelectionScreen(null);
 		} else {
 			currentScreen = new GameSetupScreen();
 		}
