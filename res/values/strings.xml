@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, BeatBackTheHordeActivity!</string>
+    
     <string name="app_name">Beat Back The Horde</string>
     <string name="beat_track">The beat track shows you when to tap the screen. A successful tap is when the beat is in the middle of the double horizontal lines.</string>
 	<string name="field">Tap on the field, not the beat track, to create a unit where you tapped.</string>
 	<string name="walls">When a long beat is the current beat, you can drag your finger across the field to create a wall.</string>
 	<string name="bases">Your base is at the bottom of the screen. Your opponent\'s base is at the top. Each base has a health. You win when your opponent\'s health reaches 0 or if your health is higher at the end of the song.</string>
+<string-array name="achievementNames"><item>Test Success</item>
+</string-array>
+<string-array name="achievementDescriptions"><item>This is a test achievement.</item>
+</string-array>
 </resources>

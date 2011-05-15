@@ -30,7 +30,12 @@ public final class MathUtils {
 	public static float normalizeAngle(float a, float center) {
 		return a - TWO_PI * FloatMath.floor((a + PI - center) / TWO_PI);
 	}
-
+	
+	// linear interpolation
+	public static final float lerp(float f1, float f2, float proportion) {
+		return f1 * (1 - proportion) + f2 * proportion;
+	}
+	
 	public static float getDist(float x1, float y1, float x2, float y2) {
 		float dx = x1 - x2;
 		float dy = y1 - y2;
