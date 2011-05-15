@@ -148,10 +148,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
-				player.spawnUnit(x, y);
-
 				float newcombo = player.getCombo() + 1;
 				player.setCombo(newcombo);
+				
+				player.spawnUnit(x, y);
 			}
 		} else {
 			player.setCombo(0);

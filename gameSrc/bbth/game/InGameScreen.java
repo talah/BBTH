@@ -43,6 +43,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
+	
+	// TODO: Make a way to set the difficulty.
+	private float aiDifficulty = 0.7f;
 
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
@@ -86,7 +89,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles = new ParticleSystem(200, 0.5f);
 		
 		if (BBTHGame.IS_SINGLE_PLAYER) {
-			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack);
+			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
 		}
 	}
 
