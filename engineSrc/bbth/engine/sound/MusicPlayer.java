@@ -48,14 +48,20 @@ public class MusicPlayer {
 	// plays the song once
 	public void play() {
 		if (_state == IDLE || _state == PAUSED) {
-			_startTime = System.currentTimeMillis();
 			_mediaPlayer.start();
+			while (_mediaPlayer.getCurrentPosition() < 1) {
+				// wait here, derp
+			}
+			_startTime = System.currentTimeMillis();
 			_state = PLAYING;
 		} else if (_state == STOPPED) {
 			try {
 				_mediaPlayer.prepare();
-				_startTime = System.currentTimeMillis();
 				_mediaPlayer.start();
+				while (_mediaPlayer.getCurrentPosition() < 1) {
+					// wait here, derp
+				}
+				_startTime = System.currentTimeMillis();
 				_state = PLAYING;
 			} catch (IOException e) {
 				Log.e("BBTH", "MusicPlayer failed to prepare song.");

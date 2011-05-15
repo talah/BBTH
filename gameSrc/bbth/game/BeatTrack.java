@@ -174,7 +174,7 @@ public class BeatTrack {
 		if (isOnBeat) {
 			if (beatType == Beat.BeatType.HOLD){
 				isHolding = true;
-				holdId = soundManager.play(HOLD_SOUND_ID);
+				//holdId = soundManager.play(HOLD_SOUND_ID);
 			} else {
 				//soundManager.play(HIT_SOUND_ID);
 			}
@@ -197,7 +197,7 @@ public class BeatTrack {
 	
 	public void onTouchUp(float x, float y) {
 		if (isHolding) {
-			soundManager.stop(holdId);
+			//soundManager.stop(holdId);
 			isHolding = false;
 		}
 	}
