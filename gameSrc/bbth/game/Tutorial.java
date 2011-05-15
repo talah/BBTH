@@ -26,7 +26,7 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 	private InGameScreen gameScreen;
 	private UILabel heading, messageBox;
 	private UIButton close, next, previous;
-	private UIImageView track;
+	private UIImageView track, unitcreation, wallcreation, basehealth, abouttowin;
 
 	public Tutorial(InGameScreen game) {
 		this.isFinished = false;
@@ -80,6 +80,10 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 		addSubview(previous);
 		
 		track = new UIImageView(R.drawable.track);
+		unitcreation = new UIImageView(R.drawable.unitcreation);
+		wallcreation = new UIImageView(R.drawable.wallcreation);
+		basehealth = new UIImageView(R.drawable.basehealth);
+		abouttowin = new UIImageView(R.drawable.abouttowin);
 		
 		loadFrame(frame);
 		
@@ -137,8 +141,26 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 		{
 			track.onDraw(canvas);
 		}
-
 		
+		if(frame == 1)
+		{
+			unitcreation.onDraw(canvas);
+		}
+
+		if(frame == 2)
+		{
+			wallcreation.onDraw(canvas);
+		}
+		
+		if(frame == 3)
+		{
+			basehealth.onDraw(canvas);
+		}
+		
+		if(frame == 4)
+		{
+			abouttowin.onDraw(canvas);
+		}
 	}
 	
 	@Override
@@ -190,6 +212,9 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 	{
 		previous.isDisabled = false;
 		next.isDisabled = false;
+		if (!BBTHGame.DEBUG) {
+			close.isDisabled = true;
+		}
 		switch (frame) {
 		case 0:
 			previous.isDisabled = true;
@@ -201,22 +226,37 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 			break;
 			
 		case 1:
-			messageBox.setSize(_width - 20, _height - 75);
-			messageBox.setPosition(_rect.left + 15, _rect.top + 35);
+			messageBox.setSize(_width - 150, _height - 75);
+			messageBox.setPosition(_rect.left + 140, _rect.top + 35);
 			messageBox.setText(R.string.field);
+			unitcreation.setPosition(_rect.left + 10, _rect.top + 35);
+			unitcreation.setSize(124, 163);
 			break;
 			
 		case 2:
-			messageBox.setSize(_width - 20, _height - 75);
+			messageBox.setSize(_width - 20, 100);
 			messageBox.setPosition(_rect.left + 15, _rect.top + 35);
 			messageBox.setText(R.string.walls);
+			wallcreation.setPosition(_rect.left + 10, _rect.top + 110);
+			wallcreation.setSize(214, 92);
 			break;
 		
 		case 3:
-			next.isDisabled = true;
 			messageBox.setSize(_width - 20, _height - 75);
 			messageBox.setPosition(_rect.left + 15, _rect.top + 35);
 			messageBox.setText(R.string.bases);
+			basehealth.setPosition(_rect.left + 60, _rect.bottom - 120);
+			basehealth.setSize(118, 58);
+			break;
+		
+		case 4:
+			next.isDisabled = true;
+			close.isDisabled = false;
+			messageBox.setSize(_width - 20, _height - 75);
+			messageBox.setPosition(_rect.left + 15, _rect.top + 35);
+			messageBox.setText(R.string.victory);
+			abouttowin.setPosition(_rect.left + 55, _rect.bottom - 120);
+			abouttowin.setSize(134, 59);
 			break;
 
 		default:
