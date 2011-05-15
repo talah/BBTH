@@ -10,7 +10,7 @@ public class BBTHGame extends Game {
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = false;
-	public static final boolean IS_SINGLE_PLAYER = true;
+	public static final boolean IS_SINGLE_PLAYER = false;
 	public static final Song SONG = Song.MISTAKE_THE_GETAWAY;
 
 	public BBTHGame(Activity activity) {

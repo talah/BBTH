@@ -232,15 +232,6 @@ public class Player {
 		for (int i = 0; i < units.size(); i++) {
 			units.get(i).drawHealthBar(canvas, _isLocal);
 		}
-
-		// draw my wavefront
-		Unit advUnit = getMostAdvancedUnit();
-		if (advUnit != null) {
-			paint.setColor(team.getUnitColor());
-			paint.setStyle(Style.FILL);
-			float y = advUnit.getY() + (team == Team.CLIENT ? -10 : 10);
-			canvas.drawLine(0, y, BBTHSimulation.GAME_WIDTH, y, paint);
-		}
 	}
 
 	public float getHealth() {

@@ -3,6 +3,8 @@ package bbth.engine.sound;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Paint.Style;
 
 /**
  * Represents either a tap or a hold. All times are in terms of milliseconds
@@ -14,7 +16,7 @@ import android.graphics.Paint;
 public class Beat {
 	public final static float RADIUS = 8.f;
 	private final static int OFFSET_DENOM = 12;
-	private static final int TAPPED_COLOR = Color.rgb(0, 150, 0);
+	private static final int TAPPED_COLOR = Color.YELLOW;
 	private static final int INCOMING_COLOR = Color.GRAY;
 	private static final int MISSED_COLOR = Color.DKGRAY;
 
@@ -30,6 +32,7 @@ public class Beat {
 	// start time internally used by this and BeatTracker only
 	int _startTime;
 	private boolean _tapped;
+	private RectF cachedRect = new RectF();
 
 	// package private
 	Beat(BeatType beatType, int durationMillis) {
@@ -82,7 +85,20 @@ public class Beat {
 		if (type == BeatType.REST)
 			return;
 
+		float stroke = paint.getStrokeWidth();
 		int offset = songTime - _startTime;
+		float y1 = yMiddle + offset / OFFSET_DENOM;
+		float y2 = yMiddle + (offset - duration) / OFFSET_DENOM;
+
+		// Black out the beat track line first
+		if (type == BeatType.HOLD) {
+			paint.setStrokeWidth(stroke * 2);
+			paint.setColor(Color.BLACK);
+			canvas.drawLine(x, y1 + RADIUS - stroke, x, y2 - RADIUS + stroke, paint);
+			paint.setStrokeWidth(stroke);
+		}
+
+		// Set the tap color
 		if (_tapped) {
 			paint.setColor(TAPPED_COLOR);
 		} else if (offset > BeatTracker.TOLERANCE) {
@@ -91,11 +107,20 @@ public class Beat {
 			paint.setColor(INCOMING_COLOR);
 		}
 
-		if (type == BeatType.TAP) {
-			canvas.drawCircle(x, yMiddle + offset / OFFSET_DENOM, RADIUS, paint);
-		} else {
-			paint.setStrokeWidth(RADIUS * 2);
-			canvas.drawLine(x, yMiddle + offset / OFFSET_DENOM, x, yMiddle + (offset - duration) / OFFSET_DENOM, paint);
+		// Draw the dot where they need to tap
+		canvas.drawCircle(x, y1, RADIUS, paint);
+
+		// Draw the length of the hold
+		if (type == BeatType.HOLD) {
+			paint.setStyle(Style.STROKE);
+			cachedRect.left = x - RADIUS + stroke / 2;
+			cachedRect.right = x + RADIUS - stroke / 2;
+			cachedRect.top = y2 - RADIUS;
+			cachedRect.bottom = y2 + RADIUS;
+			canvas.drawArc(cachedRect, 180, 180, false, paint);
+			paint.setStyle(Style.FILL);
+			canvas.drawLine(cachedRect.left, y1, cachedRect.left, y2, paint);
+			canvas.drawLine(cachedRect.right, y1, cachedRect.right, y2, paint);
 		}
 	}
 }
