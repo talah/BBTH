@@ -9,9 +9,10 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	public static final boolean IS_SINGLE_PLAYER = true;
-	public static final Song SONG = Song.MISTAKE_THE_GETAWAY;
+//	public static final Song SONG = Song.MIGHT_AND_MAGIC;
+	public static final Song SONG = Song.DONKEY_KONG;
 
 	public BBTHGame(Activity activity) {
 //		currentScreen = new TitleScreen(null);

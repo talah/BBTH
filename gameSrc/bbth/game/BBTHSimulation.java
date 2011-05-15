@@ -1,19 +1,30 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.*;
-import bbth.engine.net.simulation.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
+import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.net.simulation.Simulation;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.*;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final int NUM_PARTICLES = 1000;
