@@ -12,7 +12,6 @@ import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
-	
 	private LockStepProtocol protocol;
 	private Bluetooth bluetooth;
 

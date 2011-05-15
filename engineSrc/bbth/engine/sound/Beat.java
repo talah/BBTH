@@ -3,8 +3,9 @@ package bbth.engine.sound;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
+import android.util.Log;
 
 /**
  * Represents either a tap or a hold. All times are in terms of milliseconds
@@ -27,30 +28,32 @@ public class Beat {
 	}
 
 	final BeatType type;
-	final int duration;
+	final float duration;
+	
+	static int debugAverage = 0;
 
 	// start time internally used by this and BeatTracker only
-	int _startTime;
+	float _startTime;
 	private boolean _tapped;
 	private RectF cachedRect = new RectF();
 
 	// package private
-	Beat(BeatType beatType, int durationMillis) {
+	Beat(BeatType beatType, float durationMillis) {
 		type = beatType;
 		duration = durationMillis;
 		_startTime = -1;
 		_tapped = false;
 	}
 
-	public static Beat tap(int duration) {
+	public static Beat tap(float duration) {
 		return new Beat(BeatType.TAP, duration);
 	}
 
-	public static Beat hold(int duration) {
+	public static Beat hold(float duration) {
 		return new Beat(BeatType.HOLD, duration);
 	}
 
-	public static Beat rest(int duration) {
+	public static Beat rest(float duration) {
 		return new Beat(BeatType.REST, duration);
 	}
 
@@ -60,6 +63,8 @@ public class Beat {
 			return false;
 
 		boolean changed = false;
+		debugAverage += songTime - _startTime;
+		Log.d("BBTH", String.valueOf(debugAverage));
 		if (Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE) {
 			_tapped = true;
 			changed = true;
@@ -73,7 +78,7 @@ public class Beat {
 		return Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE;
 	}
 
-	int getEndTime() {
+	float getEndTime() {
 		if (type == BeatType.HOLD) {
 			return _startTime + duration;
 		}
@@ -86,7 +91,7 @@ public class Beat {
 			return;
 
 		float stroke = paint.getStrokeWidth();
-		int offset = songTime - _startTime;
+		float offset = songTime - _startTime;
 		float y1 = yMiddle + offset / OFFSET_DENOM;
 		float y2 = yMiddle + (offset - duration) / OFFSET_DENOM;
 

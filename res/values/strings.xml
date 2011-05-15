@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, BeatBackTheHordeActivity!</string>
-    <string name="app_name">Beat Back The Horde</string>
-    
-    <string name="beat_track">The beat track shows you when to tap the screen. Tap when the beat is in the middle of the double horizontal lines.</string>
-	<string name="field">Tap on the battlefield (not on the beat track) to create a unit at that spot.</string>
-	<string name="walls">When there is a long, "hold" beat, drag your finger across the field to create a wall.</string>
-	<string name="bases">Your base is at the bottom. Your opponent\'s base is at the top. Destroy your opponent\'s base by creating units to attack it.</string>
-	<string name="victory">You win when your opponent\'s health reaches 0, or if the song ends and your health is higher.</string>
+
+	<string name="app_name">Beat Back The Horde</string>
+	<string-array name="achievementNames">
+		<item>Test Success</item>
+	</string-array>
+	<string-array name="achievementDescriptions">
+		<item>This is a test achievement.</item>
+	</string-array>
+	<string name="beat_track">The beat track shows you when to tap the screen.
+		Tap when the beat is in the middle of the double horizontal lines.
+	</string>
+	<string name="field">Tap on the battlefield (not on the beat track) to
+		create a unit at that spot.</string>
+	<string name="walls">When there is a long, "hold" beat, drag your finger
+		across the field to create a wall.</string>
+	<string name="bases">Your base is at the bottom. Your opponent\'s base
+		is at the top. Destroy your opponent\'s base by creating units to
+		attack it.</string>
+	<string name="victory">You win when your opponent\'s health reaches 0, or
+		if the song ends and your health is higher.</string>
+
 </resources>

@@ -168,10 +168,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
-				player.spawnUnit(x, y);
-
 				float newcombo = player.getCombo() + 1;
 				player.setCombo(newcombo);
+				
+				player.spawnUnit(x, y);
 			}
 		} else {
 			player.setCombo(0);
@@ -321,7 +321,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					serverPlayer.adjustHealth(-10);
 				}
 
-				this.notifyUnitDead(u);
+				u.takeDamage(u.getHealth());
 			}
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
@@ -331,7 +331,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					clientPlayer.adjustHealth(-10);
 				}
 
-				this.notifyUnitDead(u);
+				u.takeDamage(u.getHealth());
 			}
 		}
 
@@ -410,18 +410,18 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	public void notifyUnitDead(Unit unit) {
-		for (int i = 0; i < 10; i++) {
-			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.sin(angle);
-
-			BBTHSimulation.PARTICLES.createParticle().circle()
-					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
-					.position(unit.getX(), unit.getY())
-					.color(unit.getTeam().getRandomShade());
-		}
+//		for (int i = 0; i < 10; i++) {
+//			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+//			float xVel = MathUtils.randInRange(25.f, 50.f)
+//					* FloatMath.cos(angle);
+//			float yVel = MathUtils.randInRange(25.f, 50.f)
+//					* FloatMath.sin(angle);
+//
+//			BBTHSimulation.PARTICLES.createParticle().circle()
+//					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
+//					.position(unit.getX(), unit.getY())
+//					.color(unit.getTeam().getRandomShade());
+//		}
 
 		serverPlayer.units.remove(unit);
 		clientPlayer.units.remove(unit);
