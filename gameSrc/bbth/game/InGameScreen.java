@@ -39,6 +39,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Timer drawSimTimer = new Timer();
 	private Timer drawUITimer = new Timer();
 
+	private Path arrowPath;
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
 	private Tutorial tutorial;
@@ -53,7 +54,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			LockStepProtocol protocol) {
 		this.team = playerTeam;
 		tutorial = new Tutorial(this);
-		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT  / 2.f);
+		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
 		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
 		addSubview(tutorial);
@@ -78,10 +79,16 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
-		
+
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
 		}
+		
+		arrowPath = new Path();
+		arrowPath.moveTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 55);
+		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 40, BBTHGame.HEIGHT * .75f + 65);
+		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.close();
 	}
 
 	@Override
@@ -153,22 +160,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .75f + 20, paint);
 			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .75f + 45, paint);
+
 			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60,
 					BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 40,
-					BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH / 4 + 40,
-					BBTHGame.HEIGHT * .75f + 65, paint);
+			canvas.drawPath(arrowPath, paint);
 		}
 
 		// Draw unit placement hint if necessary.
@@ -178,13 +178,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .25f + 20, paint);
 			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .25f + 45, paint);
 		}
-		
+
 		// Draw wall drag hint if necessary.
 		time_since_hint_start = System.currentTimeMillis()
 				- drag_tip_start_time;
@@ -192,7 +192,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
 			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f,
 					BBTHGame.HEIGHT * .5f + 20, paint);
 			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f,
@@ -207,17 +207,38 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			int x = 80;
 			int y = 30;
 			int jump = 11;
-			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText(
+					"Entire update: " + entireUpdateTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
+					+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText(
+					"      - Controller: "
+							+ sim.aiControllerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Server player: "
+							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"      - Client player: "
+							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
+					+ " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
+			canvas.drawText(
+					"- Particles: " + drawParticleTimer.getMilliseconds()
+							+ " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
+					x, y += jump, paint);
 		}
 
 		if (!sim.isSynced()) {
@@ -400,12 +421,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	public void simulateWallGeneration() {
 		currentWall.updateLength();
-		
+
 		if (currentWall.length <= BBTHSimulation.MIN_WALL_LENGTH) {
 			// Display a tip about dragging!
 			drag_tip_start_time = System.currentTimeMillis();
 		}
-		
+
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
 			BBTHSimulation.generateParticlesForWall(currentWall, this.team);
 		}
@@ -426,9 +447,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End both games at the same time with a synced event
 		sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
 	}
-	
-	public void startGame()
-	{
+
+	public void startGame() {
 		removeSubview(tutorial);
 		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
 		if (BBTHGame.IS_SINGLE_PLAYER)
