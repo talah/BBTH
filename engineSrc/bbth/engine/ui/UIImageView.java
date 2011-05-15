@@ -1,10 +1,7 @@
 package bbth.engine.ui;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.*;
 import android.graphics.BitmapFactory.Options;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import bbth.game.BBTHActivity;
 

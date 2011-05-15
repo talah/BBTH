@@ -72,6 +72,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 		m_controller = new AIController();
 		//******** SETUP FOR AI *******//
 		m_controller.setPathfinder(m_pathfinder, m_graph_gen.graph, m_tester, accel);
+		m_controller.setUpdateFraction(.1f);
 
 		bluePaint = new Paint();
 		bluePaint.setColor(Color.BLUE);
@@ -114,10 +115,10 @@ public class CombatTest extends GameScreen implements UnitManager {
 		
 		switch (team) {
 		case SERVER:
-			unit.setPosition(m_rand.nextFloat() * BBTHGame.WIDTH/4, m_rand.nextFloat() * BBTHGame.HEIGHT);
+			unit.setPosition(m_rand.nextFloat() * BBTHGame.WIDTH, m_rand.nextFloat() * BBTHGame.HEIGHT/4);
 			break;
 		case CLIENT:
-			unit.setPosition(m_rand.nextFloat() * BBTHGame.WIDTH/4 + m_parent.getWidth()*.75f, m_rand.nextFloat() * BBTHGame.HEIGHT);
+			unit.setPosition(m_rand.nextFloat() * BBTHGame.WIDTH, m_rand.nextFloat() * BBTHGame.HEIGHT/4 + m_parent.getWidth()*.75f);
 			break;
 		default:
 			throw new RuntimeException();
@@ -133,16 +134,19 @@ public class CombatTest extends GameScreen implements UnitManager {
 	}
 	
 	private void randomizeEntities() {
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 20; i++) {
 			spawnUnit(UnitType.ATTACKING, Team.SERVER);
-			spawnUnit(UnitType.DEFENDING, Team.SERVER);
-		}
-		spawnUnit(UnitType.UBER, Team.SERVER);
-		
-		for (int i = 0; i < 10; i++) {
 			spawnUnit(UnitType.ATTACKING, Team.CLIENT);
-			spawnUnit(UnitType.DEFENDING, Team.CLIENT);
 		}
+		
+//		for (int i = 0; i < 10; i++) {
+//			spawnUnit(UnitType.DEFENDING, Team.SERVER);
+//			spawnUnit(UnitType.DEFENDING, Team.CLIENT);
+//		}
+		
+		spawnUnit(UnitType.UBER, Team.SERVER);
+		spawnUnit(UnitType.UBER, Team.SERVER);
+		spawnUnit(UnitType.UBER, Team.CLIENT);
 		spawnUnit(UnitType.UBER, Team.CLIENT);
 	}
 	

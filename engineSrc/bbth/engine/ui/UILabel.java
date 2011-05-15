@@ -2,8 +2,7 @@ package bbth.engine.ui;
 
 import java.util.ArrayList;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
 import bbth.game.BBTHActivity;
 
