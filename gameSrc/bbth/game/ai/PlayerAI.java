@@ -34,6 +34,9 @@ public class PlayerAI {
 			if (MathUtils.randInRange(0, 100) < m_difficulty * 100.0f) {
 				m_player.spawnUnit(BBTHSimulation.randInRange(0 + BeatTrack.BEAT_TRACK_WIDTH, BBTHSimulation.GAME_WIDTH),
 						BBTHSimulation.GAME_HEIGHT - 50);
+				m_player.setCombo(m_player.getCombo()+1);
+			} else {
+				m_player.setCombo(0);
 			}
 			m_spawned_this_beat  = true;
 			m_walled_this_beat = false;
