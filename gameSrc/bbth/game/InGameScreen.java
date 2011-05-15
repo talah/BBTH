@@ -81,7 +81,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles = new ParticleSystem(200, 0.5f);
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
-			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
+			player_ai = new PlayerAI(sim, sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
 		}
 		
 		arrowPath = new Path();
