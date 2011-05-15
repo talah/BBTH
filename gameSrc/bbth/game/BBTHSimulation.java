@@ -27,6 +27,15 @@ import bbth.game.units.UnitManager;
 import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
+	public static enum GameState {
+		WAITING_TO_START,
+		IN_PROGRESS,
+		SERVER_WON,
+		CLIENT_WON,
+		TIE,
+	}
+	private GameState gameState = GameState.WAITING_TO_START;
+
 	private static final int NUM_PARTICLES = 1000;
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
@@ -37,7 +46,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		PARTICLE_PAINT.setStrokeWidth(2.f);
 	}
 
-	private int timestep;
 	private Team team;
 	public Player localPlayer, remotePlayer;
 	private HashMap<Boolean, Player> playerMap;
@@ -73,8 +81,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	// Combo constants
 	public static final float UBER_UNIT_THRESHOLD = 5;
-	public static final int TUTORIAL_DONE = 13;
-	
+	public static final int TUTORIAL_DONE_EVENT = 13;
+	public static final int MUSIC_STOPPED_EVENT = 69;
+
 	long placement_tip_start_time;
 
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
@@ -116,6 +125,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		
 	}
 
+	public GameState getGameState() {
+		return gameState;
+	}
+
 	public void setupSubviews(UIScrollView view) {
 		localPlayer.setupSubviews(view, true);
 		remotePlayer.setupSubviews(view, false);
@@ -127,11 +140,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public UnitSelector getMyUnitSelector() {
 		return localPlayer.getUnitSelector();
-	}
-
-	// Just for debugging so we know the simulation isn't stuck
-	public int getTimestep() {
-		return timestep;
 	}
 
 	// Only use BBTHSimulation.randInRange() for things that are supposed to
@@ -159,10 +167,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
-				player.spawnUnit(x, y);
-
 				float newcombo = player.getCombo() + 1;
 				player.setCombo(newcombo);
+				
+				player.spawnUnit(x, y);
 			}
 		} else {
 			player.setCombo(0);
@@ -187,6 +195,25 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateTapUp(float x, float y, boolean isServer) {
 		Player player = playerMap.get(isServer);
 		generateWall(player);
+	}
+
+	@Override
+	protected void simulateCustomEvent(float x, float y, int code,
+			boolean isServer) {
+		Player player = playerMap.get(isServer);
+
+		UnitType type = UnitType.fromInt(code);
+		if (type != null) {
+			player.setUnitType(type);
+		} else if (code == TUTORIAL_DONE_EVENT) {
+			if (isServer) {
+				serverReady = true;
+			} else {
+				clientReady = true;
+			}
+		} else if (code == MUSIC_STOPPED_EVENT) {
+			endTheGame();
+		}
 	}
 
 	/**
@@ -243,30 +270,21 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected void simulateCustomEvent(float x, float y, int code,
-			boolean isServer) {
-		Player player = playerMap.get(isServer);
-
-		UnitType type = UnitType.fromInt(code);
-		if (type != null) {
-			player.setUnitType(type);
-		} else if (code == TUTORIAL_DONE) {
-			if (isServer) {
-				serverReady = true;
-			} else {
-				clientReady = true;
-			}
-		}
-	}
-
-	@Override
 	protected void update(float seconds) {
 		if (!isReady()) {
 			return;
 		}
 
+		if (gameState == GameState.WAITING_TO_START) {
+			gameState = GameState.IN_PROGRESS;
+		}
+
+		// DON'T ADVANCE THE SIMULATION WHEN WE AREN'T PLAYING
+		if (gameState != GameState.IN_PROGRESS) {
+			return;
+		}
+
 		entireTickTimer.start();
-		timestep++;
 
 		// update acceleration data structure
 		accelTickTimer.start();
@@ -314,6 +332,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 				this.notifyUnitDead(u);
 			}
+		}
+
+		if (localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
+			endTheGame();
 		}
 
 		entireTickTimer.stop();
@@ -372,6 +394,14 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
 					serverWavefrontY, paint);
 		}
+
+		// server wavefront line
+		paint.setColor(Team.SERVER.getUnitColor());
+		canvas.drawLine(0, serverWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
+
+		// client wavefront line
+		paint.setColor(Team.CLIENT.getUnitColor());
+		canvas.drawLine(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, clientWavefrontY, paint);
 	}
 
 	@Override
@@ -475,5 +505,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public void setBothPlayersReady() {
 		clientReady = serverReady = true;
+	}
+
+	private void endTheGame() {
+		float serverHealth = Math.max(0, serverPlayer.getHealth());
+		float clientHealth = Math.max(0, clientPlayer.getHealth());
+		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
 	}
 }

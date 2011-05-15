@@ -12,8 +12,10 @@ import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.sound.*;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
+import bbth.game.BBTHSimulation.GameState;
 import bbth.game.ai.PlayerAI;
 
 public class InGameScreen extends UIView implements OnCompletionListener {
@@ -24,12 +26,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Wall currentWall;
 	private ParticleSystem particles;
 	private Paint paint;
-	private UILabel label;
 	private static final boolean USE_UNIT_SELECTOR = false;
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
 
+	// Timers for profiling while debugging
 	private Timer entireUpdateTimer = new Timer();
 	private Timer simUpdateTimer = new Timer();
 	private Timer entireDrawTimer = new Timer();
@@ -44,6 +46,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
+	
+	// TODO: Make a way to set the difficulty.
+	private float aiDifficulty = 0.7f;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
 			LockStepProtocol protocol) {
@@ -57,16 +62,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 		tap_location_hint_time = 0;
-
-		// Test labels
-		label = new UILabel("", null);
-		label.setTextSize(10);
-		label.setPosition(50, 100);
-		label.setSize(BBTHGame.WIDTH - 20, 10);
-		label.setTextAlign(Align.CENTER);
-		if (BBTHGame.DEBUG) {
-			addSubview(label);
-		}
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
@@ -86,8 +81,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles = new ParticleSystem(200, 0.5f);
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
-			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer,
-					beatTrack);
+			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
 		}
 		
 		arrowPath = new Path();
@@ -263,9 +257,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
-		// Show the timestep for debugging
-		label.setText("Timestep: " + sim.getTimestep());
-
 		if (!BBTHGame.IS_SINGLE_PLAYER) {
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
@@ -281,7 +272,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		// Update the game
 		simUpdateTimer.start();
-		sim.onUpdate(seconds);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			sim.update(seconds);
+		} else {
+			sim.onUpdate(seconds);
+		}
 		simUpdateTimer.stop();
 
 		// Update the tutorial
@@ -294,12 +289,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack.startMusic();
 		}
 
-		// See whether we won or lost
-		if (sim.localPlayer.getHealth() <= 0.f
-				|| sim.remotePlayer.getHealth() <= 0.f) {
-			onCompletion(null);
-		}
-
 		// Get new beats, yo
 		beatTrack.refreshBeats();
 
@@ -307,8 +296,17 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		particles.tick(seconds);
 		entireUpdateTimer.stop();
 
-		if (BBTHGame.IS_SINGLE_PLAYER) {
-			sim.update(seconds);
+		// End the game when the time comes
+		GameState gameState = sim.getGameState();
+		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
+			if (gameState == GameState.TIE) {
+				nextScreen = new GameStatusMessageScreen.TieScreen();
+			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
+				nextScreen = new GameStatusMessageScreen.WinScreen();
+			} else {
+				nextScreen = new GameStatusMessageScreen.LoseScreen();
+			}
+			beatTrack.stopMusic();
 		}
 	}
 
@@ -446,24 +444,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onCompletion(MusicPlayer mp) {
-		float myHealth = sim.localPlayer.getHealth();
-		float theirHealth = sim.remotePlayer.getHealth();
-
-		if (myHealth < theirHealth) {
-			beatTrack.stopMusic();
-			nextScreen = new GameStatusMessageScreen.LoseScreen();
-		} else if (myHealth > theirHealth) {
-			beatTrack.stopMusic();
-			nextScreen = new GameStatusMessageScreen.WinScreen();
-		} else {
-			beatTrack.stopMusic();
-			nextScreen = new GameStatusMessageScreen.TieScreen();
-		}
+		// End both games at the same time with a synced event
+		sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
 	}
 
 	public void startGame() {
 		removeSubview(tutorial);
-		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE);
+		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
 		if (BBTHGame.IS_SINGLE_PLAYER)
 			sim.setBothPlayersReady();
 	}
