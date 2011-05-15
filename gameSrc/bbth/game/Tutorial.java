@@ -124,6 +124,7 @@ public class Tutorial extends UIView implements UIButtonDelegate {
 		loadFrame(frame);
 	}
 
+	@Override
 	public void onDraw(Canvas canvas) {
 		//Draw Overlay
 		paint.setARGB(128, 0, 0, 0);

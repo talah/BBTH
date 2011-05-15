@@ -1,27 +1,19 @@
 package bbth.game;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.bluetooth.State;
+import bbth.engine.net.bluetooth.*;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.sound.MusicPlayer;
+import bbth.engine.sound.*;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 import bbth.engine.util.Timer;
-import bbth.game.Song;
 import bbth.game.ai.PlayerAI;
 
 public class InGameScreen extends UIView implements OnCompletionListener {

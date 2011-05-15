@@ -4,10 +4,7 @@
 
 package bbth.game.ai;
 
-import bbth.engine.sound.BeatTracker;
-import bbth.game.BBTHSimulation;
-import bbth.game.BeatTrack;
-import bbth.game.Player;
+import bbth.game.*;
 
 public class PlayerAI {
 	private Player m_player;

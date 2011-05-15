@@ -1,13 +1,9 @@
 package bbth.engine.ui;
 
-import bbth.game.BBTHActivity;
-import bbth.game.R;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.BitmapFactory.Options;
 import android.util.DisplayMetrics;
+import bbth.game.BBTHActivity;
 
 public class UIImageView extends UIView {
 	

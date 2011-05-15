@@ -1,8 +1,7 @@
 package bbth.game;
 
 import android.app.Activity;
-import bbth.engine.core.Game;
-import bbth.engine.core.GameActivity;
+import bbth.engine.core.*;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
 
@@ -12,16 +11,16 @@ public class BBTHGame extends Game {
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = false;
 	public static final boolean IS_SINGLE_PLAYER = true;
-	public static final Song SONG = Song.DONKEY_KONG;
+	public static final Song SONG = Song.MISTAKE_THE_GETAWAY;
 
 	public BBTHGame(Activity activity) {
-		// currentScreen = new TitleScreen(null);
-		// currentScreen = new BBTHAITest(this);
-		// currentScreen = new MusicTestScreen(activity);
-		// currentScreen = new NetworkTestScreen();
-		// currentScreen = new TransitionTest();
-		// currentScreen = new GameSetupScreen();
-		// currentScreen = new CombatTest(this);
+//		currentScreen = new TitleScreen(null);
+//		currentScreen = new BBTHAITest(this);
+//		currentScreen = new MusicTestScreen(activity);
+//		currentScreen = new NetworkTestScreen();
+//		currentScreen = new TransitionTest();
+//		currentScreen = new GameSetupScreen();
+//		currentScreen = new CombatTest(this);
 
 		if (IS_SINGLE_PLAYER) {
 			currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(

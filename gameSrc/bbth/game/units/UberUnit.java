@@ -11,7 +11,7 @@ public class UberUnit extends Unit {
 	
 	private static final float CHARGE_RATE = 4000f;
 	private static final float DISCHARGE_RATE = CHARGE_RATE * .5f/7f;
-	private static final float DAMAGE_RATE = 200f;
+	private static final float DAMAGE_RATE = 140f;
 	
 	@Override
 	public float getStartingHealth() {

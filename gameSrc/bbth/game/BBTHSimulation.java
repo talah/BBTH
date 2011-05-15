@@ -1,31 +1,19 @@
 package bbth.game;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Style;
-import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.simulation.Hash;
-import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.net.simulation.Simulation;
+import bbth.engine.fastgraph.*;
+import bbth.engine.net.simulation.*;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.Bag;
-import bbth.engine.util.MathUtils;
+import bbth.engine.util.*;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.ai.PlayerAI;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitManager;
-import bbth.game.units.UnitType;
+import bbth.game.units.*;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final int NUM_PARTICLES = 1000;
@@ -202,7 +190,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			return;
 
 		if (player != localPlayer) {
-			this.generateParticlesForWall(w, player.getTeam());
+			generateParticlesForWall(w, player.getTeam());
 		}
 
 		addWall(w);

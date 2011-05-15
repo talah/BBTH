@@ -11,10 +11,9 @@ import bbth.game.Team;
 import static bbth.game.Team.*;
 
 public class AttackingUnit extends Unit {
-//	private static final float DETONATION_WITHIN_DISTANCE = 1f;
 	private static final float DETONATION_WITHIN_DISTANCE = 15f;
 	private static final float DETONATION_MAX_RADIUS = 40f;
-	private static final float DETONATION_TIME = .3f;
+	private static final float DETONATION_TIME = .4f;
 	private static final float MIN_DAMAGE = 30f;
 	private static final float MAX_DAMAGE = 90f;
 	
@@ -24,7 +23,13 @@ public class AttackingUnit extends Unit {
 	}
 	private static final Envelope RADIUS_ENVELOPE = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
 	static {
-		RADIUS_ENVELOPE.addLinearSegment(DETONATION_TIME, DETONATION_MAX_RADIUS);
+		RADIUS_ENVELOPE.addLinearSegment(DETONATION_TIME * .25f, DETONATION_MAX_RADIUS);
+		RADIUS_ENVELOPE.addLinearSegment(DETONATION_TIME * .75f, 0f);
+	}
+	private static final Envelope ALPHA_ENVELOPE = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+	static {
+		ALPHA_ENVELOPE.addLinearSegment(DETONATION_TIME * .25f, 200f);
+		ALPHA_ENVELOPE.addLinearSegment(DETONATION_TIME * .75f, 0f);
 	}
 	
 	public AttackingUnit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
@@ -55,11 +60,14 @@ public class AttackingUnit extends Unit {
 		if (detonating) {
 			tempPaint.set(paint);
 			
+			float currentRadius = (float)RADIUS_ENVELOPE.getValueAtTime(detonationTime);
+			
 			paint.setColor(team == SERVER ? Color.rgb(231, 80, 0) : Color.rgb(0, 168, 231));
-			paint.setAlpha(200);
+//			paint.setAlpha(200);
+			paint.setAlpha((int)ALPHA_ENVELOPE.getValueAtTime(detonationTime));
 			paint.setStyle(Style.FILL);
 			
-			canvas.drawCircle(getX(), getY(), (float)RADIUS_ENVELOPE.getValueAtTime(detonationTime), paint);
+			canvas.drawCircle(getX(), getY(), currentRadius, paint);
 			
 			paint.set(tempPaint);
 			return;
@@ -102,14 +110,21 @@ public class AttackingUnit extends Unit {
 		float y = getY();
 		
 		if (MathUtils.getDistSqr(x, y, target.getX(), target.getY()) < DETONATION_WITHIN_DISTANCE*DETONATION_WITHIN_DISTANCE) {
-			for (Unit unit : unitManager.getUnitsInCircle(getX(), getY(), DETONATION_MAX_RADIUS)) {
-				if (team.isEnemy(unit.getTeam()))
-					unit.takeDamage((float) DAMAGE_ENVELOPE.getValueAtTime(MathUtils.getDist(x, y, unit.getX(), unit.getY())));
-			}
 			detonating = true;
+			onDead();
+//			takeDamage(getHealth());
 		}
 	}
 	
+	@Override
+	protected void onDead() {
+		super.onDead();
+		for (Unit unit : unitManager.getUnitsInCircle(getX(), getY(), DETONATION_MAX_RADIUS)) {
+			if (team.isEnemy(unit.getTeam()))
+				unit.takeDamage((float) DAMAGE_ENVELOPE.getValueAtTime(MathUtils.getDist(getX(), getY(), unit.getX(), unit.getY())));
+		}
+	}
+
 	@Override
 	public UnitType getType() {
 		return UnitType.ATTACKING;
