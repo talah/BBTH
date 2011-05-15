@@ -1,7 +1,6 @@
 package bbth.game;
 
 import bbth.engine.core.GameActivity;
-import bbth.engine.core.GameScreen;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.Anchor;
@@ -32,13 +31,14 @@ public class SongSelectionScreen extends UIScrollView implements
 			this.delegate = null;
 		}
 
-		this.addSubview(makeButton(Song.DONKEY_KONG, "Donkey Kong", 0));
-		this.addSubview(makeButton(Song.RETRO, "Retro", 1));
-		this.addSubview(makeButton(Song.MISTAKE_THE_GETAWAY,
-				"Mistake the Getaway", 2));
-		this.addSubview(makeButton(Song.JAVLA_SLADDER, "Javla Sladder", 3));
-		this.addSubview(makeButton(Song.ODINS_KRAFT, "Odin's Kraft", 4));
-		this.addSubview(makeButton(Song.MIGHT_AND_MAGIC, "Might and Magic", 5));
+		int y = 0;
+		this.addSubview(makeButton(Song.DERP, "Derp", y++));
+		this.addSubview(makeButton(Song.DONKEY_KONG, "Donkey Kong", y++));
+		this.addSubview(makeButton(Song.RETRO, "Retro", y++));
+		this.addSubview(makeButton(Song.MISTAKE_THE_GETAWAY, "Mistake the Getaway", y++));
+		this.addSubview(makeButton(Song.JAVLA_SLADDER, "Javla Sladder", y++));
+		this.addSubview(makeButton(Song.ODINS_KRAFT, "Odin's Kraft", y++));
+		this.addSubview(makeButton(Song.MIGHT_AND_MAGIC, "Might and Magic", y++));
 	}
 
 	private UIButton makeButton(Song song, String title, int idx) {

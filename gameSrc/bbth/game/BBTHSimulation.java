@@ -152,6 +152,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 
 		if (x < 0 || y < 0)
@@ -180,6 +184,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 
 		if (!player.settingWall())
@@ -194,6 +202,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 		generateWall(player);
 	}
