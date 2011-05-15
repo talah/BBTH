@@ -303,14 +303,16 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			if (gameState == GameState.TIE) {
-				nextScreen = new GameStatusMessageScreen.TieScreen();
-			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-				nextScreen = new GameStatusMessageScreen.WinScreen();
-			} else {
-				nextScreen = new GameStatusMessageScreen.LoseScreen();
-			}
 			beatTrack.stopMusic();
+
+			// Move on to the next screen
+//			if (gameState == GameState.TIE) {
+//				nextScreen = new GameStatusMessageScreen.TieScreen();
+//			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
+//				nextScreen = new GameStatusMessageScreen.WinScreen();
+//			} else {
+//				nextScreen = new GameStatusMessageScreen.LoseScreen();
+//			}
 		}
 		
 		// Update achievement stuff
@@ -456,7 +458,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onCompletion(MusicPlayer mp) {
 		// End both games at the same time with a synced event
-		sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
+		if (BBTHGame.IS_SINGLE_PLAYER) {
+			sim.simulateCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT, true);
+		} else {
+			sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
+		}
 	}
 
 	public void startGame() {
