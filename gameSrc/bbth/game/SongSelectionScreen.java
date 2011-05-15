@@ -24,6 +24,7 @@ public class SongSelectionScreen extends UIScrollView implements
 		title.setTextSize(30.f);
 		title.setPosition(BBTHGame.WIDTH / 2.f, 80);
 		this.addSubview(title);
+		this.setScrollsHorizontal(false);
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
 			this.delegate = delegate;
