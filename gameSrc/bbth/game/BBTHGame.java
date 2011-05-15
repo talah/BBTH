@@ -9,23 +9,13 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
-	public static final boolean DEBUG = false;
-	public static final boolean IS_SINGLE_PLAYER = false;
+	public static final boolean DEBUG = true;
+	public static final boolean IS_SINGLE_PLAYER = true;
 	public static final Song SONG = Song.MISTAKE_THE_GETAWAY;
 
 	public BBTHGame(Activity activity) {
-//		currentScreen = new TitleScreen(null);
-//		currentScreen = new BBTHAITest(this);
-//		currentScreen = new MusicTestScreen(activity);
-//		currentScreen = new NetworkTestScreen();
-//		currentScreen = new TransitionTest();
-//		currentScreen = new GameSetupScreen();
-//		currentScreen = new CombatTest(this);
-
 		if (IS_SINGLE_PLAYER) {
-			currentScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-					GameActivity.instance, new LockStepProtocol()),
-					SONG, new LockStepProtocol());
+			currentScreen = new SongSelectionScreen();
 		} else {
 			currentScreen = new GameSetupScreen();
 		}
