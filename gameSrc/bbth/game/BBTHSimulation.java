@@ -1,19 +1,31 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.*;
-import bbth.engine.net.simulation.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
+import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.net.simulation.Simulation;
+import bbth.engine.particles.Particle;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.*;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	public static enum GameState {
@@ -268,6 +280,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			gameState = GameState.IN_PROGRESS;
 		}
 
+		PARTICLES.tick(seconds);
+
 		// DON'T ADVANCE THE SIMULATION WHEN WE AREN'T PLAYING
 		if (gameState != GameState.IN_PROGRESS) {
 			return;
@@ -297,8 +311,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.stop();
 
 		aiTickTimer.stop();
-
-		PARTICLES.tick(seconds);
 
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
@@ -342,7 +354,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public void draw(Canvas canvas) {
-		drawWavefronts(canvas);
+		if (gameState == GameState.IN_PROGRESS) {
+			drawWavefronts(canvas);
+		}
+		
 		drawGrid(canvas);
 
 		localPlayer.draw(canvas, team == Team.SERVER);
@@ -500,5 +515,38 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		float serverHealth = Math.max(0, serverPlayer.getHealth());
 		float clientHealth = Math.max(0, clientPlayer.getHealth());
 		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
+
+		// PARTICLES!
+		if (gameState != GameState.SERVER_WON) {
+			explodeBase(Team.SERVER);
+		}
+		if (gameState != GameState.CLIENT_WON) {
+			explodeBase(Team.CLIENT);
+		}
+	}
+
+	private void explodeBase(Team team) {
+		float speed = 100;
+		float baseY = (team == Team.SERVER) ? 0 : GAME_HEIGHT - Base.BASE_HEIGHT;
+		for (int i = 0; i < 50; i++) {
+			float x = MathUtils.randInRange(0, GAME_WIDTH);
+			float y = baseY + MathUtils.randInRange(0, Base.BASE_HEIGHT);
+			float angle = MathUtils.randInRange(0, MathUtils.PI);
+			if (team == Team.CLIENT) angle += MathUtils.PI;
+			float radius = MathUtils.randInRange(0, speed);
+			float vx = FloatMath.cos(angle) * radius;
+			float vy = FloatMath.sin(angle) * radius;
+			Particle particle = PARTICLES.createParticle().position(x, y).velocity(vx, vy).shrink(0.1f, 0.15f).radius(10).color(team.getRandomShade()).angle(angle);
+			if ((i & 1) != 0) {
+				particle.line();
+			} else {
+				particle.circle();
+			}
+		}
+		if (team == Team.CLIENT) {
+			clientPlayer.base.drawFill = false;
+		} else {
+			serverPlayer.base.drawFill = false;
+		}
 	}
 }
