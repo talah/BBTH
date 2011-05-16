@@ -237,4 +237,9 @@ public class PaginatedTutorial extends Tutorial implements UIButtonDelegate {
 			break;
 		}
 	}
+
+	@Override
+	public boolean supressDrawing() {
+		return false;
+	}
 }
