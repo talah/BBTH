@@ -2,12 +2,10 @@ package bbth.engine.achievements;
 
 import java.util.Map;
 
-import android.graphics.Paint;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.ui.UIView;
 
 /**
  * A list of achievements with locked / unlocked status and descriptions
@@ -33,6 +31,7 @@ public class AchievementScreen extends UIScrollView implements UIButtonDelegate 
 		Map<String, Boolean> achievements = Achievements.INSTANCE.getAll();
 		setSize(WIDTH, ACHIEVEMENT_HEIGHT * achievements.size());
 		
+		float y = 0;
 		for (Map.Entry<String, Boolean> entry : achievements.entrySet()) {
 			String name = entry.getKey();
 			String description;
@@ -41,7 +40,11 @@ public class AchievementScreen extends UIScrollView implements UIButtonDelegate 
 			} else {
 				description = descriptions.get(name);
 			}
-			addSubview(new AchievementView(name, description, WIDTH, ACHIEVEMENT_HEIGHT));
+			AchievementView view = new AchievementView(name, description);
+			view.setPosition(0, y);
+			view.setSize(WIDTH, ACHIEVEMENT_HEIGHT);
+			addSubview(view);
+			y += ACHIEVEMENT_HEIGHT;
 		}
 	}
 
@@ -79,19 +82,4 @@ public class AchievementScreen extends UIScrollView implements UIButtonDelegate 
 		}
 	}
 */
-
-	@Override
-	public void onTouchUp(UIView sender) {
-		// do nothing
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		// do nothing
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		// do nothing
-	}
 }

@@ -38,6 +38,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
+	private static final boolean USE_PAGINATED_TUTORIAL = false;
 
 	// Timers for profiling while debugging
 	private Timer entireUpdateTimer = new Timer();
@@ -56,7 +57,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private PlayerAI player_ai;
 	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
-	
+	private boolean gameIsStarted;
+
 	// TODO: Make a way to set the difficulty.
 	private float aiDifficulty = 0.7f;
 	
@@ -70,11 +72,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.singlePlayer = singlePlayer;
 		
 		this.team = playerTeam;
-		tutorial = new Tutorial(this);
+		
+		if (USE_PAGINATED_TUTORIAL) {
+			tutorial = new PaginatedTutorial();
+		} else {
+			tutorial = new InteractiveTutorial();
+		}
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
 		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
-		addSubview(tutorial);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -95,7 +101,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack = new BeatTrack(Song.DERP, this);
 			setSong = false;
 		}
-
+		
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
@@ -284,6 +290,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Update the tutorial
 		if (!tutorial.isFinished()) {
 			tutorial.onUpdate(seconds);
+		} else {
+			startGame();
 		}
 
 		// Start the music
@@ -475,9 +483,12 @@ System.err.println("FINISHED!");
 	}
 
 	public void startGame() {
-		removeSubview(tutorial);
-		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
-		if (singlePlayer)
-			sim.setBothPlayersReady();
+		if (!gameIsStarted) {
+			gameIsStarted = true;
+			removeSubview(tutorial);
+			sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
+			if (singlePlayer)
+				sim.setBothPlayersReady();
+		}
 	}
 }

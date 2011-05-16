@@ -64,24 +64,6 @@ public class TitleScreen extends UIScrollView implements UIButtonDelegate {
 	}
 
 	@Override
-	public void onTouchUp(UIView sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void onClick(UIButton button) {
 		if(button == greeting)
 			scrollTo(0, 1020);
