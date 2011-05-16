@@ -4,6 +4,7 @@ import java.util.Map;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -17,17 +18,17 @@ import bbth.engine.ui.UIView;
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UILabel titleBar;
 	private float animDelay = 1.0f;
-	private UIButton singleplayer, multiplayer, achievements;
+	private UIButton singleplayerButton, multiplayerButton, achievementsButton;
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
-	private Map<String, String> achievementDescriptions;
+	private Map<String, AchievementInfo> achievements;
 	
-	public TitleScreen(UINavigationController controller, Map<String, String> achievementDescriptions) {
+	public TitleScreen(UINavigationController controller, Map<String, AchievementInfo> achievements) {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		this.controller = controller;
-		this.achievementDescriptions = achievementDescriptions;
+		this.achievements = achievements;
 		
 		combatView = new InfiniteCombatView();
 		
@@ -38,23 +39,23 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		titleBar.animatePosition(BBTHGame.WIDTH / 2.f, 80, 3);
 		this.addSubview(titleBar);
 		
-		singleplayer = new UIButton("Single Player", this);
-		singleplayer.setSize(BBTHGame.WIDTH * 0.75f, 45);
-		singleplayer.setAnchor(Anchor.CENTER_CENTER);
-		singleplayer.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
-		singleplayer.setButtonDelegate(this);
+		singleplayerButton = new UIButton("Single Player", this);
+		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		singleplayerButton.setAnchor(Anchor.CENTER_CENTER);
+		singleplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
+		singleplayerButton.setButtonDelegate(this);
 		
-		multiplayer = new UIButton("Multi Player", this);
-		multiplayer.setSize(BBTHGame.WIDTH * 0.75f, 45);
-		multiplayer.setAnchor(Anchor.CENTER_CENTER);
-		multiplayer.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
-		multiplayer.setButtonDelegate(this);
+		multiplayerButton = new UIButton("Multi Player", this);
+		multiplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		multiplayerButton.setAnchor(Anchor.CENTER_CENTER);
+		multiplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		multiplayerButton.setButtonDelegate(this);
 		
-		achievements = new UIButton("Achievements", this);
-		achievements.setSize(BBTHGame.WIDTH * 0.75f, 45);
-		achievements.setAnchor(Anchor.CENTER_CENTER);
-		achievements.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
-		achievements.setButtonDelegate(this);
+		achievementsButton = new UIButton("Achievements", this);
+		achievementsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
+		achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
+		achievementsButton.setButtonDelegate(this);
 	}
 	
 	@Override
@@ -86,20 +87,20 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
 		if (animDelay <= 0) {
-			addSubview(singleplayer);
-			addSubview(multiplayer);
-			addSubview(achievements);
+			addSubview(singleplayerButton);
+			addSubview(multiplayerButton);
+			addSubview(achievementsButton);
 		}
 	}
 
 	@Override
 	public void onClick(UIButton button) {
-		if (button == singleplayer) {
+		if (button == singleplayerButton) {
 			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true), BBTHGame.MOVE_LEFT_TRANSITION);
-		} else if (button == multiplayer) {
+		} else if (button == multiplayerButton) {
 			controller.push(new GameSetupScreen(controller), BBTHGame.MOVE_LEFT_TRANSITION);
-		} else if (button == achievements) {
-			controller.push(new AchievementsScreen(controller, achievementDescriptions));
+		} else if (button == achievementsButton) {
+			controller.push(new AchievementsScreen(controller, achievements));
 		}
 	}
 }

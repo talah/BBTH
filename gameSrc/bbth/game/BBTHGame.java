@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
@@ -22,26 +23,36 @@ public class BBTHGame extends Game {
 	private UINavigationController navController;
 
 	// get achievement descriptions from XML descriptions
-	private Map<String, String> getAchievementDescriptions() {
-		Map<String, String> descriptionMap = new HashMap<String, String>();
+	private Map<String, AchievementInfo> initializeAchievements(Activity activity) { 
+		Achievements.INSTANCE.initialize(activity);
+
+		Map<String, Boolean> savedAchievements = Achievements.INSTANCE.getAll();
+		Map<String, AchievementInfo> achievements = new HashMap<String, AchievementInfo>();
+
 		Resources resources = GameActivity.instance.getResources();
 		String []names = resources.getStringArray(R.array.achievementNames);
 		String []descriptions = resources.getStringArray(R.array.achievementDescriptions);
+		String []images = resources.getStringArray(R.array.achievementImages);
 		assert names.length == descriptions.length;
-		int n = names.length;
-		for (int i = 0; i < n; ++i) {
-			descriptionMap.put(names[i], descriptions[i]);
+		assert names.length == images.length;
+		
+		String packageName = activity.getPackageName();
+		for (int i = 0; i < names.length; ++i) {
+			int imageId = resources.getIdentifier(images[i], "drawable", packageName);
+			achievements.put(names[i], new AchievementInfo(descriptions[i], imageId));
+			if (!savedAchievements.containsKey(names[i])) {
+				Achievements.INSTANCE.lock(names[i]);
+			}
 		}
 		
-		return descriptionMap;
+		return achievements;
 	}
 	
 	public BBTHGame(Activity activity) {
-		Achievements.INSTANCE.initialize(activity);
 		navController = new UINavigationController(null);
 		currentScreen = navController;
 		
-		Map<String, String> achievements = getAchievementDescriptions();
+		Map<String, AchievementInfo> achievements = initializeAchievements(activity);
 		Achievements.INSTANCE.unlock("Test Success");
 		Achievements.INSTANCE.unlock("Test2");
 		navController.push(new TitleScreen(navController, achievements));
