@@ -33,6 +33,7 @@ public class PlayerAI {
 	public void update(float seconds) {
 		if (m_beats.getTouchZoneBeat() == BeatType.TAP && !m_spawned_this_beat) {
 			if (MathUtils.randInRange(0, 100) < m_difficulty * 100.0f) {
+				m_player.setCombo(m_player.getCombo()+1);
 				Unit e_most_adv = m_enemy.getMostAdvancedUnit();
 				Unit my_most_adv = m_player.getMostAdvancedUnit();
 				if (e_most_adv != null && 
@@ -53,7 +54,6 @@ public class PlayerAI {
 								BBTHSimulation.GAME_HEIGHT - 50);
 					}
 				}
-				m_player.setCombo(m_player.getCombo()+1);
 			} else {
 				m_player.setCombo(0);
 			}
@@ -68,6 +68,8 @@ public class PlayerAI {
 				m_player.updateWall(BBTHSimulation.randInRange(0 + BeatTrack.BEAT_TRACK_WIDTH + BBTHSimulation.GAME_WIDTH * .66f, BBTHSimulation.GAME_WIDTH),
 						BBTHSimulation.randInRange(BBTHSimulation.GAME_HEIGHT - 50, BBTHSimulation.GAME_HEIGHT - 250));
 				m_simulation.generateWall(m_player);
+			} else {
+				m_player.setCombo(0);
 			}
 		} else if (m_beats.getTouchZoneBeat() == BeatType.REST) {
 			m_spawned_this_beat = false;

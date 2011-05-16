@@ -26,8 +26,8 @@ public class Beat {
 		REST
 	}
 
-	final BeatType type;
-	final float duration;
+	public final BeatType type;
+	public final float duration;
 
 	// start time internally used by this and BeatTracker only
 	float _startTime;

@@ -175,7 +175,7 @@ public class BeatPatternParser {
     	}
     	
     	// set starting times
-    	int currTime = 0;
+    	float currTime = 0;
     	for (int i = 0; i < song.size(); ++i) {
     		song.get(i)._startTime = currTime;
     		currTime += song.get(i).duration;

@@ -35,15 +35,15 @@ public class BeatTrack {
 	public static final long COMBO_BRAG_TIME = 2000;
 
 	private static final int MAX_SOUNDS = 8;
-	private final int HIT_SOUND_ID;
+	//private final int HIT_SOUND_ID;
 	private final int MISS_SOUND_ID;
-	private final int HOLD_SOUND_ID;
+	//private final int HOLD_SOUND_ID;
+	//private int holdId;
 	
 	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
-	private int holdId;
 	private int combo;
 	private int score;
 	private String comboStr;
@@ -75,10 +75,9 @@ public class BeatTrack {
 		musicPlayer.setOnCompletionListener(listener);
 
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
-		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
+		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
-		// TODO: Find a good hold sound
-		HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
+		//HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		isHolding = false;
 
 		// Setup score stuff
@@ -183,7 +182,6 @@ public class BeatTrack {
 				//soundManager.play(HIT_SOUND_ID);
 			}
 			++score;
-			// scoreStr = String.valueOf(score);
 			// NOTE: Combos should also be tracked in bbthSimulation
 			if (beatType != Beat.BeatType.HOLD) {
 				++combo;
