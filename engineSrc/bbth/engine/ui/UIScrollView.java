@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
-import android.util.Log;
 import bbth.engine.util.MathUtils;
 
 public class UIScrollView extends UIView {
@@ -15,7 +14,7 @@ public class UIScrollView extends UIView {
 	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
 	protected Paint _scroll_paint, _track_paint;
 	
-	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 5, SCROLL_DECELERATION = -0.1f;
+	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 10, SCROLL_DECELERATION = -20f;
 	
 	public UIScrollView(Object tag) {
 		super(tag);
@@ -39,19 +38,16 @@ public class UIScrollView extends UIView {
 	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
-		if(_vy > 0)
+		if(isScrolling)
 		{
-			_vy += SCROLL_DECELERATION * seconds;
+			_vy += (_vy > 0 ? SCROLL_DECELERATION : -SCROLL_DECELERATION) * seconds;
+			if(_vy > MIN_SCROLL_VELOCITY || _vy < -MIN_SCROLL_VELOCITY)
+				scrollTo(pos_x, pos_y + _vy * seconds);
+			else if(!isDown)
+				isScrolling = false;
+			if((pos_y == 0 || pos_y == max_y) && !isDown)
+				isScrolling = false;
 		}
-		else if(_vy < 0)
-		{
-			_vy -= SCROLL_DECELERATION * seconds;
-		}
-		if(_vy > MIN_SCROLL_VELOCITY || _vy < -MIN_SCROLL_VELOCITY)
-		{
-			scrollTo(pos_x, pos_y + _vy * seconds);
-		}else if(!isDown)
-			isScrolling = false;
 	}
 
 	@Override
