@@ -51,11 +51,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
-	
+	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
 
 	// TODO: Make a way to set the difficulty.
-	private float aiDifficulty = 0.7f;
+	private float aiDifficulty = 1.0f;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		this.team = playerTeam;
@@ -234,7 +234,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		entireDrawTimer.stop();
 
 		// draw achievement stuff
-		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT / 15.f);
 	}
 
 	@Override
@@ -289,11 +289,14 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			// moveToNextScreen();
+			secondsUntilNextScreen -= seconds;
+			if (secondsUntilNextScreen < 0) {
+				moveToNextScreen();
+			}
 		}
 
 		// Update achievement stuff
-		// Achievements.INSTANCE.tick(seconds);
+		Achievements.INSTANCE.tick(seconds);
 	}
 
 	private void moveToNextScreen() {
