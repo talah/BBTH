@@ -76,6 +76,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
+		paint.setTextAlign(Align.CENTER);
+
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
@@ -85,9 +87,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		arrowPath = new Path();
-		arrowPath.moveTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 55);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 40, BBTHGame.HEIGHT * .75f + 65);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
 		arrowPath.close();
 	}
 
@@ -145,7 +147,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
-			paint.setTextAlign(Align.CENTER);
 			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
@@ -157,10 +158,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
 
-			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
@@ -171,8 +172,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .25f + 45, paint);
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
@@ -182,8 +183,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .5f + 20, paint);
-			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .5f + 45, paint);
+			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
