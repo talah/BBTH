@@ -48,7 +48,7 @@ public class UILabel extends UIControl {
 	public void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
 	    _y_offset = 0;
-	    if(wrapText)
+	    if(wrapText && wrapped_text != null)
 	    	for(int i = 0; i < wrapped_text.size(); i++)
 	    	{
 	    		drawText(canvas, wrapped_text.get(i));
@@ -178,6 +178,15 @@ public class UILabel extends UIControl {
 	public void setBold(boolean bold)
 	{
 		_paint.setFakeBoldText(bold);
+	}
+	
+	public void setItalics(boolean italics)
+	{
+		if (italics) {
+			_paint.setTextSkewX(-0.25f);
+		} else {
+			_paint.setTextSkewX(0.f);
+		}
 	}
 	
 	public void setTextAlign(Align align)
