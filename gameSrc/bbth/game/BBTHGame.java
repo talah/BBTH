@@ -80,7 +80,7 @@ public class BBTHGame extends Game {
 
 	@Override
 	public void onBackPressed() {
-		if (!navController.pop()) {
+		if (!navController.pop(FROM_LEFT_TRANSITION)) {
 			GameActivity.instance.finish();
 		}
 	}

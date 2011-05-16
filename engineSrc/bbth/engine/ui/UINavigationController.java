@@ -127,7 +127,10 @@ public class UINavigationController extends UIView {
 		return true;
 	}
 	
-	public void pop(Transition transition) {
+	public boolean pop(Transition transition) {
+		if (screens.size() <= 1) {
+			return false;
+		}
 		try {
 			if (currentView != null)
 				currentView.willHide(true);
@@ -138,9 +141,13 @@ public class UINavigationController extends UIView {
 		} catch (NoSuchElementException e) {
 			currentView = null;
 		}
+		return true;
 	}
 	
-	public void pop(UISwipeTransition transition) {
+	public boolean pop(UISwipeTransition transition) {
+		if (screens.size() <= 1) {
+			return false;
+		}
 		try {
 			if (currentView != null)
 				currentView.willHide(true);
@@ -151,6 +158,7 @@ public class UINavigationController extends UIView {
 		} catch (NoSuchElementException e) {
 			currentView = null;
 		}
+		return true;
 	}
 
 		
