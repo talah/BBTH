@@ -243,4 +243,8 @@ public class UIView extends GameScreen {
 				isAnimatingPosition = false;
 		}
 	}
+
+	public boolean isDraggable() {
+		return false;
+	}
 }

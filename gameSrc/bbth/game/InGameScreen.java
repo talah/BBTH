@@ -1,16 +1,21 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
+import bbth.engine.achievements.Achievements;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.sound.*;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.*;
 import bbth.engine.util.Timer;
@@ -38,12 +43,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private Timer drawSimTimer = new Timer();
 	private Timer drawUITimer = new Timer();
 
+	private Path arrowPath;
 	public ComboCircle combo_circle;
 	private boolean userScrolling;
 	private Tutorial tutorial;
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
+	
+	private boolean setSong;
+	
+	// TODO: Make a way to set the difficulty.
+	private float aiDifficulty = 0.7f;
 	
 	private boolean singlePlayer;
 	private UINavigationController controller;
@@ -56,7 +67,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		
 		this.team = playerTeam;
 		tutorial = new Tutorial(this);
-		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT  / 2.f);
+		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
 		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
 		addSubview(tutorial);
@@ -68,9 +79,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.reset();
+		
+		if (team == Team.SERVER) {
+			// Magic numbers
+			sim.recordCustomEvent(0.f, 0.f, song.id);
 
-		// Set up sound stuff
-		beatTrack = new BeatTrack(song, this);
+			// Set up sound stuff
+			beatTrack = new BeatTrack(song, this);
+			setSong = true;
+		} else {
+			beatTrack = new BeatTrack(Song.DERP, this);
+			setSong = false;
+		}
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
@@ -78,13 +98,21 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
+		paint.setTextAlign(Align.CENTER);
+
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 		
 		if (singlePlayer) {
-			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack);
+			player_ai = new PlayerAI(sim, sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty);
 		}
+
+		arrowPath = new Path();
+		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.close();
 	}
 
 	@Override
@@ -115,8 +143,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-					currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
@@ -142,64 +169,44 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
-			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("Waiting for other player...",
-					BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2,
-					BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2,
-					paint);
+			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 
-		long time_since_hint_start = System.currentTimeMillis()
-				- tap_location_hint_time;
+		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
 		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .75f + 45, paint);
-			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60,
-					BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 55, BBTHGame.WIDTH / 4 + 40,
-					BBTHGame.HEIGHT * .75f + 65, paint);
-			canvas.drawLine(BBTHGame.WIDTH / 4 + 30,
-					BBTHGame.HEIGHT * .75f + 75, BBTHGame.WIDTH / 4 + 40,
-					BBTHGame.HEIGHT * .75f + 65, paint);
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
+
+			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawPath(arrowPath, paint);
 		}
 
 		// Draw unit placement hint if necessary.
-		time_since_hint_start = System.currentTimeMillis()
-				- sim.placement_tip_start_time;
+		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
 		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .25f + 45, paint);
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
-		
+
 		// Draw wall drag hint if necessary.
-		time_since_hint_start = System.currentTimeMillis()
-				- drag_tip_start_time;
+		time_since_hint_start = System.currentTimeMillis() - drag_tip_start_time;
 		if (time_since_hint_start < DRAG_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			//paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .5f + 20, paint);
-			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .5f + 45, paint);
+			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -227,23 +234,32 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X
-					+ BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
-					+ BBTHSimulation.GAME_HEIGHT / 2 + 40, paint);
+			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2 + 40,
+					paint);
 		}
 		super.onDraw(canvas);
 		entireDrawTimer.stop();
+
+		// draw achievement stuff
+		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
+		if (!setSong && team == Team.CLIENT && sim.song != null) {
+			// Set up sound stuff
+			beatTrack.setSong(sim.song);
+			setSong = true;
+		}
+		
 		if (!singlePlayer) {
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
-				nextScreen = new GameStatusMessageScreen.DisconnectScreen(controller);
+				controller.push(new GameStatusMessageScreen.DisconnectScreen(controller));
+				controller.pop();
 			}
 		}
 
@@ -267,7 +283,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Start the music
-		if (sim.isReady() && !beatTrack.isPlaying()) {
+		if (setSong && sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
@@ -281,14 +297,27 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			if (gameState == GameState.TIE) {
-				nextScreen = new GameStatusMessageScreen.TieScreen(controller);
-			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-				nextScreen = new GameStatusMessageScreen.WinScreen(controller);
-			} else {
-				nextScreen = new GameStatusMessageScreen.LoseScreen(controller);
-			}
-			beatTrack.stopMusic();
+			moveToNextScreen();
+		}
+
+		// Update achievement stuff
+		// Achievements.INSTANCE.tick(seconds);
+	}
+
+	private void moveToNextScreen() {
+		beatTrack.stopMusic();
+
+		// Move on to the next screen
+		GameState gameState = sim.getGameState();
+		if (gameState == GameState.TIE) {
+			controller.push(new GameStatusMessageScreen.TieScreen(controller));
+			controller.pop();
+		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
+			controller.push(new GameStatusMessageScreen.WinScreen(controller));
+			controller.pop();
+		} else {
+			controller.push(new GameStatusMessageScreen.LoseScreen(controller));
+			controller.pop();
 		}
 	}
 
@@ -317,6 +346,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
+
+		if (isHold) {
+			Achievements.INSTANCE.unlock("Test Success");
+		}
 
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
@@ -403,12 +436,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	public void simulateWallGeneration() {
 		currentWall.updateLength();
-		
+
 		if (currentWall.length <= BBTHSimulation.MIN_WALL_LENGTH) {
 			// Display a tip about dragging!
 			drag_tip_start_time = System.currentTimeMillis();
 		}
-		
+
 		if (currentWall.length >= BBTHSimulation.MIN_WALL_LENGTH) {
 			BBTHSimulation.generateParticlesForWall(currentWall, this.team);
 		}
@@ -427,11 +460,14 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onCompletion(MusicPlayer mp) {
 		// End both games at the same time with a synced event
-		sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
+		if (singlePlayer) {
+			sim.simulateCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT, true);
+		} else {
+			sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
+		}
 	}
-	
-	public void startGame()
-	{
+
+	public void startGame() {
 		removeSubview(tutorial);
 		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
 		if (singlePlayer)

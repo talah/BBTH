@@ -12,6 +12,7 @@ public class Base extends UIView {
 	private Paint paint;
 	private Team team;
 	private Player player;
+	public boolean drawFill = true;
 
 	public Base(Player player) {
 		this.setSize(BBTHSimulation.GAME_WIDTH, BASE_HEIGHT);
@@ -23,8 +24,10 @@ public class Base extends UIView {
 	}
 
 	public void draw(Canvas canvas, boolean serverDraw) {
-		paint.setColor(team.getBaseColor());
-		canvas.drawRect(_rect, paint);
+		if (drawFill) {
+			paint.setColor(team.getBaseColor());
+			canvas.drawRect(_rect, paint);
+		}
 		paint.setColor(Color.WHITE);
 		String text = (player.isLocal() ? "Your" : "Enemy") + " health: " + (int) player.getHealth();
 		

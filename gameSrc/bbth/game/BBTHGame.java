@@ -23,14 +23,6 @@ public class BBTHGame extends Game {
 //		controller.push(new TransitionTest());
 //		controller.push(new GameSetupScreen());
 //		controller.push(new CombatTest(this));
-
-//		if (IS_SINGLE_PLAYER) {
-//			controller.push(new InGameScreen(Team.SERVER, new Bluetooth(
-//					GameActivity.instance, new LockStepProtocol()),
-//					SONG, new LockStepProtocol()));
-//		} else {
-//			controller.push(new GameSetupScreen());
-//		}
 	}
 
 	@Override

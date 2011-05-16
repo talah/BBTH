@@ -132,7 +132,7 @@ public class UINavigationController extends UIView {
 	}
 	
 	public void pushUnder(UIView screen) {
-		screens.add(screens.size()-2, screen);
+		screens.add(screens.size()-1, screen);
 	}
 
 	public void pushBack(UIView screen) {

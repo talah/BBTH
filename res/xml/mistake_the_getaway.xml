@@ -1,7 +1,6 @@
-<root mpb="463">
+<root mpb="425.25">
 
 	<pattern id="intro">
-		<rest type="quarter" />
 		<rest type="eighth" />
 		<beat type="quarter" />
 		<beat type="quarter" />
@@ -50,6 +49,10 @@
 	
 	<pattern id="whole-hold">
 		<hold type="whole" />
+	</pattern>
+	
+	<pattern id="delay">
+		<rest duration="4" />
 	</pattern>
 	
 	<pattern id="one-and-four">
@@ -196,14 +199,13 @@
 		<load-pattern id="three-pickup" />
 		<load-pattern id="two-hit" />
 		<load-pattern id="whole-rest" />
-		
+
 		<load-pattern id="two-hit" />
 		<load-pattern id="whole-rest" />
 		<load-pattern id="two-hit" />
 		<load-pattern id="whole-rest" />
 		<load-pattern id="four-hit" />
 		<load-pattern id="whole-rest" />
-		
 		
 		<load-pattern id="whole-hold" />
 		<load-pattern id="pickup-hold" />
@@ -213,7 +215,7 @@
 		<load-pattern id="whole-rest" />
 		<load-pattern id="three-hit" />	
 		<load-pattern id="whole-rest" />
-		
+
 		<load-pattern id="whole-hold" />
 		<load-pattern id="pickup-hold" />
 		<load-pattern id="whole-rest" />
@@ -222,11 +224,12 @@
 		<load-pattern id="three-hit" />
 		<load-pattern id="two-pickup" />
 		<load-pattern id="one-hit" />
+
 		<load-pattern id="whole-rest" />
 		<load-pattern id="drum-fill1" />
 		<load-pattern id="drum-fill2" />
 		<load-pattern id="whole-rest" />
-
+		
 		<load-pattern id="post-drum1" />
 		<load-pattern id="post-drum2" />
 		<load-pattern id="post-drum2" />
@@ -241,6 +244,7 @@
 		<load-pattern id="three-hold" />
 		<load-pattern id="three-hold" />
 		<load-pattern id="whole-hold" />
+
 		<load-pattern id="end-pickups" />
 		<load-pattern id="three-hold" />
 		<load-pattern id="three-hold" />

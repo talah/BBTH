@@ -1,28 +1,37 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.*;
-import bbth.engine.net.simulation.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.Wall;
+import bbth.engine.net.simulation.Hash;
+import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.net.simulation.Simulation;
+import bbth.engine.particles.Particle;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.*;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	public static enum GameState {
-		WAITING_TO_START,
-		IN_PROGRESS,
-		SERVER_WON,
-		CLIENT_WON,
-		TIE,
+		WAITING_TO_START, IN_PROGRESS, SERVER_WON, CLIENT_WON, TIE,
 	}
+
 	private GameState gameState = GameState.WAITING_TO_START;
 
 	private static final int NUM_PARTICLES = 1000;
@@ -75,6 +84,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	long placement_tip_start_time;
 
+	// The song id
+	public Song song;
+
 	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
 			boolean isServer) {
 		// 3 fine timesteps per coarse timestep
@@ -111,7 +123,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		aiController.setUpdateFraction(.10f);
 
 		cachedUnits = new HashSet<Unit>();
-		
 	}
 
 	public GameState getGameState() {
@@ -140,14 +151,19 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	@Override
 	protected void simulateTapDown(float x, float y, boolean isServer,
 			boolean isHold, boolean isOnBeat) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 
 		if (x < 0 || y < 0)
 			return;
-		
-		if (placement_tip_start_time == 0 && player.getMostAdvancedUnit() != null) {
-			if (((isServer && y > player.getMostAdvancedUnit().getY()) || 
-					(!isServer && y < player.getMostAdvancedUnit().getY()))) {
+
+		if (placement_tip_start_time == 0
+				&& player.getMostAdvancedUnit() != null) {
+			if (((isServer && y > player.getMostAdvancedUnit().getY()) || (!isServer && y < player
+					.getMostAdvancedUnit().getY()))) {
 				placement_tip_start_time = System.currentTimeMillis();
 			}
 		}
@@ -156,10 +172,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			if (isHold) {
 				player.startWall(x, y);
 			} else {
-				player.spawnUnit(x, y);
-
 				float newcombo = player.getCombo() + 1;
 				player.setCombo(newcombo);
+
+				player.spawnUnit(x, y);
 			}
 		} else {
 			player.setCombo(0);
@@ -168,6 +184,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void simulateTapMove(float x, float y, boolean isServer) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 
 		if (!player.settingWall())
@@ -182,6 +202,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void simulateTapUp(float x, float y, boolean isServer) {
+		// Don't interact at all if the game isn't running
+		if (gameState != GameState.IN_PROGRESS)
+			return;
+
 		Player player = playerMap.get(isServer);
 		generateWall(player);
 	}
@@ -189,19 +213,23 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	@Override
 	protected void simulateCustomEvent(float x, float y, int code,
 			boolean isServer) {
-		Player player = playerMap.get(isServer);
+		if (code < 0) {
+			this.song = Song.fromInt(code);
+		} else {
+			Player player = playerMap.get(isServer);
 
-		UnitType type = UnitType.fromInt(code);
-		if (type != null) {
-			player.setUnitType(type);
-		} else if (code == TUTORIAL_DONE_EVENT) {
-			if (isServer) {
-				serverReady = true;
-			} else {
-				clientReady = true;
+			UnitType type = UnitType.fromInt(code);
+			if (type != null) {
+				player.setUnitType(type);
+			} else if (code == TUTORIAL_DONE_EVENT) {
+				if (isServer) {
+					serverReady = true;
+				} else {
+					clientReady = true;
+				}
+			} else if (code == MUSIC_STOPPED_EVENT) {
+				endTheGame();
 			}
-		} else if (code == MUSIC_STOPPED_EVENT) {
-			endTheGame();
 		}
 	}
 
@@ -268,6 +296,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			gameState = GameState.IN_PROGRESS;
 		}
 
+		PARTICLES.tick(seconds);
+
 		// DON'T ADVANCE THE SIMULATION WHEN WE AREN'T PLAYING
 		if (gameState != GameState.IN_PROGRESS) {
 			return;
@@ -298,8 +328,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiTickTimer.stop();
 
-		PARTICLES.tick(seconds);
-
 		RectF sr = serverPlayer.base.getRect();
 		RectF cr = clientPlayer.base.getRect();
 		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
@@ -309,7 +337,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					serverPlayer.adjustHealth(-10);
 				}
 
-				this.notifyUnitDead(u);
+				u.takeDamage(u.getHealth());
 			}
 		}
 		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
@@ -319,7 +347,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					clientPlayer.adjustHealth(-10);
 				}
 
-				this.notifyUnitDead(u);
+				u.takeDamage(u.getHealth());
 			}
 		}
 
@@ -342,7 +370,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public void draw(Canvas canvas) {
-		drawWavefronts(canvas);
+		if (gameState == GameState.IN_PROGRESS) {
+			drawWavefronts(canvas);
+		}
+		
 		drawGrid(canvas);
 
 		localPlayer.draw(canvas, team == Team.SERVER);
@@ -386,27 +417,29 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		// server wavefront line
 		paint.setColor(Team.SERVER.getUnitColor());
-		canvas.drawLine(0, serverWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
+		canvas.drawLine(0, serverWavefrontY, BBTHSimulation.GAME_WIDTH,
+				serverWavefrontY, paint);
 
 		// client wavefront line
 		paint.setColor(Team.CLIENT.getUnitColor());
-		canvas.drawLine(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, clientWavefrontY, paint);
+		canvas.drawLine(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
+				clientWavefrontY, paint);
 	}
 
 	@Override
 	public void notifyUnitDead(Unit unit) {
-		for (int i = 0; i < 10; i++) {
-			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.sin(angle);
-
-			BBTHSimulation.PARTICLES.createParticle().circle()
-					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
-					.position(unit.getX(), unit.getY())
-					.color(unit.getTeam().getRandomShade());
-		}
+		// for (int i = 0; i < 10; i++) {
+		// float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+		// float xVel = MathUtils.randInRange(25.f, 50.f)
+		// * FloatMath.cos(angle);
+		// float yVel = MathUtils.randInRange(25.f, 50.f)
+		// * FloatMath.sin(angle);
+		//
+		// BBTHSimulation.PARTICLES.createParticle().circle()
+		// .velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
+		// .position(unit.getX(), unit.getY())
+		// .color(unit.getTeam().getRandomShade());
+		// }
 
 		serverPlayer.units.remove(unit);
 		clientPlayer.units.remove(unit);
@@ -500,5 +533,38 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		float serverHealth = Math.max(0, serverPlayer.getHealth());
 		float clientHealth = Math.max(0, clientPlayer.getHealth());
 		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
+
+		// PARTICLES!
+		if (gameState != GameState.SERVER_WON) {
+			explodeBase(Team.SERVER);
+		}
+		if (gameState != GameState.CLIENT_WON) {
+			explodeBase(Team.CLIENT);
+		}
+	}
+
+	private void explodeBase(Team team) {
+		float speed = 100;
+		float baseY = (team == Team.SERVER) ? 0 : GAME_HEIGHT - Base.BASE_HEIGHT;
+		for (int i = 0; i < 50; i++) {
+			float x = MathUtils.randInRange(0, GAME_WIDTH);
+			float y = baseY + MathUtils.randInRange(0, Base.BASE_HEIGHT);
+			float angle = MathUtils.randInRange(0, MathUtils.PI);
+			if (team == Team.CLIENT) angle += MathUtils.PI;
+			float radius = MathUtils.randInRange(0, speed);
+			float vx = FloatMath.cos(angle) * radius;
+			float vy = FloatMath.sin(angle) * radius;
+			Particle particle = PARTICLES.createParticle().position(x, y).velocity(vx, vy).shrink(0.1f, 0.15f).radius(10).color(team.getRandomShade()).angle(angle);
+			if ((i & 1) != 0) {
+				particle.line();
+			} else {
+				particle.circle();
+			}
+		}
+		if (team == Team.CLIENT) {
+			clientPlayer.base.drawFill = false;
+		} else {
+			serverPlayer.base.drawFill = false;
+		}
 	}
 }

@@ -8,7 +8,6 @@ import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.*;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
-	
 	private LockStepProtocol protocol;
 	private Bluetooth bluetooth;
 
@@ -26,7 +25,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		super(null);
 		
 		this.controller = controller;
-		
+
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		setPosition(0, 0);
 
@@ -75,7 +74,13 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		label.setText("Status: " + bluetooth.getString());
 
 		if (bluetooth.getState() == State.CONNECTED) {
-			nextScreen = new InGameScreen(controller, playerTeam, bluetooth, BBTHGame.SONG, protocol, false);
+			if (playerTeam == Team.SERVER) {
+				controller.pushBack(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
+				controller.pop();
+			} else if (playerTeam == Team.CLIENT) {
+				controller.pushBack(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
+				controller.pop();
+			}
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
 			clientButton.isDisabled = false;

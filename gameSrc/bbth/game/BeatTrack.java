@@ -26,22 +26,24 @@ public class BeatTrack {
 
 	public static final int BEAT_TRACK_WIDTH = 50;
 	public static final float BEAT_LINE_X = 25;
-	public static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
-	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 10.f;
+	private static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
+	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 15.f;
+	public static final float BEAT_LINE_TOP = BEAT_LINE_Y - BEAT_CIRCLE_RADIUS;
+	public static final float BEAT_LINE_BOTTOM = BEAT_LINE_Y + BEAT_CIRCLE_RADIUS;
 	
 	public static final long COMBO_PULSE_TIME = 500;
 	public static final long COMBO_BRAG_TIME = 2000;
 
 	private static final int MAX_SOUNDS = 8;
-	private final int HIT_SOUND_ID;
+	//private final int HIT_SOUND_ID;
 	private final int MISS_SOUND_ID;
-	private final int HOLD_SOUND_ID;
+	//private final int HOLD_SOUND_ID;
+	//private int holdId;
 	
 	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
-	private int holdId;
 	private int combo;
 	private int score;
 	private String comboStr;
@@ -73,10 +75,9 @@ public class BeatTrack {
 		musicPlayer.setOnCompletionListener(listener);
 
 		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
-		HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
+		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
-		// TODO: Find a good hold sound
-		HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
+		//HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		isHolding = false;
 
 		// Setup score stuff
@@ -93,6 +94,10 @@ public class BeatTrack {
 		paint.setAntiAlias(true);
 		
 		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
+	}
+	
+	public void setSong(Song song) {
+		loadSong(song);
 	}
 	
 	// loads a song and an associated beat track
@@ -172,12 +177,11 @@ public class BeatTrack {
 		if (isOnBeat) {
 			if (beatType == Beat.BeatType.HOLD){
 				isHolding = true;
-				holdId = soundManager.play(HOLD_SOUND_ID);
+				//holdId = soundManager.play(HOLD_SOUND_ID);
 			} else {
-				soundManager.play(HIT_SOUND_ID);
+				//soundManager.play(HIT_SOUND_ID);
 			}
 			++score;
-			// scoreStr = String.valueOf(score);
 			// NOTE: Combos should also be tracked in bbthSimulation
 			if (beatType != Beat.BeatType.HOLD) {
 				++combo;
@@ -195,7 +199,7 @@ public class BeatTrack {
 	
 	public void onTouchUp(float x, float y) {
 		if (isHolding) {
-			soundManager.stop(holdId);
+			//soundManager.stop(holdId);
 			isHolding = false;
 		}
 	}
