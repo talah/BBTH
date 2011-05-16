@@ -18,8 +18,7 @@ public class UIButton extends UIControl {
 	public float padding, corner_radius;
 	public UIButtonDelegate delegate;
 	
-	public UIButton(String text, Object tag) {
-	    super(tag);
+	public UIButton(String text) {
 		padding = 8;
 		corner_radius = UIDefaultConstants.CORNER_RADIUS;
 		
@@ -37,6 +36,10 @@ public class UIButton extends UIControl {
 		_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 		
 		this.text = text;
+	}
+
+	public UIButton(String text, Object tag) {
+		this(text);
 		this.tag = tag;
 	}
 

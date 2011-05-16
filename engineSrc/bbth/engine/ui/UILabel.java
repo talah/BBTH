@@ -24,10 +24,7 @@ public class UILabel extends UIControl {
 	private VAlign v_align;
 	private float text_size, line_height;
 
-	public UILabel(String text, Object tag) {
-	    super(tag);
-
-	    
+	public UILabel(String text) {
 	    this.text = text;
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
@@ -39,8 +36,12 @@ public class UILabel extends UIControl {
 		
 		v_align = VAlign.MIDDLE;
 
-		this.tag = tag;
 		sizeToFit();
+	}
+
+	public UILabel(String text, Object tag) {
+		this(text);
+		this.tag = tag;
 	}
 
 	@Override
@@ -198,7 +199,7 @@ public class UILabel extends UIControl {
 		wrapText = value;
 	}
 	
-	private void wrapText()
+	public void wrapText()
 	{
 		if(text == null || text.equals(""))
 			return;

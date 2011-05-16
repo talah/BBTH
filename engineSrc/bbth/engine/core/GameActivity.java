@@ -70,4 +70,9 @@ public abstract class GameActivity extends Activity {
 		stop();
 		super.onDestroy();
 	}
+	
+    @Override
+    public void onBackPressed() {
+    	game.onBackPressed();
+    }
 }
