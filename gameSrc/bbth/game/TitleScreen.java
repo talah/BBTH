@@ -11,12 +11,13 @@ import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIView;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
-	private UILabel titleBar;
+	private UIImageView titleBar;
 	private float animDelay = 1.0f;
 	private UIButton singleplayerButton, multiplayerButton, achievementsButton;
 	private InfiniteCombatView combatView;
@@ -32,11 +33,10 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		combatView = new InfiniteCombatView();
 		
-		titleBar = new UILabel("Beat Back the Horde!", this);
+		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
-		titleBar.setTextSize(30.f);
-		titleBar.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT + 60);
-		titleBar.animatePosition(BBTHGame.WIDTH / 2.f, 80, 3);
+		titleBar.setPosition(10, -150);
+		titleBar.animatePosition(10, 20, 3);
 		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton("Single Player", this);
