@@ -362,10 +362,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
 
-		if (isHold) {
-			Achievements.INSTANCE.unlock("Test Success");
-		}
-
 		x -= BBTHSimulation.GAME_X;
 		y -= BBTHSimulation.GAME_Y;
 		if (team == Team.SERVER)
