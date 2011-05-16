@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.RectF;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.FastGraphGenerator;
@@ -54,7 +53,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private FastGraphGenerator graphGen;
 	private FastLineOfSightTester tester;
 	private GridAcceleration accel;
-	private HashSet<Unit> cachedUnits;
 	private Paint paint = new Paint();
 	private Bag<Unit> cachedUnitBag = new Bag<Unit>();
 	private HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
@@ -122,8 +120,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiController.setPathfinder(pathFinder, graphGen.graph, tester, accel);
 		aiController.setUpdateFraction(.10f);
-
-		cachedUnits = new HashSet<Unit>();
 	}
 
 	public GameState getGameState() {
@@ -289,6 +285,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
+		PARTICLES.tick(seconds);
+
 		if (!isReady()) {
 			return;
 		}
@@ -296,8 +294,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (gameState == GameState.WAITING_TO_START) {
 			gameState = GameState.IN_PROGRESS;
 		}
-
-		PARTICLES.tick(seconds);
 
 		// DON'T ADVANCE THE SIMULATION WHEN WE AREN'T PLAYING
 		if (gameState != GameState.IN_PROGRESS) {
@@ -329,28 +325,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		aiTickTimer.stop();
 
-		RectF sr = serverPlayer.base.getRect();
-		RectF cr = clientPlayer.base.getRect();
-		accel.getUnitsInAABB(sr.left, sr.top, sr.right, sr.bottom, cachedUnits);
-		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.CLIENT) {
-				if (!BBTHGame.DEBUG) {
-					serverPlayer.adjustHealth(-10);
-				}
-
-				u.takeDamage(u.getHealth());
-			}
-		}
-		accel.getUnitsInAABB(cr.left, cr.top, cr.right, cr.bottom, cachedUnits);
-		for (Unit u : cachedUnits) {
-			if (u.getTeam() == Team.SERVER) {
-				if (!BBTHGame.DEBUG) {
-					clientPlayer.adjustHealth(-10);
-				}
-
-				u.takeDamage(u.getHealth());
-			}
-		}
+		serverPlayer.base.damageUnits(accel);
+		clientPlayer.base.damageUnits(accel);
 
 		if (localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
 			endTheGame();
@@ -362,10 +338,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawGrid(Canvas canvas) {
 		paint.setARGB(63, 255, 255, 255);
 
-		for (float x = 0; x < GAME_WIDTH; x += 60) {
+		for (float x = 0; x < GAME_WIDTH; x += 55) {
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
 		}
-		for (float y = 0; y < GAME_HEIGHT; y += 60) {
+		for (float y = 0; y < GAME_HEIGHT; y += 55) {
 			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
 		}
 	}

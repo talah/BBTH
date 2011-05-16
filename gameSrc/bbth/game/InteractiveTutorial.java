@@ -1,21 +1,44 @@
 package bbth.game;
 
+import static bbth.game.BBTHSimulation.GAME_HEIGHT;
+import static bbth.game.BBTHSimulation.GAME_WIDTH;
+import static bbth.game.BBTHSimulation.GAME_X;
+import static bbth.game.BBTHSimulation.GAME_Y;
+import static bbth.game.BeatTrack.BEAT_CIRCLE_RADIUS;
+import static bbth.game.BeatTrack.BEAT_LINE_X;
+import static bbth.game.BeatTrack.BEAT_LINE_Y;
+import static bbth.game.BeatTrack.BEAT_TRACK_WIDTH;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.util.FloatMath;
+import bbth.engine.ai.Pathfinder;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.sound.Beat;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UIView;
+import bbth.engine.util.Bag;
+import bbth.game.ai.AIController;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 
-public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
+/**
+ * This reimplements a large part of BBTHSimulation because our code is all
+ * mixed up instead of being factored into MVC.
+ */
+public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, UnitManager {
 
+	private static final Bag<Unit> emptyUnitBag = new Bag<Unit>();
 	private static final Path path = new Path();
 	private static final Paint paint = new Paint();
+	public static final float MAX_SONG_TIME = 1;
+	public static final float MIN_SONG_TIME = -6;
 	static {
 		paint.setAntiAlias(true);
 	}
@@ -28,18 +51,10 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 	}
 
 	private class PlaceUnitStep extends Step {
-		private static final float MIN_TIME = -6;
-		private static final float MAX_TIME = 1;
-		private float time = MIN_TIME;
-		private Beat beat = Beat.tap(0);
-
 		@Override
 		public void onDraw(Canvas canvas) {
-			paint.setColor(Color.GRAY);
-			beat.draw((int) (time * 1000), BeatTrack.BEAT_LINE_X, BeatTrack.BEAT_LINE_Y, canvas, paint);
-
-			float x = BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2;
-			float y = BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT * 0.8f;
+			float x = GAME_X + GAME_WIDTH / 2;
+			float y = GAME_Y + GAME_HEIGHT * 0.8f;
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
@@ -50,17 +65,25 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 
 		@Override
 		public void onUpdate(float seconds) {
-			time += seconds;
-			if (time > MAX_TIME) {
-				time -= MAX_TIME - MIN_TIME;
+			if (songTime > MAX_SONG_TIME) {
+				songTime = MIN_SONG_TIME;
 			}
 		}
 
 		@Override
 		public void onTouchDown(float x, float y) {
-			if (x >= BBTHSimulation.GAME_X && y >= BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2) {
-				transition(new FinishedStep());
+			x -= GAME_X;
+			y -= GAME_Y;
+			if (x >= 0 && Math.abs(songTime) < 0.1f) {
+				localPlayer.spawnUnit(x, y);
+				transition(new LearnAboutGridStep());
 			}
+		}
+	}
+
+	private class LearnAboutGridStep extends Step {
+		@Override
+		public void onDraw(Canvas canvas) {
 		}
 	}
 
@@ -69,14 +92,39 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 
 	private Step step;
 	private UIButton skipButton;
+	private Team team;
+	private Player serverPlayer;
+	private Player clientPlayer;
+	private Player localPlayer;
+	private Player remotePlayer;
+	private AIController aiController;
+	private Beat beat = Beat.tap(0);
+	private float songTime = MIN_SONG_TIME;
+	private GridAcceleration accel;
+	private FastGraphGenerator gen;
+	private Pathfinder pathfinder;
+	private FastLineOfSightTester tester;
 
-	public InteractiveTutorial() {
+	public InteractiveTutorial(Team localTeam) {
 		skipButton = new UIButton("Skip Tutorial");
 		skipButton.setAnchor(Anchor.TOP_RIGHT);
 		skipButton.setSize(100, 30);
 		skipButton.setPosition(BBTHGame.WIDTH - 20, Base.BASE_HEIGHT + 20);
 		skipButton.setButtonDelegate(this);
 		addSubview(skipButton);
+
+		team = localTeam;
+		aiController = new AIController();
+		serverPlayer = new Player(Team.SERVER, aiController, this, team == Team.SERVER);
+		clientPlayer = new Player(Team.CLIENT, aiController, this, team == Team.CLIENT);
+		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
+		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
+
+		gen = new FastGraphGenerator(15.0f, GAME_WIDTH, GAME_HEIGHT);
+		pathfinder = new Pathfinder(gen.graph);
+		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
+		tester = new FastLineOfSightTester(15, accel);
+		aiController.setPathfinder(pathfinder, gen.graph, tester, accel);
 
 		transition(new PlaceUnitStep());
 	}
@@ -121,7 +169,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 		canvas.drawPath(path, paint);
 	}
 
-	public void drawDashedLine(Canvas canvas, float ax, float ay, float bx, float by, float r, float percent) {
+	protected static void drawDashedLine(Canvas canvas, float ax, float ay, float bx, float by, float r, float percent) {
 		float dx = bx - ax;
 		float dy = by - ay;
 		float d = FloatMath.sqrt(dx * dx + dy * dy);
@@ -132,5 +180,124 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 			float t2 = Math.min(d, t + r);
 			canvas.drawLine(ax + dx * t1, ay + dy * t1, ax + dx * t2, ay + dy * t2, paint);
 		}
+	}
+
+	protected void transformToGameSpace(Canvas canvas, Team team) {
+		canvas.translate(GAME_X, GAME_Y);
+		if (team == Team.SERVER) {
+			canvas.translate(0, GAME_HEIGHT / 2);
+			canvas.scale(1.f, -1.f);
+			canvas.translate(0, -GAME_HEIGHT / 2);
+		}
+	}
+
+	private void drawWavefronts(Canvas canvas) {
+		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
+		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : GAME_HEIGHT;
+		paint.setStyle(Style.FILL);
+
+		// server wavefront
+		paint.setColor(Team.SERVER.getWavefrontColor());
+		canvas.drawRect(0, 0, GAME_WIDTH, Math.min(clientWavefrontY, serverWavefrontY), paint);
+
+		// client wavefront
+		paint.setColor(Team.CLIENT.getWavefrontColor());
+		canvas.drawRect(0, Math.max(clientWavefrontY, serverWavefrontY), GAME_WIDTH, GAME_HEIGHT, paint);
+
+		// overlapped wavefronts
+		if (serverWavefrontY > clientWavefrontY) {
+			paint.setColor(Color.rgb(63, 0, 63));
+			canvas.drawRect(0, clientWavefrontY, GAME_WIDTH, serverWavefrontY, paint);
+		}
+
+		// server wavefront line
+		paint.setColor(Team.SERVER.getUnitColor());
+		canvas.drawLine(0, serverWavefrontY, GAME_WIDTH, serverWavefrontY, paint);
+
+		// client wavefront line
+		paint.setColor(Team.CLIENT.getUnitColor());
+		canvas.drawLine(0, clientWavefrontY, GAME_WIDTH, clientWavefrontY, paint);
+	}
+
+	private void drawGrid(Canvas canvas) {
+		paint.setARGB(63, 255, 255, 255);
+		for (float x = 0; x < GAME_WIDTH; x += 55) {
+			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
+		}
+		for (float y = 0; y < GAME_HEIGHT; y += 55) {
+			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
+		}
+	}
+
+	private void drawBeatTrack(Canvas canvas) {
+		paint.setStrokeWidth(2);
+		paint.setARGB(127, 255, 255, 255);
+		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
+
+		beat.draw((int) (songTime * 1000), BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+
+		paint.setColor(Color.WHITE);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y
+				- BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y
+				+ BEAT_CIRCLE_RADIUS, paint);
+		paint.setStrokeWidth(1);
+	}
+
+	@Override
+	public void onUpdate(float seconds) {
+		super.onUpdate(seconds);
+		accel.clearUnits();
+		accel.insertUnits(serverPlayer.units);
+		accel.insertUnits(clientPlayer.units);
+		aiController.update();
+		serverPlayer.update(seconds);
+		clientPlayer.update(seconds);
+		serverPlayer.base.damageUnits(accel);
+		clientPlayer.base.damageUnits(accel);
+		songTime += seconds;
+	}
+
+	@Override
+	public void onDraw(Canvas canvas) {
+		canvas.save();
+		transformToGameSpace(canvas, team);
+		drawWavefronts(canvas);
+		drawGrid(canvas);
+		localPlayer.draw(canvas, team == Team.SERVER);
+		remotePlayer.draw(canvas, team == Team.SERVER);
+		BBTHSimulation.PARTICLES.draw(canvas, BBTHSimulation.PARTICLE_PAINT);
+		canvas.restore();
+		drawBeatTrack(canvas);
+		super.onDraw(canvas);
+	}
+
+	@Override
+	public boolean supressDrawing() {
+		return true;
+	}
+
+	@Override
+	public void notifyUnitDead(Unit unit) {
+		serverPlayer.units.remove(unit);
+		clientPlayer.units.remove(unit);
+		aiController.removeEntity(unit);
+	}
+
+	@Override
+	public Bag<Unit> getUnitsInCircle(float x, float y, float r) {
+		return emptyUnitBag;
+	}
+
+	@Override
+	public Bag<Unit> getUnitsIntersectingLine(float x, float y, float x2, float y2) {
+		return emptyUnitBag;
+	}
+
+	@Override
+	public void removeWall(Wall wall) {
 	}
 }
