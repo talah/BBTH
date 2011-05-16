@@ -48,19 +48,23 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		singleplayerButton = new UIButton("Single Player", this);
 		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		singleplayerButton.setAnchor(Anchor.CENTER_CENTER);
-		singleplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
+		singleplayerButton.setPosition(-BBTHGame.WIDTH, BBTHGame.HEIGHT / 2 - 65);
+		singleplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65, 0.5f);
 		singleplayerButton.setButtonDelegate(this);
 		
 		multiplayerButton = new UIButton("Multi Player", this);
 		multiplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		multiplayerButton.setAnchor(Anchor.CENTER_CENTER);
-		multiplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		multiplayerButton.setPosition(-BBTHGame.WIDTH * 2.0f, BBTHGame.HEIGHT / 2);
+		multiplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2, 1.0f);
 		multiplayerButton.setButtonDelegate(this);
 		
 		achievementsButton = new UIButton("Achievements", this);
 		achievementsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
-		achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
+		achievementsButton.setPosition(-BBTHGame.WIDTH * 3.0f, BBTHGame.HEIGHT / 2 + 65);
+		achievementsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65, 1.5f);
+
 		achievementsButton.setButtonDelegate(this);
 		
 		particles = new ParticleSystem(150, 0.5f);
@@ -83,7 +87,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		if (titleBar.isAnimatingPosition) {
 			animDelay = 0f;
 			titleBar.isAnimatingPosition = false;
-			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 80);
+			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 20);
 		}
 	}
 
