@@ -5,9 +5,12 @@ import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.*;
-import bbth.engine.util.Envelope;
-import bbth.engine.util.Envelope.OutOfBoundsHandler;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private LockStepProtocol protocol;
