@@ -2,6 +2,7 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
+import bbth.engine.core.GameActivity;
 import bbth.engine.ui.UINavigationController;
 
 public class BBTHGame extends Game {
@@ -10,12 +11,14 @@ public class BBTHGame extends Game {
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = false;
 	public static final Song SONG = Song.MISTAKE_THE_GETAWAY;
+	
+	private UINavigationController navController;
 
 	public BBTHGame(Activity activity) {
-		UINavigationController controller = new UINavigationController(null);
-		currentScreen = controller;
+		navController = new UINavigationController(null);
+		currentScreen = navController;
 		
-		controller.push(new TitleScreen(controller));
+		navController.push(new TitleScreen(navController));
 		
 //		controller.push(new BBTHAITest(this));
 //		controller.push(new MusicTestScreen(activity));
@@ -33,5 +36,12 @@ public class BBTHGame extends Game {
 	@Override
 	public float getHeight() {
 		return HEIGHT;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if (!navController.pop()) {
+			GameActivity.instance.finish();
+		}
 	}
 }

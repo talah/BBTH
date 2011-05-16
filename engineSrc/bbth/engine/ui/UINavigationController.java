@@ -100,8 +100,13 @@ public class UINavigationController extends UIView {
 		transitioning = true;
 	}
 
-	public void pop() {
+	// returns true on success, false on failure
+	public boolean pop() {
+		if (screens.size() <= 1) {
+			return false;
+		}
 		pop(instantTransition);
+		return true;
 	}
 	
 	public void pop(Transition transition) {

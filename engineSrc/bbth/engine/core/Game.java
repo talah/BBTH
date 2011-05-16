@@ -194,4 +194,10 @@ public abstract class Game {
 			currentScreen.onActivityResult(requestCode, resultCode);
 		}
 	}
+	
+	/**
+	 * Occurs when the back button is pressed
+	 */
+	public void onBackPressed() {
+	}
 }

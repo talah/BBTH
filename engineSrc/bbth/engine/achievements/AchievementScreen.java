@@ -5,7 +5,6 @@ import java.util.Map;
 import android.graphics.Paint;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.ui.UIView;
@@ -17,39 +16,39 @@ import bbth.engine.ui.UIView;
  */
 public class AchievementScreen extends UIScrollView implements UIButtonDelegate {
 
-	private final static int X_OFFSET = 10;
 	private final static int ACHIEVEMENT_HEIGHT = 100;
-	private final static int SCREEN_WIDTH = 800;
-	private final static int SCREEN_HEIGHT = 600;
+	private final static int WIDTH = 100;
 	private final static String LOCKED_TEXT = "LOCKED";
 
-	private float _yOffset;
-	private Map<String, Boolean> _achievements;
-	private Map<String, String> _descriptions;
-	private Paint _paint;
-	private UIView _prevScreen;
-	private AchievementView[] _views;
+	private UINavigationController _navController;
 	private UIButton _backButton;
 
 	// descriptions maps achievement names to full descriptions for unlocked achievements
 	public AchievementScreen(UINavigationController navController, Map<String, String> descriptions) {
 		super(null);
-		_achievements = Achievements.INSTANCE.getAll();
-		//_labels = new UIView[_achievements.size()];
-		//for (int i = 0; i < _labels.length; ++i) {
-			//_labels[i] = new UILabel()
-		//}
-		//_maxYOffset = ACHIEVEMENT_HEIGHT * 0.5f;
-		//_minYOffset = _maxYOffset - ACHIEVEMENT_HEIGHT * (_achievements.size() - Math.min(_achievements.size(), SCREEN_HEIGHT / ACHIEVEMENT_HEIGHT));
-		//_yOffset = _maxYOffset;
 		assert(descriptions != null);
-		_descriptions = descriptions;
+
+		_navController = navController;
+		
+		Map<String, Boolean> achievements = Achievements.INSTANCE.getAll();
+		setSize(WIDTH, ACHIEVEMENT_HEIGHT * achievements.size());
+		
+		for (Map.Entry<String, Boolean> entry : achievements.entrySet()) {
+			String name = entry.getKey();
+			String description;
+			if (Boolean.TRUE.equals(entry.getValue())) {
+				description = LOCKED_TEXT;
+			} else {
+				description = descriptions.get(name);
+			}
+			addSubview(new AchievementView(name, description, WIDTH, ACHIEVEMENT_HEIGHT));
+		}
 	}
 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == _backButton) {
-			nextScreen = _prevScreen;
+			_navController.pop();
 		}
 	}
 /*
