@@ -14,6 +14,8 @@ public class UIScrollView extends UIView {
 	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
 	protected Paint _scroll_paint, _track_paint;
 	
+	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4;
+	
 	public UIScrollView(Object tag) {
 		super(tag);
 		
@@ -55,14 +57,14 @@ public class UIScrollView extends UIView {
 		{
 			if(scrollsVertical)
 			{
-				canvas.drawRoundRect(_v_track_rect, 5,5, _track_paint);
-				canvas.drawRoundRect(_v_scroll_handle_rect, 5, 5, _scroll_paint);
+				canvas.drawRoundRect(_v_track_rect, CORNER_RADIUS, CORNER_RADIUS, _track_paint);
+				canvas.drawRoundRect(_v_scroll_handle_rect, CORNER_RADIUS, CORNER_RADIUS, _scroll_paint);
 			}
 			
 			if(scrollsHorizontal)
 			{
-				canvas.drawRoundRect(_h_track_rect, 5,5, _track_paint);
-				canvas.drawRoundRect(_h_scroll_handle_rect, 5, 5, _scroll_paint);
+				canvas.drawRoundRect(_h_track_rect, CORNER_RADIUS, CORNER_RADIUS, _track_paint);
+				canvas.drawRoundRect(_h_scroll_handle_rect, CORNER_RADIUS, CORNER_RADIUS, _scroll_paint);
 			}
 		}
 	}
@@ -150,34 +152,37 @@ public class UIScrollView extends UIView {
 		
 		max_y = Math.abs(_content_bounds.height() - _rect.height());
 		if(max_y > 0)
-			max_y += 8;
+			max_y += TRACK_THICKNESS;
 		
 		max_x = Math.abs(_content_bounds.width() - _rect.width());
 		if(max_x > 0)
-			max_x += 8;
+			max_x += TRACK_THICKNESS;
 		
-		_v_track_rect.left = right - 8;
+		_v_track_rect.left = right - TRACK_THICKNESS;
 		_v_track_rect.right = right;
-		_v_track_rect.top = top;
-		_v_track_rect.bottom = bottom - 14;
+		_v_track_rect.top = top + TRACK_THICKNESS;
+		_v_track_rect.bottom = bottom - TRACK_THICKNESS - ( scrollsHorizontal ? SPACE_BETWEEN_TRACKS : 0);
 		
-		_v_scroll_handle_rect.left = right - 8;
+		_v_scroll_handle_rect.left = right - TRACK_THICKNESS;
 		_v_scroll_handle_rect.right = right;
 		_v_scroll_handle_rect.top = top;
 		_v_scroll_handle_rect.bottom = top + getVerticalHandleHeight();
 		
 		_h_track_rect.left = left;
 		_h_track_rect.right = right;
-		_h_track_rect.top = bottom - 8;
+		_h_track_rect.top = bottom - TRACK_THICKNESS;
 		_h_track_rect.bottom = bottom;
 		
 		_h_scroll_handle_rect.left = left;
 		_h_scroll_handle_rect.right = right - getHorizontalHandleWidth();
-		_h_scroll_handle_rect.top = bottom -8;
+		_h_scroll_handle_rect.top = bottom -TRACK_THICKNESS;
 		_h_scroll_handle_rect.bottom = bottom;
 		
 		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
 		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
+		
+		if(_v_scroll_handle_rect.top < _v_track_rect.top)
+			_v_scroll_handle_rect.top = _v_track_rect.top;
 	}
 	
 	private float getVerticalHandleHeight()
@@ -198,6 +203,10 @@ public class UIScrollView extends UIView {
 	public void setScrollsHorizontal(boolean scrolls)
 	{
 		scrollsHorizontal = scrolls;
+		_v_track_rect.bottom = _rect.bottom - TRACK_THICKNESS - ( scrollsHorizontal ? SPACE_BETWEEN_TRACKS : 0);
+		_v_scroll_handle_rect.bottom = _v_scroll_handle_rect.top + getVerticalHandleHeight();
+		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
+		
 	}
 	
 	public void setScrolls(boolean scrolls)
@@ -227,13 +236,16 @@ public class UIScrollView extends UIView {
 		
 		max_y = Math.abs(_content_bounds.height() - _rect.height());
 		if(max_y > 0)
-			max_y += 8;
+			max_y += TRACK_THICKNESS;
 		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
 		
 		max_x = Math.abs(_content_bounds.width() - _rect.width());
 		if(max_x > 0)
-			max_x += 8;
+			max_x += TRACK_THICKNESS;
 		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
+		
+		if(_v_scroll_handle_rect.top < _v_track_rect.top)
+			_v_scroll_handle_rect.top = _v_track_rect.top;
 
 	}
 	
@@ -264,12 +276,12 @@ public class UIScrollView extends UIView {
 		
 		max_y = Math.abs(_content_bounds.height() - _rect.height());
 		if(max_y > 0)
-			max_y += 8;
+			max_y += TRACK_THICKNESS;
 		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
 		
 		max_x = Math.abs(_content_bounds.width() - _rect.width());
 		if(max_x > 0)
-			max_x += 8;
+			max_x += TRACK_THICKNESS;
 		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
 	}
 
