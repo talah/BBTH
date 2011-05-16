@@ -21,6 +21,10 @@ import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
 import bbth.game.BBTHSimulation.GameState;
+import bbth.game.GameStatusMessageScreen.DisconnectScreen;
+import bbth.game.GameStatusMessageScreen.LoseScreen;
+import bbth.game.GameStatusMessageScreen.TieScreen;
+import bbth.game.GameStatusMessageScreen.WinScreen;
 import bbth.game.ai.PlayerAI;
 
 public class InGameScreen extends UIView implements OnCompletionListener {

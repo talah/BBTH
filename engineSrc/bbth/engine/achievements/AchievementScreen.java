@@ -1,47 +1,58 @@
 package bbth.engine.achievements;
 
+import java.util.Map;
+
+import android.graphics.Paint;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIScrollView;
+import bbth.engine.ui.UIView;
+
 /**
  * A list of achievements with locked / unlocked status and descriptions
- * TODO: Work into our UI system
  * @author Justin
  *
  */
-public class AchievementScreen { // extends AbstractScreen {
-/*
+public class AchievementScreen extends UIScrollView implements UIButtonDelegate {
+
 	private final static int X_OFFSET = 10;
 	private final static int ACHIEVEMENT_HEIGHT = 100;
 	private final static int SCREEN_WIDTH = 800;
 	private final static int SCREEN_HEIGHT = 600;
 	private final static String LOCKED_TEXT = "LOCKED";
 
-	private Screen _prevScreen;
 	private float _yOffset;
 	private Map<String, Boolean> _achievements;
 	private Map<String, String> _descriptions;
 	private Paint _paint;
-	private float _prevYTouch;
-	private float _minYOffset, _maxYOffset;
+	private UIView _prevScreen;
+	private AchievementView[] _views;
+	private UIButton _backButton;
 
 	// descriptions maps achievement names to full descriptions for unlocked achievements
-	public AchievementScreen(Screen prevScreen, Context context, Map<String, String> descriptions) {
-		Achievements.INSTANCE.initialize(context, SCREEN_WIDTH, SCREEN_HEIGHT);
-		_prevScreen = prevScreen;
-		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_paint.setTextSize(36);
-		_paint.setColor(Color.WHITE);
+	public AchievementScreen(UINavigationController navController, Map<String, String> descriptions) {
+		super(null);
 		_achievements = Achievements.INSTANCE.getAll();
-		_maxYOffset = ACHIEVEMENT_HEIGHT * 0.5f;
-		_minYOffset = _maxYOffset - ACHIEVEMENT_HEIGHT * (_achievements.size() - Math.min(_achievements.size(), SCREEN_HEIGHT / ACHIEVEMENT_HEIGHT));
-		_yOffset = _maxYOffset;
+		//_labels = new UIView[_achievements.size()];
+		//for (int i = 0; i < _labels.length; ++i) {
+			//_labels[i] = new UILabel()
+		//}
+		//_maxYOffset = ACHIEVEMENT_HEIGHT * 0.5f;
+		//_minYOffset = _maxYOffset - ACHIEVEMENT_HEIGHT * (_achievements.size() - Math.min(_achievements.size(), SCREEN_HEIGHT / ACHIEVEMENT_HEIGHT));
+		//_yOffset = _maxYOffset;
 		assert(descriptions != null);
 		_descriptions = descriptions;
 	}
-	
-	@Override
-	public void tick(float seconds) {
-		// nothing to do here!
-	}
 
+	@Override
+	public void onClick(UIButton button) {
+		if (button == _backButton) {
+			nextScreen = _prevScreen;
+		}
+	}
+/*
 	@Override
 	public void draw(Canvas canvas) {
 		float y = _yOffset;
@@ -68,42 +79,20 @@ public class AchievementScreen { // extends AbstractScreen {
 			y += ACHIEVEMENT_HEIGHT * 0.4f;
 		}
 	}
-	
-	@Override
-	public void onDownAction(float x, float y) {
-		_prevYTouch = y;
-	}
-	
-	@Override
-	public void onMoveAction(float x, float y) {
-		_yOffset += y - _prevYTouch;
-		if (_yOffset < _minYOffset) {
-			_yOffset = _minYOffset;
-		} else if (_yOffset > _maxYOffset) {
-			_yOffset = _maxYOffset;
-		}
-		
-		_prevYTouch = y;
-	}
-
-	@Override
-	public int getWidth() {
-		return SCREEN_WIDTH;
-	}
-
-	@Override
-	public int getHeight() {
-		return SCREEN_HEIGHT;
-	}
-
-	@Override
-	public Screen getNextScreen() {
-		return this;
-	}
-	
-	@Override
-	public Screen getPreviousScreen() {
-		return _prevScreen;
-	}
 */
+
+	@Override
+	public void onTouchUp(UIView sender) {
+		// do nothing
+	}
+
+	@Override
+	public void onTouchDown(UIView sender) {
+		// do nothing
+	}
+
+	@Override
+	public void onTouchMove(UIView sender) {
+		// do nothing
+	}
 }
