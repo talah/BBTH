@@ -63,9 +63,7 @@ public class BeatTrack {
 		// Setup general stuff		
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
-				loadSong(song);
-				beatsInRange = new ArrayList<Beat>();
-				mp.play();
+				mp.stop();
 			}
 		});
 		musicPlayer.setOnCompletionListener(listener);
