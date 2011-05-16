@@ -1,17 +1,21 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.sound.*;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
@@ -48,11 +52,12 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
 	
+	private boolean setSong;
+
 	// TODO: Make a way to set the difficulty.
 	private float aiDifficulty = 0.7f;
 
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
-			LockStepProtocol protocol) {
+	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		this.team = playerTeam;
 		tutorial = new Tutorial(this);
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
@@ -67,9 +72,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.reset();
+		
+		if (team == Team.SERVER) {
+			// Magic numbers
+			sim.recordCustomEvent(0.f, 0.f, song.id);
 
-		// Set up sound stuff
-		beatTrack = new BeatTrack(song, this);
+			// Set up sound stuff
+			beatTrack = new BeatTrack(song, this);
+			setSong = true;
+		} else {
+			beatTrack = new BeatTrack(Song.DERP, this);
+			setSong = false;
+		}
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
@@ -77,18 +91,20 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
+		paint.setTextAlign(Align.CENTER);
+
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 
 		if (BBTHGame.IS_SINGLE_PLAYER) {
-			player_ai = new PlayerAI(sim, sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty );
+			player_ai = new PlayerAI(sim, sim.remotePlayer, sim.localPlayer, beatTrack, aiDifficulty);
 		}
-		
+
 		arrowPath = new Path();
-		arrowPath.moveTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 55);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 40, BBTHGame.HEIGHT * .75f + 65);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
 		arrowPath.close();
 	}
 
@@ -120,8 +136,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setColor(team.getTempWallColor());
 		paint.setStrokeCap(Cap.ROUND);
 		if (currentWall != null) {
-			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x,
-					currentWall.b.y, paint);
+			canvas.drawLine(currentWall.a.x, currentWall.a.y, currentWall.b.x, currentWall.b.y, paint);
 		}
 		paint.setStrokeCap(Cap.BUTT);
 
@@ -147,57 +162,44 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
-			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("Waiting for other player...",
-					BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2,
-					BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2,
-					paint);
+			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 
-		long time_since_hint_start = System.currentTimeMillis()
-				- tap_location_hint_time;
+		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
 		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
 
-			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60,
-					BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
 		// Draw unit placement hint if necessary.
-		time_since_hint_start = System.currentTimeMillis()
-				- sim.placement_tip_start_time;
+		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
 		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .25f + 45, paint);
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
-		time_since_hint_start = System.currentTimeMillis()
-				- drag_tip_start_time;
+		time_since_hint_start = System.currentTimeMillis() - drag_tip_start_time;
 		if (time_since_hint_start < DRAG_HINT_DISPLAY_LENGTH) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .5f + 20, paint);
-			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f,
-					BBTHGame.HEIGHT * .5f + 45, paint);
+			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -208,51 +210,29 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			int x = 80;
 			int y = 30;
 			int jump = 11;
-			canvas.drawText(
-					"Entire update: " + entireUpdateTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds()
-					+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"  - Sim tick: " + sim.entireTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"    - AI tick: " + sim.aiTickTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText(
-					"      - Controller: "
-							+ sim.aiControllerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Server player: "
-							+ sim.serverPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"      - Client player: "
-							+ sim.clientPlayerTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds()
-					+ " ms", x, y += jump * 2, paint);
-			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
-			canvas.drawText(
-					"- Particles: " + drawParticleTimer.getMilliseconds()
-							+ " ms", x, y += jump, paint);
-			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms",
-					x, y += jump, paint);
+			canvas.drawText("Entire update: " + entireUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Sim update: " + simUpdateTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("  - Sim tick: " + sim.entireTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("    - AI tick: " + sim.aiTickTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Controller: " + sim.aiControllerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Server player: " + sim.serverPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("      - Client player: " + sim.clientPlayerTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("Entire draw: " + entireDrawTimer.getMilliseconds() + " ms", x, y += jump * 2, paint);
+			canvas.drawText("- Sim: " + drawSimTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- Particles: " + drawParticleTimer.getMilliseconds() + " ms", x, y += jump, paint);
+			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint);
 		}
 
 		if (!sim.isSynced()) {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X
-					+ BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
-					+ BBTHSimulation.GAME_HEIGHT / 2 + 40, paint);
+			canvas.drawText("NOT SYNCED!", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2 + 40,
+					paint);
 		}
 		super.onDraw(canvas);
 		entireDrawTimer.stop();
-		
+
 		// draw achievement stuff
 		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
@@ -261,7 +241,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
-		if (!BBTHGame.IS_SINGLE_PLAYER) {
+		if (!setSong && team == Team.CLIENT && sim.song != null) {
+			// Set up sound stuff
+			beatTrack.setSong(sim.song);
+			setSong = true;
+		}
+		
+		if (!BBTHGame.IS_SINGLE_PLAYER) {	
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
@@ -270,7 +256,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Update the single-player AI
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (BBTHGame.IS_SINGLE_PLAYER && sim.getGameState() == GameState.IN_PROGRESS) {
 			player_ai.update(seconds);
 		}
 
@@ -289,7 +275,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Start the music
-		if (sim.isReady() && !beatTrack.isPlaying()) {
+		if (setSong && sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
@@ -303,20 +289,25 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			beatTrack.stopMusic();
-
-			// Move on to the next screen
-//			if (gameState == GameState.TIE) {
-//				nextScreen = new GameStatusMessageScreen.TieScreen();
-//			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-//				nextScreen = new GameStatusMessageScreen.WinScreen();
-//			} else {
-//				nextScreen = new GameStatusMessageScreen.LoseScreen();
-//			}
+			// moveToNextScreen();
 		}
-		
+
 		// Update achievement stuff
 		// Achievements.INSTANCE.tick(seconds);
+	}
+
+	private void moveToNextScreen() {
+		beatTrack.stopMusic();
+
+		// Move on to the next screen
+		GameState gameState = sim.getGameState();
+		if (gameState == GameState.TIE) {
+			nextScreen = new GameStatusMessageScreen.TieScreen();
+		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
+			nextScreen = new GameStatusMessageScreen.WinScreen();
+		} else {
+			nextScreen = new GameStatusMessageScreen.LoseScreen();
+		}
 	}
 
 	@Override
@@ -344,7 +335,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		boolean isHold = (beatType == BeatType.HOLD);
 		boolean isOnBeat = (beatType != BeatType.REST);
-		
+
 		if (isHold) {
 			Achievements.INSTANCE.unlock("Test Success");
 		}

@@ -1,0 +1,19 @@
+<root mpb="481">
+	<pattern id="rest">
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+		<rest type="whole" />
+	</pattern>
+	<song>
+		<load-pattern id="rest" />
+	</song>
+</root>

@@ -227,5 +227,9 @@ public class UILabel extends UIControl {
 				
 		}
 	}
-    
+
+	@Override
+	public boolean isDraggable() {
+		return true;
+	}
 }

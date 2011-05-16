@@ -7,6 +7,7 @@ package bbth.game.ai;
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.util.MathUtils;
 import bbth.game.*;
+import bbth.game.units.Unit;
 
 public class PlayerAI {
 	private Player m_player;
@@ -32,8 +33,29 @@ public class PlayerAI {
 	public void update(float seconds) {
 		if (m_beats.getTouchZoneBeat() == BeatType.TAP && !m_spawned_this_beat) {
 			if (MathUtils.randInRange(0, 100) < m_difficulty * 100.0f) {
-				m_player.spawnUnit(BBTHSimulation.randInRange(0 + BeatTrack.BEAT_TRACK_WIDTH, BBTHSimulation.GAME_WIDTH),
-						BBTHSimulation.GAME_HEIGHT - 50);
+				Unit e_most_adv = m_enemy.getMostAdvancedUnit();
+				Unit my_most_adv = m_player.getMostAdvancedUnit();
+				if (e_most_adv != null && 
+						((my_most_adv != null && e_most_adv.getY() > my_most_adv.getY()) || 
+						e_most_adv.getY() > BBTHSimulation.GAME_HEIGHT * .75f) && 
+						MathUtils.randInRange(0, 100) < m_difficulty * 100.0f) {
+					// Spawn near attacking unit.
+					m_player.spawnUnit(BBTHSimulation.randInRange(Math.max(0 + BeatTrack.BEAT_TRACK_WIDTH, e_most_adv.getX() - 30.0f), Math.min(BBTHSimulation.GAME_WIDTH, e_most_adv.getX() + 30.0f)),
+							Math.min(BBTHSimulation.randInRange(e_most_adv.getY(), e_most_adv.getY() + 50.0f), BBTHSimulation.GAME_HEIGHT - 50));
+				} else {
+					if (my_most_adv != null && MathUtils.randInRange(0, 100) < m_difficulty * 100.0f) {
+						// Otherwise spawn near my farthest advanced..
+						m_player.spawnUnit(BBTHSimulation.randInRange(0 + BeatTrack.BEAT_TRACK_WIDTH, BBTHSimulation.GAME_WIDTH),
+								Math.min(BBTHSimulation.randInRange(my_most_adv.getY(), my_most_adv.getY() + 80), BBTHSimulation.GAME_HEIGHT - 50));
+					} else {
+						// Otherwise just randomly spawn.
+						m_player.spawnUnit(BBTHSimulation.randInRange(0 + BeatTrack.BEAT_TRACK_WIDTH, BBTHSimulation.GAME_WIDTH),
+								BBTHSimulation.GAME_HEIGHT - 50);
+					}
+				}
+				m_player.setCombo(m_player.getCombo()+1);
+			} else {
+				m_player.setCombo(0);
 			}
 			m_spawned_this_beat  = true;
 			m_walled_this_beat = false;
