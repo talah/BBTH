@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Path;
+import android.util.FloatMath;
 import bbth.engine.sound.Beat;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
@@ -43,6 +45,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 			canvas.drawText("When the beat is between", x, y - 17, paint);
 			canvas.drawText("the two lines, tap over", x, y, paint);
 			canvas.drawText("here to create a unit", x, y + 17, paint);
+			// drawArrow(canvas, 100, 100, 200, 200, 10);
 		}
 
 		@Override
@@ -96,5 +99,20 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 		if (step != null) {
 			addSubview(step);
 		}
+	}
+
+	protected static void drawArrow(Canvas canvas, float ax, float ay, float bx, float by, float r) {
+		float dx = by - ay;
+		float dy = bx - ax;
+		float d = r / FloatMath.sqrt(dx * dx + dy * dy);
+		dx *= d;
+		dy *= d;
+		Path path = new Path();
+		path.moveTo(ax - dy, ay + dx);
+		path.lineTo(bx - dy - dx, by + dx - dy);
+		path.lineTo(bx - dy, by + dx);
+		path.lineTo(bx + dy - dx, by - dx - dy);
+		path.moveTo(ax + dy, ay - dx);
+		canvas.drawPath(path, paint);
 	}
 }
