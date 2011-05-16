@@ -2,9 +2,9 @@ package bbth.game;
 
 import java.util.HashSet;
 
-import android.graphics.PointF;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Point;
 
 public class FastLineOfSightTester extends LineOfSightTester {
 
@@ -18,7 +18,7 @@ public class FastLineOfSightTester extends LineOfSightTester {
 	}
 
 	@Override
-	public Wall isLineOfSightClear(PointF start, PointF end) {
+	public Wall isLineOfSightClear(Point start, Point end) {
 		return isLineOfSightClear(start.x, start.y, end.x, end.y);
 	}
 

@@ -2,7 +2,7 @@ package bbth.engine.fastgraph;
 
 import java.util.ArrayList;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public class SimpleLineOfSightTester extends LineOfSightTester {
 
@@ -15,7 +15,7 @@ public class SimpleLineOfSightTester extends LineOfSightTester {
 	}
 
 	@Override
-	public Wall isLineOfSightClear(PointF start, PointF end) {
+	public Wall isLineOfSightClear(Point start, Point end) {
 		return isLineOfSightClear(start.x, start.y, end.x, end.y);
 	}
 
