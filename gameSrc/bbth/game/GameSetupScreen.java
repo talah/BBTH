@@ -75,10 +75,10 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 
 		if (bluetooth.getState() == State.CONNECTED) {
 			if (playerTeam == Team.SERVER) {
-				controller.pushBack(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
+				controller.pushUnder(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
 				controller.pop();
 			} else if (playerTeam == Team.CLIENT) {
-				controller.pushBack(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
+				controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
 				controller.pop();
 			}
 		} else if (bluetooth.getState() == State.DISCONNECTED) {

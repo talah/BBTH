@@ -1,6 +1,7 @@
-<root mpb="425.25">
+<root mpb="425.7">
 
 	<pattern id="intro">
+		<rest type="sixteenth" />
 		<rest type="eighth" />
 		<beat type="quarter" />
 		<beat type="quarter" />

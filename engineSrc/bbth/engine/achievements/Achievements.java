@@ -81,10 +81,11 @@ public enum Achievements {
 	}
 	
 	// draw the unlock event animations
-	public void draw(Canvas canvas, float screenWidth, float screenHeight) {
+	public void draw(Canvas canvas, float animationWidth, float animationHeight) {
 		int n = _unlocks.size();
+		float top = 0;
 		for (int i = 0; i < n; ++i) {
-			_unlocks.get(i).draw(canvas, _paint, screenWidth, screenHeight / 10.f, i * screenHeight / 10.f);
+			top = _unlocks.get(i).draw(canvas, _paint, animationWidth, animationHeight, top);
 		}
 	}
 	

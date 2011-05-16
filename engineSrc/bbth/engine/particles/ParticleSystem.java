@@ -66,5 +66,17 @@ public class ParticleSystem {
 	public void reset() {
 		_count = 0;
 	}
-	
+
+	public void gravity(float f) {
+		for (int i = 0; i < _count; ++i) {
+			_particles[i]._yVel += f;
+		}
+	}
+
+	public void updateAngles() {
+		for (int i = 0; i < _count; ++i) {
+			Particle p = _particles[i];
+			p._angle = (float) Math.atan2(p._yVel, p._xVel);
+		}
+	}
 }

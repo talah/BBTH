@@ -50,7 +50,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
-	
+	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
 	
 	// TODO: Make a way to set the difficulty.
@@ -241,7 +241,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		entireDrawTimer.stop();
 
 		// draw achievement stuff
-		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT / 15.f);
 	}
 
 	@Override
@@ -258,13 +258,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
-				controller.push(new GameStatusMessageScreen.DisconnectScreen(controller));
+				controller.pushUnder(new GameStatusMessageScreen.DisconnectScreen(controller));
 				controller.pop();
 			}
 		}
 
 		// Update the single-player AI
-		if (singlePlayer) {
+		if (singlePlayer && sim.getGameState() == GameState.IN_PROGRESS) {
 			player_ai.update(seconds);
 		}
 
@@ -297,26 +297,29 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			moveToNextScreen();
+			secondsUntilNextScreen -= seconds;
+			if (secondsUntilNextScreen < 0) {
+				moveToNextScreen();
+			}
 		}
 
 		// Update achievement stuff
-		// Achievements.INSTANCE.tick(seconds);
+		Achievements.INSTANCE.tick(seconds);
 	}
 
 	private void moveToNextScreen() {
 		beatTrack.stopMusic();
-
+System.err.println("FINISHED!");
 		// Move on to the next screen
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
-			controller.push(new GameStatusMessageScreen.TieScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller));
 			controller.pop();
 		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-			controller.push(new GameStatusMessageScreen.WinScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller));
 			controller.pop();
 		} else {
-			controller.push(new GameStatusMessageScreen.LoseScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller));
 			controller.pop();
 		}
 	}

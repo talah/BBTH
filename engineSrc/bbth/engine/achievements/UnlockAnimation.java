@@ -1,11 +1,7 @@
 package bbth.engine.achievements;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
+import android.graphics.*;
 import android.graphics.Paint.Style;
-import android.graphics.Typeface;
 import bbth.engine.util.MathUtils;
 
 /**
@@ -32,33 +28,38 @@ public class UnlockAnimation {
 		_timeLeft -= seconds;
 	}
 	
-	public void draw(Canvas canvas, Paint paint, float width, float height, float top) {
+	// returns bottom
+	public float draw(Canvas canvas, Paint paint, float width, float height, float top) {
 		if (_timeLeft < 0) {
-			return;
+			return top;
 		} else if (_timeLeft < FADE_OUT_TIME) {
 			top = MathUtils.lerp(top - height, top, 1.666f * _timeLeft);
 		} else if (_timeLeft >= WAITING_TIME) {
 			top = MathUtils.lerp(top, top - height, 1.666f * (_timeLeft - WAITING_TIME));
 		}
+		float bottom = top + height;
+		
 		// draw the background
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Style.STROKE);
-		canvas.drawRect(0, top, width, top + height, paint);
-		paint.setColor(Color.DKGRAY);
+		canvas.drawRect(0, top, width, bottom, paint);
+		paint.setColor(Color.argb(120, 0, 0, 0));
 		paint.setStyle(Style.FILL);
-		canvas.drawRect(0, top, width, top + height, paint);
+		canvas.drawRect(0, top, width, bottom, paint);
 		
 		// draw the title
 		paint.setColor(Color.WHITE);
-		paint.setTextAlign(Align.CENTER);
+		//paint.setTextAlign(Align.CENTER);
 		paint.setTextSize(height * 0.45f);
 		paint.setTypeface(Typeface.DEFAULT_BOLD);
-		canvas.drawText("ACHIEVEMENT UNLOCKED", width * 0.5f, top + height * 0.45f, paint);
+		canvas.drawText("ACHIEVEMENT UNLOCKED", width * 0.01f, top + height * 0.45f, paint); //width * 0.5f, top + height * 0.45f, paint);
 		
 		// draw the description
 		paint.setTextSize(height * 0.35f);
 		paint.setTypeface(Typeface.DEFAULT);
-		canvas.drawText(_name, width * 0.5f, top + height * 0.85f, paint);
+		canvas.drawText(_name, width * 0.01f, top + height * 0.85f, paint); //width * 0.5f, top + height * 0.85f, paint);
+		
+		return bottom;
 	}
 	
 	public boolean isOver() {
