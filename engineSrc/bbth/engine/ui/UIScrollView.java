@@ -5,16 +5,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.util.Log;
 import bbth.engine.util.MathUtils;
 
 public class UIScrollView extends UIView {
 	
-	protected float dx, dy, _x, _y, pos_x, pos_y, max_x, max_y, max_offset_y, max_offset_x;
+	protected float dx, dy, _x, _y, pos_x, pos_y, max_x, max_y, max_offset_y, max_offset_x, _ix, _iy, _vx, _vy;
 	protected boolean isScrolling, isDown, scrollsHorizontal = true, scrollsVertical = true, scrollEnabled = true;
 	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
 	protected Paint _scroll_paint, _track_paint;
 	
-	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4;
+	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 5, SCROLL_DECELERATION = -0.1f;
 	
 	public UIScrollView(Object tag) {
 		super(tag);
@@ -33,6 +34,24 @@ public class UIScrollView extends UIView {
 		_track_paint.setColor(Color.DKGRAY);
 		_track_paint.setAlpha(200);
 		
+	}
+	
+	@Override
+	public void onUpdate(float seconds) {
+		super.onUpdate(seconds);
+		if(_vy > 0)
+		{
+			_vy += SCROLL_DECELERATION * seconds;
+		}
+		else if(_vy < 0)
+		{
+			_vy -= SCROLL_DECELERATION * seconds;
+		}
+		if(_vy > MIN_SCROLL_VELOCITY || _vy < -MIN_SCROLL_VELOCITY)
+		{
+			scrollTo(pos_x, pos_y + _vy * seconds);
+		}else if(!isDown)
+			isScrolling = false;
 	}
 
 	@Override
@@ -72,6 +91,8 @@ public class UIScrollView extends UIView {
 	@Override
 	public void onTouchDown(float x, float y) {
 		boolean ignore = false;
+		_vy = 0;
+		_vx = 0;
 		
 		int idx = subviewCount;
 		while(idx-- > 0)
@@ -90,6 +111,7 @@ public class UIScrollView extends UIView {
 	    	isScrolling = true;
 	    	_x = x;
 	    	_y = y;
+	    	_iy = y;
 	    }
 	}
 
@@ -100,9 +122,7 @@ public class UIScrollView extends UIView {
 			super.onTouchUp(x+pos_x, y+pos_y);
 		}
 		isDown = false;
-		//TEMP
-		isScrolling = false;
-		//END TEMP
+		_vy = _iy - y;
 
 	}
 
@@ -123,6 +143,7 @@ public class UIScrollView extends UIView {
 				_h_scroll_handle_rect.offsetTo(_h_track_rect.left + (pos_x/max_x) * max_offset_x, _h_scroll_handle_rect.top);
 			}
 			_x = x;
+			_iy = _y;
 			_y = y;
 		}else
 			super.onTouchMove(x + pos_x, y+pos_y);
