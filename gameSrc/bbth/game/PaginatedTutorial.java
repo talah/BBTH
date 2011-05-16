@@ -14,7 +14,6 @@ import bbth.engine.ui.UIDefaultConstants;
 import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UILabel.VAlign;
-import bbth.engine.ui.UIView;
 
 public class PaginatedTutorial extends Tutorial implements UIButtonDelegate {
 
@@ -164,24 +163,6 @@ public class PaginatedTutorial extends Tutorial implements UIButtonDelegate {
 	@Override
 	public void willAppear(boolean animated) {
 		return;
-	}
-
-	@Override
-	public void onTouchUp(UIView sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

@@ -102,21 +102,6 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	}
 
 	@Override
-	public void onTouchUp(UIView sender) {
-		// Do nothing here
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		// Do nothing here
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		// Do nothing here
-	}
-
-	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
 //			if (BBTHGame.IS_SINGLE_PLAYER) {

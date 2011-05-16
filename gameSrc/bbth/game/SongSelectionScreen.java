@@ -54,21 +54,6 @@ public class SongSelectionScreen extends UIScrollView implements
 	}
 
 	@Override
-	public void onTouchUp(UIView sender) {
-		// Don't do anything
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		// Don't do anything
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		// Don't do anything
-	}
-
-	@Override
 	public void onClick(UIButton button) {
 		controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, (Song) button.tag, protocol, singlePlayer));
 		controller.pop();

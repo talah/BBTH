@@ -77,21 +77,6 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	}
 
 	@Override
-	public void onTouchUp(UIView sender) {
-		
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		
-	}
-
-	@Override
 	public void onClick(UIButton button) {
 		if (button == singleplayer) {
 			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true));

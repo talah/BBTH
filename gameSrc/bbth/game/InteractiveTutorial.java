@@ -3,7 +3,6 @@ package bbth.game;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UIView;
 
 public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 
@@ -22,18 +21,6 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 	@Override
 	public boolean isFinished() {
 		return isFinished;
-	}
-
-	@Override
-	public void onTouchUp(UIView sender) {
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
 	}
 
 	@Override
