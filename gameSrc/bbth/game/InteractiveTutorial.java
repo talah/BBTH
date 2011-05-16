@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Path;
+import android.util.FloatMath;
 import bbth.engine.sound.Beat;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
@@ -12,6 +14,7 @@ import bbth.engine.ui.UIView;
 
 public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 
+	private static final Path path = new Path();
 	private static final Paint paint = new Paint();
 	static {
 		paint.setAntiAlias(true);
@@ -36,13 +39,13 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 			beat.draw((int) (time * 1000), BeatTrack.BEAT_LINE_X, BeatTrack.BEAT_LINE_Y, canvas, paint);
 
 			float x = BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2;
-			float y = BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT * 0.85f;
+			float y = BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT * 0.8f;
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
 			canvas.drawText("When the beat is between", x, y - 17, paint);
-			canvas.drawText("the two lines, tap over", x, y, paint);
-			canvas.drawText("here to create a unit", x, y + 17, paint);
+			canvas.drawText("the two lines, tap on the", x, y, paint);
+			canvas.drawText("grid to create a unit", x, y + 17, paint);
 		}
 
 		@Override
@@ -71,7 +74,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 		skipButton = new UIButton("Skip Tutorial");
 		skipButton.setAnchor(Anchor.TOP_RIGHT);
 		skipButton.setSize(100, 30);
-		skipButton.setPosition(BBTHGame.WIDTH - 10, 30);
+		skipButton.setPosition(BBTHGame.WIDTH - 20, Base.BASE_HEIGHT + 20);
 		skipButton.setButtonDelegate(this);
 		addSubview(skipButton);
 
@@ -95,6 +98,39 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate {
 		step = newStep;
 		if (step != null) {
 			addSubview(step);
+		}
+	}
+
+	protected static void drawArrow(Canvas canvas, float ax, float ay, float bx, float by, float r) {
+		final float s = 2.5f;
+		float dx = bx - ax;
+		float dy = by - ay;
+		float d = r / FloatMath.sqrt(dx * dx + dy * dy);
+		dx *= d;
+		dy *= d;
+		path.reset();
+		path.moveTo(ax - dy, ay + dx);
+		path.lineTo(bx - dy - s * dx, by + dx - s * dy);
+		path.lineTo(bx - s * dy - s * dx, by + s * dx - s * dy);
+		path.lineTo(bx - dy - dx, by + dx - dy);
+		path.lineTo(bx, by);
+		path.lineTo(bx + dy - dx, by - dx - dy);
+		path.lineTo(bx + s * dy - s * dx, by - s * dx - s * dy);
+		path.lineTo(bx + dy - s * dx, by - dx - s * dy);
+		path.lineTo(ax + dy, ay - dx);
+		canvas.drawPath(path, paint);
+	}
+
+	public void drawDashedLine(Canvas canvas, float ax, float ay, float bx, float by, float r, float percent) {
+		float dx = bx - ax;
+		float dy = by - ay;
+		float d = FloatMath.sqrt(dx * dx + dy * dy);
+		dx /= d;
+		dy /= d;
+		for (float t = percent * r * 2 - r; t < d; t += 2 * r) {
+			float t1 = Math.max(0, t);
+			float t2 = Math.min(d, t + r);
+			canvas.drawLine(ax + dx * t1, ay + dy * t1, ax + dx * t2, ay + dy * t2, paint);
 		}
 	}
 }

@@ -107,7 +107,7 @@ public class UILabel extends UIControl {
 	}
 
 	@Override
-	public void setBounds(float left, float top, float right, float bottom) {
+	protected void setBounds(float left, float top, float right, float bottom) {
         super.setBounds(left, top, right, bottom);
 		setText(text);
 	}
