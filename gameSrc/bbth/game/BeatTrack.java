@@ -89,7 +89,7 @@ public class BeatTrack {
 		paint.setStrokeCap(Cap.ROUND);
 		paint.setAntiAlias(true);
 		
-		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
+		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": \u00dcBER UNIT!")/2.0f;
 	}
 	
 	public void setSong(Song song) {
@@ -145,7 +145,7 @@ public class BeatTrack {
 			if (display_uber_brag == false) {
 				display_uber_brag = true;
 				last_uber_combo_time = System.currentTimeMillis();
-				combo_brag_text = "COMBO " + comboStr + ": UBER UNIT!";
+				combo_brag_text = "COMBO " + comboStr + ": \u00dcBER UNIT!";
 			}
 		} else if (display_uber_brag && timesinceubercombo > COMBO_BRAG_TIME) {
 			display_uber_brag = false;

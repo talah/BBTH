@@ -1,8 +1,6 @@
 package bbth.game;
 
-import bbth.engine.achievements.Achievements;
-import bbth.engine.core.Game;
-import bbth.engine.core.GameActivity;
+import bbth.engine.core.*;
 
 public class BBTHActivity extends GameActivity {
 
