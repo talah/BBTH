@@ -51,7 +51,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
-	
+	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
 
 	// TODO: Make a way to set the difficulty.
@@ -289,7 +289,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
-			// moveToNextScreen();
+			secondsUntilNextScreen -= seconds;
+			if (secondsUntilNextScreen < 0) {
+				moveToNextScreen();
+			}
 		}
 
 		// Update achievement stuff
