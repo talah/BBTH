@@ -3,11 +3,14 @@ package bbth.game;
 import java.util.Map;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.FloatMath;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
@@ -15,6 +18,7 @@ import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIView;
+import bbth.engine.util.MathUtils;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UIImageView titleBar;
@@ -24,6 +28,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UINavigationController controller;
 	private Paint paint = new Paint();
 	private Map<String, AchievementInfo> achievements;
+	private ParticleSystem particles;
 	
 	public TitleScreen(UINavigationController controller, Map<String, AchievementInfo> achievements) {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -57,6 +62,8 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
 		achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
 		achievementsButton.setButtonDelegate(this);
+		
+		particles = new ParticleSystem(150, 0.5f);
 	}
 	
 	@Override
@@ -67,6 +74,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		canvas.drawRect(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT, paint);
 		
 		super.onDraw(canvas);
+		particles.draw(canvas, paint);
 	}
 
 	@Override
@@ -92,6 +100,14 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 			addSubview(multiplayerButton);
 			addSubview(achievementsButton);
 		}
+		
+		for (int i = 0; i < 2; ++i) {
+			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
+			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
+			particles.createParticle().circle().color(Color.BLUE).position(BBTHGame.WIDTH / 2.f, -150).angle(angle).velocity(xVel, yVel);
+		}
+		particles.tick(seconds);
 	}
 
 	@Override
