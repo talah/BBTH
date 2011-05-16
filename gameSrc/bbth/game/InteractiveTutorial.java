@@ -82,8 +82,36 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	}
 
 	private class LearnAboutGridStep extends Step {
+		private float time;
+
 		@Override
 		public void onDraw(Canvas canvas) {
+			float x = GAME_X + GAME_WIDTH / 2;
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			if (time < 6) {
+				float y = GAME_Y + GAME_HEIGHT * 0.33f;
+				canvas.drawText("Your units travel up and the", x, y - 8, paint);
+				canvas.drawText("other player's units travel down", x, y + 8, paint);
+			} else if (!localPlayer.units.isEmpty()) {
+				float y = GAME_Y + GAME_HEIGHT * 0.75f;
+				canvas.drawText("You can only place", x, y - 8, paint);
+				canvas.drawText("units in the " + team.getColorName() + " area", x, y + 8, paint);
+			} else {
+				float y = GAME_Y + GAME_HEIGHT / 2;
+				canvas.drawText("You win when your opponent's", x, y - 17, paint);
+				canvas.drawText("health reaches 0, or when the song", x, y, paint);
+				canvas.drawText("ends and your health is higher", x, y + 17, paint);
+			}
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			time += seconds;
+			if (time > 19) {
+				transition(new FinishedStep());
+			}
 		}
 	}
 
