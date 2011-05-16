@@ -5,11 +5,13 @@ import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.*;
+import bbth.engine.util.Envelope;
+import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UILabel titleBar;
 	private float animDelay = 1.0f;
-	private UIButton singleplayer, multiplayer;
+	private UIButton singleplayer, multiplayer, achievements;
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
@@ -39,6 +41,12 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		multiplayer.setAnchor(Anchor.CENTER_CENTER);
 		multiplayer.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
 		multiplayer.setButtonDelegate(this);
+		
+		achievements = new UIButton("Achievements", this);
+		achievements.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		achievements.setAnchor(Anchor.CENTER_CENTER);
+		achievements.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
+		achievements.setButtonDelegate(this);
 	}
 	
 	@Override
@@ -69,34 +77,25 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
-		if (animDelay <= 0)
-		{
+		if (animDelay <= 0) {
 			addSubview(singleplayer);
 			addSubview(multiplayer);
+			addSubview(achievements);
 		}
 	}
 
-	@Override
-	public void onTouchUp(UIView sender) {
-		
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-		
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-		
-	}
+	@Override public void onTouchUp(UIView sender) {}
+	@Override public void onTouchDown(UIView sender) {}
+	@Override public void onTouchMove(UIView sender) {}
 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == singleplayer) {
-			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true));
+			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true), BBTHGame.MOVE_LEFT_TRANSITION);
 		} else if (button == multiplayer) {
-			controller.push(new GameSetupScreen(controller));
+			controller.push(new GameSetupScreen(controller), BBTHGame.MOVE_LEFT_TRANSITION);
+		} else if (button == achievements) {
+			// TODO
 		}
 	}
 }

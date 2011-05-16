@@ -2,7 +2,9 @@ package bbth.game;
 
 import android.app.Activity;
 import bbth.engine.core.Game;
-import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.*;
+import bbth.engine.util.Envelope;
+import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
 public class BBTHGame extends Game {
 	// This is the viewport width and height
@@ -33,5 +35,65 @@ public class BBTHGame extends Game {
 	@Override
 	public float getHeight() {
 		return HEIGHT;
+	}
+	
+	public static final Transition MOVE_LEFT_TRANSITION;
+	public static final Transition MOVE_RIGHT_TRANSITION;
+	public static final Transition FADE_OUT_FADE_IN_TRANSITION;
+	static {
+		DefaultTransition transition = new DefaultTransition(.5f);
+		{
+			Envelope newAlpha = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			newAlpha.addLinearSegment(.5f, 255f);
+			transition.setNewAlpha(newAlpha);
+			
+			Envelope oldAlpha = new Envelope(255f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			oldAlpha.addLinearSegment(.5f, 0f);
+			transition.setOldAlpha(oldAlpha);
+			
+			Envelope newX = new Envelope(BBTHGame.WIDTH, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			newX.addLinearSegment(.5f, 0f);
+			transition.setNewX(newX);
+			
+			Envelope oldX = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			oldX.addLinearSegment(.5f, -BBTHGame.WIDTH);
+			transition.setOldX(oldX);
+		}
+		MOVE_LEFT_TRANSITION = transition;
+		
+		transition = new DefaultTransition(.5f);
+		{
+			Envelope newAlpha = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			newAlpha.addLinearSegment(.5f, 255f);
+			transition.setNewAlpha(newAlpha);
+			
+			Envelope oldAlpha = new Envelope(255f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			oldAlpha.addLinearSegment(.5f, 0f);
+			transition.setOldAlpha(oldAlpha);
+			
+			Envelope newX = new Envelope(-BBTHGame.WIDTH, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			newX.addLinearSegment(.5f, 0f);
+			transition.setNewX(newX);
+			
+			Envelope oldX = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			oldX.addLinearSegment(.5f, BBTHGame.WIDTH);
+			transition.setOldX(oldX);
+		}
+		MOVE_RIGHT_TRANSITION = transition;
+		
+		transition = new DefaultTransition(.5f);
+		{
+			Envelope newAlpha = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			newAlpha.addFlatSegment(.25f);
+			newAlpha.addLinearSegment(.25f, 255f);
+			transition.setNewAlpha(newAlpha);
+			
+			Envelope oldAlpha = new Envelope(255f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
+			oldAlpha.addLinearSegment(.25f, 0f);
+			transition.setOldAlpha(oldAlpha);
+		}
+		FADE_OUT_FADE_IN_TRANSITION = transition;
+		
+		
 	}
 }

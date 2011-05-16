@@ -314,13 +314,13 @@ System.err.println("FINISHED!");
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
 			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
 			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		} else {
 			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		}
 	}
 

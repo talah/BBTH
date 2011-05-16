@@ -71,6 +71,6 @@ public class SongSelectionScreen extends UIScrollView implements
 	@Override
 	public void onClick(UIButton button) {
 		controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, (Song) button.tag, protocol, singlePlayer));
-		controller.pop();
+		controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 	}
 }
