@@ -20,7 +20,7 @@ public class BeatTrack {
 
 	public static final int BEAT_TRACK_WIDTH = 50;
 	public static final float BEAT_LINE_X = 25;
-	private static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
+	public static final float BEAT_LINE_Y = BBTHGame.HEIGHT - 50;
 	public static final float BEAT_CIRCLE_RADIUS = 2.f + BeatTracker.TOLERANCE / 15.f;
 	public static final float BEAT_LINE_TOP = BEAT_LINE_Y - BEAT_CIRCLE_RADIUS;
 	public static final float BEAT_LINE_BOTTOM = BEAT_LINE_Y + BEAT_CIRCLE_RADIUS;

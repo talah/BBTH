@@ -34,9 +34,7 @@ public class UIProgressBar extends UIControl {
 	private float _progress;
 	private RectF _progress_bar;
 
-	public UIProgressBar(Object tag) {
-		super(tag);
-
+	public UIProgressBar() {
 		_num_gradient_colors = UIDefaultConstants.UI_PROGRESS_BAR_NUM_GRADIENT_COLORS;
 		_mode = UIDefaultConstants.UI_PROGRESS_BAR_DEFAULT_MODE;
 		_border_radius = UIDefaultConstants.CORNER_RADIUS;

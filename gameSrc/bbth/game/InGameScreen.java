@@ -34,6 +34,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
+	private static final boolean USE_PAGINATED_TUTORIAL = false;
 
 	// Timers for profiling while debugging
 	private Timer entireUpdateTimer = new Timer();
@@ -52,7 +53,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private PlayerAI player_ai;
 	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
-	
+	private boolean gameIsStarted;
+
 	// TODO: Make a way to set the difficulty.
 	private float aiDifficulty = 0.7f;
 	
@@ -66,11 +68,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.singlePlayer = singlePlayer;
 		
 		this.team = playerTeam;
-		tutorial = new Tutorial(this);
+		
+		if (USE_PAGINATED_TUTORIAL) {
+			tutorial = new PaginatedTutorial();
+		} else {
+			tutorial = new InteractiveTutorial();
+		}
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
 		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
-		addSubview(tutorial);
 
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -91,7 +97,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack = new BeatTrack(Song.DERP, this);
 			setSong = false;
 		}
-
+		
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
@@ -112,6 +118,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
 		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
 		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 70);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 60);
 		arrowPath.close();
 	}
 
@@ -173,38 +183,36 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 
-		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
-		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
+		float percent = (System.currentTimeMillis() - tap_location_hint_time) / (float)TAP_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
 			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
-
-			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
 		// Draw unit placement hint if necessary.
-		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
-		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
+		percent = (System.currentTimeMillis() - sim.placement_tip_start_time) / (float)PLACEMENT_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
 			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
-		time_since_hint_start = System.currentTimeMillis() - drag_tip_start_time;
-		if (time_since_hint_start < DRAG_HINT_DISPLAY_LENGTH) {
+		percent = (System.currentTimeMillis() - drag_tip_start_time) / (float)DRAG_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
 			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
@@ -280,6 +288,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Update the tutorial
 		if (!tutorial.isFinished()) {
 			tutorial.onUpdate(seconds);
+		} else {
+			startGame();
 		}
 
 		// Start the music
@@ -309,7 +319,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	private void moveToNextScreen() {
 		beatTrack.stopMusic();
-System.err.println("FINISHED!");
+
 		// Move on to the next screen
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
@@ -471,9 +481,12 @@ System.err.println("FINISHED!");
 	}
 
 	public void startGame() {
-		removeSubview(tutorial);
-		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
-		if (singlePlayer)
-			sim.setBothPlayersReady();
+		if (!gameIsStarted) {
+			gameIsStarted = true;
+			removeSubview(tutorial);
+			sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
+			if (singlePlayer)
+				sim.setBothPlayersReady();
+		}
 	}
 }

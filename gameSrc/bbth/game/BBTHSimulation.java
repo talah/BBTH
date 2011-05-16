@@ -360,7 +360,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	private void drawGrid(Canvas canvas) {
-		paint.setColor(Color.DKGRAY);
+		paint.setARGB(63, 255, 255, 255);
 
 		for (float x = 0; x < GAME_WIDTH; x += 60) {
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);

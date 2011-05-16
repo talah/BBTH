@@ -60,7 +60,7 @@ public class BeatTracker {
 	public final void updateCurrentBeatIndex() {		
 		int currTime = _musicPlayer.getCurrentPosition();
 
-		if (_currentBeatIndex == _allBeats.length - 1) {
+		if (_currentBeatIndex >= _allBeats.length - 1) {
 			return;
 		}
 		Beat beat = _allBeats[_currentBeatIndex];
@@ -68,7 +68,7 @@ public class BeatTracker {
 
 		while (Math.abs(currTime - nextBeat._startTime) < Math.abs(currTime - beat._startTime)) {
 			++_currentBeatIndex;
-			if (_currentBeatIndex == _allBeats.length - 1) {
+			if (_currentBeatIndex >= _allBeats.length - 1) {
 				return;
 			}
 			beat = _allBeats[_currentBeatIndex];

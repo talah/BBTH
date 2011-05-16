@@ -50,7 +50,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		
 		backButton = new UIButton("Back to Title", null);
 		backButton.setAnchor(Anchor.BOTTOM_CENTER);
-		backButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT);
+		backButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 20);
 		backButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		backButton.setButtonDelegate(this);
 		addSubview(backButton);
@@ -88,18 +88,6 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			clientButton.isDisabled = false;
 			disconnectButton.isDisabled = true;
 		}
-	}
-
-	@Override
-	public void onTouchDown(UIView sender) {
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-	}
-
-	@Override
-	public void onTouchUp(UIView sender) {
 	}
 
 	@Override

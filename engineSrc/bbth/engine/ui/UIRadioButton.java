@@ -17,9 +17,7 @@ public class UIRadioButton extends UIControl {
 	private float _inner_radius_ratio, _outer_radius;
 	private UILabel _label;
 
-	public UIRadioButton(String label, Object tag) {
-		super(tag);
-
+	public UIRadioButton(String label) {
 		_bg_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_bg_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 
@@ -36,7 +34,7 @@ public class UIRadioButton extends UIControl {
 		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
 
 		if (label != null && !label.equals("")) {
-			_label = new UILabel(label, null);
+			_label = new UILabel(label);
 			_label.setPosition(1.5f * UIDefaultConstants.UI_RADIO_BUTTON_WIDTH, 0);
 			_label.setSize(0, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
 			_label.setTextSize(UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
@@ -46,6 +44,11 @@ public class UIRadioButton extends UIControl {
 		} else {
 			setSize(UIDefaultConstants.UI_RADIO_BUTTON_WIDTH, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);
 		}
+	}
+
+	public UIRadioButton(String text, Object tag) {
+		this(text);
+		this.tag = tag;
 	}
 
 	@Override

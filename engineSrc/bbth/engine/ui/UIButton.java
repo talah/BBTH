@@ -18,8 +18,7 @@ public class UIButton extends UIControl {
 	public float padding, corner_radius;
 	public UIButtonDelegate delegate;
 	
-	public UIButton(String text, Object tag) {
-	    super(tag);
+	public UIButton(String text) {
 		padding = 8;
 		corner_radius = UIDefaultConstants.CORNER_RADIUS;
 		
@@ -37,6 +36,10 @@ public class UIButton extends UIControl {
 		_paint.setStrokeWidth(UIDefaultConstants.BORDER_WIDTH);
 		
 		this.text = text;
+	}
+
+	public UIButton(String text, Object tag) {
+		this(text);
 		this.tag = tag;
 	}
 
@@ -90,14 +93,10 @@ public class UIButton extends UIControl {
 		if(isDisabled)
 			return;
 		isDown = true;
-		if(delegate != null)
-			delegate.onTouchDown(this);
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if((isDisabled || !isDown) && delegate != null)
-			delegate.onTouchUp(this);
 		if(isDown && delegate != null)
 			delegate.onClick(this);
 		isDown = false;
