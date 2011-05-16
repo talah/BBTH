@@ -40,7 +40,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		singleplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65, 0.5f);
 		singleplayerButton.setButtonDelegate(this);
 		
-		multiplayerButton = new UIButton("Multi Player", this);
+		multiplayerButton = new UIButton("Multiplayer", this);
 		multiplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		multiplayerButton.setAnchor(Anchor.CENTER_CENTER);
 		multiplayerButton.setPosition(-BBTHGame.WIDTH * 2.0f, BBTHGame.HEIGHT / 2);

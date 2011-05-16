@@ -8,6 +8,7 @@ import android.graphics.Paint.Style;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UILabel.VAlign;
 import bbth.engine.ui.UIView;
 
 /**
@@ -17,9 +18,10 @@ import bbth.engine.ui.UIView;
  */
 public class AchievementView extends UIView {
 
-	public static final float NAME_SIZE = 22.f;
-	public static final float DESCRIPTION_SIZE = 15.f;
+	public static final float NAME_SIZE = 19.f;
+	public static final float DESCRIPTION_SIZE = 13.f;
 	private static final float PADDING = 5;
+	private static final float TOP_PADDING = 6;
 	
 	private UILabel _nameLabel;
 	private UILabel _descriptionLabel;
@@ -38,6 +40,7 @@ public class AchievementView extends UIView {
 		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
 		_descriptionLabel.setTextAlign(Align.LEFT);
 		_descriptionLabel.setWrapText(true);
+		_descriptionLabel.setVerticalAlign(VAlign.MIDDLE);
 		addSubview(_descriptionLabel);
 		
 		_image = new UIImageView(imageId);
@@ -57,10 +60,10 @@ public class AchievementView extends UIView {
 		_image.setPosition(left, center.y);
 		float imageRight = _image.getRect().right;
 		float textWidth = _width - _image.getWidth() - PADDING;
-		_nameLabel.setPosition(left + imageRight + PADDING, top + PADDING);
+		_nameLabel.setPosition(left + imageRight + PADDING, top + TOP_PADDING);
 		_nameLabel.setSize(textWidth, NAME_SIZE);
-		_descriptionLabel.setPosition(left + imageRight + PADDING, top + NAME_SIZE + PADDING + 3);
-		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);		
+		_descriptionLabel.setPosition(left + imageRight + TOP_PADDING, top + NAME_SIZE + TOP_PADDING + 5);
+		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);
 	}
 	
 	@Override
