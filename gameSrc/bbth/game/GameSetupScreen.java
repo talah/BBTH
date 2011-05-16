@@ -2,12 +2,9 @@ package bbth.game;
 
 import android.graphics.Paint.Align;
 import bbth.engine.core.GameActivity;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.bluetooth.State;
+import bbth.engine.net.bluetooth.*;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.*;
-import bbth.engine.util.Envelope;
-import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private LockStepProtocol protocol;

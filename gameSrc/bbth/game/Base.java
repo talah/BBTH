@@ -1,10 +1,7 @@
 package bbth.game;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
-import android.graphics.RectF;
 import bbth.engine.ui.UIView;
 
 public class Base extends UIView {
@@ -43,6 +40,7 @@ public class Base extends UIView {
 		
 	}
 
+	@Override
 	public RectF getRect() {
 		return _rect;
 	}
