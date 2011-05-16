@@ -1,7 +1,7 @@
 package bbth.engine.ai;
 
-import android.graphics.PointF;
+import bbth.engine.util.Point;
 
 public interface Heuristic {
-	public int estimateHScore(PointF start, PointF goal);
+	public int estimateHScore(Point start, Point goal);
 }

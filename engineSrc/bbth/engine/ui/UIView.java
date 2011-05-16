@@ -7,11 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import bbth.engine.core.GameScreen;
+import bbth.engine.util.BlockingArrayList;
 import bbth.engine.util.Point;
 
 public class UIView extends GameScreen {
 
-	protected CopyOnWriteArrayList<UIView> subviews;
+	//protected CopyOnWriteArrayList<UIView> subviews;
+	protected BlockingArrayList<UIView> subviews;
 	protected boolean _hasAppeared, _layedOut;
 	public Object tag;
 	protected RectF _rect;
@@ -32,7 +34,8 @@ public class UIView extends GameScreen {
 	}
 	
 	public UIView(Object tag) {
-		subviews = new CopyOnWriteArrayList<UIView>();
+		//subviews = new CopyOnWriteArrayList<UIView>();
+		subviews = new BlockingArrayList<UIView>();
 		this.anchor = Anchor.TOP_LEFT;
 		_rect = new RectF(0,0,0,0);
 		_clip_rect = new Rect(0,0,0,0);
@@ -127,7 +130,7 @@ public class UIView extends GameScreen {
 
 	public void removeSubviews(Collection<UIView> views)
 	{
-		subviews.removeAll(views);
+		//subviews.removeAll(views);
 	}
 
 	public void willAppear(boolean animated)

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -32,7 +33,7 @@ public enum Achievements {
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
 		
-	// Should be called before checking achievement statuses	
+	// Should be called before checking achievement statuses or going to an achievement screen
 	@SuppressWarnings("unchecked")
 	public void initialize(Context context) {
 		_settings = context.getSharedPreferences("achievements", Activity.MODE_PRIVATE);

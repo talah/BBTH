@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
 import bbth.engine.ai.ConnectedGraph;
 import bbth.engine.ai.FlockRulesCalculator;
@@ -12,6 +11,7 @@ import bbth.engine.ai.Pathfinder;
 import bbth.engine.fastgraph.LineOfSightTester;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 import bbth.game.BBTHGame;
 import bbth.game.GridAcceleration;
 import bbth.game.Team;
@@ -33,19 +33,19 @@ public class AIController {
 	private float m_fraction_to_update = 1;
 	private LineOfSightTester m_tester;
 	
-	PointF m_center_stick;
-	PointF m_wall;
-	PointF m_wall_to_player;
-	PointF m_vec_result;
+	Point m_center_stick;
+	Point m_wall;
+	Point m_wall_to_player;
+	Point m_vec_result;
 	
 	public AIController() {
 		m_defensive = new DefensiveAI();
 		m_offensive = new OffensiveAI();
 		m_uber = new UberAI();		
-		m_center_stick = new PointF();
-		m_wall = new PointF();
-		m_wall_to_player = new PointF();
-		m_vec_result = new PointF();
+		m_center_stick = new Point();
+		m_wall = new Point();
+		m_wall_to_player = new Point();
+		m_vec_result = new Point();
 
 		m_units = new ArrayList<Unit>();
 		m_flocks = new EnumMap<Team, FlockRulesCalculator>(Team.class);
@@ -203,7 +203,7 @@ public class AIController {
 		}
 	}
 
-	private PointF getTurnVector(Unit entity, Wall result, float heading) {
+	private Point getTurnVector(Unit entity, Wall result, float heading) {
 		float start_x = entity.getX();
 		float start_y = entity.getY();
 		

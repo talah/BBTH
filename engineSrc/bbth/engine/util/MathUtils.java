@@ -2,7 +2,6 @@ package bbth.engine.util;
 
 import java.util.Random;
 
-import android.graphics.PointF;
 import android.util.FloatMath;
 
 public final class MathUtils {
@@ -48,13 +47,13 @@ public final class MathUtils {
 		return dx * dx + dy * dy;
 	}
 	
-	public static void getProjection(PointF u, PointF v, PointF result) {
+	public static void getProjection(Point u, Point v, Point result) {
 		float dotp = dot(u, v);
 		result.x = u.x * dotp;
 		result.y = u.y * dotp;
 	}
 	
-	public static float dot(PointF u, PointF v) {
+	public static float dot(Point u, Point v) {
 		return u.x * v.x + u.y * v.y;
 	}
 

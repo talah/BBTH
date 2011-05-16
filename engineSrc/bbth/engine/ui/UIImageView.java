@@ -9,10 +9,10 @@ public class UIImageView extends UIView {
 	
 	private Bitmap _image;
 	private Paint _paint;
+	private float _old_width, _old_height;
 	
-	public UIImageView(int id, Object tag)
+	public UIImageView(int id)
 	{
-		super(tag);
 		
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 		
@@ -21,16 +21,23 @@ public class UIImageView extends UIView {
 		_image = BitmapFactory.decodeResource(BBTHActivity.instance.getResources(), id);
 	}
 	
-	public UIImageView(int id)
+	public UIImageView(Bitmap bitmap)
 	{
-		this(id, null);
+		_paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+		_image = bitmap;
 	}
+
 	
 	@Override
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
-		if(_width > 0 && _height > 0)
-			_image = Bitmap.createScaledBitmap(_image, (int)_width, (int)_height, true);
+		if(_width > 0 && _height > 0 && (_width != _old_width || _height != _old_height)){
+			if(_image.getHeight() != (int)_height || _image.getWidth() != (int)_width)
+				_image = Bitmap.createScaledBitmap(_image, (int)_width, (int)_height, true);
+			_old_width = _width;
+			_old_height = _height;
+		}
+			
 	}
 	
 	@Override

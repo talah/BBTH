@@ -23,16 +23,12 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 	private final static int ACHIEVEMENT_HEIGHT = 65;
 	private final static String LOCKED_TEXT = "LOCKED";
 
-	private UINavigationController _navController;
-
 	// descriptions maps achievement names to full descriptions for unlocked achievements
 	public AchievementsScreen(UINavigationController navController, Map<String, AchievementInfo> achievementInfo) {
 		super(null);
 		assert(achievementInfo != null);
 
 		setScrollsHorizontal(false);
-		
-		_navController = navController;
 		
 		Map<String, Boolean> achievements = Achievements.INSTANCE.getAll();
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -48,16 +44,16 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 		for (Map.Entry<String, Boolean> entry : achievements.entrySet()) {
 			String name = entry.getKey();
 			String description;
-			int imageId;
+			AchievementView view;
 			if (Boolean.TRUE.equals(entry.getValue())) {
 				if (!achievementInfo.containsKey(name)) continue;
 				description = achievementInfo.get(name).description;
-				imageId = achievementInfo.get(name).imageId;
+				view = new AchievementView(name, description, achievementInfo.get(name).image);
 			} else {
 				description = LOCKED_TEXT;
-				imageId = R.drawable.padlock;
+				// TODO: preload padlock
+				view = new AchievementView(name, description, R.drawable.padlock);
 			}
-			AchievementView view = new AchievementView(name, description, imageId);
 			view.setAnchor(Anchor.CENTER_LEFT);
 			view.setPosition(0, y);
 			view.setSize(BBTHGame.WIDTH, ACHIEVEMENT_HEIGHT);
