@@ -23,16 +23,12 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 	private final static int ACHIEVEMENT_HEIGHT = 65;
 	private final static String LOCKED_TEXT = "LOCKED";
 
-	private UINavigationController _navController;
-
 	// descriptions maps achievement names to full descriptions for unlocked achievements
 	public AchievementsScreen(UINavigationController navController, Map<String, AchievementInfo> achievementInfo) {
 		super(null);
 		assert(achievementInfo != null);
 
 		setScrollsHorizontal(false);
-		
-		_navController = navController;
 		
 		Map<String, Boolean> achievements = Achievements.INSTANCE.getAll();
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
