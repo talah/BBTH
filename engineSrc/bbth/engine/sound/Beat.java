@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
-import android.util.Log;
 
 /**
  * Represents either a tap or a hold. All times are in terms of milliseconds
@@ -29,8 +28,6 @@ public class Beat {
 
 	final BeatType type;
 	final float duration;
-	
-	static int debugAverage = 0;
 
 	// start time internally used by this and BeatTracker only
 	float _startTime;
@@ -63,8 +60,6 @@ public class Beat {
 			return false;
 
 		boolean changed = false;
-		debugAverage += songTime - _startTime;
-		Log.d("BBTH", String.valueOf(debugAverage));
 		if (Math.abs(songTime - _startTime) < BeatTracker.TOLERANCE) {
 			_tapped = true;
 			changed = true;

@@ -7,13 +7,12 @@ package bbth.game;
  */
 public enum Song {
 	DONKEY_KONG(R.raw.bonusroom, R.xml.donkey_kong, -1),
-	GERUDO(R.raw.gerudovalley, R.xml.track2, -2),
-	SONG_OF_STORMS_TECHNO(R.raw.stormoftechno, R.xml.track2, -3),
-	RETRO(R.raw.retrobit, R.xml.track1, -4),
-	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -5),
-	JAVLA_SLADDER(R.raw.javlasladdar, R.xml.track2, -6),
-	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -7),
-	MIGHT_AND_MAGIC(R.raw.mightandmagic, R.xml.track2, -8);
+	RETRO(R.raw.retrobit, R.xml.track1, -2),
+	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
+	JAVLA_SLADDER(R.raw.javlasladdar, R.xml.track2, -4),
+	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -5),
+	MIGHT_AND_MAGIC(R.raw.mightandmagic, R.xml.track2, -6),
+	DERP(R.raw.derp, R.xml.track2, -7);
 	
 	private Song(int song, int track, int id) {
 		songId = song;
@@ -31,19 +30,18 @@ public enum Song {
 		case -1:
 			return Song.DONKEY_KONG;
 		case -2:
-			return Song.GERUDO;
-		case -3:
-			return Song.SONG_OF_STORMS_TECHNO;
-		case -4:
 			return Song.RETRO;
-		case -5:
+		case -3:
 			return Song.MISTAKE_THE_GETAWAY;
-		case -6:
+		case -4:
 			return Song.JAVLA_SLADDER;
-		case -7:
+		case -5:
 			return Song.ODINS_KRAFT;
-		case -8:
+		case -6: 
 			return Song.MIGHT_AND_MAGIC;
+		case -7:
+			return Song.DERP;
+
 		default:
 			return null;
 		}

@@ -24,11 +24,11 @@ public class UIScrollView extends UIView {
 		_h_track_rect = new RectF();
 		
 		_scroll_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_scroll_paint.setColor(Color.DKGRAY);
+		_scroll_paint.setColor(Color.GRAY);
 		_scroll_paint.setAlpha(255);
 		
 		_track_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_track_paint.setColor(Color.WHITE);
+		_track_paint.setColor(Color.DKGRAY);
 		_track_paint.setAlpha(200);
 		
 	}
@@ -75,7 +75,7 @@ public class UIScrollView extends UIView {
 		while(idx-- > 0)
 		{
 			UIView e = subviews.get(idx);
-			if(e.containsPoint(x+pos_x, y+pos_y))
+			if(e.containsPoint(x+pos_x, y+pos_y) && !e.isDraggable())
 			{
     		  ignore = true;
     		  e.onTouchDown(x+pos_x, y+pos_y);
@@ -120,6 +120,8 @@ public class UIScrollView extends UIView {
 				pos_x = MathUtils.clamp(0, max_x, pos_x + dx);
 				_h_scroll_handle_rect.offsetTo(_h_track_rect.left + (pos_x/max_x) * max_offset_x, _h_scroll_handle_rect.top);
 			}
+			_x = x;
+			_y = y;
 		}else
 			super.onTouchMove(x + pos_x, y+pos_y);
 	}
