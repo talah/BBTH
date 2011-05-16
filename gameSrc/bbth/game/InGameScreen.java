@@ -1,17 +1,21 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.sound.*;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
@@ -47,6 +51,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
+	
+	private boolean setSong;
 
 	// TODO: Make a way to set the difficulty.
 	private float aiDifficulty = 0.7f;
@@ -66,9 +72,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.reset();
+		
+		if (team == Team.SERVER) {
+			// Magic numbers
+			sim.recordCustomEvent(0.f, 0.f, song.id);
 
-		// Set up sound stuff
-		beatTrack = new BeatTrack(song, this);
+			// Set up sound stuff
+			beatTrack = new BeatTrack(song, this);
+			setSong = true;
+		} else {
+			beatTrack = new BeatTrack(Song.DERP, this);
+			setSong = false;
+		}
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
@@ -76,6 +91,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setStrokeJoin(Join.ROUND);
 		paint.setTextSize(20);
 		paint.setAntiAlias(true);
+		paint.setTextAlign(Align.CENTER);
+
 
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
@@ -85,9 +102,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		arrowPath = new Path();
-		arrowPath.moveTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 55);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 40, BBTHGame.HEIGHT * .75f + 65);
-		arrowPath.lineTo(BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
 		arrowPath.close();
 	}
 
@@ -145,7 +162,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
-			paint.setTextAlign(Align.CENTER);
 			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
@@ -157,10 +173,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText("to make units!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
 
-			canvas.drawRect(BBTHGame.WIDTH / 4, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 4 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
+			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
@@ -171,8 +187,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .25f + 45, paint);
+			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
@@ -182,8 +198,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
-			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .5f + 20, paint);
-			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 4.0f, BBTHGame.HEIGHT * .5f + 45, paint);
+			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -225,7 +241,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
-		if (!BBTHGame.IS_SINGLE_PLAYER) {
+		if (!setSong && team == Team.CLIENT && sim.song != null) {
+			// Set up sound stuff
+			beatTrack.setSong(sim.song);
+			setSong = true;
+		}
+		
+		if (!BBTHGame.IS_SINGLE_PLAYER) {	
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
@@ -253,7 +275,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Start the music
-		if (sim.isReady() && !beatTrack.isPlaying()) {
+		if (setSong && sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
