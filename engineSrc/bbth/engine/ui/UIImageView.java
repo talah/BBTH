@@ -32,7 +32,8 @@ public class UIImageView extends UIView {
 	public void setBounds(float left, float top, float right, float bottom) {
 		super.setBounds(left, top, right, bottom);
 		if(_width > 0 && _height > 0 && (_width != _old_width || _height != _old_height)){
-			_image = Bitmap.createScaledBitmap(_image, (int)_width, (int)_height, true);
+			if(_image.getHeight() != (int)_height || _image.getWidth() != (int)_width)
+				_image = Bitmap.createScaledBitmap(_image, (int)_width, (int)_height, true);
 			_old_width = _width;
 			_old_height = _height;
 		}
