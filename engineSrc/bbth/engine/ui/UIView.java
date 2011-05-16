@@ -236,4 +236,19 @@ public class UIView extends GameScreen {
 	public boolean isDraggable() {
 		return false;
 	}
+	
+	public RectF getRect()
+	{
+		return _rect;
+	}
+	
+	public float getWidth()
+	{
+		return _width;
+	}
+	
+	public float getHeight()
+	{
+		return _height;
+	}
 }

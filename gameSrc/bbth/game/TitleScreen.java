@@ -2,11 +2,17 @@ package bbth.game;
 
 import java.util.Map;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UILabel titleBar;
@@ -79,8 +85,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
-		if (animDelay <= 0)
-		{
+		if (animDelay <= 0) {
 			addSubview(singleplayer);
 			addSubview(multiplayer);
 			addSubview(achievements);
@@ -90,9 +95,9 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onClick(UIButton button) {
 		if (button == singleplayer) {
-			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true));
+			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true), BBTHGame.MOVE_LEFT_TRANSITION);
 		} else if (button == multiplayer) {
-			controller.push(new GameSetupScreen(controller));
+			controller.push(new GameSetupScreen(controller), BBTHGame.MOVE_LEFT_TRANSITION);
 		} else if (button == achievements) {
 			controller.push(new AchievementsScreen(controller, achievementDescriptions));
 		}
