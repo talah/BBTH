@@ -2,6 +2,7 @@ package bbth.game;
 
 import java.util.Map;
 
+import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.achievements.AchievementView;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.ui.Anchor;
@@ -24,9 +25,9 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 	private UIButton _backButton;
 
 	// descriptions maps achievement names to full descriptions for unlocked achievements
-	public AchievementsScreen(UINavigationController navController, Map<String, String> descriptions) {
+	public AchievementsScreen(UINavigationController navController, Map<String, AchievementInfo> achievementInfo) {
 		super(null);
-		assert(descriptions != null);
+		assert(achievementInfo != null);
 
 		setScrollsHorizontal(false);
 		
@@ -39,12 +40,15 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 		for (Map.Entry<String, Boolean> entry : achievements.entrySet()) {
 			String name = entry.getKey();
 			String description;
+			int imageId;
 			if (Boolean.TRUE.equals(entry.getValue())) {
-				description = descriptions.get(name);
+				description = achievementInfo.get(name).description;
+				imageId = achievementInfo.get(name).imageId;
 			} else {
 				description = LOCKED_TEXT;
+				imageId = R.drawable.padlock;
 			}
-			AchievementView view = new AchievementView(name, description);
+			AchievementView view = new AchievementView(name, description, imageId);
 			view.setPosition(0, y);
 			view.setSize(BBTHGame.WIDTH, ACHIEVEMENT_HEIGHT);
 			addSubview(view);

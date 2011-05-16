@@ -9,7 +9,6 @@ import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
-import bbth.game.R;
 
 /**
  * A view for a single achievement
@@ -28,7 +27,7 @@ public class AchievementView extends UIView {
 	private Paint _paint;
 	
 	
-	public AchievementView(String name, String description) {	
+	public AchievementView(String name, String description, int imageId) {	
 		_nameLabel = new UILabel(name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
 		_nameLabel.setTextAlign(Align.LEFT);
@@ -41,7 +40,7 @@ public class AchievementView extends UIView {
 		_descriptionLabel.setWrapText(true);
 		addSubview(_descriptionLabel);
 		
-		_image = new UIImageView(R.drawable.icon);
+		_image = new UIImageView(imageId);
 		_image.setSize(32, 32);
 		_image.setAnchor(Anchor.CENTER_LEFT);
 		addSubview(_image);
