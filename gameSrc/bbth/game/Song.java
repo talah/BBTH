@@ -11,7 +11,7 @@ public enum Song {
 	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
 	JAVLA_SLADDER(R.raw.javlasladdar, R.xml.track2, -4),
 	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -5),
-	MIGHT_AND_MAGIC(R.raw.mightandmagic, R.xml.track2, -6),
+	MIGHT_AND_MAGIC(R.raw.mightandmagic_short, R.xml.might_and_magic, -6),
 	DERP(R.raw.derp, R.xml.derp, -7);
 	
 	private Song(int song, int track, int id) {

@@ -84,7 +84,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack = new BeatTrack(Song.DERP, this);
 			setSong = false;
 		}
-
+		
 		paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStrokeWidth(2.0f);
