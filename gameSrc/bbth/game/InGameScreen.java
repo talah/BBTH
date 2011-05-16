@@ -1,17 +1,21 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
-import bbth.engine.sound.*;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIView;
@@ -47,6 +51,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
+	
+	private boolean setSong;
 
 	// TODO: Make a way to set the difficulty.
 	private float aiDifficulty = 0.7f;
@@ -66,9 +72,18 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.reset();
+		
+		if (team == Team.SERVER) {
+			// Magic numbers
+			sim.recordCustomEvent(0.f, 0.f, song.id);
 
-		// Set up sound stuff
-		beatTrack = new BeatTrack(song, this);
+			// Set up sound stuff
+			beatTrack = new BeatTrack(song, this);
+			setSong = true;
+		} else {
+			beatTrack = new BeatTrack(Song.DONKEY_KONG, this);
+			setSong = false;
+		}
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
@@ -226,7 +241,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
-		if (!BBTHGame.IS_SINGLE_PLAYER) {
+		if (!setSong && team == Team.CLIENT && sim.song != null) {
+			// Set up sound stuff
+			beatTrack.setSong(sim.song);
+			setSong = true;
+		}
+		
+		if (!BBTHGame.IS_SINGLE_PLAYER) {	
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
@@ -254,7 +275,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Start the music
-		if (sim.isReady() && !beatTrack.isPlaying()) {
+		if (setSong && sim.isReady() && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 
