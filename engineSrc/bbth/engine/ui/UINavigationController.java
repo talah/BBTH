@@ -191,5 +191,12 @@ public class UINavigationController extends UIView {
 		screens.clear();
 		currentView = null;
 	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		if(currentView != null)
+			currentView.onStop();
+	}
 
 }
