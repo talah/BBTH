@@ -116,7 +116,6 @@ public class UIView extends GameScreen {
 			subviews.add(subview);
 			subviewCount = subviews.size();
 		}
-
 	}
 
 	public void removeSubview(UIView subview)
@@ -208,18 +207,7 @@ public class UIView extends GameScreen {
     
     protected void layoutSubviews(boolean force)
     {
-    	int idx = subviewCount;
-		while(idx-- > 0){
-    		UIView e = subviews.get(idx);
-    		if(force || !e._layedOut)
-    		{
-    			e._rect.offset(_rect.left, _rect.top);
-    			e.center.x = e._rect.centerX();
-    			e.center.y = e._rect.centerY();
-    			e.layoutSubviews(force);
-    		}
-		}
-		    
+    	// derp
     }
     
     public void animatePosition(float target_x, float target_y, float duration)

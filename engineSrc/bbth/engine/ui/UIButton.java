@@ -90,14 +90,10 @@ public class UIButton extends UIControl {
 		if(isDisabled)
 			return;
 		isDown = true;
-		if(delegate != null)
-			delegate.onTouchDown(this);
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
-		if((isDisabled || !isDown) && delegate != null)
-			delegate.onTouchUp(this);
 		if(isDown && delegate != null)
 			delegate.onClick(this);
 		isDown = false;

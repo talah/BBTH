@@ -140,18 +140,6 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 	}
 
 	@Override
-	public void onTouchDown(UIView sender) {
-	}
-
-	@Override
-	public void onTouchMove(UIView sender) {
-	}
-
-	@Override
-	public void onTouchUp(UIView sender) {
-	}
-
-	@Override
 	public void onClick(UIButton sender) {
 		if (sender == serverButton) {
 			type = SERVER;
