@@ -45,6 +45,7 @@ public class BBTHGame extends Game {
 			if (!savedAchievements.containsKey(names[i])) {
 				Achievements.INSTANCE.lock(names[i]);
 			}
+			Achievements.INSTANCE.unlock(names[i]);
 		}
 		
 		return achievements;

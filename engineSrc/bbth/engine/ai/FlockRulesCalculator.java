@@ -2,9 +2,9 @@ package bbth.engine.ai;
 
 import java.util.ArrayList;
 
-import android.graphics.PointF;
 import bbth.engine.entity.Movable;
 import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
 
 public class FlockRulesCalculator {
 	private static final float FRONT_VIEW_ANGLE = MathUtils.PI / 4.0f;
@@ -48,7 +48,7 @@ public class FlockRulesCalculator {
 		m_view_angle = angle;
 	}
 
-	public void getCohesionComponent(Movable actor, PointF result) {
+	public void getCohesionComponent(Movable actor, Point result) {
 		int size = m_objects.size();
 
 		float point_x = 0;
@@ -82,7 +82,7 @@ public class FlockRulesCalculator {
 		result.set(point_x - actor.getX(), point_y - actor.getY());
 	}
 
-	public void getAlignmentComponent(Movable actor, PointF result) {
+	public void getAlignmentComponent(Movable actor, Point result) {
 		int size = m_objects.size();
 
 		float othervel_x = 0;
@@ -121,7 +121,7 @@ public class FlockRulesCalculator {
 	}
 
 	public void getSeparationComponent(Movable actor,
-			float desired_separation, PointF result) {
+			float desired_separation, Point result) {
 		int size = m_objects.size();
 
 		float point_x = 0;

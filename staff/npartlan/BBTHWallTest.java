@@ -2,17 +2,27 @@ package npartlan;
 
 import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
 import bbth.engine.core.GameScreen;
-import bbth.engine.fastgraph.*;
-import bbth.engine.util.*;
-import bbth.game.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.LineOfSightTester;
+import bbth.engine.fastgraph.SimpleLineOfSightTester;
+import bbth.engine.fastgraph.Wall;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
+import bbth.engine.util.Point;
+import bbth.game.BBTHGame;
+import bbth.game.Team;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.DefendingUnit;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
 
 public class BBTHWallTest extends GameScreen implements UnitManager {
 	
@@ -28,10 +38,10 @@ public class BBTHWallTest extends GameScreen implements UnitManager {
 	private FastGraphGenerator m_graph_gen;
 	private LineOfSightTester m_tester;
 	
-	PointF m_center_stick;
-	PointF m_wall;
-	PointF m_wall_to_player;
-	PointF m_vec_result;
+	Point m_center_stick;
+	Point m_wall;
+	Point m_wall_to_player;
+	Point m_vec_result;
 	
 	float wall_start_x;
 	float wall_start_y;
@@ -50,10 +60,10 @@ public class BBTHWallTest extends GameScreen implements UnitManager {
 		m_parent = bbthGame;
     	m_rand = new Random();
     	
-    	m_center_stick = new PointF();
-		m_wall = new PointF();
-		m_wall_to_player = new PointF();
-		m_vec_result = new PointF();
+    	m_center_stick = new Point();
+		m_wall = new Point();
+		m_wall_to_player = new Point();
+		m_vec_result = new Point();
 						
 		m_graph_gen = new FastGraphGenerator(15.0f, BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		m_pathfinder = new Pathfinder(m_graph_gen.graph);
@@ -208,7 +218,7 @@ public class BBTHWallTest extends GameScreen implements UnitManager {
 		m_last_time = curr_time;
 	}
 	
-	private PointF getTurnVector(Unit entity, Wall result, float heading) {
+	private Point getTurnVector(Unit entity, Wall result, float heading) {
 		float start_x = entity.getX();
 		float start_y = entity.getY();
 		

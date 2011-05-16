@@ -164,6 +164,6 @@
 		is at the top. Destroy your opponent\'s base by creating units to
 		attack it.</string>
 	<string name="victory">You win when your opponent\'s health reaches 0, or
-		if the song ends and your health is higher.</string>
+		when the song ends and your health is higher.</string>
 
 </resources>
