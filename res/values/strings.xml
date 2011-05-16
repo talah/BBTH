@@ -104,8 +104,53 @@
 	</string-array>
 	
 	<string-array name="achievementImages">
+		<!-- Songs -->
 		<item>icon</item>
-		<item>track</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		
+		<!-- End conditions -->
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		
+		<!-- Combos -->
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		
+		<!-- Walls -->
+		<item>icon</item>
+		<item>icon</item>
+		
+		<!-- Units -->
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		
+		<!-- Difficulty -->
+		<item>icon</item>
+		
+		<!-- Grind -->
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
+		<item>icon</item>
 	</string-array>
 	
 	<string name="beat_track">The beat track shows you when to tap the screen.
