@@ -8,7 +8,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.util.Log;
 
 public class UICheckBox extends UIControl {
 
