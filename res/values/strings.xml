@@ -23,4 +23,7 @@
 	<string name="victory">You win when your opponent\'s health reaches 0, or
 		if the song ends and your health is higher.</string>
 
+<string-array name="achievementImages"><item>icon</item>
+<item>track</item>
+</string-array>
 </resources>

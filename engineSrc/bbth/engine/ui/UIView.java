@@ -99,7 +99,7 @@ public class UIView extends GameScreen {
     	}
 	}
 
-	public void setBounds(float left, float top, float right, float bottom) {
+	protected void setBounds(float left, float top, float right, float bottom) {
 		_rect.left = left;
 		_rect.top = top;
 		_rect.right = right;

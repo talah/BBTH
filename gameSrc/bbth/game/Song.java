@@ -9,7 +9,7 @@ public enum Song {
 	DONKEY_KONG(R.raw.bonusroom, R.xml.donkey_kong, -1),
 	RETRO(R.raw.retrobit, R.xml.track1, -2),
 	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
-	JAVLA_SLADDER(R.raw.javlasladdar, R.xml.track2, -4),
+	JAVLA_SLADDER(R.raw.javlasladdar_short, R.xml.jalvasladder, -4),
 	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -5),
 	MIGHT_AND_MAGIC(R.raw.mightandmagic_short, R.xml.might_and_magic, -6),
 	DERP(R.raw.derp, R.xml.derp, -7);

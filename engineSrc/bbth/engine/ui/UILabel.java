@@ -199,7 +199,7 @@ public class UILabel extends UIControl {
 		wrapText = value;
 	}
 	
-	public void wrapText()
+	private void wrapText()
 	{
 		if(text == null || text.equals(""))
 			return;
@@ -211,21 +211,20 @@ public class UILabel extends UIControl {
 		String[] words = text.split(" ");
 		String lastPhrase = "";
 
-		for (int i = 0; i < words.length; ++i)
-		{
+		for (int i = 0; i < words.length; ++i) {
 			String word = words[i];
-			if(_paint.measureText(lastPhrase + " " + word) < _width)
+			if (_paint.measureText(lastPhrase + " " + word) < _width) {
 				lastPhrase += " " + word;
-			else{
-				if(lastPhrase.length() > 0) wrapped_text.add(lastPhrase.trim());
+			} else {
+				if (lastPhrase.length() > 0) {
+					wrapped_text.add(lastPhrase.trim());
+				}
 				lastPhrase = word;
 			}
-			if( i== words.length -1)
-			{
+			if (i== words.length -1) {
 				wrapped_text.add(lastPhrase.trim());
 				break;
 			}
-				
 		}
 	}
 

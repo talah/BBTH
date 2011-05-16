@@ -9,7 +9,6 @@ import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UIView;
-import bbth.game.R;
 
 /**
  * A view for a single achievement
@@ -28,7 +27,7 @@ public class AchievementView extends UIView {
 	private Paint _paint;
 	
 	
-	public AchievementView(String name, String description) {	
+	public AchievementView(String name, String description, int imageId) {	
 		_nameLabel = new UILabel(name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
 		_nameLabel.setTextAlign(Align.LEFT);
@@ -41,7 +40,7 @@ public class AchievementView extends UIView {
 		_descriptionLabel.setWrapText(true);
 		addSubview(_descriptionLabel);
 		
-		_image = new UIImageView(R.drawable.icon);
+		_image = new UIImageView(imageId);
 		_image.setSize(32, 32);
 		_image.setAnchor(Anchor.CENTER_LEFT);
 		addSubview(_image);
@@ -56,17 +55,18 @@ public class AchievementView extends UIView {
 		super.setBounds(left, top, right, bottom);
 		
 		_image.setPosition(left, center.y);
-		float imageRight = _image.getPosition().x + 32;//_image.getWidth();
-		_nameLabel.setBounds(left + imageRight + PADDING, top + PADDING, right, NAME_SIZE);
-		_descriptionLabel.setBounds(left + imageRight + PADDING, top + NAME_SIZE + PADDING * 2, right, bottom);
-		_descriptionLabel.wrapText();
+		float imageRight = _image.getRect().right;
+		float textWidth = _width - _image.getWidth() - PADDING;
+		_nameLabel.setPosition(left + imageRight + PADDING, top + PADDING);
+		_nameLabel.setSize(textWidth, NAME_SIZE);
+		_descriptionLabel.setPosition(left + imageRight + PADDING, top + NAME_SIZE + PADDING + 3);
+		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);		
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
-		canvas.drawRect(_descriptionLabel.getRect(), _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}
 }
