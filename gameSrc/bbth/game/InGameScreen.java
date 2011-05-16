@@ -55,7 +55,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean setSong;
 
 	// TODO: Make a way to set the difficulty.
-	private float aiDifficulty = 0.7f;
+	private float aiDifficulty = 1.0f;
 
 	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol) {
 		this.team = playerTeam;
@@ -234,7 +234,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		entireDrawTimer.stop();
 
 		// draw achievement stuff
-		// Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		Achievements.INSTANCE.draw(canvas, BBTHGame.WIDTH, BBTHGame.HEIGHT / 15.f);
 	}
 
 	@Override
@@ -293,7 +293,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Update achievement stuff
-		// Achievements.INSTANCE.tick(seconds);
+		Achievements.INSTANCE.tick(seconds);
 	}
 
 	private void moveToNextScreen() {

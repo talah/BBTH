@@ -45,6 +45,11 @@ public class MusicPlayer {
 		return (int) (System.currentTimeMillis() - _startTime);
 	}
 	
+	public void seekToPosition(int positionMillis) {
+		_mediaPlayer.seekTo(positionMillis);
+		_startTime = System.currentTimeMillis() - positionMillis;
+	}
+	
 	// plays the song once
 	public void play() {
 		if (_state == IDLE || _state == PAUSED) {
