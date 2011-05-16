@@ -35,7 +35,6 @@ public class BeatTrack {
 	//private final int HOLD_SOUND_ID;
 	//private int holdId;
 	
-	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
@@ -53,8 +52,8 @@ public class BeatTrack {
 	private String combo_brag_text;
 	private long last_uber_combo_time;
 	
-	public BeatTrack(Song s, OnCompletionListener listener) {
-		loadSong(s);
+	public BeatTrack(Song song, OnCompletionListener listener) {
+		loadSong(song);
 		beatsInRange = new ArrayList<Beat>();
 		
 		last_combo_time = 0;
@@ -63,9 +62,7 @@ public class BeatTrack {
 		// Setup general stuff		
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
-				loadSong(song);
-				beatsInRange = new ArrayList<Beat>();
-				mp.play();
+				mp.stop();
 			}
 		});
 		musicPlayer.setOnCompletionListener(listener);
@@ -89,7 +86,7 @@ public class BeatTrack {
 		paint.setStrokeCap(Cap.ROUND);
 		paint.setAntiAlias(true);
 		
-		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
+		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": \u00dcBER UNIT!")/2.0f;
 	}
 	
 	public void setSong(Song song) {
@@ -97,10 +94,9 @@ public class BeatTrack {
 	}
 	
 	// loads a song and an associated beat track
-	public final void loadSong(Song s) {
-		song = s;
-		musicPlayer = new MusicPlayer(GameActivity.instance, s.songId);
-		beatTracker = new BeatTracker(musicPlayer, s.trackId);
+	public final void loadSong(Song song) {
+		musicPlayer = new MusicPlayer(GameActivity.instance, song.songId);
+		beatTracker = new BeatTracker(musicPlayer, song.trackId);
 	}
 
 	public void startMusic() {
@@ -145,7 +141,7 @@ public class BeatTrack {
 			if (display_uber_brag == false) {
 				display_uber_brag = true;
 				last_uber_combo_time = System.currentTimeMillis();
-				combo_brag_text = "COMBO " + comboStr + ": UBER UNIT!";
+				combo_brag_text = "COMBO " + comboStr + ": \u00dcBER UNIT!";
 			}
 		} else if (display_uber_brag && timesinceubercombo > COMBO_BRAG_TIME) {
 			display_uber_brag = false;

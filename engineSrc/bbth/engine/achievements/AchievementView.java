@@ -67,6 +67,7 @@ public class AchievementView extends UIView {
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
+		canvas.drawLine(_rect.left, _rect.top, _rect.right, _rect.top, _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}
 }

@@ -74,7 +74,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		if (USE_PAGINATED_TUTORIAL) {
 			tutorial = new PaginatedTutorial();
 		} else {
-			tutorial = new InteractiveTutorial();
+			tutorial = new InteractiveTutorial(playerTeam);
 		}
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
@@ -137,6 +137,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onDraw(Canvas canvas) {
+		if (!tutorial.isFinished() && tutorial.supressDrawing()) {
+			tutorial.onDraw(canvas);
+			return;
+		}
+
 		entireDrawTimer.start();
 
 		// Draw the game

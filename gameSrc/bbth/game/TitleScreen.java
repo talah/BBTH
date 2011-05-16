@@ -2,21 +2,15 @@ package bbth.game;
 
 import java.util.Map;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UINavigationController;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
-	private UILabel titleBar;
+	private UIImageView titleBar;
 	private float animDelay = 1.0f;
 	private UIButton singleplayerButton, multiplayerButton, achievementsButton;
 	private InfiniteCombatView combatView;
@@ -32,29 +26,33 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		combatView = new InfiniteCombatView();
 		
-		titleBar = new UILabel("Beat Back the Horde!", this);
+		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
-		titleBar.setTextSize(30.f);
-		titleBar.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT + 60);
-		titleBar.animatePosition(BBTHGame.WIDTH / 2.f, 80, 3);
+		titleBar.setPosition(BBTHGame.WIDTH/2, -150);
+		titleBar.setSize(300, 140);
+		titleBar.animatePosition(BBTHGame.WIDTH/2, 20, 3);
 		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton("Single Player", this);
 		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		singleplayerButton.setAnchor(Anchor.CENTER_CENTER);
-		singleplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
+		singleplayerButton.setPosition(-BBTHGame.WIDTH, BBTHGame.HEIGHT / 2 - 65);
+		singleplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65, 0.5f);
 		singleplayerButton.setButtonDelegate(this);
 		
 		multiplayerButton = new UIButton("Multi Player", this);
 		multiplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		multiplayerButton.setAnchor(Anchor.CENTER_CENTER);
-		multiplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		multiplayerButton.setPosition(-BBTHGame.WIDTH * 2.0f, BBTHGame.HEIGHT / 2);
+		multiplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2, 1.0f);
 		multiplayerButton.setButtonDelegate(this);
 		
 		achievementsButton = new UIButton("Achievements", this);
 		achievementsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
-		achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
+		achievementsButton.setPosition(-BBTHGame.WIDTH * 3.0f, BBTHGame.HEIGHT / 2 + 65);
+		achievementsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65, 1.5f);
+
 		achievementsButton.setButtonDelegate(this);
 	}
 	
@@ -71,10 +69,38 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
+		endAnimations();
+	}
+	
+	@Override
+	public void willHide(boolean animating) {
+		super.willHide(animating);
+		endAnimations();
+	}
+	
+	private void endAnimations() {
 		if (titleBar.isAnimatingPosition) {
 			animDelay = 0f;
 			titleBar.isAnimatingPosition = false;
-			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 80);
+			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 20);
+		}
+		
+		if (singleplayerButton.isAnimatingPosition) {
+			animDelay = 0f;
+			singleplayerButton.isAnimatingPosition = false;
+			singleplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
+		}
+		
+		if (multiplayerButton.isAnimatingPosition) {
+			animDelay = 0f;
+			multiplayerButton.isAnimatingPosition = false;
+			multiplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		}
+		
+		if (achievementsButton.isAnimatingPosition) {
+			animDelay = 0f;
+			achievementsButton.isAnimatingPosition = false;
+			achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
 		}
 	}
 

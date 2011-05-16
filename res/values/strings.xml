@@ -2,14 +2,112 @@
 <resources>
 
 	<string name="app_name">Beat Back The Horde</string>
+	
 	<string-array name="achievementNames">
-		<item>Test Success</item>
-	<item>Test2</item>
-</string-array>
+		<!-- Songs -->
+		<item>Got Away</item>
+		<item></item>
+		<item>Chiptune Enthusiast</item>
+		<item></item>
+		<item>Crafty</item>
+		
+		<!-- End conditions -->
+		<item>Desperate Times</item>
+		<item>Ultimate Stalemate</item>
+		<item>Flawless Victory</item>
+		<item>Strategist</item>
+		
+		<!-- Combos -->
+		<item>So That\'s Why It\'s Better Not To Mash</item>
+		<item>Beat Wizard</item>
+		<item>Beat Master</item>
+		<item>Beat Spartan</item>
+		<item>Full Combo</item>
+		<item>Derp</item>
+		
+		<!-- Walls -->
+		<item>Quick Thinking</item>
+		<item>Beat Back</item>
+		
+		<!-- Units -->
+		<item>The Horde</item>
+		<item>Humiliation</item>
+		<item>It\'s Super Effective!</item>
+		<item>Yo Dawg, I Heard You Like Units</item>
+		<item>Showdown</item>
+		<item>Quantity Over Quality</item>
+		<item>Fireworks</item>
+		
+		<!-- Difficulty -->
+		<item>Anything You Can Do...</item>
+		
+		<!-- Grind -->
+		<item>Murder</item>
+		<item>Genocide</item>
+		<item>I Am Become Death...</item>
+		<item>Builder</item>
+		<item>Creator</item>
+		<item>Lifebringer</item>
+		<item></item>
+		<item></item>
+		<item></item>
+	</string-array>
+	
 	<string-array name="achievementDescriptions">
-		<item>This is a test achievement.</item>
-	<item>This is a test achievement with a really really long description.</item>
-</string-array>
+		<!-- Songs -->
+		<item>Win "Mistake the Getaway" 10 times</item>
+		<item>Win "Might and Magic" 10 times</item>
+		<item>Win "Retro" 10 times</item>
+		<item>Win "Javla Sladder" 10 times</item>
+		<item>Win "Odin\'s Craft" 10 times</item>
+		
+		<!-- End conditions -->
+		<item>Destroy your opponent\'s base when your base has less than 10 health remaining</item>
+		<item>Reach the end of a 9+ minute song without either side winning</item>
+		<item>Destroy your opponent\'s base without allowing your base to take any damage</item>
+		<item>Win a game having gotten fewer beats than your opponent</item>
+		
+		<!-- Combos -->
+		<item>Receive an Über unit</item>
+		<item>Get a combo of 25 beats or more</item>
+		<item>Get a combo of 100 beats or more</item>
+		<item>Get a combo of 300 beats or more</item>
+		<item>Get every beat (no mistaps or omissions) in a song</item>
+		<item>Miss 50 beats in a row</item>
+		
+		<!-- Walls -->
+		<item>Place a wall in front of an enemy unit when it is less than 1 second from hitting your base</item>
+		<item>Place a wall that forces an enemy unit to turn around</item>
+		
+		<!-- Units -->
+		<item>Have over 30 of your units on the screen at once</item>
+		<item>Spawn a unit less than 10 pixels from your opponent\'s base</item>
+		<item>Spawn a unit on top of an enemy unit</item>
+		<item>Kill more than five enemy units with a single explosion of one of your units</item>
+		<item>Kill an enemy Über unit with an Über unit of your own</item>
+		<item>Kill an enemy Über unit without an Über unit of your own damaging it</item>
+		<item>Witness the destruction of 10 units in under a second</item>
+		
+		<!-- Difficulty -->
+		<item>Win a game against a [TODO: INSERT HARDEST DIFFICULTY HERE] AI</item>
+		
+		<!-- Grind -->
+		<item>Kill 1000 enemy units</item>
+		<item>Kill 20000 enemy units</item>
+		<item>Kill 400000 enemy units</item>
+		<item>Spawn 500 units</item>
+		<item>Spawn 10000 units</item>
+		<item>Spawn 200000 units</item>
+		<item>Spawn 200 Über units</item>
+		<item>Spawn 500 Über units</item>
+		<item>Spawn 1500 Über units</item>
+	</string-array>
+	
+	<string-array name="achievementImages">
+		<item>icon</item>
+		<item>track</item>
+	</string-array>
+	
 	<string name="beat_track">The beat track shows you when to tap the screen.
 		Tap when the beat is in the middle of the double horizontal lines.
 	</string>
@@ -23,7 +121,4 @@
 	<string name="victory">You win when your opponent\'s health reaches 0, or
 		if the song ends and your health is higher.</string>
 
-<string-array name="achievementImages"><item>icon</item>
-<item>track</item>
-</string-array>
 </resources>
