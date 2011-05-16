@@ -11,6 +11,7 @@ public class UISwipeTransition {
 	
 	private float duration, elapsed, dx, width;
 	private Direction direction;
+	private boolean first;
 	
 	public UISwipeTransition(float width, Direction dir,  float duration)
 	{
@@ -21,6 +22,12 @@ public class UISwipeTransition {
 
 	public void onUpdate(float seconds)
 	{
+		if(first)
+		{
+			first = false;
+			return;
+		}
+			
 		elapsed += seconds;
 		
 		switch (direction) {
@@ -54,6 +61,7 @@ public class UISwipeTransition {
 	
 	public void reset() {
 		elapsed = 0;
+		first = true;
 		switch (direction) {
 		case FROM_RIGHT:
 			dx = -1;
