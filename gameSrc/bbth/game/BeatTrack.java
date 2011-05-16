@@ -52,7 +52,7 @@ public class BeatTrack {
 	private String combo_brag_text;
 	private long last_uber_combo_time;
 	
-	public BeatTrack(OnCompletionListener listener) {
+	public BeatTrack(Song song, OnCompletionListener listener) {
 		loadSong(song);
 		beatsInRange = new ArrayList<Beat>();
 		
