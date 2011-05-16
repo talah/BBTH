@@ -42,6 +42,8 @@ public class BBTHGame extends Game {
 		currentScreen = navController;
 		
 		Map<String, String> achievements = getAchievementDescriptions();
+		Achievements.INSTANCE.unlock("Test Success");
+		Achievements.INSTANCE.unlock("Test2");
 		navController.push(new TitleScreen(navController, achievements));
 		
 //		controller.push(new BBTHAITest(this));

@@ -4,10 +4,12 @@
 	<string name="app_name">Beat Back The Horde</string>
 	<string-array name="achievementNames">
 		<item>Test Success</item>
-	</string-array>
+	<item>Test2</item>
+</string-array>
 	<string-array name="achievementDescriptions">
 		<item>This is a test achievement.</item>
-	</string-array>
+	<item>This is a test achievement with a really really long description.</item>
+</string-array>
 	<string name="beat_track">The beat track shows you when to tap the screen.
 		Tap when the beat is in the middle of the double horizontal lines.
 	</string>

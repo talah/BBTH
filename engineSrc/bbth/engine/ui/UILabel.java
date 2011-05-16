@@ -199,7 +199,7 @@ public class UILabel extends UIControl {
 		wrapText = value;
 	}
 	
-	private void wrapText()
+	public void wrapText()
 	{
 		if(text == null || text.equals(""))
 			return;
