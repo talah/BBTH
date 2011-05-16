@@ -2,19 +2,12 @@ package bbth.game;
 
 import java.util.Map;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UIImageView;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UINavigationController;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UIImageView titleBar;
