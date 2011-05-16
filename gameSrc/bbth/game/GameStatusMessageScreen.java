@@ -111,7 +111,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 //			} else {
 //				nextScreen = new GameSetupScreen();
 //			}
-			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		} else if (button == quit) {
 			System.exit(0);
 		}

@@ -2,11 +2,8 @@ package bbth.game;
 
 import java.util.HashSet;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Align;
-import android.graphics.RectF;
 import bbth.engine.ui.UIView;
 import bbth.game.units.Unit;
 
@@ -47,6 +44,7 @@ public class Base extends UIView {
 
 	}
 
+	@Override
 	public RectF getRect() {
 		return _rect;
 	}

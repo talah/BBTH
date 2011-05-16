@@ -229,7 +229,10 @@ public class UIView extends GameScreen {
 			this.setPosition(new_x, new_y);
 			position_animation_duration -= seconds;
 			if(position_animation_duration <= 0)
+			{
 				isAnimatingPosition = false;
+				this.setPosition(target_x, target_y);
+			}
 		}
 	}
 

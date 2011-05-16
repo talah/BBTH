@@ -26,27 +26,30 @@ public class UINavigationController extends UIView {
 
 	private UIView newView;
 	private Transition transition;
+	private UISwipeTransition _transition;
 	private boolean transitioning;
 	private float transitionTime; 
 
-	public UINavigationController(Object tag) {
-		super(tag);
+	public UINavigationController() {
 		screens = new LinkedList<UIView>();
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
-		if (currentView != null)
-			currentView.onUpdate(seconds);
+//		if (currentView != null)
+//			currentView.onUpdate(seconds);
 		if (transitioning) {
-			if (newView != null)
-				newView.onUpdate(seconds);
+//			if (newView != null)
+//				newView.onUpdate(seconds);
 			if (transitionTime < 0f)
 				transitionTime = 0f;
 			else
 				transitionTime += seconds;
-			transition.setTime(transitionTime);
-			if (transition.isDone()) {
+			if(transition != null)
+				transition.setTime(transitionTime);
+			if(_transition != null)
+				_transition.onUpdate(seconds);
+			if ((transition != null && transition.isDone()) || (_transition != null && _transition.isDone())) {
 				transitioning = false;
 				currentView = newView;
 				transitionTime = -1f;
@@ -55,13 +58,18 @@ public class UINavigationController extends UIView {
 				transition = null;
 				newView = null;
 			}
+		}else{
+			currentView.onUpdate(seconds);
 		}
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
 		if (transitioning) {
-			transition.draw(canvas, currentView, newView);
+			if(transition != null)
+				transition.draw(canvas, currentView, newView);
+			else if(_transition != null)
+				_transition.onDraw(canvas, currentView, newView);
 		} else if (currentView != null)
 			currentView.onDraw(canvas);
 	}
@@ -101,6 +109,14 @@ public class UINavigationController extends UIView {
 		this.newView = newView;
 		transitioning = true;
 	}
+	
+	private void startTransition(UISwipeTransition transition, UIView newView)
+	{
+		this._transition = transition;
+		this._transition.reset();
+		this.newView = newView;
+		transitioning = true;
+	}
 
 	// returns true on success, false on failure
 	public boolean pop() {
@@ -111,7 +127,10 @@ public class UINavigationController extends UIView {
 		return true;
 	}
 	
-	public void pop(Transition transition) {
+	public boolean pop(Transition transition) {
+		if (screens.size() <= 1) {
+			return false;
+		}
 		try {
 			if (currentView != null)
 				currentView.willHide(true);
@@ -122,6 +141,24 @@ public class UINavigationController extends UIView {
 		} catch (NoSuchElementException e) {
 			currentView = null;
 		}
+		return true;
+	}
+	
+	public boolean pop(UISwipeTransition transition) {
+		if (screens.size() <= 1) {
+			return false;
+		}
+		try {
+			if (currentView != null)
+				currentView.willHide(true);
+			screens.removeFirst(); // remove current view
+			UIView newView = screens.getFirst();
+			newView.willAppear(true);
+			startTransition(transition, newView);
+		} catch (NoSuchElementException e) {
+			currentView = null;
+		}
+		return true;
 	}
 
 		
@@ -133,6 +170,15 @@ public class UINavigationController extends UIView {
 		if (currentView != null)
 			currentView.willHide(true);
 
+		screens.addFirst(screen);
+		screen.willAppear(true);
+		startTransition(transition, screen);
+	}
+	
+	public void push(UIView screen, UISwipeTransition transition)
+	{
+		if (currentView != null)
+			currentView.willHide(true);
 		screens.addFirst(screen);
 		screen.willAppear(true);
 		startTransition(transition, screen);
@@ -152,6 +198,13 @@ public class UINavigationController extends UIView {
 
 		screens.clear();
 		currentView = null;
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		if(currentView != null)
+			currentView.onStop();
 	}
 
 }

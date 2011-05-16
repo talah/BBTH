@@ -1,12 +1,6 @@
 package kvgishen;
 
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UIProgressBar;
-import bbth.engine.ui.UIRadioButton;
-import bbth.engine.ui.UIScrollView;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 import bbth.game.BBTHGame;
 
 public class TitleScreen extends UIScrollView implements UIButtonDelegate {

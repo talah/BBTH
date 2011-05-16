@@ -27,7 +27,7 @@ public class AchievementView extends UIView {
 	private Paint _paint;
 	
 	
-	public AchievementView(String name, String description, int imageId) {	
+	public AchievementView(String name, String description, int imageId) {		
 		_nameLabel = new UILabel(name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
 		_nameLabel.setTextAlign(Align.LEFT);
@@ -61,6 +61,11 @@ public class AchievementView extends UIView {
 		_nameLabel.setSize(textWidth, NAME_SIZE);
 		_descriptionLabel.setPosition(left + imageRight + PADDING, top + NAME_SIZE + PADDING + 3);
 		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);		
+	}
+	
+	@Override
+	public boolean isDraggable() {
+		return true;
 	}
 	
 	@Override

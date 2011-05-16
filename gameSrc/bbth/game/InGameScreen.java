@@ -331,13 +331,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
 			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller));
-			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
 			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller));
-			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		} else {
 			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller));
-			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
 

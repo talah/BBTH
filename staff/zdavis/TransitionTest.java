@@ -36,7 +36,7 @@ public class TransitionTest extends UINavigationController {
 	boolean oneInFront = true;
 	
 	public TransitionTest() {
-		super("transitiontest");
+		//super("transitiontest");
 		
 		UILabel label1 = new UILabel("View One", "l1");
 		label1.setTextColor(Color.WHITE);

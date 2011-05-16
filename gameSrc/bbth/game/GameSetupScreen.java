@@ -2,15 +2,9 @@ package bbth.game;
 
 import android.graphics.Paint.Align;
 import bbth.engine.core.GameActivity;
-import bbth.engine.net.bluetooth.Bluetooth;
-import bbth.engine.net.bluetooth.State;
+import bbth.engine.net.bluetooth.*;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UINavigationController;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private LockStepProtocol protocol;
@@ -85,10 +79,10 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		if (bluetooth.getState() == State.CONNECTED) {
 			if (playerTeam == Team.SERVER) {
 				controller.pushUnder(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
-				controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 			} else if (playerTeam == Team.CLIENT) {
 				controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
-				controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 			}
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
@@ -118,7 +112,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			serverButton.isDisabled = false;
 			clientButton.isDisabled = false;
 			disconnectButton.isDisabled = true;
-		} 
+		}
 	}
 
 	@Override

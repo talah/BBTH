@@ -12,6 +12,8 @@ import bbth.engine.core.GameActivity;
 import bbth.engine.ui.DefaultTransition;
 import bbth.engine.ui.Transition;
 import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UISwipeTransition;
+import bbth.engine.ui.UISwipeTransition.Direction;
 import bbth.engine.util.Envelope;
 import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
@@ -49,7 +51,7 @@ public class BBTHGame extends Game {
 	}
 	
 	public BBTHGame(Activity activity) {
-		navController = new UINavigationController(null);
+		navController = new UINavigationController();
 		currentScreen = navController;
 		
 		Map<String, AchievementInfo> achievements = initializeAchievements(activity);
@@ -78,15 +80,20 @@ public class BBTHGame extends Game {
 
 	@Override
 	public void onBackPressed() {
-		if (!navController.pop()) {
+		if (!navController.pop(FROM_LEFT_TRANSITION)) {
 			GameActivity.instance.finish();
 		}
 	}
+	
+	public static final UISwipeTransition FROM_RIGHT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_RIGHT, 0.5f);
+	public static final UISwipeTransition FROM_LEFT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_LEFT, 0.5f);
 
 	public static final Transition MOVE_LEFT_TRANSITION;
 	public static final Transition MOVE_RIGHT_TRANSITION;
 	public static final Transition FADE_OUT_FADE_IN_TRANSITION;
 	static {
+		
+		
 		DefaultTransition transition = new DefaultTransition(.5f);
 		{
 			Envelope newAlpha = new Envelope(0f, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);

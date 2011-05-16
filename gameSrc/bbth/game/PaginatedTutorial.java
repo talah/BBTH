@@ -96,6 +96,7 @@ public class PaginatedTutorial extends Tutorial implements UIButtonDelegate {
 		background = new LinearGradient(_rect.left, _rect.top, _rect.left, _rect.bottom, background_start_color, background_end_color, Shader.TileMode.MIRROR);
 	}
 
+	@Override
 	public boolean isFinished() {
 		return isFinished;
 	}
