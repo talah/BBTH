@@ -48,7 +48,7 @@ public class UILabel extends UIControl {
 	public void onDraw(Canvas canvas) {
 	    super.onDraw(canvas);
 	    _y_offset = 0;
-	    if(wrapText)
+	    if(wrapText && wrapped_text != null)
 	    	for(int i = 0; i < wrapped_text.size(); i++)
 	    	{
 	    		drawText(canvas, wrapped_text.get(i));
