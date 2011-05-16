@@ -1,5 +1,6 @@
 package bbth.engine.achievements;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,7 +29,7 @@ public class AchievementView extends UIView {
 	private UIImageView _image;
 	private Paint _paint;
 	
-	
+	// TODO: remove
 	public AchievementView(String name, String description, int imageId) {		
 		_nameLabel = new UILabel(name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
@@ -44,6 +45,30 @@ public class AchievementView extends UIView {
 		addSubview(_descriptionLabel);
 		
 		_image = new UIImageView(imageId);
+		_image.setSize(32, 32);
+		_image.setAnchor(Anchor.CENTER_LEFT);
+		addSubview(_image);
+		
+		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		_paint.setColor(Color.WHITE);
+		_paint.setStyle(Style.STROKE);
+	}
+	
+	public AchievementView(String name, String description, Bitmap image) {		
+		_nameLabel = new UILabel(name, null);
+		_nameLabel.setTextSize(NAME_SIZE);
+		_nameLabel.setTextAlign(Align.LEFT);
+		_nameLabel.sizeToFit();
+		addSubview(_nameLabel);
+		
+		_descriptionLabel = new UILabel(description, null);
+		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
+		_descriptionLabel.setTextAlign(Align.LEFT);
+		_descriptionLabel.setWrapText(true);
+		_descriptionLabel.setVerticalAlign(VAlign.MIDDLE);
+		addSubview(_descriptionLabel);
+		
+		_image = new UIImageView(image);
 		_image.setSize(32, 32);
 		_image.setAnchor(Anchor.CENTER_LEFT);
 		addSubview(_image);

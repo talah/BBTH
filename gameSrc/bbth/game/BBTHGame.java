@@ -5,6 +5,10 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.util.DisplayMetrics;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
@@ -41,7 +45,10 @@ public class BBTHGame extends Game {
 		String packageName = activity.getPackageName();
 		for (int i = 0; i < names.length; ++i) {
 			int imageId = resources.getIdentifier(images[i], "drawable", packageName);
-			achievements.put(names[i], new AchievementInfo(descriptions[i], imageId));
+			Options options = new Options();
+			options.inTargetDensity = DisplayMetrics.DENSITY_DEFAULT;
+			Bitmap image = BitmapFactory.decodeResource(BBTHActivity.instance.getResources(), imageId);
+			achievements.put(names[i], new AchievementInfo(descriptions[i], image));
 			if (!savedAchievements.containsKey(names[i])) {
 				Achievements.INSTANCE.lock(names[i]);
 			}

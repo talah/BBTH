@@ -1,5 +1,7 @@
 package bbth.engine.achievements;
 
+import android.graphics.Bitmap;
+
 /**
  * Represents info about a single achievement
  * @author Justin
@@ -7,10 +9,10 @@ package bbth.engine.achievements;
  */
 public class AchievementInfo {
 	public final String description;
-	public final int imageId;
+	public final Bitmap image;
 
-	public AchievementInfo(String d, int image) {
+	public AchievementInfo(String d, Bitmap im) {
 		description = d;
-		imageId = image;
+		image = im;
 	}
 }

@@ -44,16 +44,16 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 		for (Map.Entry<String, Boolean> entry : achievements.entrySet()) {
 			String name = entry.getKey();
 			String description;
-			int imageId;
+			AchievementView view;
 			if (Boolean.TRUE.equals(entry.getValue())) {
 				if (!achievementInfo.containsKey(name)) continue;
 				description = achievementInfo.get(name).description;
-				imageId = achievementInfo.get(name).imageId;
+				view = new AchievementView(name, description, achievementInfo.get(name).image);
 			} else {
 				description = LOCKED_TEXT;
-				imageId = R.drawable.padlock;
+				// TODO: preload padlock
+				view = new AchievementView(name, description, R.drawable.padlock);
 			}
-			AchievementView view = new AchievementView(name, description, imageId);
 			view.setAnchor(Anchor.CENTER_LEFT);
 			view.setPosition(0, y);
 			view.setSize(BBTHGame.WIDTH, ACHIEVEMENT_HEIGHT);
