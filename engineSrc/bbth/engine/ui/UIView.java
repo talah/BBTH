@@ -251,4 +251,13 @@ public class UIView extends GameScreen {
 	{
 		return _height;
 	}
+	
+	@Override
+	public void onStop() {
+		int idx = subviewCount;
+		while(idx-- > 0){
+    		UIView e = subviews.get(idx);
+    		e.onStop();
+		}
+	}
 }
