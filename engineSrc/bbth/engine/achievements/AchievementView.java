@@ -56,17 +56,18 @@ public class AchievementView extends UIView {
 		super.setBounds(left, top, right, bottom);
 		
 		_image.setPosition(left, center.y);
-		float imageRight = _image.getPosition().x + 32;//_image.getWidth();
-		_nameLabel.setBounds(left + imageRight + PADDING, top + PADDING, right, NAME_SIZE);
-		_descriptionLabel.setBounds(left + imageRight + PADDING, top + NAME_SIZE + PADDING * 2, right, bottom);
-		_descriptionLabel.wrapText();
+		float imageRight = _image.getRect().right;
+		float textWidth = _width - _image.getWidth() - PADDING;
+		_nameLabel.setPosition(left + imageRight + PADDING, top + PADDING);
+		_nameLabel.setSize(textWidth, NAME_SIZE);
+		_descriptionLabel.setPosition(left + imageRight + PADDING, top + NAME_SIZE + PADDING + 3);
+		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);		
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
-		canvas.drawRect(_descriptionLabel.getRect(), _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}
 }

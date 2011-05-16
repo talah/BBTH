@@ -104,6 +104,11 @@ public class UIView extends GameScreen {
 		_rect.top = top;
 		_rect.right = right;
 		_rect.bottom = bottom;
+	
+    	/*this._width = _rect.width();
+	    this._height = _rect.height();
+	    this._h_width = _width / 2.f;
+	    this._h_height = _height / 2.f;*/
 		
 		center.x = _rect.left + _h_width;
         center.y = _rect.top + _h_height;
