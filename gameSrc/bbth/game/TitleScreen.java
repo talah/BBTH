@@ -69,10 +69,38 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
+		endAnimations();
+	}
+	
+	@Override
+	public void willHide(boolean animating) {
+		super.willHide(animating);
+		endAnimations();
+	}
+	
+	private void endAnimations() {
 		if (titleBar.isAnimatingPosition) {
 			animDelay = 0f;
 			titleBar.isAnimatingPosition = false;
 			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 20);
+		}
+		
+		if (singleplayerButton.isAnimatingPosition) {
+			animDelay = 0f;
+			singleplayerButton.isAnimatingPosition = false;
+			singleplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
+		}
+		
+		if (multiplayerButton.isAnimatingPosition) {
+			animDelay = 0f;
+			multiplayerButton.isAnimatingPosition = false;
+			multiplayerButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		}
+		
+		if (achievementsButton.isAnimatingPosition) {
+			animDelay = 0f;
+			achievementsButton.isAnimatingPosition = false;
+			achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
 		}
 	}
 
