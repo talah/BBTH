@@ -2,9 +2,15 @@ package bbth.game;
 
 import android.graphics.Paint.Align;
 import bbth.engine.core.GameActivity;
-import bbth.engine.net.bluetooth.*;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 
 public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private LockStepProtocol protocol;
@@ -16,13 +22,15 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private UILabel statusLabel;
 
 	private Team playerTeam;
-	
+
 	private UINavigationController controller;
 	private UILabel titleLabel;
 
+	private String currentStatus = null;
+
 	public GameSetupScreen(UINavigationController controller) {
 		super(null);
-		
+
 		this.controller = controller;
 
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -44,7 +52,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		clientButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
-		
+
 		disconnectButton = new UIButton("Cancel", null);
 		disconnectButton.setAnchor(Anchor.CENTER_CENTER);
 		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 65);
@@ -59,7 +67,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
-		
+
 		statusLabel = new UILabel("", null);
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
@@ -74,8 +82,11 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onUpdate(float seconds) {
 		String statusMessage = bluetooth.getString();
-		statusLabel.setText((statusMessage == null) ? "" : statusMessage);
-
+		if (statusMessage != this.currentStatus) {
+			statusLabel.setText((statusMessage == null) ? "" : statusMessage);
+			this.currentStatus = statusMessage;
+		}
+		
 		if (bluetooth.getState() == State.CONNECTED) {
 			if (playerTeam == Team.SERVER) {
 				controller.pushUnder(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
