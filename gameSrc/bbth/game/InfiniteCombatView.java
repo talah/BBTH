@@ -62,6 +62,9 @@ public class InfiniteCombatView extends UIView implements UnitManager {
 	}
 	
 	public InfiniteCombatView() {
+		
+		setSize(WIDTH, HEIGHT); 
+		
 		for (int i = 0; i < 20; i++) {
 			spawnUnit(UnitType.ATTACKING, Team.SERVER);
 			spawnUnit(UnitType.ATTACKING, Team.CLIENT);
@@ -104,6 +107,8 @@ public class InfiniteCombatView extends UIView implements UnitManager {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
+		canvas.save();
+		canvas.clipRect(_rect, Region.Op.INTERSECT);
 		for (int i = 0; i < units.size(); i++) {
 			Unit ent = units.get(i);
 			ent.drawChassis(canvas);
@@ -123,6 +128,7 @@ public class InfiniteCombatView extends UIView implements UnitManager {
 //			Wall w = graphGenerator.walls.get(i);
 //			canvas.drawLine(w.a.x, w.a.y, w.b.x, w.b.y, whitePaint);
 //		}
+		canvas.restore();
 	}
 	
 	private void spawnUnit(UnitType unitType, Team team) {
