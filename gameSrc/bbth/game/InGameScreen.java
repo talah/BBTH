@@ -118,6 +118,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		arrowPath.moveTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 55);
 		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 40, BBTHGame.HEIGHT * .75f + 65);
 		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 75);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 70);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60);
+		arrowPath.lineTo(BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 60);
 		arrowPath.close();
 	}
 
@@ -179,38 +183,36 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		}
 
-		long time_since_hint_start = System.currentTimeMillis() - tap_location_hint_time;
-		if (time_since_hint_start < TAP_HINT_DISPLAY_LENGTH) {
+		float percent = (System.currentTimeMillis() - tap_location_hint_time) / (float)TAP_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Tap further right ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
 			canvas.drawText("to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
-
-			canvas.drawRect(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT * .75f + 60, BBTHGame.WIDTH / 2 + 30, BBTHGame.HEIGHT * .75f + 70, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
 		// Draw unit placement hint if necessary.
-		time_since_hint_start = System.currentTimeMillis() - sim.placement_tip_start_time;
-		if (time_since_hint_start < PLACEMENT_HINT_DISPLAY_LENGTH) {
+		percent = (System.currentTimeMillis() - sim.placement_tip_start_time) / (float)PLACEMENT_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Tap inside your zone of ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
 			canvas.drawText("influence to make units!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
-		time_since_hint_start = System.currentTimeMillis() - drag_tip_start_time;
-		if (time_since_hint_start < DRAG_HINT_DISPLAY_LENGTH) {
+		percent = (System.currentTimeMillis() - drag_tip_start_time) / (float)DRAG_HINT_DISPLAY_LENGTH;
+		if (percent < 1) {
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
-			// paint.setAlpha((int) (255 - (time_since_hint_start / 4 % 255)));
+			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
 			canvas.drawText("Drag finger further ", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
 			canvas.drawText("to draw a longer wall!", BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
@@ -317,7 +319,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	private void moveToNextScreen() {
 		beatTrack.stopMusic();
-System.err.println("FINISHED!");
+
 		// Move on to the next screen
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {

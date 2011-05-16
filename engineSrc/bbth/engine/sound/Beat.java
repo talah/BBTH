@@ -81,7 +81,7 @@ public class Beat {
 	}
 
 	// draw the note given a location for taps
-	void draw(int songTime, float x, float yMiddle, Canvas canvas, Paint paint) {
+	public void draw(int songTime, float x, float yMiddle, Canvas canvas, Paint paint) {
 		if (type == BeatType.REST)
 			return;
 
