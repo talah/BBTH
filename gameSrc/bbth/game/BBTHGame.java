@@ -1,6 +1,11 @@
 package bbth.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Activity;
+import android.content.res.Resources;
+import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
 import bbth.engine.ui.UINavigationController;
@@ -12,11 +17,28 @@ public class BBTHGame extends Game {
 	public static final boolean DEBUG = false;
 	private UINavigationController navController;
 
+	// get achievement descriptions from XML descriptions
+	private Map<String, String> getAchievementDescriptions() {
+		Map<String, String> descriptionMap = new HashMap<String, String>();
+		Resources resources = GameActivity.instance.getResources();
+		String []names = resources.getStringArray(R.array.achievementNames);
+		String []descriptions = resources.getStringArray(R.array.achievementDescriptions);
+		assert names.length == descriptions.length;
+		int n = names.length;
+		for (int i = 0; i < n; ++i) {
+			descriptionMap.put(names[i], descriptions[i]);
+		}
+		
+		return descriptionMap;
+	}
+	
 	public BBTHGame(Activity activity) {
+		Achievements.INSTANCE.initialize(activity);
 		navController = new UINavigationController(null);
 		currentScreen = navController;
 		
-		navController.push(new TitleScreen(navController));
+		Map<String, String> achievements = getAchievementDescriptions();
+		navController.push(new TitleScreen(navController, achievements));
 		
 //		controller.push(new BBTHAITest(this));
 //		controller.push(new MusicTestScreen(activity));
