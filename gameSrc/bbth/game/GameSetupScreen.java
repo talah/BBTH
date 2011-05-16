@@ -17,11 +17,12 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private UIButton clientButton;
 	private UIButton disconnectButton;
 	private UIButton backButton;
-	private UILabel label;
+	private UILabel statusLabel;
 
 	private Team playerTeam;
 	
 	private UINavigationController controller;
+	private UILabel titleLabel;
 
 	public GameSetupScreen(UINavigationController controller) {
 		super(null);
@@ -63,17 +64,28 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 
-		label = new UILabel("", null);
-		label.setTextSize(15);
-		label.setPosition(5, 30);
-		label.setSize(BBTHGame.WIDTH - 10, 10);
-		label.setTextAlign(Align.CENTER);
-		addSubview(label);
+		titleLabel = new UILabel("Multiplayer", null);
+		titleLabel.setTextSize(30.f);
+		titleLabel.setAnchor(Anchor.CENTER_CENTER);
+		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
+		titleLabel.setTextAlign(Align.CENTER);
+		addSubview(titleLabel);
+		
+		statusLabel = new UILabel("", null);
+		statusLabel.setTextSize(15);
+		statusLabel.setItalics(true);
+		statusLabel.setAnchor(Anchor.CENTER_CENTER);
+		statusLabel.setPosition(BBTHGame.WIDTH / 2, 130);
+		statusLabel.setSize(BBTHGame.WIDTH - 10, 10);
+		statusLabel.setTextAlign(Align.CENTER);
+		statusLabel.setWrapText(true);
+		addSubview(statusLabel);
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
-		label.setText("Status: " + bluetooth.getString());
+		String statusMessage = bluetooth.getString();
+		statusLabel.setText((statusMessage == null) ? "" : statusMessage);
 
 		if (bluetooth.getState() == State.CONNECTED) {
 			if (playerTeam == Team.SERVER) {

@@ -180,6 +180,15 @@ public class UILabel extends UIControl {
 		_paint.setFakeBoldText(bold);
 	}
 	
+	public void setItalics(boolean italics)
+	{
+		if (italics) {
+			_paint.setTextSkewX(-0.25f);
+		} else {
+			_paint.setTextSkewX(0.f);
+		}
+	}
+	
 	public void setTextAlign(Align align)
 	{
 		_paint.setTextAlign(align);
