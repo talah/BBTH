@@ -1,19 +1,13 @@
 package bbth.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import bbth.engine.core.GameActivity;
-import bbth.engine.sound.Beat;
-import bbth.engine.sound.BeatTracker;
-import bbth.engine.sound.MusicPlayer;
+import bbth.engine.sound.*;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SoundManager;
 
 /**
  * A complete beat track for a single song. Handles music, hit and miss sounds,

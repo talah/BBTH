@@ -8,7 +8,6 @@ public class BBTHActivity extends GameActivity {
 
 	@Override
 	protected Game getGame() {
-		Achievements.INSTANCE.initialize(this);
 		return new BBTHGame(this);
 	}
 }

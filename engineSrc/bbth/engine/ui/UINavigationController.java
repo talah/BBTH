@@ -36,7 +36,11 @@ public class UINavigationController extends UIView {
 
 	@Override
 	public void onUpdate(float seconds) {
+		if (currentView != null)
+			currentView.onUpdate(seconds);
 		if (transitioning) {
+			if (newView != null)
+				newView.onUpdate(seconds);
 			if (transitionTime < 0f)
 				transitionTime = 0f;
 			else
@@ -51,8 +55,6 @@ public class UINavigationController extends UIView {
 				transition = null;
 				newView = null;
 			}
-		} else if (currentView != null) {
-			currentView.onUpdate(seconds);
 		}
 	}
 
@@ -100,8 +102,13 @@ public class UINavigationController extends UIView {
 		transitioning = true;
 	}
 
-	public void pop() {
+	// returns true on success, false on failure
+	public boolean pop() {
+		if (screens.size() <= 1) {
+			return false;
+		}
 		pop(instantTransition);
+		return true;
 	}
 	
 	public void pop(Transition transition) {

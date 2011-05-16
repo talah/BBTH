@@ -26,4 +26,10 @@ public interface UIDefaultConstants {
 	public static final float UI_RADIO_BUTTON_INNER_RADIUS_RATIO = 0.6f;
 	public static final float UI_RADIO_BUTTON_WIDTH = 10;
 	public static final float UI_RADIO_BUTTON_LABEL_HEIGHT = 10;
+	
+	// UICheckBox
+	public static final float UI_CHECKBOX_BUTTON_WIDTH = 20;
+	public static final float UI_CHECKBOX_LABEL_HEIGHT = 20;
+	public static final int UI_CHECKBOX_BACKGROUND_COLOR = Color.GRAY;
+	public static final int UI_CHECKBOX_FOREGROUND_COLOR = Color.WHITE;
 }

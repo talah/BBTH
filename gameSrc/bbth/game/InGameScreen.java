@@ -17,7 +17,9 @@ import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 import bbth.engine.util.Timer;
 import bbth.game.BBTHSimulation.GameState;
 import bbth.game.ai.PlayerAI;
@@ -324,13 +326,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
 			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
 			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		} else {
 			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller));
-			controller.pop();
+			controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
 		}
 	}
 
@@ -472,12 +474,20 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onCompletion(MusicPlayer mp) {
+		mp.stop();
+		
 		// End both games at the same time with a synced event
 		if (singlePlayer) {
 			sim.simulateCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT, true);
 		} else {
 			sim.recordCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT);
 		}
+	}
+	
+	@Override
+	public void willHide(boolean animated) {
+		super.willHide(animated);
+		beatTrack.stopMusic();
 	}
 
 	public void startGame() {
