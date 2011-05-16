@@ -72,7 +72,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		if (titleBar.isAnimatingPosition) {
 			animDelay = 0f;
 			titleBar.isAnimatingPosition = false;
-			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 80);
+			titleBar.setPosition(BBTHGame.WIDTH / 2.f, 20);
 		}
 	}
 
