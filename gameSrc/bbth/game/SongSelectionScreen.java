@@ -2,12 +2,7 @@ package bbth.game;
 
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIButton;
-import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
-import bbth.engine.ui.UIScrollView;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 
 public class SongSelectionScreen extends UIScrollView implements
 		UIButtonDelegate {
@@ -15,10 +10,16 @@ public class SongSelectionScreen extends UIScrollView implements
 	private Bluetooth bluetooth;
 	private LockStepProtocol protocol;
 
-	public SongSelectionScreen(Team playerTeam, Bluetooth bluetooth,
-			LockStepProtocol protocol) {
+	UINavigationController controller;
+	
+	boolean singlePlayer;
+	
+	public SongSelectionScreen(UINavigationController controller, Team playerTeam, Bluetooth bluetooth, LockStepProtocol protocol, boolean singlePlayer) {
 		super(null);
 
+		this.controller = controller;
+		this.singlePlayer = singlePlayer;
+		
 		this.playerTeam = playerTeam;
 		this.bluetooth = bluetooth;
 		this.protocol = protocol;
@@ -69,7 +70,7 @@ public class SongSelectionScreen extends UIScrollView implements
 
 	@Override
 	public void onClick(UIButton button) {
-		nextScreen = new InGameScreen(playerTeam, bluetooth, (Song) button.tag,
-				protocol);
+		controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, (Song) button.tag, protocol, singlePlayer));
+		controller.pop();
 	}
 }

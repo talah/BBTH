@@ -1,34 +1,22 @@
 package zdavis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.core.GameScreen;
-import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.LineOfSightTester;
-import bbth.engine.fastgraph.SimpleLineOfSightTester;
-import bbth.engine.fastgraph.Wall;
+import bbth.engine.fastgraph.*;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.util.Bag;
-import bbth.engine.util.MathUtils;
+import bbth.engine.ui.UIView;
+import bbth.engine.util.*;
 import bbth.engine.util.Point;
-import bbth.game.BBTHGame;
-import bbth.game.GridAcceleration;
-import bbth.game.Team;
+import bbth.game.*;
 import bbth.game.ai.AIController;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitManager;
-import bbth.game.units.UnitType;
+import bbth.game.units.*;
 
-public class CombatTest extends GameScreen implements UnitManager {
+public class CombatTest extends UIView implements UnitManager {
 	
 	Bag<Unit> units;
 	
@@ -153,11 +141,9 @@ public class CombatTest extends GameScreen implements UnitManager {
 	Bag<Unit> unitsToRemove = new Bag<Unit>();
 	@Override
 	public void onUpdate(float seconds) {
-		//******** SETUP FOR AI *******//
 		m_controller.update();
 		accel.clearUnits();
 		accel.insertUnits(m_controller.getUnits());
-		//******** SETUP FOR AI *******//
 		
 		for (int i=0; i < units.size(); ++i) {
 			Unit unit = units.get(i);
@@ -165,7 +151,9 @@ public class CombatTest extends GameScreen implements UnitManager {
 		}
 		
 		while (!unitsToRemove.isEmpty()) {
-			units.remove(unitsToRemove.removeLast());
+			Unit toRemove = unitsToRemove.removeLast();
+			units.remove(toRemove);
+			spawnUnit(toRemove.getType(), toRemove.getTeam());
 		}
 		
 		particleSystem.tick(seconds);
@@ -284,7 +272,7 @@ public class CombatTest extends GameScreen implements UnitManager {
 
 	@Override
 	public void removeWall(Wall wall) {
-		// TODO Auto-generated method stub
-		
+		m_graph_gen.walls.remove(wall);
+		m_graph_gen.compute();
 	}
 }
