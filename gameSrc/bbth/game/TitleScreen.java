@@ -96,7 +96,8 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void onClick(UIButton button) {
 		if (button == singleplayerButton) {
-			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, new LockStepProtocol()), new LockStepProtocol(), true), BBTHGame.MOVE_LEFT_TRANSITION);
+			LockStepProtocol protocol = new LockStepProtocol();
+			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, protocol), protocol, true), BBTHGame.MOVE_LEFT_TRANSITION);
 		} else if (button == multiplayerButton) {
 			controller.push(new GameSetupScreen(controller), BBTHGame.MOVE_LEFT_TRANSITION);
 		} else if (button == achievementsButton) {
