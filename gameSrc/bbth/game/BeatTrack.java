@@ -97,6 +97,10 @@ public class BeatTrack {
 		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": UBER UNIT!")/2.0f;
 	}
 	
+	public void setSong(Song song) {
+		loadSong(song);
+	}
+	
 	// loads a song and an associated beat track
 	public final void loadSong(Song s) {
 		song = s;

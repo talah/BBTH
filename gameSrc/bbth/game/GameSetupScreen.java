@@ -24,7 +24,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 
 	public GameSetupScreen() {
 		super(null);
-		
+
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		setPosition(0, 0);
 
@@ -66,7 +66,11 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		label.setText("Status: " + bluetooth.getString());
 
 		if (bluetooth.getState() == State.CONNECTED) {
-			nextScreen = new InGameScreen(playerTeam, bluetooth, BBTHGame.SONG, protocol);
+			if (playerTeam == Team.SERVER) {
+				nextScreen = new SongSelectionScreen(playerTeam, bluetooth, protocol);
+			} else if (playerTeam == Team.CLIENT) {
+				nextScreen = new InGameScreen(playerTeam, bluetooth, null, protocol);
+			}
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
 			clientButton.isDisabled = false;
