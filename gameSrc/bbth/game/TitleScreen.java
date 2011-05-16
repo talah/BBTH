@@ -97,11 +97,11 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	public void onClick(UIButton button) {
 		if (button == singleplayerButton) {
 			LockStepProtocol protocol = new LockStepProtocol();
-			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, protocol), protocol, true), BBTHGame.MOVE_LEFT_TRANSITION);
+			controller.push(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, protocol), protocol, true), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (button == multiplayerButton) {
-			controller.push(new GameSetupScreen(controller), BBTHGame.MOVE_LEFT_TRANSITION);
+			controller.push(new GameSetupScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (button == achievementsButton) {
-			controller.push(new AchievementsScreen(controller, achievements));
+			controller.push(new AchievementsScreen(controller, achievements), BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
 }

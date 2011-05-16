@@ -81,10 +81,10 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		if (bluetooth.getState() == State.CONNECTED) {
 			if (playerTeam == Team.SERVER) {
 				controller.pushUnder(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
-				controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 			} else if (playerTeam == Team.CLIENT) {
 				controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
-				controller.pop(BBTHGame.FADE_OUT_FADE_IN_TRANSITION);
+				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 			}
 		} else if (bluetooth.getState() == State.DISCONNECTED) {
 			serverButton.isDisabled = false;
@@ -115,7 +115,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			clientButton.isDisabled = false;
 			disconnectButton.isDisabled = true;
 		} else if (sender == backButton) {
-			controller.pop(BBTHGame.MOVE_RIGHT_TRANSITION);
+			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		}
 	}
 

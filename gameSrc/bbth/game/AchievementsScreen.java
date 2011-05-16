@@ -66,7 +66,7 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 	@Override
 	public void onClick(UIButton button) {
 		if (button == _backButton) {
-			_navController.pop();
+			_navController.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		}
 	}
 
