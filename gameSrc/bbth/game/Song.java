@@ -12,7 +12,7 @@ public enum Song {
 	JAVLA_SLADDER(R.raw.javlasladdar, R.xml.track2, -4),
 	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -5),
 	MIGHT_AND_MAGIC(R.raw.mightandmagic, R.xml.track2, -6),
-	DERP(R.raw.derp, R.xml.track2, -7);
+	DERP(R.raw.derp, R.xml.derp, -7);
 	
 	private Song(int song, int track, int id) {
 		songId = song;
@@ -39,8 +39,6 @@ public enum Song {
 			return Song.ODINS_KRAFT;
 		case -6: 
 			return Song.MIGHT_AND_MAGIC;
-		case -7:
-			return Song.DERP;
 
 		default:
 			return null;
