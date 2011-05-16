@@ -35,7 +35,6 @@ public class BeatTrack {
 	//private final int HOLD_SOUND_ID;
 	//private int holdId;
 	
-	private Song song;
 	private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
@@ -53,8 +52,8 @@ public class BeatTrack {
 	private String combo_brag_text;
 	private long last_uber_combo_time;
 	
-	public BeatTrack(Song s, OnCompletionListener listener) {
-		loadSong(s);
+	public BeatTrack(OnCompletionListener listener) {
+		loadSong(song);
 		beatsInRange = new ArrayList<Beat>();
 		
 		last_combo_time = 0;
@@ -63,9 +62,7 @@ public class BeatTrack {
 		// Setup general stuff		
 		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 			public void onCompletion(MusicPlayer mp) {
-				loadSong(song);
-				beatsInRange = new ArrayList<Beat>();
-				mp.play();
+				mp.stop();
 			}
 		});
 		musicPlayer.setOnCompletionListener(listener);
@@ -97,10 +94,9 @@ public class BeatTrack {
 	}
 	
 	// loads a song and an associated beat track
-	public final void loadSong(Song s) {
-		song = s;
-		musicPlayer = new MusicPlayer(GameActivity.instance, s.songId);
-		beatTracker = new BeatTracker(musicPlayer, s.trackId);
+	public final void loadSong(Song song) {
+		musicPlayer = new MusicPlayer(GameActivity.instance, song.songId);
+		beatTracker = new BeatTracker(musicPlayer, song.trackId);
 	}
 
 	public void startMusic() {

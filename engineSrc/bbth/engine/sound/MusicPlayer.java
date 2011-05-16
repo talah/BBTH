@@ -1,10 +1,7 @@
 package bbth.engine.sound;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.util.Log;
 
 /**
  * A player for single music track
@@ -55,23 +52,11 @@ public class MusicPlayer {
 	public void play() {
 		if (_state == IDLE || _state == PAUSED) {
 			_mediaPlayer.start();
+			_state = PLAYING;
 			while (_mediaPlayer.getCurrentPosition() < 1) {
 				// wait here, derp
 			}
 			_startTime = System.currentTimeMillis();
-			_state = PLAYING;
-		} else if (_state == STOPPED) {
-			try {
-				_mediaPlayer.prepare();
-				_mediaPlayer.start();
-				while (_mediaPlayer.getCurrentPosition() < 1) {
-					// wait here, derp
-				}
-				_startTime = System.currentTimeMillis();
-				_state = PLAYING;
-			} catch (IOException e) {
-				Log.e("BBTH", "MusicPlayer failed to prepare song.");
-			}
 		}
 	}
 
@@ -93,6 +78,7 @@ public class MusicPlayer {
 	public void stop() {
 		if (_state != STOPPED) {
 			_mediaPlayer.stop();
+			_state = STOPPED;
 		}
 	}
 
