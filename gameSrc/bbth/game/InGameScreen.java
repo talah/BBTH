@@ -12,8 +12,7 @@ import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.sound.*;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIView;
+import bbth.engine.ui.*;
 import bbth.engine.util.Timer;
 import bbth.game.BBTHSimulation.GameState;
 import bbth.game.ai.PlayerAI;
@@ -45,9 +44,16 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
-
-	public InGameScreen(Team playerTeam, Bluetooth bluetooth, Song song,
-			LockStepProtocol protocol) {
+	
+	private boolean singlePlayer;
+	private UINavigationController controller;
+	
+	public InGameScreen(UINavigationController controller, Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol, boolean singlePlayer) {
+		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		
+		this.controller = controller;
+		this.singlePlayer = singlePlayer;
+		
 		this.team = playerTeam;
 		tutorial = new Tutorial(this);
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT  / 2.f);
@@ -76,7 +82,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		paint.setStrokeWidth(2.f);
 		particles = new ParticleSystem(200, 0.5f);
 		
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			player_ai = new PlayerAI(sim.remotePlayer, sim.localPlayer, beatTrack);
 		}
 	}
@@ -233,22 +239,22 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onUpdate(float seconds) {
 		entireUpdateTimer.start();
 
-		if (!BBTHGame.IS_SINGLE_PLAYER) {
+		if (!singlePlayer) {
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
-				nextScreen = new GameStatusMessageScreen.DisconnectScreen();
+				nextScreen = new GameStatusMessageScreen.DisconnectScreen(controller);
 			}
 		}
 
 		// Update the single-player AI
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			player_ai.update(seconds);
 		}
 
 		// Update the game
 		simUpdateTimer.start();
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			sim.update(seconds);
 		} else {
 			sim.onUpdate(seconds);
@@ -276,11 +282,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
 			if (gameState == GameState.TIE) {
-				nextScreen = new GameStatusMessageScreen.TieScreen();
+				nextScreen = new GameStatusMessageScreen.TieScreen(controller);
 			} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-				nextScreen = new GameStatusMessageScreen.WinScreen();
+				nextScreen = new GameStatusMessageScreen.WinScreen(controller);
 			} else {
-				nextScreen = new GameStatusMessageScreen.LoseScreen();
+				nextScreen = new GameStatusMessageScreen.LoseScreen(controller);
 			}
 			beatTrack.stopMusic();
 		}
@@ -298,7 +304,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		if (USE_UNIT_SELECTOR) {
 			int unitType = sim.getMyUnitSelector().checkUnitChange(x, y);
 			if (unitType >= 0) {
-				if (BBTHGame.IS_SINGLE_PLAYER) {
+				if (singlePlayer) {
 					sim.simulateCustomEvent(0, 0, unitType, true);
 				} else {
 					sim.recordCustomEvent(0, 0, unitType);
@@ -326,7 +332,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			currentWall = new Wall(x, y, x, y);
 		}
 
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			sim.simulateTapDown(x, y, true, isHold, isOnBeat);
 		} else {
 			sim.recordTapDown(x, y, isHold, isOnBeat);
@@ -356,7 +362,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 		}
 
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			sim.simulateTapMove(x, y, true);
 		} else {
 			sim.recordTapMove(x, y);
@@ -388,7 +394,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			simulateWallGeneration();
 		}
 
-		if (BBTHGame.IS_SINGLE_PLAYER) {
+		if (singlePlayer) {
 			sim.simulateTapUp(x, y, true);
 		} else {
 			sim.recordTapUp(x, y);
@@ -428,7 +434,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	{
 		removeSubview(tutorial);
 		sim.recordCustomEvent(0, 0, BBTHSimulation.TUTORIAL_DONE_EVENT);
-		if (BBTHGame.IS_SINGLE_PLAYER)
+		if (singlePlayer)
 			sim.setBothPlayersReady();
 	}
 }

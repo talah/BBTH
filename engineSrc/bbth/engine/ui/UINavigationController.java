@@ -43,11 +43,10 @@ public class UINavigationController extends UIView {
 				transitionTime += seconds;
 			transition.setTime(transitionTime);
 			if (transition.isDone()) {
-//System.err.println("Transition finished");
 				transitioning = false;
 				currentView = newView;
-				
 				transitionTime = -1f;
+				
 				// let gc do its work
 				transition = null;
 				newView = null;
@@ -110,7 +109,7 @@ public class UINavigationController extends UIView {
 			if (currentView != null)
 				currentView.willHide(true);
 			screens.removeFirst(); // remove current view
-			UIView newView = screens.removeFirst();
+			UIView newView = screens.getFirst();
 			newView.willAppear(true);
 			startTransition(transition, newView);
 		} catch (NoSuchElementException e) {
@@ -130,6 +129,10 @@ public class UINavigationController extends UIView {
 		screens.addFirst(screen);
 		screen.willAppear(true);
 		startTransition(transition, screen);
+	}
+	
+	public void pushUnder(UIView screen) {
+		screens.add(screens.size()-2, screen);
 	}
 
 	public void pushBack(UIView screen) {

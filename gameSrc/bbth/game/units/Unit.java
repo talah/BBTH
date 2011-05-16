@@ -131,7 +131,7 @@ public abstract class Unit extends BasicMovable {
 			float yVel = MathUtils.randInRange(25.f, 50.f) * sin;
 			particleSystem.createParticle()
 			.line()
-			.velocity(xVel, yVel)
+			.velocity(xVel*getRadius()*.25f, yVel*getRadius()*.25f)
 			.angle(angle)
 			.shrink(0.1f, 0.15f)
 			.radius(getRadius()*1.5f)

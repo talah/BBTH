@@ -11,6 +11,9 @@ import bbth.game.BBTHGame;
 
 public class TransitionTest extends UINavigationController {
 	UIView view1 = new UIView("view1") {
+		{
+			setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		}
 		@Override
 		public void onDraw(Canvas canvas) {
 			canvas.drawRGB(62, 107, 172);
@@ -18,6 +21,9 @@ public class TransitionTest extends UINavigationController {
 		}
 	};
 	UIView view2 = new UIView("view2") {
+		{
+			setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
+		}
 		@Override
 		public void onDraw(Canvas canvas) {
 			canvas.drawRGB(255, 255, 255);
@@ -31,6 +37,7 @@ public class TransitionTest extends UINavigationController {
 	
 	public TransitionTest() {
 		super("transitiontest");
+		
 		UILabel label1 = new UILabel("View One", "l1");
 		label1.setTextColor(Color.WHITE);
 		view1.addSubview(label1);
@@ -55,7 +62,6 @@ public class TransitionTest extends UINavigationController {
 		x.addLinearSegment(2f, 0.0);
 		twoToOne.setNewX(x);
 	}
-	
 
 	@Override
 	public void onTouchDown(float x, float y) {

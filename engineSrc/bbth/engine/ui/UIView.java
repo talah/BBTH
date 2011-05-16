@@ -116,7 +116,6 @@ public class UIView extends GameScreen {
 			subviews.add(subview);
 			subviewCount = subviews.size();
 		}
-
 	}
 
 	public void removeSubview(UIView subview)

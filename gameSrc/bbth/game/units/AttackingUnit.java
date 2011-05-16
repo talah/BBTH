@@ -13,11 +13,11 @@ import bbth.engine.util.MathUtils;
 import bbth.game.Team;
 
 public class AttackingUnit extends Unit {
-	private static final float DETONATION_WITHIN_DISTANCE = 15f;
-	private static final float DETONATION_MAX_RADIUS = 40f;
-	private static final float DETONATION_TIME = .4f;
-	private static final float MIN_DAMAGE = 30f;
-	private static final float MAX_DAMAGE = 90f;
+	public static final float DETONATION_WITHIN_DISTANCE = 15f;
+	public static final float DETONATION_MAX_RADIUS = 40f;
+	public static final float DETONATION_TIME = .4f;
+	public static final float MIN_DAMAGE = 30f;
+	public static final float MAX_DAMAGE = 90f;
 	
 	private static final Envelope DAMAGE_ENVELOPE = new Envelope(MAX_DAMAGE, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
 	static {
