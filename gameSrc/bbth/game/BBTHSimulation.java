@@ -42,6 +42,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	public static final Paint PARTICLE_PAINT = new Paint();
 	static {
 		PARTICLE_PAINT.setStrokeWidth(2.f);
+		PARTICLE_PAINT.setAntiAlias(true);
 	}
 
 	private Team team;
