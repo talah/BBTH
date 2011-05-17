@@ -6,9 +6,9 @@ import bbth.game.achievements.BBTHAchievement;
 import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.units.UnitType;
 
-public class BetterNotToMash extends BBTHAchievement {
+public class IncrementOnUberGetAchievement extends BBTHAchievement {
 
-	public BetterNotToMash(AchievementInfo achievementInfo) {
+	public IncrementOnUberGetAchievement(AchievementInfo achievementInfo) {
 		super(achievementInfo);
 	}
 

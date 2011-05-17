@@ -1,23 +1,10 @@
 package bbth.game.achievements;
 
-import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.AchievementManager;
+import bbth.engine.achievements.*;
 import bbth.engine.util.Bag;
-import bbth.game.R;
-import bbth.game.Song;
-import bbth.game.achievements.events.BaseDestroyedEvent;
-import bbth.game.achievements.events.BeatHitEvent;
-import bbth.game.achievements.events.BeatMissedEvent;
-import bbth.game.achievements.events.GameEndedEvent;
-import bbth.game.achievements.events.UnitCreatedEvent;
-import bbth.game.achievements.events.UnitKilledEvent;
-import bbth.game.achievements.events.UpdateEvent;
-import bbth.game.achievements.events.WallCreatedEvent;
-import bbth.game.achievements.impls.AnythingYouCanDo;
-import bbth.game.achievements.impls.BetterNotToMash;
-import bbth.game.achievements.impls.ComboCounterAchievement;
-import bbth.game.achievements.impls.DesperateTimes;
-import bbth.game.achievements.impls.SongAchievement;
+import bbth.game.*;
+import bbth.game.achievements.events.*;
+import bbth.game.achievements.impls.*;
 
 public final class BBTHAchievementManager extends AchievementManager<BBTHAchievement> {
 	public static final BBTHAchievementManager INSTANCE = new BBTHAchievementManager(R.xml.achievements);
@@ -113,7 +100,7 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		if (info != null) achievements.add(new DesperateTimes(info));
 		
 		info = infoMap.get(200);
-		if (info != null) achievements.add(new BetterNotToMash(info));
+		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
 		
 		info = infoMap.get(201);
 		if (info != null) achievements.add(new ComboCounterAchievement(info, 25));
@@ -126,6 +113,15 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		
 		info = infoMap.get(500);
 		if (info != null) achievements.add(new AnythingYouCanDo(info));
+		
+		info = infoMap.get(606);
+		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		
+		info = infoMap.get(607);
+		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		
+		info = infoMap.get(608);
+		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
 		
 		postRegisterAchievements();
 	}

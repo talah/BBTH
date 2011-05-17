@@ -1,7 +1,6 @@
 package bbth.game.achievements.impls;
 
-import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.Achievements;
+import bbth.engine.achievements.*;
 import bbth.game.achievements.BBTHAchievement;
 import bbth.game.achievements.events.BeatHitEvent;
 

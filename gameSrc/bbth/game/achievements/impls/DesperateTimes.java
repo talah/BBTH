@@ -14,7 +14,6 @@ public class DesperateTimes extends BBTHAchievement {
 	public void baseDestroyed(BaseDestroyedEvent e) {
 		if (!e.getDestroyedBaseOwner().isLocal() && e.getLocalPlayer().getHealth() < 10f) {
 			Achievements.INSTANCE.increment(achievementInfo);
-			Achievements.INSTANCE.commit();
 		}
 	}
 
