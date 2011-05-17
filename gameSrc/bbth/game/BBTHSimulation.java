@@ -14,6 +14,7 @@ import bbth.engine.util.*;
 import bbth.engine.util.Timer;
 import bbth.game.achievements.BBTHAchievementManager;
 import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.GameEndedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.*;
 
@@ -507,6 +508,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			explodeBase(Team.CLIENT);
 		}
 		
+		// achievement notifications
 		if (serverHealth == 0) {
 			baseDestroyedEvent.set(serverPlayer);
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
@@ -515,6 +517,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			baseDestroyedEvent.set(clientPlayer);
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
+		
+		Player winner = gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer;
+		GameEndedEvent endEvent = new GameEndedEvent(song, localPlayer, winner, gameState == GameState.TIE);
+		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
+		
 	}
 
 	private void explodeBase(Team team) {

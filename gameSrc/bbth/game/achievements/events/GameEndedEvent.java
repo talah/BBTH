@@ -4,17 +4,14 @@ import bbth.game.*;
 
 public class GameEndedEvent extends BBTHAchievementEvent {
 
-	public GameEndedEvent(Song song, Player localPlayer) {
+	public GameEndedEvent(Song song, Player localPlayer, Player winningPlayer, boolean tie) {
 		super(song, localPlayer);
+		this.winningPlayer = winningPlayer;
+		this.tie = tie;
 	}
 	
 	boolean tie;
 	Player winningPlayer;
-	
-	public void set(boolean tie, Player winningPlayer) {
-		this.tie = tie;
-		this.winningPlayer = winningPlayer;
-	}
 
 	public Player getWinningPlayer() {
 		return winningPlayer;
