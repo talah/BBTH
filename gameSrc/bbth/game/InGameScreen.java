@@ -191,6 +191,16 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setTextSize(20);
 			canvas.drawText("Waiting for other player...", BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
+		} else {
+			float countdown = sim.getStartingCountdown();
+			int number = (int) Math.ceil(countdown);
+			if (number > 0) {
+				float alpha = countdown - (int) countdown;
+				paint.setARGB((int) (alpha * 255), 255, 255, 255);
+				paint.setTextSize(100);
+				canvas.drawText(Integer.toString(number), BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+						+ BBTHSimulation.GAME_HEIGHT / 2 + 30, paint);
+			}
 		}
 
 		float percent = (System.currentTimeMillis() - tap_location_hint_time) / (float)TAP_HINT_DISPLAY_LENGTH;
@@ -303,7 +313,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 
 		// Start the music
-		if (setSong && sim.isReady() && !beatTrack.isPlaying()) {
+		if (setSong && sim.getGameState() == GameState.IN_PROGRESS && !beatTrack.isPlaying()) {
 			beatTrack.startMusic();
 		}
 

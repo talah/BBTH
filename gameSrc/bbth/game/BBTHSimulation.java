@@ -56,6 +56,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final Random random = new Random();
 	private boolean serverReady;
 	private boolean clientReady;
+	private BaseDestroyedEvent baseDestroyedEvent;
+	private float startingCountdown = 3;
 
 	// This is the virtual size of the game
 	public static final float GAME_X = BeatTrack.BEAT_TRACK_WIDTH;
@@ -194,7 +196,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		generateWall(player);
 	}
 
-	private BaseDestroyedEvent baseDestroyedEvent;
 	@Override
 	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
@@ -285,7 +286,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 
 		if (gameState == GameState.WAITING_TO_START) {
-			gameState = GameState.IN_PROGRESS;
+			startingCountdown -= seconds;
+			if (startingCountdown < 0) {
+				gameState = GameState.IN_PROGRESS;
+			}
 		}
 
 		// DON'T ADVANCE THE SIMULATION WHEN WE AREN'T PLAYING
@@ -557,5 +561,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		} else {
 			serverPlayer.base.drawFill = false;
 		}
+	}
+
+	public float getStartingCountdown() {
+		return startingCountdown;
 	}
 }
