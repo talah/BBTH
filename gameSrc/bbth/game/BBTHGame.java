@@ -46,8 +46,10 @@ public class BBTHGame extends Game {
 		for (int i = 0; i < names.length; ++i) {
 			int imageId = resources.getIdentifier(images[i], "drawable", packageName);
 			Options options = new Options();
+			// decode image and scale to 32x32
 			options.inTargetDensity = DisplayMetrics.DENSITY_DEFAULT;
 			Bitmap image = BitmapFactory.decodeResource(BBTHActivity.instance.getResources(), imageId);
+			image = Bitmap.createScaledBitmap(image, 32, 32, true);
 			achievements.put(names[i], new AchievementInfo(descriptions[i], image));
 			if (!savedAchievements.containsKey(names[i])) {
 				Achievements.INSTANCE.lock(names[i]);
