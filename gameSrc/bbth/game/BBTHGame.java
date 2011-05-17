@@ -63,6 +63,7 @@ public class BBTHGame extends Game {
 	@Override
 	public void onStop() {
 		Achievements.INSTANCE.commit();
+		navController.onStop();
 	}
 
 	public static final UISwipeTransition FROM_RIGHT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_RIGHT, 0.5f);
