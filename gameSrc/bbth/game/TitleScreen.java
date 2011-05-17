@@ -16,7 +16,7 @@ import bbth.game.achievements.AchievementsScreen;
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UIImageView titleBar;
 	private float animDelay = 1.0f;
-	private UIButton singleplayerButton, multiplayerButton, achievementsButton;
+	private UIButton singleplayerButton, multiplayerButton, achievementsButton, settingsButton;
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
@@ -54,8 +54,16 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
 		achievementsButton.setPosition(-BBTHGame.WIDTH * 3.0f, BBTHGame.HEIGHT / 2 + 65);
 		achievementsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65, 1.5f);
-
 		achievementsButton.setButtonDelegate(this);
+		
+		settingsButton = new UIButton("Settings", this);
+		settingsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		settingsButton.setAnchor(Anchor.CENTER_CENTER);
+		settingsButton.setPosition(-BBTHGame.WIDTH * 4.0f, BBTHGame.HEIGHT / 2 + 130);
+		settingsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 130, 2.0f);
+		settingsButton.setButtonDelegate(this);
+		
+		
 	}
 	
 	@Override
@@ -104,6 +112,12 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 			achievementsButton.isAnimatingPosition = false;
 			achievementsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65);
 		}
+		
+		if (settingsButton.isAnimatingPosition) {
+			animDelay = 0f;
+			settingsButton.isAnimatingPosition = false;
+			settingsButton.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 130);
+		}
 	}
 
 	@Override
@@ -118,6 +132,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 			addSubview(singleplayerButton);
 			addSubview(multiplayerButton);
 			addSubview(achievementsButton);
+			addSubview(settingsButton);
 		}
 	}
 
@@ -130,6 +145,8 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 			controller.push(new GameSetupScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (button == achievementsButton) {
 			controller.push(new AchievementsScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
+		} else if (button == settingsButton) {
+			controller.push(new SettingsScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
 }

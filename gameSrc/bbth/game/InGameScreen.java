@@ -58,7 +58,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean gameIsStarted;
 
 	// TODO: Make a way to set the difficulty.
-	float aiDifficulty = 1.0f;
+	float aiDifficulty;
 	
 	boolean singlePlayer;
 	private UINavigationController controller;
@@ -70,6 +70,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		this.singlePlayer = singlePlayer;
 		
 		this.team = playerTeam;
+		
+		aiDifficulty = BBTHGame.AI_DIFFICULTY;
 		
 		if (USE_PAGINATED_TUTORIAL) {
 			tutorial = new PaginatedTutorial();
@@ -142,7 +144,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		if (!tutorial.isFinished() && tutorial.supressDrawing()) {
+		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished() && tutorial.supressDrawing()) {
 			tutorial.onDraw(canvas);
 			return;
 		}
@@ -186,7 +188,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		}
 		drawUITimer.stop();
 
-		if (!tutorial.isFinished()) {
+		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onDraw(canvas);
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
@@ -308,7 +310,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		simUpdateTimer.stop();
 
 		// Update the tutorial
-		if (!tutorial.isFinished()) {
+		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onUpdate(seconds);
 		} else {
 			startGame();
@@ -360,7 +362,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onTouchDown(float x, float y) {
 
 		// We don't want to interact with the game if the tutorial is running!
-		if (!tutorial.isFinished()) {
+		if ( BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onTouchDown(x, y);
 			return;
 		}
@@ -407,7 +409,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onTouchMove(float x, float y) {
 
 		// We don't want to interact with the game if the tutorial is running!
-		if (!tutorial.isFinished()) {
+		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onTouchMove(x, y);
 			return;
 		}
@@ -437,7 +439,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public void onTouchUp(float x, float y) {
 
 		// We don't want to interact with the game if the tutorial is running!
-		if (!tutorial.isFinished()) {
+		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onTouchUp(x, y);
 			return;
 		}

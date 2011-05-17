@@ -1,10 +1,11 @@
 package bbth.game;
 
-import thuhe.thuhe.thuhe.UITestScreen;
 import android.app.Activity;
 import bbth.engine.achievements.Achievements;
-import bbth.engine.core.*;
-import bbth.engine.ui.*;
+import bbth.engine.core.Game;
+import bbth.engine.core.GameActivity;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UISwipeTransition;
 import bbth.engine.ui.UISwipeTransition.Direction;
 import bbth.game.achievements.BBTHAchievementManager;
 
@@ -13,11 +14,17 @@ public class BBTHGame extends Game {
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = false;
+	public static boolean SHOW_TUTORIAL = true;
+	public static float AI_DIFFICULTY = 0.75f;
 	private UINavigationController navController;
 	
 	public BBTHGame(Activity activity) {
 		navController = new UINavigationController();
 		currentScreen = navController;
+		
+		SHOW_TUTORIAL = activity.getSharedPreferences("game_settings", 0).getBoolean("showTutorial", true);
+		AI_DIFFICULTY = activity.getSharedPreferences("game_settings", 0).getFloat("aiDifficulty", 0.75f);
+		
 		
 		Achievements.INSTANCE.initialize(activity);
 		BBTHAchievementManager.INSTANCE.initialize();
