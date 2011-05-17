@@ -44,7 +44,6 @@ public abstract class Unit extends BasicMovable {
 	}
 
 	public abstract void drawChassis(Canvas canvas);
-	public abstract void drawForMiniMap(Canvas canvas);
 	public void drawEffects(Canvas canvas) {}
 	public void drawHealthBar(Canvas canvas, boolean serverDraw) {
 		if (isDead())
@@ -150,7 +149,7 @@ public abstract class Unit extends BasicMovable {
 	
 	protected static Paint tempPaint = new Paint();
 
-	public int getHash() {
+	public int getSimulationSyncHash() {
 		int hash = 0;
 		hash = Hash.mix(hash, getX());
 		hash = Hash.mix(hash, getY());

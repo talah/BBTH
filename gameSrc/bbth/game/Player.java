@@ -264,11 +264,11 @@ public class Player {
 		return _isLocal;
 	}
 	
-	public int getHash() {
+	public int getSimulationSyncHash() {
 		int hash = 0;
 		hash = Hash.mix(hash, _health);
 		for (int i = 0; i < units.size(); i++) {
-			hash = Hash.mix(hash, units.get(i).getHash());
+			hash = Hash.mix(hash, units.get(i).getSimulationSyncHash());
 		}
 		return hash;
 	}

@@ -63,6 +63,9 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			addSubview(button);
 		}
 
+		public void onDrawSimulation(Canvas canvas) {
+		}
+
 		@Override
 		public void onClick(UIButton button) {
 		}
@@ -207,6 +210,12 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	}
 
 	private class DrawWallStep extends Step {
+		private boolean isDragging;
+		private float startX;
+		private float startY;
+		private float endX;
+		private float endY;
+
 		public DrawWallStep() {
 			beat = Beat.hold(1000);
 		}
@@ -218,14 +227,20 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("When the hold is between", x, y - 17, paint);
-			canvas.drawText("the two lines, drag on the", x, y, paint);
+			canvas.drawText("When a beat has a tail,", x, y - 17, paint);
+			canvas.drawText("you can drag on the", x, y, paint);
 			canvas.drawText("grid to create a wall", x, y + 17, paint);
 		}
 
 		@Override
+		public void onDrawSimulation(Canvas canvas) {
+			paint.setColor(team.getWallColor());
+			canvas.drawLine(startX, startY, endX, endY, paint);
+		}
+
+		@Override
 		public void onUpdate(float seconds) {
-			if (songTime > MAX_SONG_TIME) {
+			if (!beat.isTapped() && songTime > MAX_SONG_TIME) {
 				songTime = MIN_SONG_TIME;
 			}
 		}
@@ -235,8 +250,27 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			x -= GAME_X;
 			y -= GAME_Y;
 			if (x >= 0 && beat.onTouchDown((int) (songTime * 1000))) {
-				localPlayer.spawnUnit(x, y);
-				transition(new FinishedStep());
+				isDragging = true;
+				startX = endX = x;
+				startY = endY = y;
+			}
+		}
+
+		@Override
+		public void onTouchMove(float x, float y) {
+			if (isDragging) {
+				endX = x;
+				endY = y;
+			}
+		}
+
+		@Override
+		public void onTouchUp(float x, float y) {
+			if (isDragging) {
+				endX = x;
+				endY = y;
+				BBTHSimulation.generateParticlesForWall(new Wall(startX, startY, endX, endY), team);
+				isDragging = false;
 			}
 		}
 	}
@@ -282,7 +316,6 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		aiController.setPathfinder(pathfinder, gen.graph, tester, accel);
 
 		transition(new PlaceUnitStep());
-		// transition(new DrawWallStep());
 	}
 
 	@Override
@@ -428,6 +461,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		localPlayer.draw(canvas, team == Team.SERVER);
 		remotePlayer.draw(canvas, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.draw(canvas, BBTHSimulation.PARTICLE_PAINT);
+		step.onDrawSimulation(canvas);
 		canvas.restore();
 		drawBeatTrack(canvas);
 		super.onDraw(canvas);

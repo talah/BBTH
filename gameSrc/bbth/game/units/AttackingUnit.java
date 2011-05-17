@@ -141,10 +141,4 @@ public class AttackingUnit extends Unit {
 	public float getRadius() {
 		return 4f;
 	}
-	
-	@Override
-	public void drawForMiniMap(Canvas canvas) {
-		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
-	}
-
 }
