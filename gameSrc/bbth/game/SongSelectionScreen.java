@@ -38,7 +38,7 @@ public class SongSelectionScreen extends UIScrollView implements
 		this.addSubview(makeButton(Song.DONKEY_KONG, "Donkey Kong", y++));
 		this.addSubview(makeButton(Song.RETRO, "Retro", y++));
 		this.addSubview(makeButton(Song.MISTAKE_THE_GETAWAY, "Mistake the Getaway", y++));
-		this.addSubview(makeButton(Song.JAVLA_SLADDER, "Javla Sladder", y++));
+		this.addSubview(makeButton(Song.JAVLA_SLADDAR, "Javla Sladdar", y++));
 		this.addSubview(makeButton(Song.ODINS_KRAFT, "Odin's Kraft", y++));
 		this.addSubview(makeButton(Song.MIGHT_AND_MAGIC, "Might and Magic", y++));
 		this.setContentRect(0, 0, BBTHGame.WIDTH, BBTHGame.HEIGHT / 2 + (y - 1) * 50);

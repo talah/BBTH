@@ -12,6 +12,8 @@ import bbth.engine.particles.*;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.*;
 import bbth.engine.util.Timer;
+import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.achievements.events.BaseDestroyedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.*;
 
@@ -191,11 +193,12 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		generateWall(player);
 	}
 
+	private BaseDestroyedEvent baseDestroyedEvent;
 	@Override
-	protected void simulateCustomEvent(float x, float y, int code,
-			boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
+			baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer);
 		} else {
 			Player player = playerMap.get(isServer);
 
@@ -489,13 +492,22 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		float serverHealth = Math.max(0, serverPlayer.getHealth());
 		float clientHealth = Math.max(0, clientPlayer.getHealth());
 		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
-
+			
 		// PARTICLES!
 		if (gameState != GameState.SERVER_WON) {
 			explodeBase(Team.SERVER);
 		}
 		if (gameState != GameState.CLIENT_WON) {
 			explodeBase(Team.CLIENT);
+		}
+		
+		if (serverHealth == 0) {
+			baseDestroyedEvent.set(serverPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
+		}
+		if (clientHealth == 0) {
+			baseDestroyedEvent.set(clientPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 	}
 
