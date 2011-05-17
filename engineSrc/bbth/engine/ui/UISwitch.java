@@ -10,13 +10,15 @@ import android.graphics.Region.Op;
 import android.graphics.Shader;
 
 public class UISwitch extends UIControl {
+	private static float MIN_OFFSET_DURATION = .01f;
+
 	private UILabel onTextLabel, offTextLabel;
 	private RectF switchButtonRect, onBackgroundRect, offBackgroundRect;
 	private Paint paint;
 	private Shader buttonUpGradient, buttonDownGradient, onGradient, offGradient;
 
-	private boolean isOn, userDragging, isAnimating;
-	private float labelWidth, duration, elapsed, dx;
+	private boolean isOn, userDragging, isAnimating, continueAnimation;
+	private float labelWidth, duration, elapsed, offset, touchDownX;
 
 	public UISwitch() {
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -42,10 +44,14 @@ public class UISwitch extends UIControl {
 	public boolean isOn() {
 		return this.isOn;
 	}
-	
+
 	@Override
 	public boolean containsPoint(float x, float y) {
-		return true;
+		if (this.userDragging) {
+			return true;
+		} else {
+			return super.containsPoint(x, y);
+		}
 	}
 
 	@Override
@@ -75,8 +81,8 @@ public class UISwitch extends UIControl {
 		this.buttonDownGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(switchButtonRect, UIDefaultConstants.FOREGROUND_COLOR);
 		this.onGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(onBackgroundRect, UIDefaultConstants.ACTIVE_COLOR);
 		this.offGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(offBackgroundRect, UIDefaultConstants.UI_SWITCH_OFF_COLOR);
-		
-		dx = (this.isOn) ? 0 : this.labelWidth;
+
+		offset = (this.isOn) ? 0 : this.labelWidth;
 	}
 
 	@Override
@@ -86,16 +92,30 @@ public class UISwitch extends UIControl {
 		if (this.isAnimating) {
 			this.elapsed += seconds;
 			
-			if (this.isOn) {
-				dx = MathUtils.lerp(0, labelWidth, MathUtils.scale(0, duration, 0, 1, elapsed));
+			float offsetVal = MathUtils.lerp(0, labelWidth, MathUtils.scale(0, duration, 0, 1, elapsed, true));
+
+			if (this.continueAnimation) {
+				if (this.isOn) {
+					offset = offsetVal;
+				} else {
+					offset = this.labelWidth - offsetVal;
+				}
 			} else {
-				dx = this.labelWidth - MathUtils.lerp(0, labelWidth, MathUtils.scale(0, duration, 0, 1, elapsed));
+				if (this.isOn) {
+					offset = this.labelWidth - offsetVal;
+				} else {
+					offset = offsetVal;
+				}
 			}
 		}
 
 		if (this.isAnimating && this.elapsed >= this.duration) {
+			if (this.continueAnimation) {
+				this.isOn = !this.isOn;
+			}
+
 			this.isAnimating = false;
-			this.isOn = !this.isOn;
+			this.continueAnimation = false;
 		}
 	}
 
@@ -106,20 +126,42 @@ public class UISwitch extends UIControl {
 		this.userDragging = true;
 
 		this.elapsed = 0;
-		this.isAnimating = true;
+		this.touchDownX = x;
+		this.isAnimating = false;
 	}
 
 	@Override
 	public void onTouchMove(float x, float y) {
 		super.onTouchMove(x, y);
 
+		if (this.userDragging) {
+			this.offset = MathUtils.clamp(0, this.labelWidth, offset - (x - touchDownX));
+			this.elapsed = MathUtils.scale(0, this.labelWidth, 0, duration, offset, true);
+			this.touchDownX = x;
+		}
 	}
 
 	@Override
 	public void onTouchUp(float x, float y) {
 		super.onTouchUp(x, y);
 
+		this.isAnimating = true;
 		this.userDragging = false;
+
+		// THIS DOESNT MAKE ANY SENSE
+		if ((this.isOn && elapsed > UISwitch.MIN_OFFSET_DURATION) || (!this.isOn && elapsed < this.duration - UISwitch.MIN_OFFSET_DURATION)) {
+			if ((this.isOn && elapsed > duration / 2.f) || (!this.isOn && elapsed < duration / 2.f)) {
+				this.continueAnimation = true;
+			} else {
+				this.continueAnimation = false;
+			}
+		} else {
+			this.continueAnimation = true;
+		}
+
+		if ((!this.isOn && this.continueAnimation) || (this.isOn && !this.continueAnimation)) {
+			this.elapsed = duration - this.elapsed;
+		}
 	}
 
 	@Override
@@ -129,7 +171,7 @@ public class UISwitch extends UIControl {
 		canvas.save();
 		canvas.clipRect(_rect, Op.INTERSECT);
 
-		canvas.translate(-this.dx, 0);
+		canvas.translate(-this.offset, 0);
 
 		// Backgrounds for the labels
 		paint.setShader(this.onGradient);
