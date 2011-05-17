@@ -27,13 +27,20 @@ public abstract class Unit extends BasicMovable {
 	protected UnitManager unitManager;
 	
 	protected float health = getStartingHealth();
+	private static int nextHashCodeID;
+	private int hashCodeID;
 
 	public Unit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
+		hashCodeID = nextHashCodeID++;
 		this.team = team;
 		this.unitManager = unitManager;
 		this.particleSystem = particleSystem;
 		this.paint = p;
 		fsm = new FiniteStateMachine();
+	}
+
+	public static void resetNextHashCodeID() {
+		nextHashCodeID = 0;
 	}
 
 	public abstract void drawChassis(Canvas canvas);
@@ -152,5 +159,10 @@ public abstract class Unit extends BasicMovable {
 		hash = Hash.mix(hash, getHealth());
 		hash = Hash.mix(hash, getType().ordinal());
 		return hash;
+	}
+
+	@Override
+	public int hashCode() {
+		return hashCodeID;
 	}
 }

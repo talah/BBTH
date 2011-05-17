@@ -27,41 +27,17 @@ public class AchievementView extends UIView {
 	private UILabel _nameLabel;
 	private UILabel _descriptionLabel;
 	private UIImageView _image;
+	private float _unlockProgress;
 	private Paint _paint;
 	
-	// TODO: remove
-	public AchievementView(String name, String description, int imageId) {		
-		_nameLabel = new UILabel(name, null);
+	public AchievementView(AchievementInfo info, int activations, Bitmap image) {
+		_nameLabel = new UILabel(info.name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
 		_nameLabel.setTextAlign(Align.LEFT);
 		_nameLabel.sizeToFit();
 		addSubview(_nameLabel);
 		
-		_descriptionLabel = new UILabel(description, null);
-		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
-		_descriptionLabel.setTextAlign(Align.LEFT);
-		_descriptionLabel.setWrapText(true);
-		_descriptionLabel.setVerticalAlign(VAlign.MIDDLE);
-		addSubview(_descriptionLabel);
-		
-		_image = new UIImageView(imageId);
-		_image.setSize(32, 32);
-		_image.setAnchor(Anchor.CENTER_LEFT);
-		addSubview(_image);
-		
-		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_paint.setColor(Color.WHITE);
-		_paint.setStyle(Style.STROKE);
-	}
-	
-	public AchievementView(String name, String description, Bitmap image) {		
-		_nameLabel = new UILabel(name, null);
-		_nameLabel.setTextSize(NAME_SIZE);
-		_nameLabel.setTextAlign(Align.LEFT);
-		_nameLabel.sizeToFit();
-		addSubview(_nameLabel);
-		
-		_descriptionLabel = new UILabel(description, null);
+		_descriptionLabel = new UILabel(info.description, null);
 		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
 		_descriptionLabel.setTextAlign(Align.LEFT);
 		_descriptionLabel.setWrapText(true);
@@ -73,9 +49,10 @@ public class AchievementView extends UIView {
 		_image.setAnchor(Anchor.CENTER_LEFT);
 		addSubview(_image);
 		
+		_unlockProgress = activations / (float) (info.maxActivations);
+		
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setColor(Color.WHITE);
-		_paint.setStyle(Style.STROKE);
 	}
 	
 	@Override
@@ -98,8 +75,13 @@ public class AchievementView extends UIView {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
+		_paint.setStyle(Style.FILL);
+		_paint.setColor(Color.rgb(50, 50, 50));
+		canvas.drawRect(_rect.left, _rect.top, _rect.left + _unlockProgress * _rect.width(), _rect.bottom, _paint);
 		super.onDraw(canvas);
 		
+		_paint.setStyle(Style.STROKE);
+		_paint.setColor(Color.WHITE);
 		canvas.drawLine(_rect.left, _rect.top, _rect.right, _rect.top, _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}

@@ -12,6 +12,9 @@ import bbth.engine.particles.*;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.*;
 import bbth.engine.util.Timer;
+import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.GameEndedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.*;
 
@@ -191,11 +194,12 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		generateWall(player);
 	}
 
+	private BaseDestroyedEvent baseDestroyedEvent;
 	@Override
-	protected void simulateCustomEvent(float x, float y, int code,
-			boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
+			baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer);
 		} else {
 			Player player = playerMap.get(isServer);
 
@@ -207,6 +211,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					serverReady = true;
 				} else {
 					clientReady = true;
+				}
+				if (serverReady && clientReady) {
+					Unit.resetNextHashCodeID();
 				}
 			} else if (code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
@@ -491,13 +498,14 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public void setBothPlayersReady() {
 		clientReady = serverReady = true;
+		Unit.resetNextHashCodeID();
 	}
 
 	private void endTheGame() {
 		float serverHealth = Math.max(0, serverPlayer.getHealth());
 		float clientHealth = Math.max(0, clientPlayer.getHealth());
 		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
-
+			
 		// PARTICLES!
 		if (gameState != GameState.SERVER_WON) {
 			explodeBase(Team.SERVER);
@@ -505,6 +513,21 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (gameState != GameState.CLIENT_WON) {
 			explodeBase(Team.CLIENT);
 		}
+		
+		// achievement notifications
+		if (serverHealth == 0) {
+			baseDestroyedEvent.set(serverPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
+		}
+		if (clientHealth == 0) {
+			baseDestroyedEvent.set(clientPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
+		}
+		
+		Player winner = gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer;
+		GameEndedEvent endEvent = new GameEndedEvent(song, localPlayer, winner, gameState == GameState.TIE);
+		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
+		
 	}
 
 	private void explodeBase(Team team) {
