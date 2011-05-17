@@ -20,4 +20,8 @@ public class UnitCreatedEvent extends BBTHAchievementEvent {
 		return m_unit.getType();
 	}
 
+	public Unit getUnit() {
+		return m_unit;
+	}
+
 }

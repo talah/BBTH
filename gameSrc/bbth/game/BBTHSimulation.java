@@ -200,6 +200,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
 			baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer);
+			serverPlayer.setupEvents(this);
+			clientPlayer.setupEvents(this);
 		} else {
 			Player player = playerMap.get(isServer);
 
