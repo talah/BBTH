@@ -336,24 +336,26 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		}
 	}
 
-	public void draw(Canvas canvas) {		
+	public void draw(Canvas canvas) {
+		boolean serverDraw = team == Team.SERVER;
+		
 		if (gameState == GameState.IN_PROGRESS) {
 			drawWavefronts(canvas);
 		}
 		
 		drawGrid(canvas);
-		
-		localPlayer.draw(canvas, team == Team.SERVER);
-		remotePlayer.draw(canvas, team == Team.SERVER);
 
+		localPlayer.draw(canvas, serverDraw);
+		remotePlayer.draw(canvas, serverDraw);
+		
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
 		if (BBTHGame.DEBUG) {
 			graphGen.draw(canvas);
 		}
 
-		localPlayer.postDraw(canvas);
-		remotePlayer.postDraw(canvas);
+		localPlayer.postDraw(canvas, serverDraw);
+		remotePlayer.postDraw(canvas, serverDraw);
 	}
 
 	private void drawWavefronts(Canvas canvas) {
