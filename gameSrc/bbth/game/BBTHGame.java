@@ -1,24 +1,13 @@
 package bbth.game;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.util.DisplayMetrics;
-import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.Achievements;
-import bbth.engine.core.Game;
-import bbth.engine.core.GameActivity;
-import bbth.engine.ui.DefaultTransition;
-import bbth.engine.ui.Transition;
-import bbth.engine.ui.UINavigationController;
-import bbth.engine.ui.UISwipeTransition;
+import bbth.engine.achievements.*;
+import bbth.engine.core.*;
+import bbth.engine.ui.*;
 import bbth.engine.ui.UISwipeTransition.Direction;
-import bbth.engine.util.Envelope;
+import bbth.engine.util.*;
 import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
 public class BBTHGame extends Game {
@@ -35,25 +24,25 @@ public class BBTHGame extends Game {
 		Map<String, Boolean> savedAchievements = Achievements.INSTANCE.getAll();
 		Map<String, AchievementInfo> achievements = new HashMap<String, AchievementInfo>();
 
-		Resources resources = GameActivity.instance.getResources();
-		String []names = resources.getStringArray(R.array.achievementNames);
-		String []descriptions = resources.getStringArray(R.array.achievementDescriptions);
-		String []images = resources.getStringArray(R.array.achievementImages);
-		assert names.length == descriptions.length;
-		assert names.length == images.length;
-		
-		String packageName = activity.getPackageName();
-		for (int i = 0; i < names.length; ++i) {
-			int imageId = resources.getIdentifier(images[i], "drawable", packageName);
-			Options options = new Options();
-			options.inTargetDensity = DisplayMetrics.DENSITY_DEFAULT;
-			Bitmap image = BitmapFactory.decodeResource(BBTHActivity.instance.getResources(), imageId);
-			achievements.put(names[i], new AchievementInfo(descriptions[i], image));
-			if (!savedAchievements.containsKey(names[i])) {
-				Achievements.INSTANCE.lock(names[i]);
-			}
-			Achievements.INSTANCE.unlock(names[i]);
-		}
+//		Resources resources = GameActivity.instance.getResources();
+//		String []names = resources.getStringArray(R.array.achievementNames);
+//		String []descriptions = resources.getStringArray(R.array.achievementDescriptions);
+//		String []images = resources.getStringArray(R.array.achievementImages);
+//		assert names.length == descriptions.length;
+//		assert names.length == images.length;
+//		
+//		String packageName = activity.getPackageName();
+//		for (int i = 0; i < names.length; ++i) {
+//			int imageId = resources.getIdentifier(images[i], "drawable", packageName);
+//			Options options = new Options();
+//			options.inTargetDensity = DisplayMetrics.DENSITY_DEFAULT;
+//			Bitmap image = BitmapFactory.decodeResource(BBTHActivity.instance.getResources(), imageId);
+//			achievements.put(names[i], new AchievementInfo(descriptions[i], image));
+//			if (!savedAchievements.containsKey(names[i])) {
+//				Achievements.INSTANCE.lock(names[i]);
+//			}
+//			Achievements.INSTANCE.unlock(names[i]);
+//		}
 		
 		return achievements;
 	}
