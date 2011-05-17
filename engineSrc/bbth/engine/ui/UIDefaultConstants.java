@@ -7,7 +7,7 @@ public interface UIDefaultConstants {
 	public static final int BACKGROUND_COLOR = Color.LTGRAY;
 	public static final int FOREGROUND_COLOR = Color.GRAY;
 	public static final float BORDER_WIDTH = 3.f;
-	public static final int CORNER_RADIUS = 6;
+	public static final float CORNER_RADIUS = 6.f;
 
 	// UILabel
 	public static final int UI_LABEL_TEXT_COLOR = Color.WHITE;
@@ -32,4 +32,8 @@ public interface UIDefaultConstants {
 	public static final float UI_CHECKBOX_LABEL_HEIGHT = 20;
 	public static final int UI_CHECKBOX_BACKGROUND_COLOR = Color.GRAY;
 	public static final int UI_CHECKBOX_FOREGROUND_COLOR = Color.WHITE;
+	
+	// UISlider
+	public static final float UI_SLIDER_BAR_HEIGHT = 5.f;
+	public static final float UI_SLIDER_CIRCLE_RADIUS = 12.f;
 }
