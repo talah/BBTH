@@ -4,6 +4,7 @@ import bbth.engine.achievements.*;
 import bbth.engine.util.Bag;
 import bbth.game.*;
 import bbth.game.achievements.events.*;
+import bbth.game.achievements.impls.AnythingYouCanDo;
 import bbth.game.achievements.impls.BetterNotToMash;
 import bbth.game.achievements.impls.DesperateTimes;
 import bbth.game.achievements.impls.SongAchievement;
@@ -103,6 +104,9 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		
 		info = infoMap.get(200);
 		if (info != null) achievements.add(new BetterNotToMash(info));
+		
+		info = infoMap.get(500);
+		if (info != null) achievements.add(new AnythingYouCanDo(info));
 		
 		postRegisterAchievements();
 	}
