@@ -1,17 +1,11 @@
 package bbth.engine.achievements;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 
 /**
  * Singleton that handles achievement locking and unlocking

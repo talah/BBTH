@@ -1,30 +1,19 @@
 package bbth.game;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.FastGraphGenerator;
-import bbth.engine.fastgraph.Wall;
-import bbth.engine.net.simulation.Hash;
-import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.net.simulation.Simulation;
-import bbth.engine.particles.Particle;
-import bbth.engine.particles.ParticleSystem;
+import bbth.engine.fastgraph.*;
+import bbth.engine.net.simulation.*;
+import bbth.engine.particles.*;
 import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.Bag;
-import bbth.engine.util.MathUtils;
+import bbth.engine.util.*;
 import bbth.engine.util.Timer;
 import bbth.game.ai.AIController;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitManager;
-import bbth.game.units.UnitType;
+import bbth.game.units.*;
 
 public class BBTHSimulation extends Simulation implements UnitManager {
 	public static enum GameState {
@@ -36,8 +25,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final int NUM_PARTICLES = 1000;
 	private static final float PARTICLE_THRESHOLD = 0.5f;
 
-	public static final ParticleSystem PARTICLES = new ParticleSystem(
-			NUM_PARTICLES, PARTICLE_THRESHOLD);
+	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
 	public static final Paint PARTICLE_PAINT = new Paint();
 	static {
 		PARTICLE_PAINT.setStrokeWidth(2.f);
@@ -69,8 +57,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// This is the virtual size of the game
 	public static final float GAME_X = BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_Y = 0;
-	public static final float GAME_WIDTH = BBTHGame.WIDTH
-			- BeatTrack.BEAT_TRACK_WIDTH;
+	public static final float GAME_WIDTH = BBTHGame.WIDTH - BeatTrack.BEAT_TRACK_WIDTH;
 	public static final float GAME_HEIGHT = BBTHGame.HEIGHT;
 
 	// Minimal length of a wall
@@ -100,10 +87,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
 		team = localTeam;
-		serverPlayer = new Player(Team.SERVER, aiController, this,
-				team == Team.SERVER);
-		clientPlayer = new Player(Team.CLIENT, aiController, this,
-				team == Team.CLIENT);
+		serverPlayer = new Player(Team.SERVER, aiController, this, team == Team.SERVER);
+		clientPlayer = new Player(Team.CLIENT, aiController, this, team == Team.CLIENT);
 		localPlayer = (team == Team.SERVER) ? serverPlayer : clientPlayer;
 		remotePlayer = (team == Team.SERVER) ? clientPlayer : serverPlayer;
 
@@ -159,8 +144,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		if (placement_tip_start_time == 0
 				&& player.getMostAdvancedUnit() != null) {
-			if (((isServer && y > player.getMostAdvancedUnit().getY()) || (!isServer && y < player
-					.getMostAdvancedUnit().getY()))) {
+			if (((isServer && y > player.getMostAdvancedUnit().getY()) || (!isServer && y < player.getMostAdvancedUnit().getY()))) {
 				placement_tip_start_time = System.currentTimeMillis();
 			}
 		}
@@ -369,10 +353,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private void drawWavefronts(Canvas canvas) {
 		Unit serverAdvUnit = serverPlayer.getMostAdvancedUnit();
 		Unit clientAdvUnit = clientPlayer.getMostAdvancedUnit();
-		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10
-				: 0;
-		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10
-				: BBTHSimulation.GAME_HEIGHT;
+		float serverWavefrontY = serverAdvUnit != null ? serverAdvUnit.getY() + 10 : 0;
+		float clientWavefrontY = clientAdvUnit != null ? clientAdvUnit.getY() - 10 : BBTHSimulation.GAME_HEIGHT;
 		paint.setStyle(Style.FILL);
 
 		// server wavefront
@@ -388,19 +370,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		// overlapped wavefronts
 		if (serverWavefrontY > clientWavefrontY) {
 			paint.setColor(Color.rgb(63, 0, 63));
-			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
-					serverWavefrontY, paint);
+			canvas.drawRect(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
 		}
-
+		
 		// server wavefront line
 		paint.setColor(Team.SERVER.getUnitColor());
-		canvas.drawLine(0, serverWavefrontY, BBTHSimulation.GAME_WIDTH,
-				serverWavefrontY, paint);
-
+		canvas.drawLine(0, serverWavefrontY, BBTHSimulation.GAME_WIDTH, serverWavefrontY, paint);
+		
 		// client wavefront line
 		paint.setColor(Team.CLIENT.getUnitColor());
-		canvas.drawLine(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH,
-				clientWavefrontY, paint);
+		canvas.drawLine(0, clientWavefrontY, BBTHSimulation.GAME_WIDTH, clientWavefrontY, paint);
 	}
 
 	@Override
