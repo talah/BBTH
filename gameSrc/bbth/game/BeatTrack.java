@@ -200,6 +200,10 @@ public class BeatTrack {
 		return beatType;
 	}
 	
+	public Beat[] getAllBeats() {
+		return beatTracker.getAllBeats();
+	}
+	
 	public void onTouchUp(float x, float y) {
 		if (isHolding) {
 			//soundManager.stop(holdId);
