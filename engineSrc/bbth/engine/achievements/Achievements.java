@@ -57,7 +57,9 @@ public enum Achievements {
 			return;
 		}
 		_achievementActivations.put(info.id, activations + 1);
-		_unlocks.add(new UnlockAnimation(info.name));
+		if (activations + 1 == info.maxActivations) {
+			_unlocks.add(new UnlockAnimation(info.name));
+		}
 	}
 	
 	// commit all achievement data to sharedPreferences
