@@ -1,20 +1,31 @@
 package bbth.game;
 
-import static bbth.game.BBTHGame.*;
+import static bbth.game.BBTHGame.HEIGHT;
+import static bbth.game.BBTHGame.WIDTH;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
+import android.graphics.Region;
 import android.util.FloatMath;
 import bbth.engine.ai.Pathfinder;
-import bbth.engine.fastgraph.*;
+import bbth.engine.fastgraph.FastGraphGenerator;
+import bbth.engine.fastgraph.LineOfSightTester;
+import bbth.engine.fastgraph.SimpleLineOfSightTester;
+import bbth.engine.fastgraph.Wall;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIView;
-import bbth.engine.util.*;
+import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
 
 public class InfiniteCombatView extends UIView implements UnitManager {
 	ArrayList<Unit> units = new ArrayList<Unit>();

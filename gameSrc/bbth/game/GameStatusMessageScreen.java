@@ -1,10 +1,17 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.FloatMath;
 import bbth.engine.particles.ParticleSystem;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 import bbth.engine.util.MathUtils;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {

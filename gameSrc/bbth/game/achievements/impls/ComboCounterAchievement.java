@@ -3,7 +3,6 @@ package bbth.game.achievements.impls;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.achievements.Achievements;
 import bbth.game.achievements.BBTHAchievement;
-import bbth.game.achievements.BBTHAchievementManager;
 import bbth.game.achievements.events.BeatHitEvent;
 
 public class ComboCounterAchievement extends BBTHAchievement {

@@ -2,7 +2,12 @@ package bbth.game;
 
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIScrollView;
 
 public class SongSelectionScreen extends UIScrollView implements
 		UIButtonDelegate {
