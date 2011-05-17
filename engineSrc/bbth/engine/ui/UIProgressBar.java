@@ -47,7 +47,7 @@ public class UIProgressBar extends UIControl {
 		_tr_matrix = new Matrix();
 
 		setBackgroundColor(UIDefaultConstants.BACKGROUND_COLOR);
-		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
+		setForegroundColor(UIDefaultConstants.ACTIVE_COLOR);
 		setProgress(0.f);
 	}
 
