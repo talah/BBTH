@@ -60,7 +60,7 @@
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="104">
 		<NAME>Strategist</NAME>
-		<DESC>Win a game having gotten fewer beats than your opponent</DESC>
+		<DESC>Win a game having created fewer units than your opponent</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>

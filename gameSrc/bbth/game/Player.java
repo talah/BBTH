@@ -36,6 +36,8 @@ public class Player {
 	private float _health;
 	private float _combo;
 	private boolean _isLocal;
+	
+	private int totalUnitsCreated;
 
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
@@ -156,6 +158,7 @@ public class Player {
 		
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
+		totalUnitsCreated++;
 		if (unitCreatedEvent != null) {
 			unitCreatedEvent.set(newUnit);
 			BBTHAchievementManager.INSTANCE.notifyUnitCreated(unitCreatedEvent);
@@ -278,5 +281,9 @@ public class Player {
 	private UnitCreatedEvent unitCreatedEvent;
 	public void setupEvents(InGameScreen inGameScreen, BBTHSimulation sim) {
 		unitCreatedEvent = new UnitCreatedEvent(sim, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
+	}
+
+	public int getTotalUnitsCreated() {
+		return totalUnitsCreated;
 	}
 }

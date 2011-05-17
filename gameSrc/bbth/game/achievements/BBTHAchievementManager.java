@@ -109,7 +109,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new FlawlessVictory(info));
 		
 		info = infoMap.get(104);
-		// Prereqs: get number of beats opponent tapped
+		if (info != null) achievements.add(new StrategistAchievement(info));
 		
 		info = infoMap.get(200);
 		if (info != null) achievements.add(new IncrementOnUberCreateAchievement(info));
