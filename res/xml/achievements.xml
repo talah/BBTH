@@ -6,85 +6,101 @@
 		<NAME>Escapist</NAME>
 		<DESC>Win "Mistake the Getaway" 10 times</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="1">
 		<NAME>Fantastic</NAME>
 		<DESC>Win "Might and Magic" 10 times</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="2">
 		<NAME>Chiptune Enthusiast</NAME>
 		<DESC>Win "Retro" 10 times</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="3">
 		<NAME>Climbing the Sladdar</NAME>
 		<DESC>Win "Javla Sladder" 10 times</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="4">
 		<NAME>Crafty</NAME>
-		<DESC>Win "Odin\'s Craft" 10 times</DESC>
+		<DESC>Win "Odin's Craft" 10 times</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- End conditions -->
 	<ACHIEVEMENT id="100">
 		<NAME>Desperate Times</NAME>
-		<DESC>Destroy your opponent\'s base when your base has less than 10 health remaining</DESC>
+		<DESC>Destroy your opponent's base when your base has less than 10 health remaining</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="101">
 		<NAME>Desperate Measures</NAME>
-		<DESC>Destroy your opponent\'s base less than 10 seconds before the end of a song</DESC>
+		<DESC>Destroy your opponent's base less than 10 seconds before the end of a song</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="102">
 		<NAME>Ultimate Stalemate</NAME>
 		<DESC>End a 9+ minute song in a tie</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="103">
 		<NAME>Flawless Victory</NAME>
-		<DESC>Destroy your opponent\'s base without allowing your base to take any damage</DESC>
+		<DESC>Destroy your opponent's base without allowing your base to take any damage</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="104">
 		<NAME>Strategist</NAME>
 		<DESC>Win a game having gotten fewer beats than your opponent</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- Combos -->
 	<ACHIEVEMENT id="200">
-		<NAME>Why It\'s Better Not To Mash</NAME>
+		<NAME>Why It's Better Not To Mash</NAME>
 		<DESC>Receive an Über unit</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="201">
 		<NAME>Beat Wizard</NAME>
 		<DESC>Get a combo of 25 beats or more</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="202">
 		<NAME>Beat Master</NAME>
 		<DESC>Get a combo of 100 beats or more</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="203">
 		<NAME>Beat Spartan</NAME>
 		<DESC>Get a combo of 300 beats or more</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="204">
 		<NAME>Full Combo</NAME>
 		<DESC>Get every beat (no mistaps or omissions) in a song</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="205">
 		<NAME>Derp</NAME>
 		<DESC></DESC>
 		<ICON>Miss 50 beats in a row</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- Walls -->
@@ -92,11 +108,13 @@
 		<NAME>Quick Thinking</NAME>
 		<DESC>Place a wall in front of an enemy unit when it is less than 2 seconds from hitting your base</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="301">
 		<NAME>Beat Back</NAME>
 		<DESC>Place a wall that forces an enemy unit to turn around</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- Units -->
@@ -104,36 +122,43 @@
 		<NAME>The Horde</NAME>
 		<DESC>Have over 30 of your units on the screen at once</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="401">
 		<NAME>Humiliation</NAME>
-		<DESC>Spawn a unit less than 10 pixels from your opponent\'s base</DESC>
+		<DESC>Spawn a unit less than 10 pixels from your opponent's base</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="402">
-		<NAME>It\'s Super Effective!</NAME>
+		<NAME>It's Super Effective!</NAME>
 		<DESC>Kill more than five enemy units with a single explosion of one of your units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="403">
 		<NAME>Yo Dawg, I Heard You Like Units</NAME>
 		<DESC>Spawn a unit on top of an enemy unit</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="404">
 		<NAME>Showdown</NAME>
 		<DESC>Kill an enemy Über unit with an Über unit of your own</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="405">
 		<NAME>Quantity Over Quality</NAME>
 		<DESC>Kill an enemy Über unit without an Über unit of your own damaging it</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="406">
 		<NAME>Fireworks</NAME>
 		<DESC>Witness the destruction of 10 units in under a second</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- Difficulty -->
@@ -141,6 +166,7 @@
 		<NAME>Anything You Can Do...</NAME>
 		<DESC>Win a game against a [TODO: INSERT HARDEST DIFFICULTY HERE] AI</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	
 	<!-- Grind -->
@@ -148,45 +174,54 @@
 		<NAME>Murder</NAME>
 		<DESC>Kill 1000 enemy units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="601">
 		<NAME>Genocide</NAME>
 		<DESC>Kill 20000 enemy units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>20000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="602">
 		<NAME>I Am Become Death...</NAME>
 		<DESC>Kill 400000 enemy units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>400000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="603">
 		<NAME>Builder</NAME>
 		<DESC>Spawn 500 units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>500</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="604">
 		<NAME>Creator</NAME>
 		<DESC>Spawn 10000 units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>10000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="605">
 		<NAME>Lifebringer</NAME>
 		<DESC>Spawn 200000 units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>200000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="606">
 		<NAME>Overpowered</NAME>
 		<DESC>Spawn 200 Über units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>200</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="607">
 		<NAME>Powerhouse</NAME>
 		<DESC>Spawn 500 Über units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>500</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="608">
 		<NAME>Power Overwhelming</NAME>
 		<DESC>Spawn 1500 Über units</DESC>
 		<ICON>icon</ICON>
+		<ACTIVATIONS>1500</ACTIVATIONS>
 	</ACHIEVEMENT>
 </ACHIEVEMENTS>

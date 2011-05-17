@@ -1,9 +1,6 @@
 package bbth.game;
 
-import java.util.Map;
-
 import android.graphics.*;
-import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -16,13 +13,11 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
-	private Map<String, AchievementInfo> achievements;
 	
-	public TitleScreen(UINavigationController controller, Map<String, AchievementInfo> achievements) {
+	public TitleScreen(UINavigationController controller) {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		this.controller = controller;
-		this.achievements = achievements;
 		
 		combatView = new InfiniteCombatView();
 		
@@ -127,7 +122,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		} else if (button == multiplayerButton) {
 			controller.push(new GameSetupScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (button == achievementsButton) {
-			controller.push(new AchievementsScreen(controller, achievements), BBTHGame.FROM_RIGHT_TRANSITION);
+			controller.push(new AchievementsScreen(controller), BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
 }

@@ -1,25 +1,20 @@
 package bbth.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.Hash;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.MathUtils;
-import bbth.engine.util.Vibrate;
+import bbth.engine.ui.*;
+import bbth.engine.util.*;
+import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.ai.AIController;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitManager;
-import bbth.game.units.UnitType;
-import bbth.game.units.WallUnit;
+import bbth.game.units.*;
 
 /**
  * A player is someone who is interacting with the game.
@@ -38,6 +33,8 @@ public class Player {
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
+	
+	private UnitCreatedEvent unitCreatedEvent;
 
 	public Player(Team team, AIController controller, UnitManager unitManager, boolean isLocal) {
 		_isLocal = isLocal;
@@ -158,6 +155,10 @@ public class Player {
 		
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
+		if (unitCreatedEvent != null) {
+			unitCreatedEvent.set(newUnit);
+			BBTHAchievementManager.INSTANCE.notifyUnitCreated(unitCreatedEvent);
+		}
 	}
 
 	public Unit getMostAdvancedUnit() {
@@ -264,12 +265,16 @@ public class Player {
 		return _isLocal;
 	}
 	
-	public int getHash() {
+	public int getSimulationSyncHash() {
 		int hash = 0;
 		hash = Hash.mix(hash, _health);
 		for (int i = 0; i < units.size(); i++) {
-			hash = Hash.mix(hash, units.get(i).getHash());
+			hash = Hash.mix(hash, units.get(i).getSimulationSyncHash());
 		}
 		return hash;
+	}
+
+	public void setupEvents(InGameScreen inGameScreen, BBTHSimulation sim) {
+		unitCreatedEvent = new UnitCreatedEvent(sim.song, sim.localPlayer, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
 	}
 }

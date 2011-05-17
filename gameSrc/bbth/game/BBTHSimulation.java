@@ -12,6 +12,9 @@ import bbth.engine.particles.*;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.*;
 import bbth.engine.util.Timer;
+import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.GameEndedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.*;
 
@@ -73,13 +76,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// The song id
 	public Song song;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
-			boolean isServer) {
+	private InGameScreen inGameScreen;
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer, InGameScreen inGameScreen) {
 		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(3, 0.1f, 2, protocol, isServer);
 
+		this.inGameScreen = inGameScreen;
+		
 		// THIS IS IMPORTANT
 		random.setSeed(0);
 
@@ -192,8 +197,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected void simulateCustomEvent(float x, float y, int code,
-			boolean isServer) {
+	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
 		} else {
@@ -207,6 +211,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 					serverReady = true;
 				} else {
 					clientReady = true;
+				}
+				if (serverReady && clientReady) {
+					Unit.resetNextHashCodeID();
 				}
 			} else if (code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
@@ -320,12 +327,20 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	private void drawGrid(Canvas canvas) {
-		paint.setARGB(63, 255, 255, 255);
+		paint.setARGB(60, 255, 255, 255);
+		paint.setStrokeWidth(1);
 
-		for (float x = 0; x < GAME_WIDTH; x += 55) {
+		for (float x = 0; x < GAME_WIDTH; x += GAME_WIDTH/6.0f) {
+//			float offset = 10 * FloatMath.cos(((x/GAME_WIDTH) * 4 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+//			if (x + offset < 0) {
+//				offset = -x;
+//			}
+//			canvas.drawLine(x + offset, 0, x + offset, GAME_HEIGHT, paint);
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
 		}
-		for (float y = 0; y < GAME_HEIGHT; y += 55) {
+		for (float y = 0; y < GAME_HEIGHT; y += GAME_HEIGHT/12.0f) {
+//			float offset = 10 * FloatMath.sin(((y/GAME_HEIGHT) * 8 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+//			canvas.drawLine(0, y + offset, GAME_WIDTH, y + offset, paint);
 			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
 		}
 	}
@@ -341,7 +356,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		localPlayer.draw(canvas, serverDraw);
 		remotePlayer.draw(canvas, serverDraw);
-
+		
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
 		if (BBTHGame.DEBUG) {
@@ -473,25 +488,26 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected int getHash() {
+	protected int getSimulationSyncHash() {
 		int hash = 0;
-		hash = Hash.mix(hash, serverPlayer.getHash());
-		hash = Hash.mix(hash, clientPlayer.getHash());
+		hash = Hash.mix(hash, serverPlayer.getSimulationSyncHash());
+		hash = Hash.mix(hash, clientPlayer.getSimulationSyncHash());
 		for (int i = 0, n = graphGen.walls.size(); i < n; i++) {
-			hash = Hash.mix(hash, graphGen.walls.get(i).getHash());
+			hash = Hash.mix(hash, graphGen.walls.get(i).getSimulationSyncHash());
 		}
 		return hash;
 	}
 
 	public void setBothPlayersReady() {
 		clientReady = serverReady = true;
+		Unit.resetNextHashCodeID();
 	}
 
 	private void endTheGame() {
 		float serverHealth = Math.max(0, serverPlayer.getHealth());
 		float clientHealth = Math.max(0, clientPlayer.getHealth());
 		gameState = (serverHealth > clientHealth) ? GameState.SERVER_WON : (serverHealth < clientHealth) ? GameState.CLIENT_WON : GameState.TIE;
-
+			
 		// PARTICLES!
 		if (gameState != GameState.SERVER_WON) {
 			explodeBase(Team.SERVER);
@@ -499,6 +515,20 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (gameState != GameState.CLIENT_WON) {
 			explodeBase(Team.CLIENT);
 		}
+		
+		// achievement notifications
+		if (serverHealth == 0) {
+			baseDestroyedEvent.set(serverPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
+		}
+		if (clientHealth == 0) {
+			baseDestroyedEvent.set(clientPlayer);
+			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
+		}
+		
+		endEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE);
+		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
+		
 	}
 
 	private void explodeBase(Team team) {
@@ -524,5 +554,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		} else {
 			serverPlayer.base.drawFill = false;
 		}
+	}
+	
+	private BaseDestroyedEvent baseDestroyedEvent;
+	private GameEndedEvent endEvent;
+	private void setupEvents() {
+		boolean singlePlayer = inGameScreen.singlePlayer;
+		float aiDifficulty = inGameScreen.aiDifficulty;
+		endEvent = new GameEndedEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		serverPlayer.setupEvents(inGameScreen, this);
+		clientPlayer.setupEvents(inGameScreen, this);
 	}
 }

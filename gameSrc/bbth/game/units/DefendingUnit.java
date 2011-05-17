@@ -142,9 +142,4 @@ public class DefendingUnit extends Unit {
 	public float getRadius() {
 		return 5;
 	}
-	
-	@Override
-	public void drawForMiniMap(Canvas canvas) {
-		canvas.drawCircle(this.getX(), this.getY(), 10, paint);
-	}
 }

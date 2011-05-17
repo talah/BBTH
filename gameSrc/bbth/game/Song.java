@@ -9,7 +9,7 @@ public enum Song {
 	DONKEY_KONG(R.raw.bonusroom, R.xml.donkey_kong, -1),
 	RETRO(R.raw.retrobit, R.xml.track1, -2),
 	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
-	JAVLA_SLADDER(R.raw.javlasladdar_short, R.xml.jalvasladder, -4),
+	JAVLA_SLADDAR(R.raw.javlasladdar_short, R.xml.javlasladdar, -4),
 	ODINS_KRAFT(R.raw.odinskraft, R.xml.track2, -5),
 	MIGHT_AND_MAGIC(R.raw.mightandmagic_short, R.xml.might_and_magic, -6),
 	DERP(R.raw.derp, R.xml.derp, -7);
@@ -34,7 +34,7 @@ public enum Song {
 		case -3:
 			return Song.MISTAKE_THE_GETAWAY;
 		case -4:
-			return Song.JAVLA_SLADDER;
+			return Song.JAVLA_SLADDAR;
 		case -5:
 			return Song.ODINS_KRAFT;
 		case -6: 

@@ -37,11 +37,6 @@ public class WallUnit extends Unit {
 	}
 
 	@Override
-	public void drawForMiniMap(Canvas canvas) {
-		canvas.drawLine(wall.a.x, wall.a.y, wall.b.x, wall.b.y, paint);
-	}
-
-	@Override
 	public UnitType getType() {
 		return UnitType.WALL;
 	}

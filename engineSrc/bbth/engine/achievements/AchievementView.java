@@ -7,9 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIDefaultConstants;
 import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UILabel.VAlign;
+import bbth.engine.ui.UIProgressBar;
 import bbth.engine.ui.UIView;
 
 /**
@@ -27,43 +29,22 @@ public class AchievementView extends UIView {
 	private UILabel _nameLabel;
 	private UILabel _descriptionLabel;
 	private UIImageView _image;
+	private float _unlockProgress;
+	private UIProgressBar _progressBar;
+	private UILabel _progressLabel;
 	private Paint _paint;
 	
-	// TODO: remove
-	public AchievementView(String name, String description, int imageId) {		
-		_nameLabel = new UILabel(name, null);
+	public AchievementView(AchievementInfo info, int activations, Bitmap image) {
+		_nameLabel = new UILabel(info.name, null);
 		_nameLabel.setTextSize(NAME_SIZE);
 		_nameLabel.setTextAlign(Align.LEFT);
 		_nameLabel.sizeToFit();
 		addSubview(_nameLabel);
 		
-		_descriptionLabel = new UILabel(description, null);
+		_descriptionLabel = new UILabel(info.description, null);
 		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
 		_descriptionLabel.setTextAlign(Align.LEFT);
-		_descriptionLabel.setWrapText(true);
-		_descriptionLabel.setVerticalAlign(VAlign.MIDDLE);
-		addSubview(_descriptionLabel);
-		
-		_image = new UIImageView(imageId);
-		_image.setSize(32, 32);
-		_image.setAnchor(Anchor.CENTER_LEFT);
-		addSubview(_image);
-		
-		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		_paint.setColor(Color.WHITE);
-		_paint.setStyle(Style.STROKE);
-	}
-	
-	public AchievementView(String name, String description, Bitmap image) {		
-		_nameLabel = new UILabel(name, null);
-		_nameLabel.setTextSize(NAME_SIZE);
-		_nameLabel.setTextAlign(Align.LEFT);
-		_nameLabel.sizeToFit();
-		addSubview(_nameLabel);
-		
-		_descriptionLabel = new UILabel(description, null);
-		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
-		_descriptionLabel.setTextAlign(Align.LEFT);
+		_descriptionLabel.setLineHeight(DESCRIPTION_SIZE * 1.4f);
 		_descriptionLabel.setWrapText(true);
 		_descriptionLabel.setVerticalAlign(VAlign.MIDDLE);
 		addSubview(_descriptionLabel);
@@ -72,6 +53,18 @@ public class AchievementView extends UIView {
 		_image.setSize(32, 32);
 		_image.setAnchor(Anchor.CENTER_LEFT);
 		addSubview(_image);
+		
+		_unlockProgress = activations / (float) (info.maxActivations);
+		if (info.maxActivations > 1) {
+			_progressBar = new UIProgressBar();
+			_progressBar.setProgress(_unlockProgress);
+			_progressBar.setBackgroundColor(Color.rgb(100, 100, 100));
+			addSubview(_progressBar);
+			_progressLabel = new UILabel(String.valueOf(activations) + "/" + info.maxActivations);
+			_progressLabel.setTextSize(DESCRIPTION_SIZE);
+			_progressLabel.sizeToFit();
+			addSubview(_progressLabel);
+		}
 		
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setColor(Color.WHITE);
@@ -85,10 +78,17 @@ public class AchievementView extends UIView {
 		_image.setPosition(left, center.y);
 		float imageRight = _image.getRect().right;
 		float textWidth = _width - _image.getWidth() - PADDING;
-		_nameLabel.setPosition(left + imageRight + PADDING, top + TOP_PADDING);
+		float textLeft = left + imageRight + PADDING;
+		_nameLabel.setPosition(textLeft, top + TOP_PADDING);
 		_nameLabel.setSize(textWidth, NAME_SIZE);
-		_descriptionLabel.setPosition(left + imageRight + TOP_PADDING, top + NAME_SIZE + TOP_PADDING + 5);
+		_descriptionLabel.setPosition(textLeft, top + NAME_SIZE + TOP_PADDING + 5);
 		_descriptionLabel.setSize(textWidth, DESCRIPTION_SIZE);
+		
+		if (_progressBar != null) {
+			_progressBar.setPosition(textLeft, top + NAME_SIZE + TOP_PADDING + DESCRIPTION_SIZE + 12);
+			_progressBar.setSize(220, 11);
+			_progressLabel.setPosition(textLeft + 238, top + NAME_SIZE + TOP_PADDING + DESCRIPTION_SIZE + 12);
+		}
 	}
 	
 	@Override
@@ -98,8 +98,15 @@ public class AchievementView extends UIView {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
+		if (_unlockProgress == 1) {
+			
+		} else {
+			
+		}
 		super.onDraw(canvas);
-		
+
+		// draw border lines
+		_paint.setColor(Color.WHITE);
 		canvas.drawLine(_rect.left, _rect.top, _rect.right, _rect.top, _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}

@@ -60,7 +60,7 @@ public class Wall {
 		return Math.max(a.y, b.y);
 	}
 
-	public int getHash() {
+	public int getSimulationSyncHash() {
 		int hash = 0;
 		hash = Hash.mix(hash, a.x);
 		hash = Hash.mix(hash, a.y);

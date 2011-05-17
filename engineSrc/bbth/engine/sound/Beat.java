@@ -55,7 +55,7 @@ public class Beat {
 	}
 
 	// returns true if this noted was tapped, false if the note was missed
-	boolean onTouchDown(int songTime) {
+	public boolean onTouchDown(int songTime) {
 		if (_tapped || type == BeatType.REST)
 			return false;
 
@@ -122,5 +122,9 @@ public class Beat {
 			canvas.drawLine(cachedRect.left, y1, cachedRect.left, y2, paint);
 			canvas.drawLine(cachedRect.right, y1, cachedRect.right, y2, paint);
 		}
+	}
+
+	public boolean isTapped() {
+		return _tapped;
 	}
 }
