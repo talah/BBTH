@@ -28,7 +28,7 @@
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="4">
 		<NAME>Crafty</NAME>
-		<DESC>Win "Odin\'s Craft" 10 times</DESC>
+		<DESC>Win "Odin's Craft" 10 times</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>10</ACTIVATIONS>
 	</ACHIEVEMENT>
@@ -36,13 +36,13 @@
 	<!-- End conditions -->
 	<ACHIEVEMENT id="100">
 		<NAME>Desperate Times</NAME>
-		<DESC>Destroy your opponent\'s base when your base has less than 10 health remaining</DESC>
+		<DESC>Destroy your opponent's base when your base has less than 10 health remaining</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="101">
 		<NAME>Desperate Measures</NAME>
-		<DESC>Destroy your opponent\'s base less than 10 seconds before the end of a song</DESC>
+		<DESC>Destroy your opponent's base less than 10 seconds before the end of a song</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
@@ -54,7 +54,7 @@
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="103">
 		<NAME>Flawless Victory</NAME>
-		<DESC>Destroy your opponent\'s base without allowing your base to take any damage</DESC>
+		<DESC>Destroy your opponent's base without allowing your base to take any damage</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
@@ -67,7 +67,7 @@
 	
 	<!-- Combos -->
 	<ACHIEVEMENT id="200">
-		<NAME>Why It\'s Better Not To Mash</NAME>
+		<NAME>Why It's Better Not To Mash</NAME>
 		<DESC>Receive an Über unit</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
