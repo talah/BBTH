@@ -43,10 +43,28 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		paint.setAntiAlias(true);
 	}
 
-	private abstract class Step extends UIView {
+	private abstract class Step extends UIView implements UIButtonDelegate {
 		@Override
 		public boolean containsPoint(float x, float y) {
 			return true; // >_>
+		}
+
+		public boolean isPaused() {
+			return false;
+		}
+
+		protected final void addOKButton(float x, float y) {
+			UIButton button = new UIButton("OK");
+			button.setAnchor(Anchor.TOP_CENTER);
+			button.setSize(50, 30);
+			button.setPosition(x, y + 28);
+			button.setButtonDelegate(this);
+			button.expandForHitTesting(20, 20);
+			addSubview(button);
+		}
+
+		@Override
+		public void onClick(UIButton button) {
 		}
 	}
 
@@ -74,42 +92,150 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		public void onTouchDown(float x, float y) {
 			x -= GAME_X;
 			y -= GAME_Y;
-			if (x >= 0 && Math.abs(songTime) < 0.1f) {
+			if (x >= 0 && beat.onTouchDown((int) (songTime * 1000))) {
 				localPlayer.spawnUnit(x, y);
-				transition(new LearnAboutGridStep());
+				transition(new UnitsUpAndDownStep());
 			}
 		}
 	}
 
-	private class LearnAboutGridStep extends Step {
+	private class UnitsUpAndDownStep extends Step {
+		private static final float x = GAME_X + GAME_WIDTH / 2;
+		private static final float y = GAME_Y + GAME_HEIGHT * 0.33f;
 		private float time;
+		private boolean wasPaused;
 
 		@Override
 		public void onDraw(Canvas canvas) {
-			float x = GAME_X + GAME_WIDTH / 2;
+			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			if (time < 6) {
-				float y = GAME_Y + GAME_HEIGHT * 0.33f;
-				canvas.drawText("Your units travel up and the", x, y - 8, paint);
-				canvas.drawText("other player's units travel down", x, y + 8, paint);
-			} else if (!localPlayer.units.isEmpty()) {
-				float y = GAME_Y + GAME_HEIGHT * 0.75f;
-				canvas.drawText("You can only place", x, y - 8, paint);
-				canvas.drawText("units in the " + team.getColorName() + " area", x, y + 8, paint);
-			} else {
-				float y = GAME_Y + GAME_HEIGHT / 2;
-				canvas.drawText("You win when your opponent's", x, y - 17, paint);
-				canvas.drawText("health reaches 0, or when the song", x, y, paint);
-				canvas.drawText("ends and your health is higher", x, y + 17, paint);
-			}
+			canvas.drawText("Your units travel up and the", x, y - 8, paint);
+			canvas.drawText("other player's units travel down", x, y + 8, paint);
 		}
 
 		@Override
 		public void onUpdate(float seconds) {
 			time += seconds;
-			if (time > 19) {
+			if (!wasPaused && isPaused()) {
+				addOKButton(x, y);
+				wasPaused = true;
+			}
+		}
+
+		@Override
+		public boolean isPaused() {
+			return time > 6;
+		}
+
+		@Override
+		public void onClick(UIButton button) {
+			transition(new WavefrontStep());
+		}
+	}
+
+	private class WavefrontStep extends Step {
+		private static final float x = GAME_X + GAME_WIDTH / 2;
+		private static final float y = GAME_Y + GAME_HEIGHT * 0.75f;
+		private boolean wasPaused;
+
+		@Override
+		public void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("You can only place", x, y - 8, paint);
+			canvas.drawText("units in the " + team.getColorName() + " area", x, y + 8, paint);
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			if (!wasPaused && isPaused()) {
+				addOKButton(x, y);
+				wasPaused = true;
+			}
+		}
+
+		@Override
+		public boolean isPaused() {
+			return localPlayer.units.isEmpty();
+		}
+
+		@Override
+		public void onClick(UIButton button) {
+			transition(new WinConditionStep());
+		}
+	}
+
+	private class WinConditionStep extends Step {
+		private static final float x = GAME_X + GAME_WIDTH / 2;
+		private static final float y = GAME_Y + GAME_HEIGHT / 2;
+		private float time;
+		private boolean wasPaused;
+
+		@Override
+		public void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("You win when your opponent's", x, y - 17, paint);
+			canvas.drawText("health reaches 0, or when the song", x, y, paint);
+			canvas.drawText("ends and your health is higher", x, y + 17, paint);
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			time += seconds;
+			if (!wasPaused && isPaused()) {
+				addOKButton(x, y + 17);
+				wasPaused = true;
+			}
+		}
+
+		@Override
+		public boolean isPaused() {
+			return time > 6;
+		}
+
+		@Override
+		public void onClick(UIButton button) {
+			transition(new DrawWallStep());
+		}
+	}
+
+	private class DrawWallStep extends Step {
+		public DrawWallStep() {
+			beat = Beat.hold(1000);
+		}
+
+		@Override
+		public void onDraw(Canvas canvas) {
+			float x = GAME_X + GAME_WIDTH / 2;
+			float y = GAME_Y + GAME_HEIGHT * 0.8f;
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("When the hold is between", x, y - 17, paint);
+			canvas.drawText("the two lines, drag on the", x, y, paint);
+			canvas.drawText("grid to create a wall", x, y + 17, paint);
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			if (songTime > MAX_SONG_TIME) {
+				songTime = MIN_SONG_TIME;
+			}
+		}
+
+		@Override
+		public void onTouchDown(float x, float y) {
+			x -= GAME_X;
+			y -= GAME_Y;
+			if (x >= 0 && beat.onTouchDown((int) (songTime * 1000))) {
+				localPlayer.spawnUnit(x, y);
 				transition(new FinishedStep());
 			}
 		}
@@ -139,6 +265,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		skipButton.setSize(100, 30);
 		skipButton.setPosition(BBTHGame.WIDTH - 20, Base.BASE_HEIGHT + 20);
 		skipButton.setButtonDelegate(this);
+		skipButton.expandForHitTesting(20, 20);
 		addSubview(skipButton);
 
 		team = localTeam;
@@ -155,6 +282,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		aiController.setPathfinder(pathfinder, gen.graph, tester, accel);
 
 		transition(new PlaceUnitStep());
+		// transition(new DrawWallStep());
 	}
 
 	@Override
@@ -278,15 +406,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
-		accel.clearUnits();
-		accel.insertUnits(serverPlayer.units);
-		accel.insertUnits(clientPlayer.units);
-		aiController.update();
-		serverPlayer.update(seconds);
-		clientPlayer.update(seconds);
-		serverPlayer.base.damageUnits(accel);
-		clientPlayer.base.damageUnits(accel);
-		songTime += seconds;
+		if (!step.isPaused()) {
+			accel.clearUnits();
+			accel.insertUnits(serverPlayer.units);
+			accel.insertUnits(clientPlayer.units);
+			aiController.update();
+			serverPlayer.update(seconds);
+			clientPlayer.update(seconds);
+			serverPlayer.base.damageUnits(accel);
+			clientPlayer.base.damageUnits(accel);
+			songTime += seconds;
+		}
 	}
 
 	@Override

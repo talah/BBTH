@@ -17,6 +17,8 @@ public class UIButton extends UIControl {
 	private Shader normal_state, down_state, disabled_state;
 	public float padding, corner_radius;
 	public UIButtonDelegate delegate;
+	private float _expandForContainsX;
+	private float _expandForContainsY;
 	
 	public UIButton(String text) {
 		padding = 8;
@@ -180,5 +182,15 @@ public class UIButton extends UIControl {
 		float width = _paint.measureText(text);
 		if(width > _width)
 			_paint.setTextSize((_width - padding) / width * _paint.getTextSize());
+	}
+
+	@Override
+	public boolean containsPoint(float x, float y) {
+		return x >= _rect.left - _expandForContainsX && x < _rect.right + _expandForContainsX && y >= _rect.top - _expandForContainsY && y < _rect.bottom + _expandForContainsY;
+	}
+
+	public void expandForHitTesting(float paddingX, float paddingY) {
+		_expandForContainsX = paddingX;
+		_expandForContainsY = paddingY;
 	}
 }
