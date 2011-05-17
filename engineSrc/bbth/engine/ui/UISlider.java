@@ -21,7 +21,7 @@ public class UISlider extends UIControl {
 	private Point circleLocation;
 	private Paint paint;
 	private float cornerRadius;
-	private RectF barRect;
+	private RectF barRect, filledBarRect;
 	private float barHeight;
 	private float circleRadius;
 
@@ -36,8 +36,9 @@ public class UISlider extends UIControl {
 	public UISlider(float minValue, float maxValue, float defaultValue) {
 		this.paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.barRect = new RectF();
+		this.filledBarRect = new RectF();
 		this.circleLocation = new Point();
-		
+
 		this.cornerRadius = UIDefaultConstants.CORNER_RADIUS;
 		this.barHeight = UIDefaultConstants.UI_SLIDER_BAR_HEIGHT;
 		this.circleRadius = UIDefaultConstants.UI_SLIDER_CIRCLE_RADIUS;
@@ -86,6 +87,7 @@ public class UISlider extends UIControl {
 		this.barRect.set(_rect.left + circleRadius, center - barHeight, _rect.right - circleRadius, center + barHeight);
 
 		this.circleLocation.set(this.barRect.left + (currValue - this.minValue) / range * (this.barRect.width()), _rect.centerY());
+		this.filledBarRect.set(barRect.left, barRect.top, circleLocation.x, barRect.bottom);
 	}
 
 	private void recomputeValueWithTouch(float touchLoc) {
@@ -129,9 +131,15 @@ public class UISlider extends UIControl {
 		paint.setColor(Color.RED);
 		canvas.drawRect(_rect, paint);
 
+		// The background rectangle
 		paint.setColor(UIDefaultConstants.BACKGROUND_COLOR);
 		canvas.drawRoundRect(this.barRect, this.cornerRadius, this.cornerRadius, paint);
 
+		// The overlay filled rectangle
+		paint.setColor(UIDefaultConstants.UI_SLIDER_FILLED_COLOR);
+		canvas.drawRoundRect(this.filledBarRect, this.cornerRadius, this.cornerRadius, paint);
+
+		// The little circle dealy
 		paint.setColor(UIDefaultConstants.FOREGROUND_COLOR);
 		canvas.drawCircle(this.circleLocation.x, this.circleLocation.y, this.circleRadius, paint);
 	}

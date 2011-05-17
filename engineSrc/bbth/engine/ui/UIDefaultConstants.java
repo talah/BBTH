@@ -36,4 +36,5 @@ public interface UIDefaultConstants {
 	// UISlider
 	public static final float UI_SLIDER_BAR_HEIGHT = 5.f;
 	public static final float UI_SLIDER_CIRCLE_RADIUS = 12.f;
+	public static final int UI_SLIDER_FILLED_COLOR = Color.rgb(37, 106, 218);
 }
