@@ -113,7 +113,7 @@ public abstract class UnitAI {
 		m_accel.getUnitsInAABB(x - SEARCH_RADIUS, y - SEARCH_RADIUS, x + SEARCH_RADIUS, y + SEARCH_RADIUS, cachedUnitSet);
 
 		// Find the closest unit ignoring units on the same team
-		float bestdist = Float.MAX_VALUE;
+		float bestdist = SEARCH_RADIUS;
 		Unit bestunit = null;
 		Team oppositeTeam = entity.getTeam().getOppositeTeam();
 		for (Unit unit : cachedUnitSet) {
