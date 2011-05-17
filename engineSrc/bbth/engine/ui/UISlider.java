@@ -27,7 +27,9 @@ public class UISlider extends UIControl {
 	private float barHeight;
 	private float circleRadius;
 	private Shader upCircleShader, downCircleShader, filledShader, emptyShader;
-
+	
+	private int fillColor; 
+	
 	public UISlider() {
 		this(0.f, 1.f, 0.f);
 	}
@@ -50,10 +52,17 @@ public class UISlider extends UIControl {
 		this.circleRadius = UIDefaultConstants.UI_SLIDER_CIRCLE_RADIUS;
 		this.isDepressed = false;
 
+		this.fillColor = UIDefaultConstants.ACTIVE_COLOR;
+		
 		this.setRange(minValue, maxValue);
 		this.setValue(defaultValue);
 	}
 
+	public void setFillColor(int color) {
+		this.fillColor = color;
+		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, this.fillColor);
+	}
+	
 	public void setRange(float minValue, float maxValue) {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
@@ -91,7 +100,8 @@ public class UISlider extends UIControl {
 
 		this.upCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.BACKGROUND_COLOR);
 		this.downCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.FOREGROUND_COLOR);
-		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, UIDefaultConstants.ACTIVE_COLOR);
+		
+		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, this.fillColor);
 		this.emptyShader = UIDefaultConstants.generateD2LVerticalLinearGradient(emptyBarRect, UIDefaultConstants.BACKGROUND_COLOR);
 	}
 

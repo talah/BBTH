@@ -76,7 +76,7 @@ public class InfiniteCombatView extends UIView implements UnitManager {
 		
 		setSize(WIDTH, HEIGHT); 
 		
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 15; i++) {
 			spawnUnit(UnitType.ATTACKING, Team.SERVER);
 			spawnUnit(UnitType.ATTACKING, Team.CLIENT);
 		}

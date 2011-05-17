@@ -100,6 +100,10 @@ public class BeatTracker {
 		return _nearbyBeats;
 	}
 	
+	public final Beat [] getAllBeats() {
+		return _allBeats;
+	}
+	
 	// draw a list of beats, likely obtained from getBeatsInRange
 	public void drawBeats(List<Beat> beats, float xMid, float yMid, Canvas canvas, Paint paint) {
 		int time = _musicPlayer.getCurrentPosition();
