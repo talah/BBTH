@@ -1,14 +1,24 @@
 package bbth.game.achievements;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Paint.Align;
 import android.util.DisplayMetrics;
-import bbth.engine.achievements.*;
-import bbth.engine.ui.*;
-import bbth.game.*;
+import bbth.engine.achievements.AchievementInfo;
+import bbth.engine.achievements.Achievements;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIScrollView;
+import bbth.game.BBTHActivity;
+import bbth.game.BBTHGame;
+import bbth.game.R;
 
 /**
  * A list of achievements with locked / unlocked status and descriptions

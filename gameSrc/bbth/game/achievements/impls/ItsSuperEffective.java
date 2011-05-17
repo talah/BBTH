@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import bbth.engine.achievements.AchievementInfo;
 import bbth.game.Team;
 import bbth.game.achievements.BBTHAchievement;
-import bbth.game.achievements.events.*;
+import bbth.game.achievements.events.UnitDeadEvent;
+import bbth.game.achievements.events.UpdateEvent;
 import bbth.game.units.Unit;
 
 public class ItsSuperEffective extends BBTHAchievement {
