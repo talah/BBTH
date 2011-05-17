@@ -69,6 +69,10 @@ public class MusicPlayer {
 		_mediaPlayer.setLooping(true);
 		play();
 	}
+	
+	public int getSongLength() {
+		return _mediaPlayer.getDuration();
+	}
 
 	// pauses the song, allowing for continuation from the current point
 	public void pause() {

@@ -1,7 +1,9 @@
 package bbth.game.achievements.impls;
 
 import bbth.engine.achievements.AchievementInfo;
+import bbth.engine.achievements.Achievements;
 import bbth.game.achievements.BBTHAchievement;
+import bbth.game.achievements.events.BaseDestroyedEvent;
 import bbth.game.achievements.events.GameEndedEvent;
 
 public class DesperateMeasures extends BBTHAchievement {
@@ -11,21 +13,17 @@ public class DesperateMeasures extends BBTHAchievement {
 	}
 
 	@Override
-	public void gameEnded(GameEndedEvent e) {
-//		BeatTrack track = e.getBeatTrack();
-//		if (track == null) {
-//			System.err.println("Error: no beat track.");
-//			return;
-//		}
-//		track.
-//				
-//		Achievements.INSTANCE.increment(achievementInfo);
+	public void baseDestroyed(BaseDestroyedEvent e) {
+		if (e.getLocalPlayer() != e.getDestroyedBaseOwner() && e.getBeatTrack().getSongLength() < e.getBeatTrack().getCurrPosition() + 10000) {
+			Achievements.INSTANCE.increment(achievementInfo);
+		}
 	}
 
 	@Override
-	public boolean usesGameEnded() {
+	public boolean usesBaseDestroyed() {
 		return true;
 	}
 
+	
 	
 }

@@ -9,13 +9,19 @@ public class BaseDestroyedEvent extends BBTHAchievementEvent {
 	}
 
 	Player destroyedBaseOwner;
+	BeatTrack track;
 	
-	public void set(Player destroyedBaseOwner) {
+	public void set(Player destroyedBaseOwner, BeatTrack track) {
 		this.destroyedBaseOwner = destroyedBaseOwner;
+		this.track = track;
 	}
 
 	public Player getDestroyedBaseOwner() {
 		return destroyedBaseOwner;
+	}
+
+	public BeatTrack getBeatTrack() {
+		return track;
 	}
 
 }

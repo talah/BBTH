@@ -100,7 +100,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new DesperateTimes(info));
 		
 		info = infoMap.get(101);
-		// Prereqs: get total length of song
+		if (info != null) achievements.add(new DesperateMeasures(info));
 		
 		info = infoMap.get(102);
 		// Prereqs: get total length of song

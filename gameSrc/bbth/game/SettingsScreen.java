@@ -44,7 +44,7 @@ public class SettingsScreen extends UIView {
 		tutorialSwitch.setSize(100, 30);
 		tutorialSwitch.setOnBackgroundColor(UITestScreen.AWESOME_GREEN);
 		tutorialSwitch.setOnTextColor(Color.BLACK);
-		tutorialSwitch.setPosition(BBTHGame.WIDTH - 15, BBTHGame.HEIGHT / 2 - 65);
+		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 - 65);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
 		ai = new UILabel("AI Difficulty");
@@ -57,7 +57,7 @@ public class SettingsScreen extends UIView {
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
 		aiDifficulty.setSize(100, 24);
 		aiDifficulty.setFillColor(UITestScreen.AWESOME_GREEN);
-		aiDifficulty.setPosition(BBTHGame.WIDTH - 15, BBTHGame.HEIGHT / 2);
+		aiDifficulty.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
 
 		addSubview(title);
@@ -84,6 +84,7 @@ public class SettingsScreen extends UIView {
 			ai_level = aiDifficulty.getValue();
 		    _editor.putFloat("aiDifficulty", ai_level);
 		    BBTHGame.AI_DIFFICULTY = ai_level;
+		    System.out.println(ai_level);
 		    _editor.commit();
 		}
 	}

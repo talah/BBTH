@@ -542,11 +542,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		
 		// achievement notifications
 		if (serverHealth == 0) {
-			baseDestroyedEvent.set(serverPlayer);
+			baseDestroyedEvent.set(serverPlayer, inGameScreen.getBeatTrack());
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		if (clientHealth == 0) {
-			baseDestroyedEvent.set(clientPlayer);
+			baseDestroyedEvent.set(clientPlayer, inGameScreen.getBeatTrack());
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		

@@ -218,8 +218,16 @@ public class BeatTrack {
 	public float getCombo() {
 		return combo;
 	}
+	
+	public int getSongLength() {
+		return musicPlayer.getSongLength();
+	}
 
 	public boolean isPlaying() {
 		return musicPlayer.isPlaying();
+	}
+
+	public int getCurrPosition() {
+		return musicPlayer.getCurrentPosition();
 	}
 }
