@@ -121,12 +121,22 @@ public abstract class Unit extends BasicMovable {
 	public void takeDamage(float damage, Unit inflictor) {
 		if (!isDead()) {
 			health -= damage;
+			
+			if (inflictor != null && inflictor.getType() == UnitType.UBER)
+				attackedByUber = true;
+			
 			if (isDead()) {
 				onDead();
 				killer = inflictor;
 				unitManager.notifyUnitDead(this);
 			}
 		}
+	}
+	
+	// stupid, oh well
+	boolean attackedByUber;
+	public boolean wasDamagedByUber() {
+		return attackedByUber;
 	}
 	
 	Unit killer;
