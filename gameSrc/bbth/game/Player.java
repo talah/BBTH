@@ -1,20 +1,27 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.Hash;
-import bbth.engine.ui.*;
-import bbth.engine.util.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIScrollView;
+import bbth.engine.util.MathUtils;
+import bbth.engine.util.Vibrate;
 import bbth.game.achievements.BBTHAchievementManager;
 import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.ai.AIController;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitManager;
+import bbth.game.units.UnitType;
+import bbth.game.units.WallUnit;
 
 /**
  * A player is someone who is interacting with the game.

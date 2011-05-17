@@ -1,7 +1,7 @@
 package bbth.engine.ui;
 
-import bbth.engine.util.MathUtils;
 import android.graphics.Canvas;
+import bbth.engine.util.MathUtils;
 
 public class UISwipeTransition {
 	

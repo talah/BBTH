@@ -19,7 +19,6 @@ import bbth.engine.ui.UIScrollView;
 import bbth.game.BBTHActivity;
 import bbth.game.BBTHGame;
 import bbth.game.R;
-import bbth.game.R.drawable;
 
 /**
  * A list of achievements with locked / unlocked status and descriptions

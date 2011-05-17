@@ -1,6 +1,7 @@
 package bbth.game.achievements.events;
 
-import bbth.game.*;
+import bbth.game.Player;
+import bbth.game.Song;
 
 public class GameEndedEvent extends BBTHAchievementEvent {
 

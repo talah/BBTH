@@ -6,7 +6,9 @@ package bbth.game.ai;
 
 import bbth.engine.sound.Beat.BeatType;
 import bbth.engine.util.MathUtils;
-import bbth.game.*;
+import bbth.game.BBTHSimulation;
+import bbth.game.BeatTrack;
+import bbth.game.Player;
 import bbth.game.units.Unit;
 
 public class PlayerAI {

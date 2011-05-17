@@ -118,7 +118,7 @@ public class UIScrollView extends UIView {
 			super.onTouchUp(x+pos_x, y+pos_y);
 		}
 		isDown = false;
-		_vy = _iy - y;
+		_vy = 10 *(_iy - y);
 
 	}
 
