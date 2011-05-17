@@ -96,12 +96,6 @@
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
-	<ACHIEVEMENT id="205">
-		<NAME>Derp</NAME>
-		<DESC></DESC>
-		<ICON>Miss 50 beats in a row</ICON>
-		<ACTIVATIONS>1</ACTIVATIONS>
-	</ACHIEVEMENT>
 	
 	<!-- Walls -->
 	<ACHIEVEMENT id="300">

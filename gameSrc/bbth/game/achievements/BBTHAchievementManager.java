@@ -111,6 +111,9 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		info = infoMap.get(203);
 		if (info != null) achievements.add(new ComboCounterAchievement(info, 300));
 		
+		info = infoMap.get(204);
+		if (info != null) achievements.add(new FullComboAchievement(info));
+		
 		info = infoMap.get(500);
 		if (info != null) achievements.add(new AnythingYouCanDo(info));
 		
