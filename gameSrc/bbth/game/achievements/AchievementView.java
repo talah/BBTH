@@ -100,7 +100,7 @@ public class AchievementView extends UIView {
 	@Override
 	public void onDraw(Canvas canvas) {
 		if (_unlockProgress == 1) {
-			_paint.setColor(Color.rgb(20, 20, 30));
+			_paint.setColor(Color.rgb(20, 20, 25));
 			_paint.setStyle(Style.FILL);
 			canvas.drawRect(_rect, _paint);
 			_paint.setStyle(Style.STROKE);
