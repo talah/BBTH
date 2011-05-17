@@ -2,8 +2,10 @@ package bbth.engine.achievements;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import android.content.res.*;
-import android.graphics.*;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import bbth.engine.core.GameActivity;
 import bbth.engine.util.Bag;

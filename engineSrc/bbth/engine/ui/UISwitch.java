@@ -1,6 +1,5 @@
 package bbth.engine.ui;
 
-import bbth.engine.util.MathUtils;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +7,7 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.graphics.Shader;
+import bbth.engine.util.MathUtils;
 
 public class UISwitch extends UIControl {
 	private static float MIN_OFFSET_DURATION = .01f;

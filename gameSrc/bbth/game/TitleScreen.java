@@ -1,10 +1,16 @@
 package bbth.game;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UIImageView;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UIView;
 import bbth.game.achievements.AchievementsScreen;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
