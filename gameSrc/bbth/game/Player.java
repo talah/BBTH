@@ -163,8 +163,10 @@ public class Player {
 		
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
-		unitCreatedEvent.set(newUnit);
-		BBTHAchievementManager.INSTANCE.notifyUnitCreated(unitCreatedEvent);
+		if (unitCreatedEvent != null) {
+			unitCreatedEvent.set(newUnit);
+			BBTHAchievementManager.INSTANCE.notifyUnitCreated(unitCreatedEvent);
+		}
 	}
 
 	public Unit getMostAdvancedUnit() {
