@@ -74,7 +74,7 @@ public abstract class Simulation {
 	public final boolean isServer;
 
 	/**
-	 * The hash of the internal state of each end, returned by getHash().
+	 * The hash of the internal state of each end, returned by getSimulationSyncHash().
 	 */
 	private int remoteHash, localHash;
 
@@ -201,7 +201,7 @@ public abstract class Simulation {
 	/**
 	 * For state integrity checking.
 	 */
-	protected abstract int getHash();
+	protected abstract int getSimulationSyncHash();
 
 	/**
 	 * Called every fine timestep with the number of seconds since the last fine
@@ -215,7 +215,7 @@ public abstract class Simulation {
 	private final void endCurrentTimestep() {
 		// Package up a representation of our internal state so we can tell if
 		// we have desynced
-		currentStep.hash = getHash();
+		currentStep.hash = getSimulationSyncHash();
 
 		// Set the timestep to go off in the future
 		currentStep.coarseTime = currentCoarseTimestep + coarseLag;

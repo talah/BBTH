@@ -479,12 +479,12 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	@Override
-	protected int getHash() {
+	protected int getSimulationSyncHash() {
 		int hash = 0;
-		hash = Hash.mix(hash, serverPlayer.getHash());
-		hash = Hash.mix(hash, clientPlayer.getHash());
+		hash = Hash.mix(hash, serverPlayer.getSimulationSyncHash());
+		hash = Hash.mix(hash, clientPlayer.getSimulationSyncHash());
 		for (int i = 0, n = graphGen.walls.size(); i < n; i++) {
-			hash = Hash.mix(hash, graphGen.walls.get(i).getHash());
+			hash = Hash.mix(hash, graphGen.walls.get(i).getSimulationSyncHash());
 		}
 		return hash;
 	}

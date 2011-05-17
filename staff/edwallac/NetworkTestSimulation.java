@@ -59,7 +59,7 @@ public class NetworkTestSimulation extends Simulation {
 	}
 
 	@Override
-	protected int getHash() {
+	protected int getSimulationSyncHash() {
 		return 0;
 	}
 }

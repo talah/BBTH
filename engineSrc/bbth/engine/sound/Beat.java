@@ -123,4 +123,8 @@ public class Beat {
 			canvas.drawLine(cachedRect.right, y1, cachedRect.right, y2, paint);
 		}
 	}
+
+	public boolean isTapped() {
+		return _tapped;
+	}
 }
