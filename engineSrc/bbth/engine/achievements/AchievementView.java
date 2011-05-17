@@ -81,7 +81,7 @@ public class AchievementView extends UIView {
 		super.onDraw(canvas);
 		
 		_paint.setStyle(Style.STROKE);
-		_paint.setColor(Color.BLACK);
+		_paint.setColor(Color.WHITE);
 		canvas.drawLine(_rect.left, _rect.top, _rect.right, _rect.top, _paint);
 		canvas.drawLine(_rect.left, _rect.bottom, _rect.right, _rect.bottom, _paint);
 	}
