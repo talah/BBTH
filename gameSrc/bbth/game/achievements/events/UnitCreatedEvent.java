@@ -1,7 +1,8 @@
 package bbth.game.achievements.events;
 
 import bbth.game.BBTHSimulation;
-import bbth.game.units.*;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 public class UnitCreatedEvent extends BBTHAchievementEvent {
 

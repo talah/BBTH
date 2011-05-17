@@ -1,11 +1,18 @@
 package bbth.game.achievements;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.ui.*;
+import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIImageView;
+import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UILabel.VAlign;
+import bbth.engine.ui.UIProgressBar;
+import bbth.engine.ui.UIView;
 
 /**
  * A view for a single achievement

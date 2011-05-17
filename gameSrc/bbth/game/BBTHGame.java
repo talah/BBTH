@@ -1,6 +1,7 @@
 package bbth.game;
 
 import android.app.Activity;
+import android.graphics.Color;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
@@ -15,7 +16,9 @@ public class BBTHGame extends Game {
 	public static final float HEIGHT = 530;
 	public static final boolean DEBUG = false;
 	public static boolean SHOW_TUTORIAL = true;
+	public static boolean TITLE_SCREEN_MUSIC = true;
 	public static float AI_DIFFICULTY = 0.75f;
+	public static final int AWESOME_GREEN = Color.rgb(159, 228, 74);
 	private UINavigationController navController;
 	
 	public BBTHGame(Activity activity) {
@@ -23,6 +26,7 @@ public class BBTHGame extends Game {
 		currentScreen = navController;
 		
 		SHOW_TUTORIAL = activity.getSharedPreferences("game_settings", 0).getBoolean("showTutorial", true);
+		TITLE_SCREEN_MUSIC = activity.getSharedPreferences("game_settings", 0).getBoolean("titleScreenMusic", true);
 		AI_DIFFICULTY = activity.getSharedPreferences("game_settings", 0).getFloat("aiDifficulty", 0.75f);
 		
 		

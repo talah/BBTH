@@ -84,9 +84,12 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void willHide(boolean animating) {
 		super.willHide(animating);
-		musicPlayer.stop();
-		musicPlayer.release();
-		musicPlayer = null;
+		if(musicPlayer != null)
+		{
+			musicPlayer.stop();
+			musicPlayer.release();
+			musicPlayer = null;
+		}
 		endAnimations();
 	}
 	
@@ -137,7 +140,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 
 		combatView.onUpdate(seconds);
 		
-		if (musicPlayer == null) {
+		if (BBTHGame.TITLE_SCREEN_MUSIC && musicPlayer == null) {
 			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.mistakethegetaway);
 			musicPlayer.loop();
 		}
