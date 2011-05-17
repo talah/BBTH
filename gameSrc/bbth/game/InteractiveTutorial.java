@@ -39,10 +39,15 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private static final Path path = new Path();
 	private static final Paint paint = new Paint();
 	public static final float MIN_SONG_TIME = -6;
-	public static final boolean USE_OK_BUTTONS = false;
 	static {
 		paint.setAntiAlias(true);
 	}
+
+	/**
+	 * If this is true, there will be an OK button after most text prompts to
+	 * give people enough time to digest the message.
+	 */
+	public static final boolean USE_OK_BUTTONS = false;
 
 	private abstract class Step extends UIView implements UIButtonDelegate {
 		@Override
@@ -315,7 +320,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			transition(new FinishedStep());
 		}
 	}
-	
+
 	private class FinishedStep extends Step {
 	}
 
