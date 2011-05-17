@@ -12,6 +12,10 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 	System.out.println("("+achievementInfo.id+") \""+achievementInfo.name+"\": "+achievementInfo.description);
 }
 	}
+	
+	public void initialize() {
+		// static initializer called, yay
+	}
 
 	@Override
 	protected void registerAchievements() {

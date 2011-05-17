@@ -45,13 +45,14 @@ public class AchievementInfoParser {
 	}
 	
 	private static AchievementInfo parseAchievementInfo(XmlResourceParser parser) throws Exception {
-		parser.next();
 		
 		int id = parser.getAttributeIntValue(null, "id", -1);
 		if (id < 0) {
 			Log.d("BBTH", "Missing or invalid achievement id!");
 			return null;
 		}
+		
+		parser.next();
 		String name = "<unnamed>";
 		String description = "<no description>";
 		String icon = "icon";
@@ -94,7 +95,8 @@ public class AchievementInfoParser {
 			return null;
 		}
 		
-		String text = parser.getText(); 
+		String text = parser.getText();
+		parser.next();
 		parser.next(); // get rid of close tag
 		
 		return text;

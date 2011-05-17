@@ -1,14 +1,19 @@
 package bbth.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
-import bbth.engine.achievements.Achievements;
 import bbth.engine.core.GameActivity;
-import bbth.engine.sound.*;
+import bbth.engine.sound.Beat;
+import bbth.engine.sound.BeatTracker;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
+import bbth.engine.sound.SoundManager;
 
 /**
  * A complete beat track for a single song. Handles music, hit and miss sounds,
@@ -174,7 +179,6 @@ public class BeatTrack {
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
 			if (beatType == Beat.BeatType.HOLD){
-				Achievements.INSTANCE.unlock("Test Success");
 				isHolding = true;
 				//holdId = soundManager.play(HOLD_SOUND_ID);
 			} else {

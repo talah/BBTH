@@ -13,6 +13,7 @@ public abstract class AchievementManager<T extends Achievement> {
 		for (AchievementInfo achievementInfo : achievementInfos) {
 			infoMap.put(Integer.valueOf(achievementInfo.id), achievementInfo);
 		}
+		achievements = new Bag<T>();
 	}
 	
 	protected abstract void registerAchievements();
