@@ -111,6 +111,10 @@ public class BeatTrack {
 	public void stopMusic() {
 		musicPlayer.stop();
 	}
+	
+	public void setStartDelay(int delayMillis) {
+		musicPlayer.setStartDelay(delayMillis);
+	}
 
 	public void draw(Canvas canvas) {
 		// paint.setARGB(127, 0, 0, 0);

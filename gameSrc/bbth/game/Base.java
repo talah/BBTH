@@ -9,6 +9,7 @@ import android.graphics.Paint.Align;
 import android.graphics.RectF;
 import bbth.engine.ui.UIView;
 import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 public class Base extends UIView {
 	public static final float BASE_HEIGHT = 20;
@@ -57,7 +58,11 @@ public class Base extends UIView {
 		for (Unit u : cachedUnits) {
 			if (u.getTeam() == team.getOppositeTeam()) {
 				if (!BBTHGame.DEBUG) {
-					player.adjustHealth(-10);
+					if (u.getType() == UnitType.UBER) {
+						player.adjustHealth(-10.0f * (u.getHealth()/u.getStartingHealth()));
+					} else {
+						player.adjustHealth(-5.0f * (u.getHealth()/u.getStartingHealth()));
+					}
 				}
 
 				u.takeDamage(u.getHealth());

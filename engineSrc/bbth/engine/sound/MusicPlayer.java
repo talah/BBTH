@@ -47,6 +47,10 @@ public class MusicPlayer {
 		_mediaPlayer.seekTo(positionMillis);
 		_startTime = System.currentTimeMillis() - positionMillis;
 	}
+	
+	public void setStartDelay(int delayMillis) {
+		_startTime = System.currentTimeMillis() + delayMillis;
+	}
 
 	// plays the song once
 	public void play() {

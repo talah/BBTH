@@ -56,6 +56,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private float secondsUntilNextScreen = 4;
 	private boolean setSong;
 	private boolean gameIsStarted;
+	private boolean countdownStarted;
 
 	// TODO: Make a way to set the difficulty.
 	float aiDifficulty;
@@ -313,7 +314,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished()) {
 			tutorial.onUpdate(seconds);
 		} else {
-			startGame();
+			endTutorial();
+		}
+		
+		// Start the countdown
+		if (!countdownStarted && sim.getGameState() == GameState.WAITING_TO_START && sim.isReady()) {
+			beatTrack.setStartDelay(3000);
+			countdownStarted = true;
 		}
 
 		// Start the music
@@ -508,7 +515,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		beatTrack.stopMusic();
 	}
 
-	public void startGame() {
+	public void endTutorial() {
 		if (!gameIsStarted) {
 			gameIsStarted = true;
 			removeSubview(tutorial);
