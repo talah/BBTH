@@ -1,13 +1,11 @@
 package bbth.game;
 
-import java.util.Map;
-
 import android.graphics.*;
-import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.*;
+import bbth.game.achievements.AchievementsScreen;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UIImageView titleBar;

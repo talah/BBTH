@@ -67,7 +67,7 @@ public abstract class Unit extends BasicMovable {
 		canvas.drawRect(left, top, right, bottom, paint);
 		
 		paint.setColor(Color.GREEN);
-		float greenStopX = MathUtils.scale(0f, getStartingHealth(), left, right, getHealth());
+		float greenStopX = MathUtils.scale(0f, getStartingHealth(), left, right, getHealth(), true);
 		canvas.drawRect(left, top, greenStopX, bottom, paint);
 		
 		paint.set(tempPaint);

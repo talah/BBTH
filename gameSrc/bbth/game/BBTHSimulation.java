@@ -56,7 +56,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	private static final Random random = new Random();
 	private boolean serverReady;
 	private boolean clientReady;
-	private BaseDestroyedEvent baseDestroyedEvent;
 	private float startingCountdown = 3;
 
 	// This is the virtual size of the game
@@ -78,13 +77,15 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	// The song id
 	public Song song;
 
-	public BBTHSimulation(Team localTeam, LockStepProtocol protocol,
-			boolean isServer) {
+	private InGameScreen inGameScreen;
+	public BBTHSimulation(Team localTeam, LockStepProtocol protocol, boolean isServer, InGameScreen inGameScreen) {
 		// 3 fine timesteps per coarse timestep
 		// coarse timestep takes 0.1 seconds
 		// user inputs lag 2 coarse timesteps behind
 		super(3, 0.1f, 2, protocol, isServer);
 
+		this.inGameScreen = inGameScreen;
+		
 		// THIS IS IMPORTANT
 		random.setSeed(0);
 
@@ -200,9 +201,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
-			baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer);
-			serverPlayer.setupEvents(this);
-			clientPlayer.setupEvents(this);
+			setupEvents();
 		} else {
 			Player player = playerMap.get(isServer);
 
@@ -532,8 +531,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		
-		Player winner = gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer;
-		GameEndedEvent endEvent = new GameEndedEvent(song, localPlayer, winner, gameState == GameState.TIE);
+		endEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE);
 		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
 		
 	}
@@ -565,5 +563,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public float getStartingCountdown() {
 		return startingCountdown;
+	}
+	
+	private BaseDestroyedEvent baseDestroyedEvent;
+	private GameEndedEvent endEvent;
+	private void setupEvents() {
+		boolean singlePlayer = inGameScreen.singlePlayer;
+		float aiDifficulty = inGameScreen.aiDifficulty;
+		endEvent = new GameEndedEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		serverPlayer.setupEvents(inGameScreen, this);
+		clientPlayer.setupEvents(inGameScreen, this);
 	}
 }

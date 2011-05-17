@@ -1,4 +1,4 @@
-package bbth.game;
+package bbth.game.achievements;
 
 import java.util.Collection;
 import java.util.Map;
@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Paint.Align;
 import android.util.DisplayMetrics;
 import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.AchievementView;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
@@ -17,8 +16,10 @@ import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIScrollView;
-import bbth.game.achievements.BBTHAchievement;
-import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.BBTHActivity;
+import bbth.game.BBTHGame;
+import bbth.game.R;
+import bbth.game.R.drawable;
 
 /**
  * A list of achievements with locked / unlocked status and descriptions
@@ -27,7 +28,7 @@ import bbth.game.achievements.BBTHAchievementManager;
  */
 public class AchievementsScreen extends UIScrollView implements UIButtonDelegate {
 
-	private final static int ACHIEVEMENT_HEIGHT = 65;
+	private final static int ACHIEVEMENT_HEIGHT = 70;
 	
 	private Bitmap _lockedImage;
 

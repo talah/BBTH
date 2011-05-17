@@ -8,8 +8,8 @@ public class UnitCreatedEvent extends BBTHAchievementEvent {
 
 	private Unit m_unit;
 
-	public UnitCreatedEvent(Song song, Player localPlayer) {
-		super(song, localPlayer);
+	public UnitCreatedEvent(Song song, Player localPlayer, boolean singleplayer, float aiDifficulty) {
+		super(song, localPlayer, singleplayer, aiDifficulty);
 	}
 	
 	public void set(Unit u) {

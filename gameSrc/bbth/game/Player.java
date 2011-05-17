@@ -1,28 +1,20 @@
 package bbth.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.Hash;
-import bbth.engine.ui.Anchor;
-import bbth.engine.ui.UIScrollView;
-import bbth.engine.util.MathUtils;
-import bbth.engine.util.Vibrate;
-import bbth.game.achievements.BBTHAchievement;
+import bbth.engine.ui.*;
+import bbth.engine.util.*;
 import bbth.game.achievements.BBTHAchievementManager;
 import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.ai.AIController;
-import bbth.game.units.Unit;
-import bbth.game.units.UnitManager;
-import bbth.game.units.UnitType;
-import bbth.game.units.WallUnit;
+import bbth.game.units.*;
 
 /**
  * A player is someone who is interacting with the game.
@@ -282,7 +274,7 @@ public class Player {
 		return hash;
 	}
 
-	public void setupEvents(BBTHSimulation sim) {
-		unitCreatedEvent = new UnitCreatedEvent(sim.song, sim.localPlayer);
+	public void setupEvents(InGameScreen inGameScreen, BBTHSimulation sim) {
+		unitCreatedEvent = new UnitCreatedEvent(sim.song, sim.localPlayer, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
 	}
 }
