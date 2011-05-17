@@ -136,6 +136,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		// Disconnect when we lose focus
 		bluetooth.disconnect();
+		
+		Achievements.INSTANCE.commit();
 	}
 
 	@Override

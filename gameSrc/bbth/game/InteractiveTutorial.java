@@ -79,6 +79,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	}
 
 	private class PlaceUnitStep extends Step {
+		private boolean dontTapOnBeatTrack;
+
 		@Override
 		public void onDraw(Canvas canvas) {
 			float x = GAME_X + GAME_WIDTH / 2;
@@ -86,9 +88,15 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("When the beat is between", x, y - 17, paint);
-			canvas.drawText("the two lines, tap on the", x, y, paint);
-			canvas.drawText("grid to create a unit", x, y + 17, paint);
+			if (dontTapOnBeatTrack) {
+				canvas.drawText("Tap further right", x, y - 8, paint);
+				canvas.drawText("to create a unit", x, y + 8, paint);
+				drawArrow(canvas, x - 25, y + 25, x + 25, y + 25, 5);
+			} else {
+				canvas.drawText("When the beat is between", x, y - 17, paint);
+				canvas.drawText("the two lines, tap on the", x, y, paint);
+				canvas.drawText("grid to create a unit", x, y + 17, paint);
+			}
 		}
 
 		@Override
@@ -102,7 +110,11 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		public void onTouchDown(float x, float y) {
 			x -= GAME_X;
 			y -= GAME_Y;
-			if (x >= 0 && beat.onTouchDown((int) (songTime * 1000))) {
+			if (x < 0) {
+				// Player shouldn't be tapping on the beat track
+				dontTapOnBeatTrack = true;
+				beat = Beat.tap(0);
+			} else if (beat.onTouchDown((int) (songTime * 1000))) {
 				localPlayer.spawnUnit(x, y);
 				transition(new UnitsUpAndDownStep());
 			}
@@ -136,7 +148,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 6;
+			return time > 7;
 		}
 
 		@Override
@@ -172,7 +184,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 6;
+			return time > 5;
 		}
 
 		@Override
@@ -209,7 +221,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 6;
+			return time > 9;
 		}
 
 		@Override
@@ -219,6 +231,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	}
 
 	private class DrawWallStep extends Step {
+		private boolean dontTapOnBeatTrack;
 		private boolean isTooShort;
 		private boolean isDragging;
 
@@ -237,6 +250,10 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				canvas.drawText("You need to drag your finger", x, y - 17, paint);
 				canvas.drawText("away from where you tapped,", x, y, paint);
 				canvas.drawText("please try making a longer wall", x, y + 17, paint);
+			} else if (dontTapOnBeatTrack) {
+				canvas.drawText("Tap further right", x, y - 8, paint);
+				canvas.drawText("to create a wall", x, y + 8, paint);
+				drawArrow(canvas, x - 25, y + 25, x + 25, y + 25, 5);
 			} else {
 				canvas.drawText("When a beat has a tail,", x, y - 17, paint);
 				canvas.drawText("you can drag on the", x, y, paint);
@@ -253,7 +270,11 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public void onTouchDown(float x, float y) {
-			if (x >= GAME_X && beat.onTouchDown((int) (songTime * 1000))) {
+			if (x < GAME_X) {
+				// Player shouldn't be tapping on the beat track
+				dontTapOnBeatTrack = true;
+				beat = Beat.tap(0);
+			} else if (beat.onTouchDown((int) (songTime * 1000))) {
 				isDragging = true;
 				wallStartX = wallEndX = transformToGameSpaceX(x);
 				wallStartY = wallEndY = transformToGameSpaceY(y);
@@ -274,7 +295,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				wallEndX = transformToGameSpaceX(x);
 				wallEndY = transformToGameSpaceY(y);
 				BBTHSimulation.generateParticlesForWall(new Wall(wallStartX, wallStartY, wallEndX, wallEndY), team);
-				isTooShort = MathUtils.getDist(wallStartX, wallStartY, wallEndX, wallEndY) < 20;
+				isTooShort = MathUtils.getDist(wallStartX, wallStartY, wallEndX, wallEndY) < 30;
 				isDragging = false;
 				if (isTooShort) {
 					beat = Beat.hold(1000);
