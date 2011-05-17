@@ -17,6 +17,7 @@ import bbth.game.achievements.impls.AnythingYouCanDo;
 import bbth.game.achievements.impls.BetterNotToMash;
 import bbth.game.achievements.impls.ComboCounterAchievement;
 import bbth.game.achievements.impls.DesperateTimes;
+import bbth.game.achievements.impls.FullComboAchievement;
 import bbth.game.achievements.impls.SongAchievement;
 
 public final class BBTHAchievementManager extends AchievementManager<BBTHAchievement> {
@@ -123,6 +124,9 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		
 		info = infoMap.get(203);
 		if (info != null) achievements.add(new ComboCounterAchievement(info, 300));
+		
+		info = infoMap.get(204);
+		if (info != null) achievements.add(new FullComboAchievement(info));
 		
 		info = infoMap.get(500);
 		if (info != null) achievements.add(new AnythingYouCanDo(info));
