@@ -320,23 +320,29 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	private void drawGrid(Canvas canvas) {
-		paint.setARGB(63, 255, 255, 255);
+		paint.setARGB(10, 255, 255, 255);
+		paint.setStrokeWidth(5);
 
-		for (float x = 0; x < GAME_WIDTH; x += 55) {
-			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
+		for (float x = 0; x < GAME_WIDTH; x += GAME_WIDTH/6.0f) {
+			float offset = 10 * FloatMath.cos(((x/GAME_WIDTH) * 4 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+			if (x + offset < 0) {
+				offset = -x;
+			}
+			canvas.drawLine(x + offset, 0, x + offset, GAME_HEIGHT, paint);
 		}
-		for (float y = 0; y < GAME_HEIGHT; y += 55) {
-			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
+		for (float y = 0; y < GAME_HEIGHT; y += GAME_HEIGHT/12.0f) {
+			float offset = 10 * FloatMath.sin(((y/GAME_HEIGHT) * 8 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+			canvas.drawLine(0, y + offset, GAME_WIDTH, y + offset, paint);
 		}
 	}
 
-	public void draw(Canvas canvas) {
+	public void draw(Canvas canvas) {		
 		if (gameState == GameState.IN_PROGRESS) {
 			drawWavefronts(canvas);
 		}
 		
 		drawGrid(canvas);
-
+		
 		localPlayer.draw(canvas, team == Team.SERVER);
 		remotePlayer.draw(canvas, team == Team.SERVER);
 
