@@ -92,7 +92,7 @@ public class UISlider extends UIControl {
 
 		this.upCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.BACKGROUND_COLOR);
 		this.downCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.FOREGROUND_COLOR);
-		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, UIDefaultConstants.UI_SLIDER_FILLED_COLOR);
+		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, UIDefaultConstants.ACTIVE_COLOR);
 		this.emptyShader = UIDefaultConstants.generateD2LVerticalLinearGradient(emptyBarRect, UIDefaultConstants.BACKGROUND_COLOR);
 	}
 
