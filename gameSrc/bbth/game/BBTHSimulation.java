@@ -232,7 +232,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				if (serverReady && clientReady) {
 					Unit.resetNextHashCodeID();
 				}
-			} else if (code == MUSIC_STOPPED_EVENT) {
+			} else if ((gameState == GameState.IN_PROGRESS || gameState == GameState.WAITING_TO_START) && code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
 			}
 		}
@@ -339,7 +339,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		serverPlayer.base.damageUnits(accel);
 		clientPlayer.base.damageUnits(accel);
 
-		if (localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
+		if (gameState == GameState.IN_PROGRESS && localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
 			endTheGame();
 		}
 		

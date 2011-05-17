@@ -103,7 +103,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new DesperateMeasures(info));
 		
 		info = infoMap.get(102);
-		// Prereqs: get total length of song
+		if (info != null) achievements.add(new UltimateStalemate(info));
 		
 		info = infoMap.get(103);
 		if (info != null) achievements.add(new FlawlessVictory(info));

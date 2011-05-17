@@ -84,7 +84,6 @@ public class SettingsScreen extends UIView {
 			ai_level = aiDifficulty.getValue();
 		    _editor.putFloat("aiDifficulty", ai_level);
 		    BBTHGame.AI_DIFFICULTY = ai_level;
-		    System.out.println(ai_level);
 		    _editor.commit();
 		}
 	}

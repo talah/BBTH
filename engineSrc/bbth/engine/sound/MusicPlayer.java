@@ -40,6 +40,9 @@ public class MusicPlayer {
 	}
 
 	public int getCurrentPosition() {
+		if (_startTime == 0) {
+			return -1;
+		}
 		return (int) (System.currentTimeMillis() - _startTime);
 	}
 
