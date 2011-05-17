@@ -56,7 +56,7 @@ public class Base extends UIView {
 	public void damageUnits(GridAcceleration accel) {
 		accel.getUnitsInAABB(_rect.left, _rect.top, _rect.right, _rect.bottom, cachedUnits);
 		for (Unit u : cachedUnits) {
-			if (u.getTeam() == team.getOppositeTeam()) {
+			if (u.getTeam() == team.getOppositeTeam() && _rect.contains(u.getX(), u.getY())) {
 				if (!BBTHGame.DEBUG) {
 					if (u.getType() == UnitType.UBER) {
 						player.adjustHealth(-10.0f * (u.getHealth()/u.getStartingHealth()));
