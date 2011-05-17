@@ -165,8 +165,10 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				player.spawnUnit(x, y);
 			}
 			
-			beatHitEvent.set(player);
-			BBTHAchievementManager.INSTANCE.notifyBeatHit(beatHitEvent);
+			if (beatHitEvent != null) {
+				beatHitEvent.set(player);
+				BBTHAchievementManager.INSTANCE.notifyBeatHit(beatHitEvent);
+			}
 		} else {
 			player.setCombo(0);
 		}

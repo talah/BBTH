@@ -107,7 +107,7 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		if (info != null) achievements.add(new BetterNotToMash(info));
 		
 		info = infoMap.get(201);
-		if (info != null) achievements.add(new ComboCounterAchievement(info, 2));
+		if (info != null) achievements.add(new ComboCounterAchievement(info, 25));
 		
 		info = infoMap.get(202);
 		if (info != null) achievements.add(new ComboCounterAchievement(info, 100));
