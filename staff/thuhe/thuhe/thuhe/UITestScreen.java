@@ -3,12 +3,14 @@ package thuhe.thuhe.thuhe;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UISlider;
+import bbth.engine.ui.UISwitch;
 import bbth.engine.ui.UIView;
 import bbth.game.BBTHGame;
 
 public class UITestScreen extends UIView {
 	private UISlider slider;
 	private UILabel label;
+	private UISwitch uiSwitch;
 	
 	public UITestScreen() {
 		this.setAnchor(Anchor.TOP_LEFT);
@@ -27,12 +29,19 @@ public class UITestScreen extends UIView {
 		label.setSize(100, 20);
 		label.setTextSize(20.f);
 		this.addSubview(label);
+		
+		uiSwitch = new UISwitch();
+		uiSwitch.setAnchor(Anchor.CENTER_CENTER);
+		uiSwitch.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 80);
+		uiSwitch.setSize(100, 30);
+		this.addSubview(uiSwitch);
 	}
 	
 	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
 		
-		label.setText("Value: " + slider.getValue());
+//		label.setText("Value: " + slider.getValue());
+		label.setText("Value: " + (uiSwitch.isOn() ? "ON" : "OFF"));
 	}
 }

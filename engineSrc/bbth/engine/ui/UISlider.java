@@ -1,8 +1,11 @@
 package bbth.engine.ui;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import bbth.engine.util.*;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import bbth.engine.util.MathUtils;
 import bbth.engine.util.Point;
 
 public class UISlider extends UIControl {
@@ -36,7 +39,7 @@ public class UISlider extends UIControl {
 	public UISlider(float minValue, float maxValue, float defaultValue) {
 		this.paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.paint.setStrokeWidth(UIDefaultConstants.UI_SLIDER_CIRCLE_BORDER_WIDTH);
-		
+
 		this.barRect = new RectF();
 		this.filledBarRect = new RectF();
 		this.emptyBarRect = new RectF();
@@ -88,7 +91,7 @@ public class UISlider extends UIControl {
 
 		this.upCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.BACKGROUND_COLOR);
 		this.downCircleShader = UIDefaultConstants.generateD2LVerticalLinearGradient(_rect, UIDefaultConstants.FOREGROUND_COLOR);
-		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, UIDefaultConstants.UI_SLIDER_FILLED_COLOR);
+		this.filledShader = UIDefaultConstants.generateD2LVerticalLinearGradient(filledBarRect, UIDefaultConstants.ACTIVE_COLOR);
 		this.emptyShader = UIDefaultConstants.generateD2LVerticalLinearGradient(emptyBarRect, UIDefaultConstants.BACKGROUND_COLOR);
 	}
 
@@ -99,17 +102,19 @@ public class UISlider extends UIControl {
 
 	@Override
 	public boolean containsPoint(float x, float y) {
-		return true;
+		if (isDepressed) {
+			return true;
+		} else {
+			return super.containsPoint(x, y) || MathUtils.getDistSqr(x, y, circleLocation.x, circleLocation.y) < this.circleRadius * this.circleRadius * 4.f;
+		}
 	}
 
 	@Override
 	public void onTouchDown(float x, float y) {
 		super.onTouchDown(x, y);
 
-		if (MathUtils.getDistSqr(x, y, circleLocation.x, circleLocation.y) < this.circleRadius * this.circleRadius * 4.f) {
-			this.isDepressed = true;
-			this.recomputeValueWithTouch(x);
-		}
+		this.isDepressed = true;
+		this.recomputeValueWithTouch(x);
 	}
 
 	@Override
@@ -143,19 +148,19 @@ public class UISlider extends UIControl {
 		paint.setShader(this.filledShader);
 		canvas.drawRoundRect(this.filledBarRect, this.cornerRadius, this.cornerRadius, paint);
 		paint.setShader(null);
-		
+
 		// The little circle dealy
 		paint.setColor(UIDefaultConstants.FOREGROUND_COLOR);
 		paint.setStyle(Style.STROKE);
 		canvas.drawCircle(this.circleLocation.x, this.circleLocation.y, this.circleRadius, paint);
 		paint.setStyle(Style.FILL);
-		
+
 		if (this.isDepressed) {
 			paint.setShader(this.downCircleShader);
 		} else {
 			paint.setShader(this.upCircleShader);
 		}
-		
+
 		canvas.drawCircle(this.circleLocation.x, this.circleLocation.y, this.circleRadius, paint);
 		paint.setShader(null);
 	}
