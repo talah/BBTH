@@ -56,6 +56,7 @@ public class AchievementInfoParser {
 		String name = "<unnamed>";
 		String description = "<no description>";
 		String icon = "icon";
+		int activations = 1;
 		
 		int eventType;
 		while ((eventType = parser.getEventType()) != XmlPullParser.END_TAG) {
@@ -76,6 +77,11 @@ public class AchievementInfoParser {
 					if (achievementIcon == null)
 						return null;
 					icon = achievementIcon;
+				} else if (elementName.equals("ACTIVATIONS")) {
+					String activationStr = getText(parser, elementName);
+					if (activationStr == null)
+						return null;
+					activations = Integer.parseInt(activationStr);
 				}
 			}
 		}
@@ -84,7 +90,7 @@ public class AchievementInfoParser {
 		int imageId = resources.getIdentifier(icon, "drawable", GameActivity.instance.getPackageName());
 		Bitmap image = BitmapFactory.decodeResource(resources, imageId);
 		
-		return new AchievementInfo(id, name, description, image);
+		return new AchievementInfo(id, activations, name, description, image);
 	}
 	
 	private static String getText(XmlResourceParser parser, String name) throws Exception {
