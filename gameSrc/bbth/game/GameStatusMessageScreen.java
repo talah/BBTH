@@ -150,13 +150,6 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
-//			if (BBTHGame.IS_SINGLE_PLAYER) {
-//				nextScreen = new InGameScreen(Team.SERVER, new Bluetooth(
-//						GameActivity.instance, new LockStepProtocol()),
-//						BBTHGame.SONG, new LockStepProtocol());
-//			} else {
-//				nextScreen = new GameSetupScreen();
-//			}
 			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		} else if (button == quit) {
 			System.exit(0);

@@ -11,9 +11,6 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 	
 	private BBTHAchievementManager(int achievementsResourceID) {
 		super(achievementsResourceID);
-for (AchievementInfo achievementInfo : infoMap.values()) {
-	System.out.println("("+achievementInfo.id+") \""+achievementInfo.name+"\": "+achievementInfo.description);
-}
 	}
 	
 	public void unregisterAchievementFromEvents(BBTHAchievement achievement) {
@@ -21,8 +18,8 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 			baseDestroyedAchievements.remove(achievement);
 		if (achievement.usesGameEnded())
 			gameEndedAchievements.remove(achievement);
-		if (achievement.usesUnitKilled())
-			unitKilledAchievements.remove(achievement);
+		if (achievement.usesUnitDead())
+			unitDeadAchievements.remove(achievement);
 		if (achievement.usesUnitCreated())
 			unitCreatedAchievements.remove(achievement);
 		if (achievement.usesBeatHit())
@@ -37,12 +34,15 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 	
 	void postRegisterAchievements() {
 		for (BBTHAchievement achievement : achievements) {
+			if (Achievements.INSTANCE.isUnlocked(achievement.achievementInfo))
+				continue;
+			
 			if (achievement.usesBaseDestroyed())
 				baseDestroyedAchievements.add(achievement);
 			if (achievement.usesGameEnded())
 				gameEndedAchievements.add(achievement);
-			if (achievement.usesUnitKilled())
-				unitKilledAchievements.add(achievement);
+			if (achievement.usesUnitDead())
+				unitDeadAchievements.add(achievement);
 			if (achievement.usesUnitCreated())
 				unitCreatedAchievements.add(achievement);
 			if (achievement.usesBeatHit())
@@ -60,8 +60,8 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 	public void notifyBaseDestroyed(BaseDestroyedEvent e) { for (BBTHAchievement achievement : achievements) achievement.baseDestroyed(e); }
 	private Bag<BBTHAchievement> gameEndedAchievements = new Bag<BBTHAchievement>(); 
 	public void notifyGameEnded(GameEndedEvent e) { for (BBTHAchievement achievement : achievements) achievement.gameEnded(e); }
-	private Bag<BBTHAchievement> unitKilledAchievements = new Bag<BBTHAchievement>(); 
-	public void notifyUnitKilled(UnitKilledEvent e) { for (BBTHAchievement achievement : achievements) achievement.unitKilled(e); }
+	private Bag<BBTHAchievement> unitDeadAchievements = new Bag<BBTHAchievement>(); 
+	public void notifyUnitDead(UnitDeadEvent e) { for (BBTHAchievement achievement : achievements) achievement.unitDead(e); }
 	private Bag<BBTHAchievement> unitCreatedAchievements = new Bag<BBTHAchievement>(); 
 	public void notifyUnitCreated(UnitCreatedEvent e) { for (BBTHAchievement achievement : achievements) achievement.unitCreated(e); }
 	private Bag<BBTHAchievement> beatHitAchievements = new Bag<BBTHAchievement>(); 
@@ -82,25 +82,37 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		AchievementInfo info;
 		
 		info = infoMap.get(0);
-		if (info != null) { achievements.add(new SongAchievement(info, Song.MISTAKE_THE_GETAWAY)); }
+		if (info != null) achievements.add(new SongAchievement(info, Song.MISTAKE_THE_GETAWAY)); 
 		
 		info = infoMap.get(1);
-		if (info != null) { achievements.add(new SongAchievement(info, Song.MIGHT_AND_MAGIC)); }
+		if (info != null) achievements.add(new SongAchievement(info, Song.MIGHT_AND_MAGIC));
 		
 		info = infoMap.get(2);
-		if (info != null) { achievements.add(new SongAchievement(info, Song.RETRO)); }
+		if (info != null) achievements.add(new SongAchievement(info, Song.RETRO));
 		
 		info = infoMap.get(3);
-		if (info != null) { achievements.add(new SongAchievement(info, Song.JAVLA_SLADDAR)); }
+		if (info != null) achievements.add(new SongAchievement(info, Song.JAVLA_SLADDAR));
 		
 		info = infoMap.get(4);
-		if (info != null) { achievements.add(new SongAchievement(info, Song.ODINS_KRAFT)); }
+		if (info != null) achievements.add(new SongAchievement(info, Song.ODINS_KRAFT));
 		
 		info = infoMap.get(100);
 		if (info != null) achievements.add(new DesperateTimes(info));
 		
+		info = infoMap.get(101);
+		// Prereqs: get total length of song
+		
+		info = infoMap.get(102);
+		// Prereqs: get total length of song
+		
+		info = infoMap.get(103);
+		if (info != null) achievements.add(new FlawlessVictory(info));
+		
+		info = infoMap.get(104);
+		// Prereqs: get number of beats opponent tapped
+		
 		info = infoMap.get(200);
-		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		if (info != null) achievements.add(new IncrementOnUberCreateAchievement(info));
 		
 		info = infoMap.get(201);
 		if (info != null) achievements.add(new ComboCounterAchievement(info, 25));
@@ -114,17 +126,59 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		info = infoMap.get(204);
 		if (info != null) achievements.add(new FullComboAchievement(info));
 		
+		info = infoMap.get(300);
+		// Prereqs: 
+		
+		info = infoMap.get(400);
+		// Prereqs: 
+		
+		info = infoMap.get(401);
+		if (info != null) achievements.add(new Humiliation(info));
+		
+		info = infoMap.get(402);
+		if (info != null) achievements.add(new ItsSuperEffective(info));
+		
+		info = infoMap.get(403);
+		if (info != null) achievements.add(new YoDawgIHeardYouLikeUnits(info));
+		
+		info = infoMap.get(404);
+		if (info != null) achievements.add(new Showdown(info));
+		
+		info = infoMap.get(405);
+		// Prereqs: probably a unit damage 
+		
+		info = infoMap.get(406);
+		// Prereqs: 
+		
 		info = infoMap.get(500);
 		if (info != null) achievements.add(new AnythingYouCanDo(info));
 		
+		info = infoMap.get(600);
+		if (info != null) achievements.add(new IncrementOnUnitKillAchievement(info));
+		
+		info = infoMap.get(601);
+		if (info != null) achievements.add(new IncrementOnUnitKillAchievement(info));
+		
+		info = infoMap.get(602);
+		if (info != null) achievements.add(new IncrementOnUnitKillAchievement(info));
+		
+		info = infoMap.get(603);
+		if (info != null) achievements.add(new IncrementOnUnitCreateAchievement(info));
+		
+		info = infoMap.get(604);
+		if (info != null) achievements.add(new IncrementOnUnitCreateAchievement(info));
+		
+		info = infoMap.get(605);
+		if (info != null) achievements.add(new IncrementOnUnitCreateAchievement(info));
+		
 		info = infoMap.get(606);
-		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		if (info != null) achievements.add(new IncrementOnUberCreateAchievement(info));
 		
 		info = infoMap.get(607);
-		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		if (info != null) achievements.add(new IncrementOnUberCreateAchievement(info));
 		
 		info = infoMap.get(608);
-		if (info != null) achievements.add(new IncrementOnUberGetAchievement(info));
+		if (info != null) achievements.add(new IncrementOnUberCreateAchievement(info));
 		
 		postRegisterAchievements();
 	}

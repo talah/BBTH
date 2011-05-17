@@ -118,14 +118,20 @@ public abstract class Unit extends BasicMovable {
 		return health <= 0f;
 	}
 	
-	public void takeDamage(float damage) {
+	public void takeDamage(float damage, Unit inflictor) {
 		if (!isDead()) {
 			health -= damage;
 			if (isDead()) {
 				onDead();
+				killer = inflictor;
 				unitManager.notifyUnitDead(this);
 			}
 		}
+	}
+	
+	Unit killer;
+	public Unit getKiller() {
+		return killer;
 	}
 	
 	protected void onDead() {

@@ -58,7 +58,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean gameIsStarted;
 	private boolean countdownStarted;
 
-	// TODO: Make a way to set the difficulty.
 	float aiDifficulty;
 	
 	boolean singlePlayer;

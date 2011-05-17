@@ -1,12 +1,11 @@
 package bbth.game.achievements.events;
 
-import bbth.game.Player;
-import bbth.game.Song;
+import bbth.game.BBTHSimulation;
 
 public class BeatMissedEvent extends BBTHAchievementEvent {
 
-	public BeatMissedEvent(Song song, Player localPlayer, boolean singleplayer, float aiDifficulty) {
-		super(song, localPlayer, singleplayer, aiDifficulty);
+	public BeatMissedEvent(BBTHSimulation simulation, boolean singleplayer, float aiDifficulty) {
+		super(simulation, singleplayer, aiDifficulty);
 	}
 
 }

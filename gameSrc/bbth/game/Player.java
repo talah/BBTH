@@ -16,7 +16,7 @@ import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Vibrate;
 import bbth.game.achievements.BBTHAchievementManager;
-import bbth.game.achievements.events.UnitCreatedEvent;
+import bbth.game.achievements.events.*;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -40,8 +40,6 @@ public class Player {
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
-	
-	private UnitCreatedEvent unitCreatedEvent;
 
 	public Player(Team team, AIController controller, UnitManager unitManager, boolean isLocal) {
 		_isLocal = isLocal;
@@ -137,13 +135,9 @@ public class Player {
 		
 		for (int i = 0; i < 10; ++i) {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
-			float xVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.cos(angle);
-			float yVel = MathUtils.randInRange(25.f, 50.f)
-					* FloatMath.sin(angle);
-			BBTHSimulation.PARTICLES.createParticle().circle()
-					.velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f)
-					.position(x, y).color(team.getRandomShade());
+			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
+			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
+			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
@@ -280,8 +274,9 @@ public class Player {
 		}
 		return hash;
 	}
-
+	
+	private UnitCreatedEvent unitCreatedEvent;
 	public void setupEvents(InGameScreen inGameScreen, BBTHSimulation sim) {
-		unitCreatedEvent = new UnitCreatedEvent(sim.song, sim.localPlayer, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
+		unitCreatedEvent = new UnitCreatedEvent(sim, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
 	}
 }

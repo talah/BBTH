@@ -22,9 +22,7 @@ import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.achievements.BBTHAchievementManager;
-import bbth.game.achievements.events.BaseDestroyedEvent;
-import bbth.game.achievements.events.BeatHitEvent;
-import bbth.game.achievements.events.GameEndedEvent;
+import bbth.game.achievements.events.*;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -344,6 +342,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
 			endTheGame();
 		}
+		
+		updateEvent.set(seconds);
+		BBTHAchievementManager.INSTANCE.notifyUpdate(updateEvent);
 
 		entireTickTimer.stop();
 	}
@@ -439,6 +440,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		serverPlayer.units.remove(unit);
 		clientPlayer.units.remove(unit);
 		aiController.removeEntity(unit);
+		unitDeadEvent.set(unit);
+		BBTHAchievementManager.INSTANCE.notifyUnitDead(unitDeadEvent);
 	}
 
 	/**
@@ -491,8 +494,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			// calculate projections
 			float projectedCenter = axisX * unit.getX() + axisY * unit.getY();
 			float radius = unit.getRadius();
-			if (!intervalsDontOverlap(projectedCenter - radius, projectedCenter
-					+ radius, lMin, lMax)) {
+			if (!intervalsDontOverlap(projectedCenter - radius, projectedCenter + radius, lMin, lMax)) {
 				cachedUnitBag.add(unit);
 			}
 		}
@@ -548,8 +550,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		
-		endEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE, inGameScreen.getBeatTrack());
-		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
+		gameEndedEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE, inGameScreen.getBeatTrack());
+		BBTHAchievementManager.INSTANCE.notifyGameEnded(gameEndedEvent);
 		
 	}
 
@@ -582,15 +584,21 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		return startingCountdown;
 	}
 	
+	private UnitDeadEvent unitDeadEvent;
 	private BaseDestroyedEvent baseDestroyedEvent;
-	private GameEndedEvent endEvent;
+	private GameEndedEvent gameEndedEvent;
 	private BeatHitEvent beatHitEvent;
+	private UpdateEvent updateEvent;
 	private void setupEvents() {
 		boolean singlePlayer = inGameScreen.singlePlayer;
 		float aiDifficulty = inGameScreen.aiDifficulty;
-		endEvent = new GameEndedEvent(song, localPlayer, singlePlayer, aiDifficulty);
-		baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer, singlePlayer, aiDifficulty);
-		beatHitEvent = new BeatHitEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		
+		gameEndedEvent = new GameEndedEvent(this, singlePlayer, aiDifficulty);
+		baseDestroyedEvent = new BaseDestroyedEvent(this, singlePlayer, aiDifficulty);
+		beatHitEvent = new BeatHitEvent(this, singlePlayer, aiDifficulty);
+		unitDeadEvent = new UnitDeadEvent(this, inGameScreen.singlePlayer, inGameScreen.aiDifficulty);
+		updateEvent = new UpdateEvent(this, singlePlayer, aiDifficulty);
+		
 		serverPlayer.setupEvents(inGameScreen, this);
 		clientPlayer.setupEvents(inGameScreen, this);
 	}

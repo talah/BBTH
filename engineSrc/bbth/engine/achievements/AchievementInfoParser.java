@@ -22,10 +22,10 @@ public class AchievementInfoParser {
     			if (eventType == XmlPullParser.START_TAG) {
     				String name = parser.getName();
     				if (name.equals("ACHIEVEMENTS")) {
-    					Log.d("BBTH", "Entering root node");
+//    					Log.d("BBTH", "Entering root node");
     					eventType = parser.next();
     				} else if (name.equals("ACHIEVEMENT")) {
-    					Log.d("BBTH", "Entering ACHIEVEMENT node");
+//    					Log.d("BBTH", "Entering ACHIEVEMENT node");
     					AchievementInfo achievementInfo = parseAchievementInfo(parser);
     					if (achievementInfo != null)
     						achievementInfos.add(achievementInfo);

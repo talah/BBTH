@@ -1,7 +1,6 @@
 package bbth.game.achievements.impls;
 
 import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.Achievements;
 import bbth.engine.sound.Beat;
 import bbth.game.BeatTrack;
 import bbth.game.achievements.BBTHAchievement;
@@ -29,7 +28,7 @@ public class FullComboAchievement extends BBTHAchievement {
 		}
 				
 		if (tappedall) {
-			Achievements.INSTANCE.increment(achievementInfo);
+			increment();
 		}
 	}
 

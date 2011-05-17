@@ -24,4 +24,5 @@ public abstract class AchievementManager<T extends Achievement> {
 	public Collection<T> getAchievements() {
 		return Collections.unmodifiableCollection(achievements);
 	}
+	
 }

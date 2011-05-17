@@ -88,9 +88,9 @@ public class AttackingUnit extends Unit {
 	}
 	
 	@Override
-	public void takeDamage(float damage) {
+	public void takeDamage(float damage, Unit inflictor) {
 		if (!detonating)
-			super.takeDamage(damage);
+			super.takeDamage(damage, inflictor);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class AttackingUnit extends Unit {
 		super.onDead();
 		for (Unit unit : unitManager.getUnitsInCircle(getX(), getY(), DETONATION_MAX_RADIUS)) {
 			if (team.isEnemy(unit.getTeam()))
-				unit.takeDamage((float) DAMAGE_ENVELOPE.getValueAtTime(MathUtils.getDist(getX(), getY(), unit.getX(), unit.getY())));
+				unit.takeDamage((float) DAMAGE_ENVELOPE.getValueAtTime(MathUtils.getDist(getX(), getY(), unit.getX(), unit.getY())), this);
 		}
 	}
 

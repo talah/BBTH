@@ -65,7 +65,7 @@ public class Base extends UIView {
 					}
 				}
 
-				u.takeDamage(u.getHealth());
+				u.takeDamage(u.getHealth(), null);
 			}
 		}
 	}

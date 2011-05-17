@@ -16,7 +16,7 @@ public class ComboCounterAchievement extends BBTHAchievement {
 	@Override
 	public void beatHit(BeatHitEvent e) {
 		if (e.getCombo() >= m_threshold && e.getHittingPlayer().getTeam() == e.getLocalPlayer().getTeam()) {
-			Achievements.INSTANCE.increment(achievementInfo);
+			increment();
 		}
 	}
 

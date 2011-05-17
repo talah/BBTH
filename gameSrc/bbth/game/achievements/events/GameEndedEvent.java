@@ -1,15 +1,13 @@
 package bbth.game.achievements.events;
 
-import bbth.game.BeatTrack;
-import bbth.game.Player;
-import bbth.game.Song;
+import bbth.game.*;
 
 public class GameEndedEvent extends BBTHAchievementEvent {
 
 	BeatTrack beatTrack;
 	
-	public GameEndedEvent(Song song, Player localPlayer, boolean singleplayer, float aiDifficulty) {
-		super(song, localPlayer, singleplayer, aiDifficulty);
+	public GameEndedEvent(BBTHSimulation simulation, boolean singleplayer, float aiDifficulty) {
+		super(simulation, singleplayer, aiDifficulty);
 	}
 	
 	boolean tie;

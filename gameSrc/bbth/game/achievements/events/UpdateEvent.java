@@ -1,12 +1,21 @@
 package bbth.game.achievements.events;
 
-import bbth.game.Player;
-import bbth.game.Song;
+import bbth.game.BBTHSimulation;
 
 public class UpdateEvent extends BBTHAchievementEvent {
 
-	public UpdateEvent(Song song, Player localPlayer, boolean singleplayer, float aiDifficulty) {
-		super(song, localPlayer, singleplayer, aiDifficulty);
+	public UpdateEvent(BBTHSimulation simulation, boolean singleplayer, float aiDifficulty) {
+		super(simulation, singleplayer, aiDifficulty);
+	}
+	
+	float seconds;
+	
+	public void set(float seconds) {
+		this.seconds = seconds;
+	}
+	
+	public float getSeconds() {
+		return seconds;
 	}
 
 }

@@ -47,7 +47,7 @@ public class UberUnit extends Unit {
 				float damage = DAMAGE_RATE * seconds;
 				for (Unit unit : unitManager.getUnitsIntersectingLine(getX(), getY(), fireTarget.getX(), fireTarget.getY())) {
 					if (team.isEnemy(unit.getTeam())) {
-						unit.takeDamage(damage);
+						unit.takeDamage(damage, this);
 					}
 				}
 			}

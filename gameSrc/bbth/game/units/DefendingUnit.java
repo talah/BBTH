@@ -36,7 +36,7 @@ public class DefendingUnit extends Unit {
 				fireTarget = null;
 			} else if (timeSinceLastShot > FIRE_RATE) {
 				timeSinceLastShot = 0f;
-				fireTarget.takeDamage(DAMAGE_PER_SHOT);
+				fireTarget.takeDamage(DAMAGE_PER_SHOT, this);
 			}
 		} else {
 			if (target != null && !target.isDead() && getStateName().equals("attacking")) {

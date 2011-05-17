@@ -49,17 +49,19 @@ public enum Achievements {
 	}
 
 	// increment an achievement, but don't commit the changes to sharedPreferences
-	public void increment(AchievementInfo info) {
+	public boolean increment(AchievementInfo info) {
 		Integer activeTmp = _achievementActivations.get(info.id);
 		int activations = activeTmp == null ? 0 : activeTmp;
 		if (activations == info.maxActivations) {
 			// already unlocked, no need to do anything
-			return;
+			return true;
 		}
 		_achievementActivations.put(info.id, activations + 1);
 		if (activations + 1 == info.maxActivations) {
 			_unlocks.add(new UnlockAnimation(info.name));
+			return true;
 		}
+		return false;
 	}
 	
 	// commit all achievement data to sharedPreferences

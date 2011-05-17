@@ -120,7 +120,7 @@
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="402">
 		<NAME>It's Super Effective!</NAME>
-		<DESC>Kill more than five enemy units with a single explosion of one of your units</DESC>
+		<DESC>Kill four or more enemy units with a single explosion of one of your units</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
@@ -160,39 +160,39 @@
 	<!-- Grind -->
 	<ACHIEVEMENT id="600">
 		<NAME>Murder</NAME>
-		<DESC>Kill 1000 enemy units</DESC>
-		<ICON>icon</ICON>
-		<ACTIVATIONS>1000</ACTIVATIONS>
-	</ACHIEVEMENT>
-	<ACHIEVEMENT id="601">
-		<NAME>Genocide</NAME>
-		<DESC>Kill 20000 enemy units</DESC>
-		<ICON>icon</ICON>
-		<ACTIVATIONS>20000</ACTIVATIONS>
-	</ACHIEVEMENT>
-	<ACHIEVEMENT id="602">
-		<NAME>I Am Become Death...</NAME>
-		<DESC>Kill 400000 enemy units</DESC>
-		<ICON>icon</ICON>
-		<ACTIVATIONS>400000</ACTIVATIONS>
-	</ACHIEVEMENT>
-	<ACHIEVEMENT id="603">
-		<NAME>Builder</NAME>
-		<DESC>Spawn 500 units</DESC>
+		<DESC>Kill 500 enemy units</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>500</ACTIVATIONS>
 	</ACHIEVEMENT>
-	<ACHIEVEMENT id="604">
-		<NAME>Creator</NAME>
-		<DESC>Spawn 10000 units</DESC>
+	<ACHIEVEMENT id="601">
+		<NAME>Genocide</NAME>
+		<DESC>Kill 10000 enemy units</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>10000</ACTIVATIONS>
 	</ACHIEVEMENT>
-	<ACHIEVEMENT id="605">
-		<NAME>Lifebringer</NAME>
-		<DESC>Spawn 200000 units</DESC>
+	<ACHIEVEMENT id="602">
+		<NAME>I Am Become Death...</NAME>
+		<DESC>Kill 200000 enemy units</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>200000</ACTIVATIONS>
+	</ACHIEVEMENT>
+	<ACHIEVEMENT id="603">
+		<NAME>Builder</NAME>
+		<DESC>Spawn 1000 units</DESC>
+		<ICON>icon</ICON>
+		<ACTIVATIONS>1000</ACTIVATIONS>
+	</ACHIEVEMENT>
+	<ACHIEVEMENT id="604">
+		<NAME>Creator</NAME>
+		<DESC>Spawn 20000 units</DESC>
+		<ICON>icon</ICON>
+		<ACTIVATIONS>20000</ACTIVATIONS>
+	</ACHIEVEMENT>
+	<ACHIEVEMENT id="605">
+		<NAME>Lifebringer</NAME>
+		<DESC>Spawn 400000 units</DESC>
+		<ICON>icon</ICON>
+		<ACTIVATIONS>400000</ACTIVATIONS>
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="606">
 		<NAME>Overpowered</NAME>

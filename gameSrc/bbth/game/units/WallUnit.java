@@ -26,7 +26,7 @@ public class WallUnit extends Unit {
 	@Override
 	public void update(float seconds) {
 		super.update(seconds);
-		takeDamage(seconds);
+		takeDamage(seconds, null);
 	}
 
 	@Override
