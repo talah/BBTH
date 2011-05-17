@@ -145,7 +145,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new Showdown(info));
 		
 		info = infoMap.get(405);
-		// Prereqs: probably a unit damage 
+		if (info != null) achievements.add(new QuantityOverQuality(info));
 		
 		info = infoMap.get(406);
 		// Prereqs: 
