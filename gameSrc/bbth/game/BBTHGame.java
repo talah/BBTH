@@ -21,8 +21,7 @@ public class BBTHGame extends Game {
 		
 		Achievements.INSTANCE.initialize(activity);
 		BBTHAchievementManager.INSTANCE.initialize();
-//		navController.push(new TitleScreen(navController));
-		navController.push(new UITestScreen());
+		navController.push(new TitleScreen(navController));
 		
 //		controller.push(new BBTHAITest(this));
 //		controller.push(new MusicTestScreen(activity));
