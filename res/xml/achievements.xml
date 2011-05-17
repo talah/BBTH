@@ -100,13 +100,7 @@
 	<!-- Walls -->
 	<ACHIEVEMENT id="300">
 		<NAME>Quick Thinking</NAME>
-		<DESC>Place a wall in front of an enemy unit when it is less than 2 seconds from hitting your base</DESC>
-		<ICON>icon</ICON>
-		<ACTIVATIONS>1</ACTIVATIONS>
-	</ACHIEVEMENT>
-	<ACHIEVEMENT id="301">
-		<NAME>Beat Back</NAME>
-		<DESC>Place a wall that forces an enemy unit to turn around</DESC>
+		<DESC>Place a wall in front of an enemy unit when it is about to hit your base</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
@@ -158,7 +152,7 @@
 	<!-- Difficulty -->
 	<ACHIEVEMENT id="500">
 		<NAME>Anything You Can Do...</NAME>
-		<DESC>Win a game against a [TODO: INSERT HARDEST DIFFICULTY HERE] AI</DESC>
+		<DESC>Win a game against the hardest possible AI</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>
