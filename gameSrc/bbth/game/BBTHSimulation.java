@@ -200,6 +200,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
 			baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer);
+			serverPlayer.setupEvents(this);
+			clientPlayer.setupEvents(this);
 		} else {
 			Player player = playerMap.get(isServer);
 
@@ -327,12 +329,20 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	private void drawGrid(Canvas canvas) {
-		paint.setARGB(63, 255, 255, 255);
+		paint.setARGB(60, 255, 255, 255);
+		paint.setStrokeWidth(1);
 
-		for (float x = 0; x < GAME_WIDTH; x += 55) {
+		for (float x = 0; x < GAME_WIDTH; x += GAME_WIDTH/6.0f) {
+//			float offset = 10 * FloatMath.cos(((x/GAME_WIDTH) * 4 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+//			if (x + offset < 0) {
+//				offset = -x;
+//			}
+//			canvas.drawLine(x + offset, 0, x + offset, GAME_HEIGHT, paint);
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
 		}
-		for (float y = 0; y < GAME_HEIGHT; y += 55) {
+		for (float y = 0; y < GAME_HEIGHT; y += GAME_HEIGHT/12.0f) {
+//			float offset = 10 * FloatMath.sin(((y/GAME_HEIGHT) * 8 * MathUtils.PI + (System.currentTimeMillis()%10000/10000.0f) * 2 * MathUtils.PI));
+//			canvas.drawLine(0, y + offset, GAME_WIDTH, y + offset, paint);
 			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
 		}
 	}
@@ -348,7 +358,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		localPlayer.draw(canvas, serverDraw);
 		remotePlayer.draw(canvas, serverDraw);
-
+		
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
 		if (BBTHGame.DEBUG) {

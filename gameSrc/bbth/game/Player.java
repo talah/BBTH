@@ -15,6 +15,9 @@ import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Vibrate;
+import bbth.game.achievements.BBTHAchievement;
+import bbth.game.achievements.BBTHAchievementManager;
+import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -38,6 +41,8 @@ public class Player {
 	public ArrayList<WallUnit> walls;
 	private Wall currentWall;
 	private UnitManager unitManager;
+	
+	private UnitCreatedEvent unitCreatedEvent;
 
 	public Player(Team team, AIController controller, UnitManager unitManager, boolean isLocal) {
 		_isLocal = isLocal;
@@ -158,6 +163,10 @@ public class Player {
 		
 		aiController.addEntity(newUnit);
 		units.add(newUnit);
+		if (unitCreatedEvent != null) {
+			unitCreatedEvent.set(newUnit);
+			BBTHAchievementManager.INSTANCE.notifyUnitCreated(unitCreatedEvent);
+		}
 	}
 
 	public Unit getMostAdvancedUnit() {
@@ -271,5 +280,9 @@ public class Player {
 			hash = Hash.mix(hash, units.get(i).getSimulationSyncHash());
 		}
 		return hash;
+	}
+
+	public void setupEvents(BBTHSimulation sim) {
+		unitCreatedEvent = new UnitCreatedEvent(sim.song, sim.localPlayer);
 	}
 }
