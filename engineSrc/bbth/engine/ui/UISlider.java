@@ -1,12 +1,8 @@
 package bbth.engine.ui;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.*;
 import android.graphics.Paint.Style;
-import bbth.engine.util.MathUtils;
+import bbth.engine.util.*;
 import bbth.engine.util.Point;
 
 public class UISlider extends UIControl {

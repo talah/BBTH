@@ -1,9 +1,6 @@
 package bbth.game;
 
-import java.util.Map;
-
 import android.graphics.*;
-import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;

@@ -58,9 +58,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean gameIsStarted;
 
 	// TODO: Make a way to set the difficulty.
-	private float aiDifficulty = 0.7f;
+	float aiDifficulty = 0.7f;
 	
-	private boolean singlePlayer;
+	boolean singlePlayer;
 	private UINavigationController controller;
 	
 	public InGameScreen(UINavigationController controller, Team playerTeam, Bluetooth bluetooth, Song song, LockStepProtocol protocol, boolean singlePlayer) {
@@ -85,7 +85,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		tap_location_hint_time = 0;
 
 		this.bluetooth = bluetooth;
-		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER);
+		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER, this);
 		BBTHSimulation.PARTICLES.reset();
 		
 		if (team == Team.SERVER) {

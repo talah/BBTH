@@ -4,8 +4,8 @@ import bbth.game.*;
 
 public class BaseDestroyedEvent extends BBTHAchievementEvent {
 
-	public BaseDestroyedEvent(Song song, Player localPlayer) {
-		super(song, localPlayer);
+	public BaseDestroyedEvent(Song song, Player localPlayer, boolean singleplayer, float aiDifficulty) {
+		super(song, localPlayer, singleplayer, aiDifficulty);
 	}
 
 	Player destroyedBaseOwner;

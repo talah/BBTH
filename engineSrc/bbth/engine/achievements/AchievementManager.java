@@ -14,6 +14,7 @@ public abstract class AchievementManager<T extends Achievement> {
 			infoMap.put(Integer.valueOf(achievementInfo.id), achievementInfo);
 		}
 		achievements = new Bag<T>();
+		registerAchievements();
 	}
 	
 	protected abstract void registerAchievements();
