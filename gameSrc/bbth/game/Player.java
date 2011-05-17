@@ -286,4 +286,8 @@ public class Player {
 	public int getTotalUnitsCreated() {
 		return totalUnitsCreated;
 	}
+	
+	public List<Unit> getUnits() {
+		return units;
+	}
 }

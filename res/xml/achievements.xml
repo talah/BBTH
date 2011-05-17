@@ -108,7 +108,7 @@
 	<!-- Units -->
 	<ACHIEVEMENT id="400">
 		<NAME>The Horde</NAME>
-		<DESC>Have over 30 of your units on the screen at once</DESC>
+		<DESC>Have over 25 of your units on the screen at once</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>

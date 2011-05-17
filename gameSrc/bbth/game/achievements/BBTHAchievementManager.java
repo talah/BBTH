@@ -130,7 +130,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		// Prereqs: 
 		
 		info = infoMap.get(400);
-		// Prereqs: 
+		if (info != null) achievements.add(new UnitCountAchievement(info, 25));
 		
 		info = infoMap.get(401);
 		if (info != null) achievements.add(new Humiliation(info));
