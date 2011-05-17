@@ -4,6 +4,7 @@ import bbth.engine.achievements.*;
 import bbth.engine.util.Bag;
 import bbth.game.*;
 import bbth.game.achievements.events.*;
+import bbth.game.achievements.impls.DesperateTimes;
 import bbth.game.achievements.impls.SongAchievement;
 
 public final class BBTHAchievementManager extends AchievementManager<BBTHAchievement> {
@@ -74,11 +75,11 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 	public void notifyUpdate(UpdateEvent e) { for (BBTHAchievement achievement : achievements) achievement.update(e); }
 	
 	public void initialize() {
-		// static initializer called, yay
+		registerAchievements();
 	}
 
 	@Override
-	protected void registerAchievements() {
+	public void registerAchievements() {
 		AchievementInfo info;
 		
 		info = infoMap.get(0);
@@ -95,6 +96,9 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 		
 		info = infoMap.get(4);
 		if (info != null) { achievements.add(new SongAchievement(info, Song.ODINS_KRAFT)); }
+		
+		info = infoMap.get(100);
+		if (info != null) achievements.add(new DesperateTimes(info));
 		
 		postRegisterAchievements();
 	}

@@ -43,8 +43,8 @@ public class BeatPatternParser {
     					song = parseSong(parser, patterns);
     					eventType = parser.getEventType();
     				} else if (name.equals("root")) {
-    					float mpb = parser.getAttributeFloatValue(null, "mpb", 0);
-    					millisPerBeat = mpb;
+    					String mpb = parser.getAttributeValue(null, "mpb");
+    					millisPerBeat = Float.parseFloat(mpb);
     					eventType = parser.next();
     				} else {
     					eventType = parser.next();

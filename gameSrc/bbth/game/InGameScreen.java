@@ -89,8 +89,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		BBTHSimulation.PARTICLES.reset();
 		
 		if (team == Team.SERVER) {
-			// Magic numbers
-			sim.recordCustomEvent(0.f, 0.f, song.id);
+			if (singlePlayer) {
+				sim.simulateCustomEvent(0, 0, song.id, true);
+			} else {
+				sim.recordCustomEvent(0.f, 0.f, song.id);				
+			}
 
 			// Set up sound stuff
 			beatTrack = new BeatTrack(song, this);
