@@ -24,6 +24,7 @@ import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.Bag;
+import bbth.engine.util.MathUtils;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -37,8 +38,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private static final Bag<Unit> emptyUnitBag = new Bag<Unit>();
 	private static final Path path = new Path();
 	private static final Paint paint = new Paint();
-	public static final float MAX_SONG_TIME = 1;
 	public static final float MIN_SONG_TIME = -6;
+	public static final boolean USE_OK_BUTTONS = false;
 	static {
 		paint.setAntiAlias(true);
 	}
@@ -54,16 +55,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		}
 
 		protected final void addOKButton(float x, float y) {
-			UIButton button = new UIButton("OK");
-			button.setAnchor(Anchor.TOP_CENTER);
-			button.setSize(50, 30);
-			button.setPosition(x, y + 28);
-			button.setButtonDelegate(this);
-			button.expandForHitTesting(20, 20);
-			addSubview(button);
-		}
-
-		public void onDrawSimulation(Canvas canvas) {
+			if (USE_OK_BUTTONS) {
+				UIButton button = new UIButton("OK");
+				button.setAnchor(Anchor.TOP_CENTER);
+				button.setSize(50, 30);
+				button.setPosition(x, y + 28);
+				button.setButtonDelegate(this);
+				button.expandForHitTesting(20, 20);
+				addSubview(button);
+			} else {
+				onClick(null);
+			}
 		}
 
 		@Override
@@ -86,7 +88,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public void onUpdate(float seconds) {
-			if (songTime > MAX_SONG_TIME) {
+			if (songTime > 1) {
 				songTime = MIN_SONG_TIME;
 			}
 		}
@@ -105,8 +107,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private class UnitsUpAndDownStep extends Step {
 		private static final float x = GAME_X + GAME_WIDTH / 2;
 		private static final float y = GAME_Y + GAME_HEIGHT * 0.33f;
-		private float time;
 		private boolean wasPaused;
+		private float time;
 
 		@Override
 		public void onDraw(Canvas canvas) {
@@ -142,6 +144,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private static final float x = GAME_X + GAME_WIDTH / 2;
 		private static final float y = GAME_Y + GAME_HEIGHT * 0.75f;
 		private boolean wasPaused;
+		private float time;
 
 		@Override
 		public void onDraw(Canvas canvas) {
@@ -155,6 +158,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public void onUpdate(float seconds) {
+			time += seconds;
 			if (!wasPaused && isPaused()) {
 				addOKButton(x, y);
 				wasPaused = true;
@@ -163,7 +167,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return localPlayer.units.isEmpty();
+			return time > 6;
 		}
 
 		@Override
@@ -175,8 +179,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private class WinConditionStep extends Step {
 		private static final float x = GAME_X + GAME_WIDTH / 2;
 		private static final float y = GAME_Y + GAME_HEIGHT / 2;
-		private float time;
 		private boolean wasPaused;
+		private float time;
 
 		@Override
 		public void onDraw(Canvas canvas) {
@@ -210,11 +214,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	}
 
 	private class DrawWallStep extends Step {
+		private boolean isTooShort;
 		private boolean isDragging;
-		private float startX;
-		private float startY;
-		private float endX;
-		private float endY;
 
 		public DrawWallStep() {
 			beat = Beat.hold(1000);
@@ -227,54 +228,94 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText("When a beat has a tail,", x, y - 17, paint);
-			canvas.drawText("you can drag on the", x, y, paint);
-			canvas.drawText("grid to create a wall", x, y + 17, paint);
-		}
-
-		@Override
-		public void onDrawSimulation(Canvas canvas) {
-			paint.setColor(team.getWallColor());
-			canvas.drawLine(startX, startY, endX, endY, paint);
+			if (isTooShort) {
+				canvas.drawText("You need to drag your finger", x, y - 17, paint);
+				canvas.drawText("away from where you tapped,", x, y, paint);
+				canvas.drawText("please try making a longer wall", x, y + 17, paint);
+			} else {
+				canvas.drawText("When a beat has a tail,", x, y - 17, paint);
+				canvas.drawText("you can drag on the", x, y, paint);
+				canvas.drawText("grid to create a wall", x, y + 17, paint);
+			}
 		}
 
 		@Override
 		public void onUpdate(float seconds) {
-			if (!beat.isTapped() && songTime > MAX_SONG_TIME) {
+			if (!beat.isTapped() && songTime > 2) {
 				songTime = MIN_SONG_TIME;
 			}
 		}
 
 		@Override
 		public void onTouchDown(float x, float y) {
-			x -= GAME_X;
-			y -= GAME_Y;
-			if (x >= 0 && beat.onTouchDown((int) (songTime * 1000))) {
+			if (x >= GAME_X && beat.onTouchDown((int) (songTime * 1000))) {
 				isDragging = true;
-				startX = endX = x;
-				startY = endY = y;
+				wallStartX = wallEndX = transformToGameSpaceX(x);
+				wallStartY = wallEndY = transformToGameSpaceY(y);
 			}
 		}
 
 		@Override
 		public void onTouchMove(float x, float y) {
 			if (isDragging) {
-				endX = x;
-				endY = y;
+				wallEndX = transformToGameSpaceX(x);
+				wallEndY = transformToGameSpaceY(y);
 			}
 		}
 
 		@Override
 		public void onTouchUp(float x, float y) {
 			if (isDragging) {
-				endX = x;
-				endY = y;
-				BBTHSimulation.generateParticlesForWall(new Wall(startX, startY, endX, endY), team);
+				wallEndX = transformToGameSpaceX(x);
+				wallEndY = transformToGameSpaceY(y);
+				BBTHSimulation.generateParticlesForWall(new Wall(wallStartX, wallStartY, wallEndX, wallEndY), team);
+				isTooShort = MathUtils.getDist(wallStartX, wallStartY, wallEndX, wallEndY) < 20;
 				isDragging = false;
+				if (isTooShort) {
+					beat = Beat.hold(1000);
+				} else {
+					transition(new WallBlockStep());
+				}
 			}
 		}
 	}
 
+	private class WallBlockStep extends Step {
+		private static final float x = GAME_X + GAME_WIDTH / 2;
+		private static final float y = GAME_Y + GAME_HEIGHT / 2;
+		private boolean wasPaused;
+		private float time;
+
+		@Override
+		public void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("Units take longer", x, y - 8, paint);
+			canvas.drawText("to go around walls", x, y + 8, paint);
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			time += seconds;
+			if (!wasPaused && isPaused()) {
+				addOKButton(x, y);
+				wasPaused = true;
+			}
+		}
+
+		@Override
+		public boolean isPaused() {
+			return time > 6;
+		}
+
+		@Override
+		public void onClick(UIButton button) {
+			transition(new FinishedStep());
+		}
+	}
+	
 	private class FinishedStep extends Step {
 	}
 
@@ -292,6 +333,10 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private FastGraphGenerator gen;
 	private Pathfinder pathfinder;
 	private FastLineOfSightTester tester;
+	private float wallStartX;
+	private float wallStartY;
+	private float wallEndX;
+	private float wallEndY;
 
 	public InteractiveTutorial(Team localTeam) {
 		skipButton = new UIButton("Skip Tutorial");
@@ -461,7 +506,8 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		localPlayer.draw(canvas, team == Team.SERVER);
 		remotePlayer.draw(canvas, team == Team.SERVER);
 		BBTHSimulation.PARTICLES.draw(canvas, BBTHSimulation.PARTICLE_PAINT);
-		step.onDrawSimulation(canvas);
+		paint.setColor(team.getWallColor());
+		canvas.drawLine(wallStartX, wallStartY, wallEndX, wallEndY, paint);
 		canvas.restore();
 		drawBeatTrack(canvas);
 		super.onDraw(canvas);
@@ -491,5 +537,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 	@Override
 	public void removeWall(Wall wall) {
+	}
+
+	private float transformToGameSpaceX(float x) {
+		return x - GAME_X;
+	}
+
+	private float transformToGameSpaceY(float y) {
+		y -= GAME_Y;
+		if (team == Team.SERVER) {
+			y = GAME_HEIGHT - y;
+		}
+		return y;
 	}
 }
