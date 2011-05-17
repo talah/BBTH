@@ -211,6 +211,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				} else {
 					clientReady = true;
 				}
+				if (serverReady && clientReady) {
+					Unit.resetNextHashCodeID();
+				}
 			} else if (code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
 			}
@@ -334,14 +337,16 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	public void draw(Canvas canvas) {
+		boolean serverDraw = team == Team.SERVER;
+		
 		if (gameState == GameState.IN_PROGRESS) {
 			drawWavefronts(canvas);
 		}
 		
 		drawGrid(canvas);
 
-		localPlayer.draw(canvas, team == Team.SERVER);
-		remotePlayer.draw(canvas, team == Team.SERVER);
+		localPlayer.draw(canvas, serverDraw);
+		remotePlayer.draw(canvas, serverDraw);
 
 		PARTICLES.draw(canvas, PARTICLE_PAINT);
 
@@ -349,8 +354,8 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			graphGen.draw(canvas);
 		}
 
-		localPlayer.postDraw(canvas);
-		remotePlayer.postDraw(canvas);
+		localPlayer.postDraw(canvas, serverDraw);
+		remotePlayer.postDraw(canvas, serverDraw);
 	}
 
 	private void drawWavefronts(Canvas canvas) {
@@ -486,6 +491,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public void setBothPlayersReady() {
 		clientReady = serverReady = true;
+		Unit.resetNextHashCodeID();
 	}
 
 	private void endTheGame() {

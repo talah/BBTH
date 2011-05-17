@@ -228,9 +228,9 @@ public class Player {
 		}
 	}
 	
-	public void postDraw(Canvas canvas) {
+	public void postDraw(Canvas canvas, boolean serverDraw) {
 		for (int i = 0; i < units.size(); i++) {
-			units.get(i).drawHealthBar(canvas, _isLocal);
+			units.get(i).drawHealthBar(canvas, serverDraw);
 		}
 	}
 

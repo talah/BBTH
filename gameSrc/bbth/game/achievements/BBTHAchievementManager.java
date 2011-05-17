@@ -73,6 +73,10 @@ for (AchievementInfo achievementInfo : infoMap.values()) {
 	private Bag<BBTHAchievement> updateAchievements = new Bag<BBTHAchievement>(); 
 	public void notifyUpdate(UpdateEvent e) { for (BBTHAchievement achievement : achievements) achievement.update(e); }
 	
+	public void initialize() {
+		// static initializer called, yay
+	}
+
 	@Override
 	protected void registerAchievements() {
 		AchievementInfo info;

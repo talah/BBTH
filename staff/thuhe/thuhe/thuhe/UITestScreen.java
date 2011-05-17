@@ -18,7 +18,7 @@ public class UITestScreen extends UIView {
 		slider = new UISlider(1.f, 5.f, 2.f);
 		slider.setAnchor(Anchor.CENTER_CENTER);
 		slider.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2);
-		slider.setSize(BBTHGame.HEIGHT / 3, BBTHGame.WIDTH / 3);
+		slider.setSize(150, 20);
 		this.addSubview(slider);
 		
 		label = new UILabel("", slider);

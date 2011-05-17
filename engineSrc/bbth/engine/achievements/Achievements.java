@@ -1,11 +1,16 @@
 package bbth.engine.achievements;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
-import android.content.*;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 /**
  * Singleton that handles achievement locking and unlocking
@@ -15,14 +20,14 @@ import android.graphics.*;
 public enum Achievements {
 	INSTANCE;
 
-	// boolean is true iff the achievement is unlocked
-	private HashMap<String, Boolean> _achievementMap;
+	// tracks number of activations for each achievement
+	private Map<Integer, Integer> _achievementActivations;
 	private ArrayList<UnlockAnimation> _unlocks;
 	private SharedPreferences _settings;
 	private Paint _paint;
 	
 	private Achievements() {
-		_achievementMap = new HashMap<String, Boolean>();
+		_achievementActivations = new HashMap<Integer, Integer>();
 		_unlocks = new ArrayList<UnlockAnimation>();
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
@@ -31,36 +36,44 @@ public enum Achievements {
 	@SuppressWarnings("unchecked")
 	public void initialize(Context context) {
 		_settings = context.getSharedPreferences("achievements", Activity.MODE_PRIVATE);
-		_achievementMap = (HashMap<String, Boolean>) _settings.getAll();
+		_achievementActivations = new HashMap<Integer, Integer>();
+		Map<String, Integer> activations = (HashMap<String, Integer>) _settings.getAll();
+		for (Map.Entry<String, Integer> entry : activations.entrySet()) {
+			_achievementActivations.put(Integer.valueOf(entry.getKey()), entry.getValue());
+		}
 	}
 	
 	// locks an achievement, also adding it if it doesn't yet exist
-	public void lock(String achievement) {
-		_achievementMap.put(achievement, false);
-		Editor edit = _settings.edit();
-		edit.putBoolean(achievement, false);
-		edit.commit();
+	public void lock(AchievementInfo info) {
+		_achievementActivations.put(info.id, 0);;
 	}
 
-	// unlocks an achievement
-	public void unlock(String achievement) {
-		if (_achievementMap.containsKey(achievement) && _achievementMap.get(achievement).equals(Boolean.TRUE)) {
+	// increment an achievement, but don't commit the changes to sharedPreferences
+	public void increment(AchievementInfo info) {
+		Integer activeTmp = _achievementActivations.get(info.id);
+		int activations = activeTmp == null ? 0 : activeTmp;
+		if (activations == info.maxActivations) {
 			// already unlocked, no need to do anything
 			return;
 		}
-		_achievementMap.put(achievement, true);
-		_unlocks.add(new UnlockAnimation(achievement));
-		Editor edit = _settings.edit();
-		edit.putBoolean(achievement, true);
-		edit.commit();
+		_achievementActivations.put(info.id, activations + 1);
+		_unlocks.add(new UnlockAnimation(info.name));
+	}
+	
+	// commit all achievement data to sharedPreferences
+	public void commit() {
+		Editor editor = _settings.edit();
+		for (Map.Entry<Integer, Integer> entry : _achievementActivations.entrySet()) {
+			editor.putInt(String.valueOf(entry.getKey()), entry.getValue());
+		}
+		editor.commit();
 	}
 	
 	// return the status of an achievement
-	public boolean isUnlocked(String achievement) {
-		if (_achievementMap.containsKey(achievement)) {
-			return _achievementMap.get(achievement);
-		}
-		return false;
+	public boolean isUnlocked(AchievementInfo info) {
+		Integer activations = _achievementActivations.get(info.id);
+		// binary numeric promotion applied to 'activations'
+		return activations != null && activations == info.maxActivations;
 	}
 	
 	public void tick(float seconds) {
@@ -85,8 +98,8 @@ public enum Achievements {
 	}
 	
 	// get all achievements, useful for displaying all of them in one menu
-	public Map<String, Boolean> getAll() {
-		return Collections.unmodifiableMap(_achievementMap);
+	public Map<Integer, Integer> getAll() {
+		return Collections.unmodifiableMap(_achievementActivations);
 	}
 	
 }
