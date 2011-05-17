@@ -32,10 +32,10 @@ public class UISwipeTransition {
 		
 		switch (direction) {
 		case FROM_RIGHT:
-			dx = -MathUtils.lerp(0, width, MathUtils.scale(0, duration, 0, 1, elapsed));
+			dx = -MathUtils.lerp(0, width, MathUtils.scale(0, duration, 0, 1, elapsed, true));
 			break;
 		case FROM_LEFT:
-			dx = MathUtils.lerp(0, width, MathUtils.scale(0, duration, 0, 1, elapsed));
+			dx = MathUtils.lerp(0, width, MathUtils.scale(0, duration, 0, 1, elapsed, true));
 			break;
 		}
 		
