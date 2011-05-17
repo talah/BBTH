@@ -58,7 +58,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private boolean gameIsStarted;
 
 	// TODO: Make a way to set the difficulty.
-	float aiDifficulty = 0.7f;
+	float aiDifficulty = 1.0f;
 	
 	boolean singlePlayer;
 	private UINavigationController controller;

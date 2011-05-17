@@ -204,6 +204,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	protected void simulateCustomEvent(float x, float y, int code, boolean isServer) {
 		if (code < 0) {
 			this.song = Song.fromInt(code);
+			setupEvents();
 		} else {
 			Player player = playerMap.get(isServer);
 
