@@ -208,6 +208,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				} else {
 					clientReady = true;
 				}
+				if (serverReady && clientReady) {
+					Unit.resetNextHashCodeID();
+				}
 			} else if (code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
 			}
@@ -485,6 +488,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	public void setBothPlayersReady() {
 		clientReady = serverReady = true;
+		Unit.resetNextHashCodeID();
 	}
 
 	private void endTheGame() {
