@@ -47,7 +47,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	 * If this is true, there will be an OK button after most text prompts to
 	 * give people enough time to digest the message.
 	 */
-	public static final boolean USE_OK_BUTTONS = false;
+	public static final boolean USE_OK_BUTTONS = true;
 
 	private abstract class Step extends UIView implements UIButtonDelegate {
 		@Override
@@ -114,9 +114,12 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				// Player shouldn't be tapping on the beat track
 				dontTapOnBeatTrack = true;
 				beat = Beat.tap(0);
-			} else if (beat.onTouchDown((int) (songTime * 1000))) {
-				localPlayer.spawnUnit(x, y);
-				transition(new UnitsUpAndDownStep());
+			} else {
+				dontTapOnBeatTrack = false;
+				if (beat.onTouchDown((int) (songTime * 1000))) {
+					localPlayer.spawnUnit(x, y);
+					transition(new UnitsUpAndDownStep());
+				}
 			}
 		}
 	}
@@ -148,7 +151,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 7;
+			return time > 6;
 		}
 
 		@Override
@@ -184,7 +187,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 5;
+			return time > 6;
 		}
 
 		@Override
@@ -221,7 +224,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public boolean isPaused() {
-			return time > 9;
+			return time > 6;
 		}
 
 		@Override
@@ -274,10 +277,13 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				// Player shouldn't be tapping on the beat track
 				dontTapOnBeatTrack = true;
 				beat = Beat.tap(0);
-			} else if (beat.onTouchDown((int) (songTime * 1000))) {
-				isDragging = true;
-				wallStartX = wallEndX = transformToGameSpaceX(x);
-				wallStartY = wallEndY = transformToGameSpaceY(y);
+			} else {
+				dontTapOnBeatTrack = false;
+				if (beat.onTouchDown((int) (songTime * 1000))) {
+					isDragging = true;
+					wallStartX = wallEndX = transformToGameSpaceX(x);
+					wallStartY = wallEndY = transformToGameSpaceY(y);
+				}
 			}
 		}
 
@@ -338,7 +344,30 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public void onClick(UIButton button) {
-			transition(new FinishedStep());
+			transition(new GoodLuckStep());
+		}
+	}
+
+	private class GoodLuckStep extends Step {
+		private static final float x = GAME_X + GAME_WIDTH / 2;
+		private static final float y = GAME_Y + GAME_HEIGHT / 2;
+		private float time;
+
+		@Override
+		public void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(15);
+			paint.setTextAlign(Align.CENTER);
+			canvas.drawText("Have fun and good luck!", x, y, paint);
+		}
+
+		@Override
+		public void onUpdate(float seconds) {
+			time += seconds;
+			if (time > 4) {
+				transition(new FinishedStep());
+			}
 		}
 	}
 
