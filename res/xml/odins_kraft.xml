@@ -1,5 +1,5 @@
 <root mpb="461.54">
-	<pattern id="measure-rest">
+	<pattern id="whole-rest">
 		<rest type="whole" />
 	</pattern>
 
@@ -19,13 +19,6 @@
 		<beat type="quarter" />
 		<beat type="quarter" />
 		<beat type="quarter" />
-	</pattern>
-
-	<pattern id="double-hold">
-		<hold type="quarter" />
-		<rest type="quarter" />
-		<hold type="quarter" />
-		<rest type="quarter" />
 	</pattern>
 
 	<pattern id="boring-halves">
@@ -75,12 +68,12 @@
 	</pattern>
 
 	<song>
-		<load-pattern id="measure-rest" />
+		<load-pattern id="whole-rest" />
 
 		<load-pattern id="four-quarter" />
 		<load-pattern id="four-quarter" />
-		<load-pattern id="double-hold" />
-		<load-pattern id="measure-rest" />
+		<load-pattern id="four-quarter" />
+		<load-pattern id="whole-rest" />
 		<load-pattern id="boring-halves" />
 
 		<load-pattern id="first-section-rest" />
@@ -93,8 +86,8 @@
 
 		<load-pattern id="four-quarter" />
 		<load-pattern id="four-quarter" />
-		<load-pattern id="double-hold" />
-		<load-pattern id="measure-rest" />
+		<load-pattern id="four-quarter" />
+		<load-pattern id="whole-rest" />
 		<load-pattern id="boring-halves" />
 
 		<load-pattern id="first-section-rest" />
