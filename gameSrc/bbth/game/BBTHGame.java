@@ -1,10 +1,11 @@
 package bbth.game;
 
-import thuhe.thuhe.thuhe.UITestScreen;
 import android.app.Activity;
 import bbth.engine.achievements.Achievements;
-import bbth.engine.core.*;
-import bbth.engine.ui.*;
+import bbth.engine.core.Game;
+import bbth.engine.core.GameActivity;
+import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UISwipeTransition;
 import bbth.engine.ui.UISwipeTransition.Direction;
 import bbth.game.achievements.BBTHAchievementManager;
 

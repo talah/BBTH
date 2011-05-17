@@ -66,8 +66,47 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	}
 
 	public static class LoseScreen extends GameStatusMessageScreen {
+		private static final int NUM_PARTICLES = 1000;
+		private static final float PARTICLE_THRESHOLD = 0.5f;
+		private static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+		private static final Paint PARTICLE_PAINT = new Paint();
+		static {
+			PARTICLE_PAINT.setStrokeWidth(2.f);
+			PARTICLE_PAINT.setAntiAlias(true);
+		}
+		private float secondsUntilNext;
+		
 		public LoseScreen(UINavigationController controller) {
-			super("Oh noes, you lost the game :(", controller);
+			super("Too bad, you lose.", controller);
+			PARTICLES.reset();
+		}
+		
+		@Override
+		public void onDraw(Canvas canvas) {
+			PARTICLES.draw(canvas, PARTICLE_PAINT);
+			super.onDraw(canvas);
+		}
+		
+		@Override
+		public void onUpdate(float seconds) {
+			PARTICLES.tick(seconds);
+			PARTICLES.updateAngles();
+			PARTICLES.gravity(120 * seconds);
+
+			secondsUntilNext -= seconds;
+			while (secondsUntilNext < 0) {
+				secondsUntilNext += 0.05f;
+				for (int i = 0; i < 2; ++i) {
+					float x = MathUtils.randInRange(0, BBTHGame.WIDTH);
+					float y = MathUtils.randInRange(-BBTHGame.HEIGHT / 4, BBTHGame.HEIGHT / 4);
+					float radius = MathUtils.randInRange(1.5f, 2.5f);
+					int color = MathUtils.randInRange(0.f, 1.f) < 0.7f ? Color.BLUE : Color.CYAN;
+					for (int j = 0; j < 1; ++j) {
+						float vy = MathUtils.randInRange(100, 200);
+						PARTICLES.createParticle().position(x, y).velocity(0, vy).shrink(0.5f, 0.65f).line().radius(radius).color(color);
+					}
+				}
+			}
 		}
 	}
 

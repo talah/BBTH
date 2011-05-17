@@ -81,7 +81,7 @@ public class AchievementView extends UIView {
 		if (_progressBar != null) {
 			_progressBar.setPosition(textLeft, top + NAME_SIZE + TOP_PADDING + DESCRIPTION_SIZE + 12);
 			_progressBar.setSize(220, 11);
-			_progressLabel.setPosition(textLeft + 238, top + NAME_SIZE + TOP_PADDING + DESCRIPTION_SIZE + 12);
+			_progressLabel.setPosition(textLeft + 230, top + NAME_SIZE + TOP_PADDING + DESCRIPTION_SIZE + 12);
 		}
 	}
 	
