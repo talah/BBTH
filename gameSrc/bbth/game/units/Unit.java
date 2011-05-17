@@ -27,8 +27,11 @@ public abstract class Unit extends BasicMovable {
 	protected UnitManager unitManager;
 	
 	protected float health = getStartingHealth();
+	private static int nextHashCodeID;
+	private int hashCodeID;
 
 	public Unit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {
+		hashCodeID = nextHashCodeID++;
 		this.team = team;
 		this.unitManager = unitManager;
 		this.particleSystem = particleSystem;
@@ -36,10 +39,14 @@ public abstract class Unit extends BasicMovable {
 		fsm = new FiniteStateMachine();
 	}
 
+	public static void resetNextHashCodeID() {
+		nextHashCodeID = 0;
+	}
+
 	public abstract void drawChassis(Canvas canvas);
 	public abstract void drawForMiniMap(Canvas canvas);
 	public void drawEffects(Canvas canvas) {}
-	public void drawHealthBar(Canvas canvas, boolean isLocal) {
+	public void drawHealthBar(Canvas canvas, boolean serverDraw) {
 		if (isDead())
 			return;
 		
@@ -50,7 +57,7 @@ public abstract class Unit extends BasicMovable {
 		float border = 1f;
 		
 		float left = getX()-radius;
-		float top = (isLocal) ? getY() + (radius*2f) : getY() + (radius*2f);
+		float top = (serverDraw) ? getY() + (radius*2f) : getY() - (radius*2f);
 		float right = left + 2f*radius;
 		float bottom = top + radius/2f;
 		
@@ -152,5 +159,10 @@ public abstract class Unit extends BasicMovable {
 		hash = Hash.mix(hash, getHealth());
 		hash = Hash.mix(hash, getType().ordinal());
 		return hash;
+	}
+
+	@Override
+	public int hashCode() {
+		return hashCodeID;
 	}
 }
