@@ -1,24 +1,13 @@
 package bbth.game;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.util.DisplayMetrics;
-import bbth.engine.achievements.AchievementInfo;
-import bbth.engine.achievements.Achievements;
-import bbth.engine.core.Game;
-import bbth.engine.core.GameActivity;
-import bbth.engine.ui.DefaultTransition;
-import bbth.engine.ui.Transition;
-import bbth.engine.ui.UINavigationController;
-import bbth.engine.ui.UISwipeTransition;
+import bbth.engine.achievements.*;
+import bbth.engine.core.*;
+import bbth.engine.ui.*;
 import bbth.engine.ui.UISwipeTransition.Direction;
-import bbth.engine.util.Envelope;
+import bbth.engine.util.*;
 import bbth.engine.util.Envelope.OutOfBoundsHandler;
 
 public class BBTHGame extends Game {
@@ -35,6 +24,7 @@ public class BBTHGame extends Game {
 		Map<String, Boolean> savedAchievements = Achievements.INSTANCE.getAll();
 		Map<String, AchievementInfo> achievements = new HashMap<String, AchievementInfo>();
 
+/*
 		Resources resources = GameActivity.instance.getResources();
 		String []names = resources.getStringArray(R.array.achievementNames);
 		String []descriptions = resources.getStringArray(R.array.achievementDescriptions);
@@ -56,6 +46,7 @@ public class BBTHGame extends Game {
 			}
 			Achievements.INSTANCE.unlock(names[i]);
 		}
+		*/
 		
 		return achievements;
 	}

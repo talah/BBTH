@@ -1,18 +1,15 @@
 package bbth.engine.ui;
 
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import bbth.engine.core.GameScreen;
-import bbth.engine.util.BlockingArrayList;
+import bbth.engine.util.*;
 import bbth.engine.util.Point;
 
 public class UIView extends GameScreen {
 
-	//protected CopyOnWriteArrayList<UIView> subviews;
+//	protected CopyOnWriteArrayList<UIView> subviews;
 	protected BlockingArrayList<UIView> subviews;
 	protected boolean _hasAppeared, _layedOut;
 	public Object tag;
