@@ -522,4 +522,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 				sim.setBothPlayersReady();
 		}
 	}
+
+	public BeatTrack getBeatTrack() {
+		return beatTrack;
+	}
 }

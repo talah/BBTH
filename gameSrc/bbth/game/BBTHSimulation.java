@@ -548,7 +548,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		
-		endEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE);
+		endEvent.set(gameState == GameState.SERVER_WON ? serverPlayer : clientPlayer, gameState == GameState.TIE, inGameScreen.getBeatTrack());
 		BBTHAchievementManager.INSTANCE.notifyGameEnded(endEvent);
 		
 	}
