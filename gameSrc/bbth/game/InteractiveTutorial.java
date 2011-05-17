@@ -113,7 +113,6 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			if (x < 0) {
 				// Player shouldn't be tapping on the beat track
 				dontTapOnBeatTrack = true;
-				beat = Beat.tap(0);
 			} else {
 				dontTapOnBeatTrack = false;
 				if (beat.onTouchDown((int) (songTime * 1000))) {
@@ -276,7 +275,6 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			if (x < GAME_X) {
 				// Player shouldn't be tapping on the beat track
 				dontTapOnBeatTrack = true;
-				beat = Beat.tap(0);
 			} else {
 				dontTapOnBeatTrack = false;
 				if (beat.onTouchDown((int) (songTime * 1000))) {
@@ -512,10 +510,10 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 	private void drawGrid(Canvas canvas) {
 		paint.setARGB(63, 255, 255, 255);
-		for (float x = 0; x < GAME_WIDTH; x += 55) {
+		for (float x = 0; x < GAME_WIDTH; x += GAME_WIDTH / 6) {
 			canvas.drawLine(x, 0, x, GAME_HEIGHT, paint);
 		}
-		for (float y = 0; y < GAME_HEIGHT; y += 55) {
+		for (float y = 0; y < GAME_HEIGHT; y += GAME_HEIGHT / 12) {
 			canvas.drawLine(0, y, GAME_WIDTH, y, paint);
 		}
 	}
