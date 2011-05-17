@@ -20,9 +20,13 @@ public class UISwitch extends UIControl {
 	private boolean isOn, userDragging, isAnimating, continueAnimation;
 	private float labelWidth, duration, elapsed, offset, touchDownX;
 
+	private int onBackgroundColor;
+	
 	public UISwitch() {
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+		this.onBackgroundColor = UIDefaultConstants.ACTIVE_COLOR;
+		
 		this.onTextLabel = new UILabel("ON", this);
 		this.onTextLabel.setTextColor(Color.WHITE);
 		this.onTextLabel.setBold(true);
@@ -41,6 +45,15 @@ public class UISwitch extends UIControl {
 		this.recomputeDrawLocations();
 	}
 
+	public void setOnBackgroundColor(int color) {
+		this.onBackgroundColor = color;
+		this.onGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(onBackgroundRect, this.onBackgroundColor);
+	}
+	
+	public void setOnTextColor(int color) {
+		this.onTextLabel.setTextColor(color);
+	}
+	
 	public boolean isOn() {
 		return this.isOn;
 	}
@@ -79,7 +92,10 @@ public class UISwitch extends UIControl {
 
 		this.buttonUpGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(switchButtonRect, UIDefaultConstants.BACKGROUND_COLOR);
 		this.buttonDownGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(switchButtonRect, UIDefaultConstants.FOREGROUND_COLOR);
-		this.onGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(onBackgroundRect, UIDefaultConstants.ACTIVE_COLOR);
+		
+//		this.onGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(onBackgroundRect, UIDefaultConstants.ACTIVE_COLOR);
+		this.onGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(onBackgroundRect, this.onBackgroundColor);
+		
 		this.offGradient = UIDefaultConstants.generateD2LVerticalLinearGradient(offBackgroundRect, UIDefaultConstants.UI_SWITCH_OFF_COLOR);
 
 		offset = (this.isOn) ? 0 : this.labelWidth;

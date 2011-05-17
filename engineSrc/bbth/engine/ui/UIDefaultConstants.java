@@ -56,7 +56,7 @@ public class UIDefaultConstants {
 	public static final LinearGradient generateL2DVerticalLinearGradient(RectF rect, int color) {
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
-		hsv[2] *= 0.7f; // value component
+		hsv[2] *= 0.6f; // value component
 		int endColor = Color.HSVToColor(hsv);
 
 		return new LinearGradient(rect.left, rect.top, rect.left, rect.bottom, color, endColor, Shader.TileMode.MIRROR);
@@ -65,7 +65,7 @@ public class UIDefaultConstants {
 	public static final LinearGradient generateD2LVerticalLinearGradient(RectF rect, int color) {
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
-		hsv[2] *= 0.7f; // value component
+		hsv[2] *= 0.6f; // value component
 		int endColor = Color.HSVToColor(hsv);
 
 		return new LinearGradient(rect.left, rect.top, rect.left, rect.bottom, endColor, color, Shader.TileMode.MIRROR);

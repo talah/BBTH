@@ -1,5 +1,6 @@
 package bbth.game;
 
+import thuhe.thuhe.thuhe.UITestScreen;
 import android.app.Activity;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
@@ -26,7 +27,8 @@ public class BBTHGame extends Game {
 		
 		Achievements.INSTANCE.initialize(activity);
 		BBTHAchievementManager.INSTANCE.initialize();
-		navController.push(new TitleScreen(navController));
+//		navController.push(new TitleScreen(navController));
+		navController.push(new UITestScreen());
 		
 //		controller.push(new BBTHAITest(this));
 //		controller.push(new MusicTestScreen(activity));
