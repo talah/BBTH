@@ -14,6 +14,7 @@ import bbth.engine.util.*;
 import bbth.engine.util.Timer;
 import bbth.game.achievements.BBTHAchievementManager;
 import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.BeatHitEvent;
 import bbth.game.achievements.events.GameEndedEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.*;
@@ -163,6 +164,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 				player.spawnUnit(x, y);
 			}
+			
+			beatHitEvent.set(player);
+			BBTHAchievementManager.INSTANCE.notifyBeatHit(beatHitEvent);
 		} else {
 			player.setCombo(0);
 		}
@@ -558,11 +562,13 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	
 	private BaseDestroyedEvent baseDestroyedEvent;
 	private GameEndedEvent endEvent;
+	private BeatHitEvent beatHitEvent;
 	private void setupEvents() {
 		boolean singlePlayer = inGameScreen.singlePlayer;
 		float aiDifficulty = inGameScreen.aiDifficulty;
 		endEvent = new GameEndedEvent(song, localPlayer, singlePlayer, aiDifficulty);
 		baseDestroyedEvent = new BaseDestroyedEvent(song, localPlayer, singlePlayer, aiDifficulty);
+		beatHitEvent = new BeatHitEvent(song, localPlayer, singlePlayer, aiDifficulty);
 		serverPlayer.setupEvents(inGameScreen, this);
 		clientPlayer.setupEvents(inGameScreen, this);
 	}
