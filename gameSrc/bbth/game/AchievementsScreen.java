@@ -27,7 +27,7 @@ import bbth.game.achievements.BBTHAchievementManager;
  */
 public class AchievementsScreen extends UIScrollView implements UIButtonDelegate {
 
-	private final static int ACHIEVEMENT_HEIGHT = 65;
+	private final static int ACHIEVEMENT_HEIGHT = 70;
 	
 	private Bitmap _lockedImage;
 
