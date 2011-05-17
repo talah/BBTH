@@ -2,7 +2,7 @@ package bbth.game.achievements.impls;
 
 import bbth.engine.achievements.AchievementInfo;
 import bbth.engine.util.Bag;
-import bbth.game.*;
+import bbth.game.Team;
 import bbth.game.achievements.BBTHAchievement;
 import bbth.game.achievements.events.UnitCreatedEvent;
 import bbth.game.units.Unit;

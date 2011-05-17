@@ -1,10 +1,11 @@
 package bbth.game.achievements.impls;
 
-import bbth.engine.achievements.*;
+import bbth.engine.achievements.AchievementInfo;
 import bbth.game.Team;
 import bbth.game.achievements.BBTHAchievement;
-import bbth.game.achievements.events.*;
-import bbth.game.units.*;
+import bbth.game.achievements.events.UnitDeadEvent;
+import bbth.game.units.Unit;
+import bbth.game.units.UnitType;
 
 public class Showdown extends BBTHAchievement {
 

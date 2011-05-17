@@ -1,6 +1,6 @@
 package bbth.game.achievements.events;
 
-import bbth.game.*;
+import bbth.game.BBTHSimulation;
 import bbth.game.units.Unit;
 
 public class UnitDeadEvent extends BBTHAchievementEvent {

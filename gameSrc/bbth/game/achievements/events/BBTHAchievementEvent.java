@@ -1,7 +1,9 @@
 package bbth.game.achievements.events;
 
 import bbth.engine.util.Bag;
-import bbth.game.*;
+import bbth.game.BBTHSimulation;
+import bbth.game.Player;
+import bbth.game.Song;
 import bbth.game.units.Unit;
 
 public class BBTHAchievementEvent {

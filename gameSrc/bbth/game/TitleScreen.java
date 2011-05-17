@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
@@ -20,10 +21,10 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
+	private MusicPlayer musicPlayer;
 	
 	public TitleScreen(UINavigationController controller) {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
-		
 		this.controller = controller;
 		
 		combatView = new InfiniteCombatView();
@@ -62,8 +63,6 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		settingsButton.setPosition(-BBTHGame.WIDTH * 4.0f, BBTHGame.HEIGHT / 2 + 130);
 		settingsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 130, 2.0f);
 		settingsButton.setButtonDelegate(this);
-		
-		
 	}
 	
 	@Override
@@ -85,6 +84,12 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void willHide(boolean animating) {
 		super.willHide(animating);
+		if(musicPlayer != null)
+		{
+			musicPlayer.stop();
+			musicPlayer.release();
+			musicPlayer = null;
+		}
 		endAnimations();
 	}
 	
@@ -121,10 +126,24 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	}
 
 	@Override
+	public void onStop() {
+		if (musicPlayer != null) {
+			musicPlayer.stop();
+			musicPlayer.release();
+			musicPlayer = null;
+		}
+	}
+
+	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
 
 		combatView.onUpdate(seconds);
+		
+		if (BBTHGame.TITLE_SCREEN_MUSIC && musicPlayer == null) {
+			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.mistakethegetaway);
+			musicPlayer.loop();
+		}
 		
 		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
