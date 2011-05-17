@@ -124,9 +124,11 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 
 	@Override
 	public void onStop() {
-		musicPlayer.stop();
-		musicPlayer.release();
-		musicPlayer = null;
+		if (musicPlayer != null) {
+			musicPlayer.stop();
+			musicPlayer.release();
+			musicPlayer = null;
+		}
 	}
 
 	@Override
