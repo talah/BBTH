@@ -48,6 +48,7 @@ public class UISwitch extends UIControl {
 	public void setOn(boolean value)
 	{
 		isOn = value;
+		offset = (isOn ? 0 : labelWidth);
 	}
 
 	public void setOnBackgroundColor(int color) {
@@ -128,8 +129,6 @@ public class UISwitch extends UIControl {
 					offset = offsetVal;
 				}
 			}
-		} else {
-			offset = (isOn ? 0 : labelWidth);
 		}
 
 		if (this.isAnimating && this.elapsed >= this.duration) {
