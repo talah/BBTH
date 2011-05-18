@@ -20,12 +20,10 @@ public class YoDawgIHeardYouLikeUnits extends BBTHAchievement {
 		Unit unit = e.getUnit();
 		Team team = e.getLocalPlayer().getTeam(); 
 		if (team == unit.getTeam()) {
+			// getUnitsInCircle() won't return this unit because it has just
+			// been created, and is not in the acceleration data structure yet
+			// (it will be added on the next frame)
 			Bag<Unit> otherUnits = e.getUnitsInCircle(unit.getX(), unit.getY(), unit.getRadius());
-//System.out.println("Units in small circle: "+otherUnits.size());
-//otherUnits = e.getUnitsInCircle(unit.getX(), unit.getY(), unit.getRadius()*2f);
-//System.out.println("Units in double circle: "+otherUnits.size());
-//otherUnits = e.getUnitsInCircle(unit.getX(), unit.getY(), unit.getRadius()*4f);
-//System.out.println("Units in 4x circle: "+otherUnits.size());
 			for (Unit otherUnit : otherUnits) {
 				if (team.isEnemy(otherUnit.getTeam())) {
 					increment();
