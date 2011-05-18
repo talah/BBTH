@@ -34,43 +34,38 @@ public class SettingsScreen extends UIView {
 		
 		tutorial = new UILabel("Show Tutorial");
 		tutorial.setAnchor(Anchor.CENTER_LEFT);
-		tutorial.setTextSize(22);
+		tutorial.setTextSize(16);
 		tutorial.sizeToFit();
-		tutorial.setPosition(0, BBTHGame.HEIGHT / 2 - 65);
+		tutorial.setPosition(10, BBTHGame.HEIGHT / 2 - 65);
 		
 		tutorialSwitch = new UISwitch();
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		tutorialSwitch.setSize(100, 30);
-		tutorialSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
-		tutorialSwitch.setOnTextColor(Color.BLACK);
-		tutorialSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 - 65);
+		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 - 65);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
 		ai = new UILabel("AI Difficulty");
 		ai.setAnchor(Anchor.CENTER_LEFT);
-		ai.setTextSize(22);
+		ai.setTextSize(16);
 		ai.sizeToFit();
-		ai.setPosition(0, BBTHGame.HEIGHT / 2 + 65);
+		ai.setPosition(10, BBTHGame.HEIGHT / 2 + 65);
 		
 		aiDifficulty = new UISlider(0.5f, 1.f, 0.75f);
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
 		aiDifficulty.setSize(100, 24);
-		aiDifficulty.setFillColor(BBTHGame.AWESOME_GREEN);
-		aiDifficulty.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 + 65);
+		aiDifficulty.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 + 65);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
 		
 		titleScreenMusic = new UILabel("Title Screen Music");
 		titleScreenMusic.setAnchor(Anchor.CENTER_LEFT);
-		titleScreenMusic.setTextSize(22);
+		titleScreenMusic.setTextSize(16);
 		titleScreenMusic.sizeToFit();
-		titleScreenMusic.setPosition(0, BBTHGame.HEIGHT / 2);
+		titleScreenMusic.setPosition(10, BBTHGame.HEIGHT / 2);
 		
 		titleScreenMusicSwitch = new UISwitch();
 		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		titleScreenMusicSwitch.setSize(100, 30);
-		titleScreenMusicSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
-		titleScreenMusicSwitch.setOnTextColor(Color.BLACK);
-		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2);
+		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
 		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
 		addSubview(title);

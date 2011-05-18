@@ -16,8 +16,8 @@ public class UberUnit extends Unit {
 	private static final float DAMAGE_RATE = 140f;
 	
 	@Override
-	public float getStartingHealth() {
-		return 5f * AttackingUnit.MAX_DAMAGE;
+	public int getStartingHealth() {
+		return 5 * AttackingUnit.MAX_DAMAGE;
 	}
 	
 	public UberUnit(UnitManager unitManager, Team team, Paint p, ParticleSystem particleSystem) {

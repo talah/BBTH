@@ -17,7 +17,7 @@ public class AttackingUnit extends Unit {
 	public static final float DETONATION_MAX_RADIUS = 40f;
 	public static final float DETONATION_TIME = .4f;
 	public static final float MIN_DAMAGE = 30f;
-	public static final float MAX_DAMAGE = 90f;
+	public static final int MAX_DAMAGE = 90;
 	
 	private static final Envelope DAMAGE_ENVELOPE = new Envelope(MAX_DAMAGE, OutOfBoundsHandler.RETURN_FIRST_OR_LAST);
 	static {
@@ -133,7 +133,7 @@ public class AttackingUnit extends Unit {
 	}
 
 	@Override
-	public float getStartingHealth() {
+	public int getStartingHealth() {
 		return 50;
 	}
 

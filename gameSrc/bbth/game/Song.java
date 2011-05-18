@@ -6,8 +6,7 @@ package bbth.game;
  *
  */
 public enum Song {
-	DONKEY_KONG(R.raw.bonusroom, R.xml.donkey_kong, -1),
-	RETRO(R.raw.retrobit, R.xml.track1, -2),
+	RETRO(R.raw.retrobit, R.xml.retro, -2),
 	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
 	JAVLA_SLADDAR(R.raw.javlasladdar_short, R.xml.javlasladdar, -4),
 	ODINS_KRAFT(R.raw.odinskraft_short, R.xml.odins_kraft, -5),
@@ -27,8 +26,6 @@ public enum Song {
 	
 	public static Song fromInt(int i) {
 		switch (i) {
-		case -1:
-			return Song.DONKEY_KONG;
 		case -2:
 			return Song.RETRO;
 		case -3:

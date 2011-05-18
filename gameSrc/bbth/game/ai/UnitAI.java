@@ -20,7 +20,7 @@ public abstract class UnitAI {
 	 * The radius of the axis-aligned bounding box in which to search for nearby
 	 * enemies.
 	 */
-	private static final int SEARCH_RADIUS = 50;
+	private static final float SEARCH_RADIUS = 50;
 
 	// Cached hash set of units to avoid allocations
 	private final HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
@@ -113,15 +113,15 @@ public abstract class UnitAI {
 		m_accel.getUnitsInAABB(x - SEARCH_RADIUS, y - SEARCH_RADIUS, x + SEARCH_RADIUS, y + SEARCH_RADIUS, cachedUnitSet);
 
 		// Find the closest unit ignoring units on the same team
-		float bestdist = SEARCH_RADIUS;
+		float bestdistSqr = SEARCH_RADIUS * SEARCH_RADIUS;
 		Unit bestunit = null;
 		Team oppositeTeam = entity.getTeam().getOppositeTeam();
 		for (Unit unit : cachedUnitSet) {
 			if (unit.getTeam() == oppositeTeam) {
 				float enemydist = MathUtils.getDistSqr(entity.getX(), entity.getY(), unit.getX(), unit.getY());
-				if (enemydist < bestdist) {
+				if (enemydist < bestdistSqr) {
 					bestunit = unit;
-					bestdist = enemydist;
+					bestdistSqr = enemydist;
 				}
 			}
 		}
