@@ -79,6 +79,10 @@ public class BeatTracker {
 	// get all the beats in a time window relative to the current time in the song being played
 	public final List<Beat> getBeatsInRange(int lowerOffset, int upperOffset) {
 		_nearbyBeats.clear();
+
+		if (_musicPlayer == null) {
+			return _nearbyBeats;
+		}		
 		
 		updateCurrentBeatIndex();
 		int i = _currentBeatIndex;

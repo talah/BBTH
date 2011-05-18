@@ -17,7 +17,7 @@
 	<pattern id="one-hit">
 		<beat type="quarter" />
 		<rest type="quarter" />
-		<rest type="half" />
+		<rest type="half" /> 
 	</pattern>
 
 	<pattern id="two-hit">
