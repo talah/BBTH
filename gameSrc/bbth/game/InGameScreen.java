@@ -101,7 +101,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			beatTrack = new BeatTrack(song, this);
 			setSong = true;
 		} else {
-			beatTrack = new BeatTrack(Song.DERP, this);
+			beatTrack = new BeatTrack(Song.MISTAKE_THE_GETAWAY, this);
 			setSong = false;
 		}
 		
