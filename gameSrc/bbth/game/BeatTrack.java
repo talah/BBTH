@@ -159,8 +159,10 @@ public class BeatTrack {
 	}
 
 	public void refreshBeats() {
-		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
+		if (beatTracker != null) {
+			// Get beats in range
+			beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
+		}
 	}
 
 	// returns the closest beat in the touch zone, Beat.REST means no beat
