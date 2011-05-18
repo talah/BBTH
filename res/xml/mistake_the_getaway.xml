@@ -1,7 +1,7 @@
 <root mpb="425.7">
 
 	<pattern id="intro">
-		<rest type="sixteenth" />
+		<rest duration="20" />
 		<rest type="eighth" />
 		<beat type="quarter" />
 		<beat type="quarter" />
@@ -17,7 +17,7 @@
 	<pattern id="one-hit">
 		<beat type="quarter" />
 		<rest type="quarter" />
-		<rest type="half" />
+		<rest type="half" /> 
 	</pattern>
 
 	<pattern id="two-hit">

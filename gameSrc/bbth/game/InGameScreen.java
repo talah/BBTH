@@ -98,10 +98,11 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			}
 
 			// Set up sound stuff
-			beatTrack = new BeatTrack(song, this);
+			beatTrack = new BeatTrack(this);
+			beatTrack.setSong(song);
 			setSong = true;
 		} else {
-			beatTrack = new BeatTrack(Song.DERP, this);
+			beatTrack = new BeatTrack(this);
 			setSong = false;
 		}
 		
