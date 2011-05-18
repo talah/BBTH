@@ -1,7 +1,6 @@
 package bbth.game;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;

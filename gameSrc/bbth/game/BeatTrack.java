@@ -13,7 +13,6 @@ import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatTracker;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.sound.MusicPlayer.OnCompletionListener;
-import bbth.engine.sound.SoundManager;
 
 /**
  * A complete beat track for a single song. Handles music, hit and miss sounds,
@@ -34,19 +33,17 @@ public class BeatTrack {
 	public static final float COMBO_PULSE_TIME = 0.5f;
 	public static final float COMBO_BRAG_TIME = 2;
 
-	private static final int MAX_SOUNDS = 8;
+	//private static final int MAX_SOUNDS = 8;
 	//private final int HIT_SOUND_ID;
-	private final int MISS_SOUND_ID;
+	//private final int MISS_SOUND_ID;
 	//private final int HOLD_SOUND_ID;
 	//private int holdId;
 	
-	private SoundManager soundManager;
+	//private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
 	private int combo;
-	private int score;
 	private String comboStr;
-	// scoreStr;
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
@@ -72,15 +69,13 @@ public class BeatTrack {
 		});
 		musicPlayer.setOnCompletionListener(listener);
 
-		soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
+		//soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
-		MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
+		//MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
 		//HOLD_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		isHolding = false;
 
 		// Setup score stuff
-		score = 0;
-		// scoreStr = String.valueOf(score);
 		combo = 0;
 		comboStr = "x" + String.valueOf(combo);
 
@@ -117,9 +112,6 @@ public class BeatTrack {
 	}
 
 	public void draw(Canvas canvas) {
-		// paint.setARGB(127, 0, 0, 0);
-		// paint.setStrokeWidth(2.f);
-		// canvas.drawRect(0, 0, BEAT_TRACK_WIDTH, BBTHGame.HEIGHT, paint);
 
 		paint.setARGB(127, 255, 255, 255);
 		paint.setStrokeWidth(2.f);
@@ -136,8 +128,7 @@ public class BeatTrack {
 		paint.setStyle(Style.FILL);
 
 		paint.setColor(Color.WHITE);
-		// canvas.drawLine(50, 0, 50, BBTHGame.HEIGHT, paint);
-		//canvas.drawText("Combo", 3, BBTHGame.HEIGHT - 25, paint);
+
 		float timesincecombo = (System.currentTimeMillis() - last_combo_time) / 1000.0f;
 		float timesinceubercombo = (System.currentTimeMillis() - last_uber_combo_time) / 1000.0f;
 		float old_text_size = paint.getTextSize();
@@ -165,7 +156,6 @@ public class BeatTrack {
 		}
 		paint.setTextSize(old_text_size);
 
-		// canvas.drawText(_scoreStr, 25, HEIGHT - 2, _paint);
 	}
 
 	public void refreshBeats() {
@@ -188,7 +178,6 @@ public class BeatTrack {
 			} else {
 				//soundManager.play(HIT_SOUND_ID);
 			}
-			++score;
 			// NOTE: Combos should also be tracked in bbthSimulation
 			if (beatType != Beat.BeatType.HOLD) {
 				++combo;
@@ -196,7 +185,7 @@ public class BeatTrack {
 				comboStr = "x" + String.valueOf(combo);
 			}
 		} else {
-			soundManager.play(MISS_SOUND_ID);
+			//soundManager.play(MISS_SOUND_ID);
 			combo = 0;
 			comboStr = "x" + String.valueOf(combo);
 		}

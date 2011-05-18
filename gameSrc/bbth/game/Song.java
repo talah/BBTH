@@ -10,8 +10,7 @@ public enum Song {
 	MISTAKE_THE_GETAWAY(R.raw.mistakethegetaway, R.xml.mistake_the_getaway, -3),
 	JAVLA_SLADDAR(R.raw.javlasladdar_short, R.xml.javlasladdar, -4),
 	ODINS_KRAFT(R.raw.odinskraft_short, R.xml.odins_kraft, -5),
-	MIGHT_AND_MAGIC(R.raw.mightandmagic_short, R.xml.might_and_magic, -6),
-	DERP(R.raw.derp, R.xml.derp, -7);
+	MIGHT_AND_MAGIC(R.raw.mightandmagic_short, R.xml.might_and_magic, -6);
 	
 	private Song(int song, int track, int id) {
 		songId = song;
