@@ -12,12 +12,19 @@ public class Wall {
 	public Point b;
 	public float length;
 	public Point norm;
+	private int hashCodeID;
+	private static int nextHashCodeID;
 
 	public Wall(Point a, Point b) {
+		hashCodeID = nextHashCodeID++;
 		norm = new Point();
 		this.a = a;
 		this.b = b;
 		updateLength();
+	}
+
+	public static void resetNextHashCodeID() {
+		nextHashCodeID = 0;
 	}
 
 	public Wall(float ax, float ay, float bx, float by) {
@@ -70,5 +77,10 @@ public class Wall {
 		hash = Hash.mix(hash, norm.x);
 		hash = Hash.mix(hash, norm.y);
 		return 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return hashCodeID;
 	}
 }

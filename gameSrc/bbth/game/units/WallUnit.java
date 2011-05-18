@@ -13,7 +13,7 @@ import bbth.game.Team;
  */
 public class WallUnit extends Unit {
 
-	public static final int HEALTH = 10;
+	public static final int HEALTH = 10000;
 	
 	private Wall wall;
 
@@ -26,12 +26,12 @@ public class WallUnit extends Unit {
 	@Override
 	public void update(float seconds) {
 		super.update(seconds);
-		takeDamage(seconds, null);
+		takeDamage(1000*seconds, null);
 	}
 
 	@Override
 	public void drawChassis(Canvas canvas) {
-		paint.setAlpha((int) (health * 255 / HEALTH));
+		paint.setAlpha((health * 255 / HEALTH));
 		canvas.drawLine(wall.a.x, wall.a.y, wall.b.x, wall.b.y, paint);
 		paint.setAlpha(255);
 	}
