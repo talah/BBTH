@@ -48,7 +48,7 @@
 	</ACHIEVEMENT>
 	<ACHIEVEMENT id="102">
 		<NAME>Ultimate Stalemate</NAME>
-		<DESC>End a 9+ minute song in a tie</DESC>
+		<DESC>End a 2-minute+ long song in a tie</DESC>
 		<ICON>icon</ICON>
 		<ACTIVATIONS>1</ACTIVATIONS>
 	</ACHIEVEMENT>

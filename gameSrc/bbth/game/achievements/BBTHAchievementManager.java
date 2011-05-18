@@ -1,10 +1,37 @@
 package bbth.game.achievements;
 
-import bbth.engine.achievements.*;
+import bbth.engine.achievements.AchievementInfo;
+import bbth.engine.achievements.AchievementManager;
+import bbth.engine.achievements.Achievements;
 import bbth.engine.util.Bag;
-import bbth.game.*;
-import bbth.game.achievements.events.*;
-import bbth.game.achievements.impls.*;
+import bbth.game.R;
+import bbth.game.Song;
+import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.BeatHitEvent;
+import bbth.game.achievements.events.BeatMissedEvent;
+import bbth.game.achievements.events.GameEndedEvent;
+import bbth.game.achievements.events.UnitCreatedEvent;
+import bbth.game.achievements.events.UnitDeadEvent;
+import bbth.game.achievements.events.UpdateEvent;
+import bbth.game.achievements.events.WallCreatedEvent;
+import bbth.game.achievements.impls.AnythingYouCanDo;
+import bbth.game.achievements.impls.ComboCounterAchievement;
+import bbth.game.achievements.impls.DesperateMeasures;
+import bbth.game.achievements.impls.DesperateTimes;
+import bbth.game.achievements.impls.FlawlessVictory;
+import bbth.game.achievements.impls.FullComboAchievement;
+import bbth.game.achievements.impls.Humiliation;
+import bbth.game.achievements.impls.IncrementOnUberCreateAchievement;
+import bbth.game.achievements.impls.IncrementOnUnitCreateAchievement;
+import bbth.game.achievements.impls.IncrementOnUnitKillAchievement;
+import bbth.game.achievements.impls.ItsSuperEffective;
+import bbth.game.achievements.impls.QuantityOverQuality;
+import bbth.game.achievements.impls.Showdown;
+import bbth.game.achievements.impls.SongAchievement;
+import bbth.game.achievements.impls.StrategistAchievement;
+import bbth.game.achievements.impls.UltimateStalemate;
+import bbth.game.achievements.impls.UnitCountAchievement;
+import bbth.game.achievements.impls.YoDawgIHeardYouLikeUnits;
 
 public final class BBTHAchievementManager extends AchievementManager<BBTHAchievement> {
 	public static final BBTHAchievementManager INSTANCE = new BBTHAchievementManager(R.xml.achievements);
@@ -81,6 +108,10 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 	public void registerAchievements() {
 		AchievementInfo info;
 		
+		if (!achievements.isEmpty()) {
+			return;
+		}
+		
 		info = infoMap.get(0);
 		if (info != null) achievements.add(new SongAchievement(info, Song.MISTAKE_THE_GETAWAY)); 
 		
@@ -100,10 +131,10 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new DesperateTimes(info));
 		
 		info = infoMap.get(101);
-		// Prereqs: get total length of song
+		if (info != null) achievements.add(new DesperateMeasures(info));
 		
 		info = infoMap.get(102);
-		// Prereqs: get total length of song
+		if (info != null) achievements.add(new UltimateStalemate(info));
 		
 		info = infoMap.get(103);
 		if (info != null) achievements.add(new FlawlessVictory(info));
@@ -145,7 +176,7 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 		if (info != null) achievements.add(new Showdown(info));
 		
 		info = infoMap.get(405);
-		// Prereqs: probably a unit damage 
+		if (info != null) achievements.add(new QuantityOverQuality(info));
 		
 		info = infoMap.get(406);
 		// Prereqs: 

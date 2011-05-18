@@ -1,7 +1,16 @@
 package bbth.game.achievements;
 
-import bbth.engine.achievements.*;
-import bbth.game.achievements.events.*;
+import bbth.engine.achievements.Achievement;
+import bbth.engine.achievements.AchievementInfo;
+import bbth.engine.achievements.Achievements;
+import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.BeatHitEvent;
+import bbth.game.achievements.events.BeatMissedEvent;
+import bbth.game.achievements.events.GameEndedEvent;
+import bbth.game.achievements.events.UnitCreatedEvent;
+import bbth.game.achievements.events.UnitDeadEvent;
+import bbth.game.achievements.events.UpdateEvent;
+import bbth.game.achievements.events.WallCreatedEvent;
 
 public abstract class BBTHAchievement extends Achievement {
 

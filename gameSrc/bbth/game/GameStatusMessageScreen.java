@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.FloatMath;
-import bbth.engine.achievements.AchievementManager;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
@@ -15,7 +14,6 @@ import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIView;
 import bbth.engine.util.MathUtils;
-import bbth.game.achievements.BBTHAchievementManager;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {

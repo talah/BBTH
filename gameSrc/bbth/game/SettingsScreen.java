@@ -1,6 +1,5 @@
 package bbth.game;
 
-import thuhe.thuhe.thuhe.UITestScreen;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import bbth.engine.ui.Anchor;
@@ -12,11 +11,11 @@ import bbth.engine.ui.UIView;
 
 public class SettingsScreen extends UIView {
 	
-	private UISwitch tutorialSwitch;
+	private UISwitch tutorialSwitch, titleScreenMusicSwitch;
 	private UISlider aiDifficulty;
-	private UILabel tutorial, ai, title;
+	private UILabel tutorial, ai, title, titleScreenMusic;
 	private UINavigationController controller;
-	private boolean showTutorial;
+	private boolean showTutorial, playTitleScreenMusic;
 	private float ai_level;
 	private SharedPreferences _settings;
 	private SharedPreferences.Editor _editor;
@@ -33,38 +32,54 @@ public class SettingsScreen extends UIView {
 		title.sizeToFit();
 		title.setPosition(BBTHGame.WIDTH / 2, 80);
 		
-		tutorial = new UILabel("Show tutorial");
+		tutorial = new UILabel("Show Tutorial");
 		tutorial.setAnchor(Anchor.CENTER_LEFT);
 		tutorial.setTextSize(22);
 		tutorial.sizeToFit();
-		tutorial.setPosition(15, BBTHGame.HEIGHT / 2 - 65);
+		tutorial.setPosition(0, BBTHGame.HEIGHT / 2 - 65);
 		
 		tutorialSwitch = new UISwitch();
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		tutorialSwitch.setSize(100, 30);
-		tutorialSwitch.setOnBackgroundColor(UITestScreen.AWESOME_GREEN);
+		tutorialSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
 		tutorialSwitch.setOnTextColor(Color.BLACK);
-		tutorialSwitch.setPosition(BBTHGame.WIDTH - 15, BBTHGame.HEIGHT / 2 - 65);
+		tutorialSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 - 65);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
 		ai = new UILabel("AI Difficulty");
 		ai.setAnchor(Anchor.CENTER_LEFT);
 		ai.setTextSize(22);
 		ai.sizeToFit();
-		ai.setPosition(15, BBTHGame.HEIGHT / 2);
+		ai.setPosition(0, BBTHGame.HEIGHT / 2 + 65);
 		
 		aiDifficulty = new UISlider(0.5f, 1.f, 0.75f);
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
 		aiDifficulty.setSize(100, 24);
-		aiDifficulty.setFillColor(UITestScreen.AWESOME_GREEN);
-		aiDifficulty.setPosition(BBTHGame.WIDTH - 15, BBTHGame.HEIGHT / 2);
+		aiDifficulty.setFillColor(BBTHGame.AWESOME_GREEN);
+		aiDifficulty.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 + 65);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
+		
+		titleScreenMusic = new UILabel("Title Screen Music");
+		titleScreenMusic.setAnchor(Anchor.CENTER_LEFT);
+		titleScreenMusic.setTextSize(22);
+		titleScreenMusic.sizeToFit();
+		titleScreenMusic.setPosition(0, BBTHGame.HEIGHT / 2);
+		
+		titleScreenMusicSwitch = new UISwitch();
+		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
+		titleScreenMusicSwitch.setSize(100, 30);
+		titleScreenMusicSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
+		titleScreenMusicSwitch.setOnTextColor(Color.BLACK);
+		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2);
+		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
 		addSubview(title);
 		addSubview(ai);
 		addSubview(aiDifficulty);
 		addSubview(tutorial);
 		addSubview(tutorialSwitch);
+		addSubview(titleScreenMusic);
+		addSubview(titleScreenMusicSwitch);
 	}
 	
 	@Override
@@ -84,6 +99,14 @@ public class SettingsScreen extends UIView {
 			ai_level = aiDifficulty.getValue();
 		    _editor.putFloat("aiDifficulty", ai_level);
 		    BBTHGame.AI_DIFFICULTY = ai_level;
+		    _editor.commit();
+		}
+		
+		if(playTitleScreenMusic != titleScreenMusicSwitch.isOn())
+		{
+			playTitleScreenMusic = titleScreenMusicSwitch.isOn();
+		    _editor.putBoolean("titleScreenMusic", playTitleScreenMusic);
+		    BBTHGame.TITLE_SCREEN_MUSIC = playTitleScreenMusic;
 		    _editor.commit();
 		}
 	}

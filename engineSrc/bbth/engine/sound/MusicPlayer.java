@@ -40,6 +40,9 @@ public class MusicPlayer {
 	}
 
 	public int getCurrentPosition() {
+		if (_startTime == 0) {
+			return -1;
+		}
 		return (int) (System.currentTimeMillis() - _startTime);
 	}
 
@@ -68,6 +71,10 @@ public class MusicPlayer {
 	public void loop() {
 		_mediaPlayer.setLooping(true);
 		play();
+	}
+	
+	public int getSongLength() {
+		return _mediaPlayer.getDuration();
 	}
 
 	// pauses the song, allowing for continuation from the current point

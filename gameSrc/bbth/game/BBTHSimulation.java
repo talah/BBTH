@@ -22,7 +22,11 @@ import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
 import bbth.engine.util.Timer;
 import bbth.game.achievements.BBTHAchievementManager;
-import bbth.game.achievements.events.*;
+import bbth.game.achievements.events.BaseDestroyedEvent;
+import bbth.game.achievements.events.BeatHitEvent;
+import bbth.game.achievements.events.GameEndedEvent;
+import bbth.game.achievements.events.UnitDeadEvent;
+import bbth.game.achievements.events.UpdateEvent;
 import bbth.game.ai.AIController;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitManager;
@@ -232,7 +236,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 				if (serverReady && clientReady) {
 					Unit.resetNextHashCodeID();
 				}
-			} else if (code == MUSIC_STOPPED_EVENT) {
+			} else if ((gameState == GameState.IN_PROGRESS || gameState == GameState.WAITING_TO_START) && code == MUSIC_STOPPED_EVENT) {
 				endTheGame();
 			}
 		}
@@ -339,7 +343,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		serverPlayer.base.damageUnits(accel);
 		clientPlayer.base.damageUnits(accel);
 
-		if (localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
+		if (gameState == GameState.IN_PROGRESS && localPlayer.getHealth() <= 0 || remotePlayer.getHealth() <= 0) {
 			endTheGame();
 		}
 		
@@ -542,11 +546,11 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		
 		// achievement notifications
 		if (serverHealth == 0) {
-			baseDestroyedEvent.set(serverPlayer);
+			baseDestroyedEvent.set(serverPlayer, inGameScreen.getBeatTrack());
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		if (clientHealth == 0) {
-			baseDestroyedEvent.set(clientPlayer);
+			baseDestroyedEvent.set(clientPlayer, inGameScreen.getBeatTrack());
 			BBTHAchievementManager.INSTANCE.notifyBaseDestroyed(baseDestroyedEvent);
 		}
 		
