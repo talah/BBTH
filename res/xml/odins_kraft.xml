@@ -299,8 +299,6 @@
 
 		<load-pattern id="fancy1" />
 		<load-pattern id="fancy2" />
-		<load-pattern id="fancy1" />
-		<load-pattern id="fancy2" />
 		<load-pattern id="one-quarter" />
 		<load-pattern id="whole-rest" />
 	</song>
