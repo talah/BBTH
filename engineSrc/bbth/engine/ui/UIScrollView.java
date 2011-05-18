@@ -14,7 +14,7 @@ public class UIScrollView extends UIView {
 	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
 	protected Paint _scroll_paint, _track_paint;
 	
-	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 10, SCROLL_DECELERATION = -20f;
+	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 10, SCROLL_DECELERATION = -500f;
 	
 	public UIScrollView(Object tag) {
 		super(tag);

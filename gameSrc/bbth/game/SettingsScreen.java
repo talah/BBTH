@@ -41,8 +41,6 @@ public class SettingsScreen extends UIView {
 		tutorialSwitch = new UISwitch();
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		tutorialSwitch.setSize(100, 30);
-		tutorialSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
-		tutorialSwitch.setOnTextColor(Color.BLACK);
 		tutorialSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 - 65);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
@@ -55,7 +53,6 @@ public class SettingsScreen extends UIView {
 		aiDifficulty = new UISlider(0.5f, 1.f, 0.75f);
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
 		aiDifficulty.setSize(100, 24);
-		aiDifficulty.setFillColor(BBTHGame.AWESOME_GREEN);
 		aiDifficulty.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2 + 65);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
 		
@@ -68,8 +65,6 @@ public class SettingsScreen extends UIView {
 		titleScreenMusicSwitch = new UISwitch();
 		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		titleScreenMusicSwitch.setSize(100, 30);
-		titleScreenMusicSwitch.setOnBackgroundColor(BBTHGame.AWESOME_GREEN);
-		titleScreenMusicSwitch.setOnTextColor(Color.BLACK);
 		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 20, BBTHGame.HEIGHT / 2);
 		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
