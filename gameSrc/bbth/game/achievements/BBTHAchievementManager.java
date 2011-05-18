@@ -108,6 +108,10 @@ public final class BBTHAchievementManager extends AchievementManager<BBTHAchieve
 	public void registerAchievements() {
 		AchievementInfo info;
 		
+		if (!achievements.isEmpty()) {
+			return;
+		}
+		
 		info = infoMap.get(0);
 		if (info != null) achievements.add(new SongAchievement(info, Song.MISTAKE_THE_GETAWAY)); 
 		
