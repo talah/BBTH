@@ -33,7 +33,7 @@ public class Player {
 	private AIController aiController;
 	private Paint paint;
 	private UnitSelector selector;
-	private float _health;
+	private int _health;
 	private float _combo;
 	private boolean _isLocal;
 	
@@ -50,7 +50,7 @@ public class Player {
 		units = new ArrayList<Unit>();
 
 		base = new Base(this);
-		_health = 100;
+		resetHealth();
 		setCombo(0);
 
 		paint = new Paint();
@@ -245,10 +245,12 @@ public class Player {
 
 	public void resetHealth() {
 		_health = 100;
+		base.healthText = (_isLocal ? "Your" : "Enemy") + " health: " + _health;
 	}
 
-	public void adjustHealth(float delta) {
-		_health = MathUtils.clamp(0, 100, _health + delta);
+	public void adjustHealth(int delta) {
+		_health = (int)MathUtils.clamp(0, 100, _health + delta);
+		base.healthText = (_isLocal ? "Your" : "Enemy") + " health: " + _health;
 		if (_isLocal) {
 			Vibrate.vibrate(0.1f);
 		}

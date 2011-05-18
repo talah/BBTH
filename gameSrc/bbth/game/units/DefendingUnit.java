@@ -134,7 +134,7 @@ public class DefendingUnit extends Unit {
 	}
 
 	@Override
-	public float getStartingHealth() {
+	public int getStartingHealth() {
 		return 60;
 	}
 

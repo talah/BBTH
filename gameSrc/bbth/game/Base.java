@@ -18,6 +18,7 @@ public class Base extends UIView {
 	private Player player;
 	public boolean drawFill = true;
 	private HashSet<Unit> cachedUnits = new HashSet<Unit>();
+	public String healthText;
 
 	public Base(Player player) {
 		this.setSize(BBTHSimulation.GAME_WIDTH, BASE_HEIGHT);
@@ -34,7 +35,6 @@ public class Base extends UIView {
 			canvas.drawRect(_rect, paint);
 		}
 		paint.setColor(Color.WHITE);
-		String text = (player.isLocal() ? "Your" : "Enemy") + " health: " + (int) player.getHealth();
 
 		canvas.save();
 		canvas.translate((_rect.left + _rect.right) / 2, _rect.top + 13);
@@ -43,7 +43,7 @@ public class Base extends UIView {
 			canvas.translate(0, paint.getTextSize() / 2);
 		}
 
-		canvas.drawText(text, 0, 0, paint);
+		canvas.drawText(healthText, 0, 0, paint);
 		canvas.restore();
 
 	}
@@ -59,9 +59,9 @@ public class Base extends UIView {
 			if (u.getTeam() == team.getOppositeTeam() && _rect.contains(u.getX(), u.getY())) {
 				if (!BBTHGame.DEBUG) {
 					if (u.getType() == UnitType.UBER) {
-						player.adjustHealth(-10.0f * (u.getHealth()/u.getStartingHealth()));
+						player.adjustHealth((-10*u.getHealth())/u.getStartingHealth());
 					} else {
-						player.adjustHealth(-5.0f * (u.getHealth()/u.getStartingHealth()));
+						player.adjustHealth((-5 * u.getHealth())/u.getStartingHealth());
 					}
 				}
 

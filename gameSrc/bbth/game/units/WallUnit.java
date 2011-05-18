@@ -13,7 +13,7 @@ import bbth.game.Team;
  */
 public class WallUnit extends Unit {
 
-	public static final float HEALTH = 10;
+	public static final int HEALTH = 10;
 	
 	private Wall wall;
 
@@ -42,7 +42,7 @@ public class WallUnit extends Unit {
 	}
 
 	@Override
-	public float getStartingHealth() {
+	public int getStartingHealth() {
 		return HEALTH;
 	}
 

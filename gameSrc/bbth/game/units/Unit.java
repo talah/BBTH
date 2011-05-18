@@ -26,7 +26,7 @@ public abstract class Unit extends BasicMovable {
 	protected Unit target;
 	protected UnitManager unitManager;
 	
-	protected float health = getStartingHealth();
+	protected int health = getStartingHealth();
 	private static int nextHashCodeID;
 	private int hashCodeID;
 
@@ -74,7 +74,7 @@ public abstract class Unit extends BasicMovable {
 	}
 
 	public abstract UnitType getType();
-	public abstract float getStartingHealth();
+	public abstract int getStartingHealth();
 	public abstract float getRadius();
 
 	public Team getTeam() {
@@ -110,7 +110,7 @@ public abstract class Unit extends BasicMovable {
 		return target;
 	}
 	
-	public float getHealth() {
+	public int getHealth() {
 		return health;
 	}
 	
