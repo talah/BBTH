@@ -53,22 +53,15 @@ public class BeatTrack {
 	private boolean display_uber_brag;
 	private String combo_brag_text;
 	private long last_uber_combo_time;
+	private OnCompletionListener listener;
 	
-	public BeatTrack(Song song, OnCompletionListener listener) {
-		loadSong(song);
+	public BeatTrack(OnCompletionListener l) {
 		beatsInRange = new ArrayList<Beat>();
 		
+		listener = l;
 		last_combo_time = 0;
 		display_uber_brag = false;
 		
-		// Setup general stuff		
-		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
-			public void onCompletion(MusicPlayer mp) {
-				mp.stop();
-			}
-		});
-		musicPlayer.setOnCompletionListener(listener);
-
 		//soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		//MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
@@ -89,8 +82,15 @@ public class BeatTrack {
 		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": \u00dcBER UNIT!")/2.0f;
 	}
 	
-	public void setSong(Song song) {
+	public final void setSong(Song song) {
 		loadSong(song);
+		// Setup general stuff		
+		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
+			public void onCompletion(MusicPlayer mp) {
+				mp.stop();
+			}
+		});
+		musicPlayer.setOnCompletionListener(listener);
 	}
 	
 	// loads a song and an associated beat track

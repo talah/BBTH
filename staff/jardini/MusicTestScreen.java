@@ -2,9 +2,6 @@ package jardini;
 
 import static bbth.game.BBTHGame.HEIGHT;
 import static bbth.game.BBTHGame.WIDTH;
-
-import java.util.List;
-
 import kvgishen.TitleScreen;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,7 +19,6 @@ import bbth.engine.sound.MusicPlayer.OnCompletionListener;
 import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 import bbth.game.BeatTrack;
-import bbth.game.R;
 import bbth.game.Song;
 
 /**
@@ -35,40 +31,34 @@ public class MusicTestScreen extends GameScreen {
 	private static final String MAIN_MENU_TEXT = "Menu";
 	private static final String MINIMAP_TEXT = "Minimap";
 	
-	private static final float BEAT_LINE_X = 25;
 	private static final float BEAT_LINE_Y = 135;
-	
-	private static final int HIT_SOUND_ID = R.raw.tambourine;
-	private static final int MISS_SOUND_ID = R.raw.drum;
 	
 	private Paint _paint;
 	private ParticleSystem _particles;
 	private RectF _comboBox;
 	
 	private BeatTrack _beatTrack;
-	private int _score;
 	private int _combo;
 	private String _comboStr;
-	private List<Beat> _beats;
 	
 	public MusicTestScreen(Context context) {
 		_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		_paint.setTextAlign(Align.CENTER);
 		_paint.setTextSize(10);
 		
-		_score = _combo = 0;
+		_combo = 0;
 		_comboStr = "x" + String.valueOf(_combo);
 		
 		_comboBox = new RectF(0, 0, 0, 0);
 		_particles = new ParticleSystem(100, 0.5f);
 		
-		_beatTrack = new BeatTrack(Song.RETRO, new OnCompletionListener() {
+		_beatTrack = new BeatTrack(new OnCompletionListener() {
 			@Override
 			public void onCompletion(MusicPlayer mp) {
 				nextScreen = new TitleScreen(null);
 			}
 		});
-		
+		_beatTrack.setSong(Song.RETRO);
 		_beatTrack.startMusic();
 	}
 	
