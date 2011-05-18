@@ -140,7 +140,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		bluetooth.disconnect();
 		
 		if (singlePlayer) {
-			sim.simulateCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT, true);
+			controller.pop();
 		}
 		
 		Achievements.INSTANCE.commit();
