@@ -169,7 +169,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			}
 		}
 
-		if (BBTHGame.DEBUG || isOnBeat) {
+		if (isOnBeat) {
 			if (isHold) {
 				player.startWall(x, y);
 			} else {

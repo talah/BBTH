@@ -82,10 +82,11 @@ public class BeatPatternParser {
     				 duration = parseNoteType(type, millisPerBeat);
     			 } else {
     				 // check for manual duration entry
-    				 duration = parser.getAttributeIntValue(null, "duration", -1);
-    				 if (duration == -1) {
+    				 String durationStr = parser.getAttributeValue(null, "duration");
+    				 if (durationStr == null) {
     					 throw new XmlPullParserException("no type or duration");
     				 }
+    				 duration = Float.parseFloat(durationStr);
     			 }
 
     			 parser.next();

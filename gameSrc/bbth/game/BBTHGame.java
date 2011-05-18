@@ -14,7 +14,7 @@ public class BBTHGame extends Game {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	public static boolean SHOW_TUTORIAL = true;
 	public static boolean TITLE_SCREEN_MUSIC = true;
 	public static float AI_DIFFICULTY = 0.75f;
