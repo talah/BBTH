@@ -40,8 +40,6 @@ public class SongSelectionScreen extends UIScrollView implements
 		this.setScrollsVertical(false);
 
 		int y = 0;
-		this.addSubview(makeButton(Song.DERP, "Derp", y++));
-		this.addSubview(makeButton(Song.DONKEY_KONG, "Donkey Kong", y++));
 		this.addSubview(makeButton(Song.RETRO, "Retro", y++));
 		this.addSubview(makeButton(Song.MISTAKE_THE_GETAWAY, "Mistake the Getaway", y++));
 		this.addSubview(makeButton(Song.JAVLA_SLADDAR, "Javla Sladdar", y++));
