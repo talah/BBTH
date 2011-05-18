@@ -53,15 +53,22 @@ public class BeatTrack {
 	private boolean display_uber_brag;
 	private String combo_brag_text;
 	private long last_uber_combo_time;
-	private OnCompletionListener listener;
 	
-	public BeatTrack(OnCompletionListener l) {
+	public BeatTrack(OnCompletionListener listener) {
+		loadSong(Song.RETRO);
 		beatsInRange = new ArrayList<Beat>();
 		
-		listener = l;
 		last_combo_time = 0;
 		display_uber_brag = false;
 		
+		// Setup general stuff		
+		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
+			public void onCompletion(MusicPlayer mp) {
+				mp.stop();
+			}
+		});
+		musicPlayer.setOnCompletionListener(listener);
+
 		//soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
 		//MISS_SOUND_ID = soundManager.addSound(R.raw.derp2);
@@ -82,15 +89,8 @@ public class BeatTrack {
 		brag_text_pos = BBTHGame.WIDTH/2.0f + BEAT_TRACK_WIDTH/2.0f - paint.measureText("COMBO " + comboStr + ": \u00dcBER UNIT!")/2.0f;
 	}
 	
-	public final void setSong(Song song) {
+	public void setSong(Song song) {
 		loadSong(song);
-		// Setup general stuff		
-		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
-			public void onCompletion(MusicPlayer mp) {
-				mp.stop();
-			}
-		});
-		musicPlayer.setOnCompletionListener(listener);
 	}
 	
 	// loads a song and an associated beat track
@@ -118,9 +118,7 @@ public class BeatTrack {
 		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
 		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
 
-		if (beatTracker != null) {
-			beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
-		}
+		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
 
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
@@ -161,10 +159,8 @@ public class BeatTrack {
 	}
 
 	public void refreshBeats() {
-		if (beatTracker != null) {
-			// Get beats in range
-			beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
-		}
+		// Get beats in range
+		beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
 	}
 
 	// returns the closest beat in the touch zone, Beat.REST means no beat
