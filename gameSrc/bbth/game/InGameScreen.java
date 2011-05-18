@@ -139,6 +139,10 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Disconnect when we lose focus
 		bluetooth.disconnect();
 		
+		if (singlePlayer) {
+			sim.simulateCustomEvent(0, 0, BBTHSimulation.MUSIC_STOPPED_EVENT, true);
+		}
+		
 		Achievements.INSTANCE.commit();
 	}
 
