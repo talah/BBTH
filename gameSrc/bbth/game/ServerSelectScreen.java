@@ -74,7 +74,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		while (lastCount < devices.size()) {
 			BluetoothDevice device = devices.get(lastCount);
 			UIButton button = new UIButton(device.getName());
-			button.setPosition(75, BBTHGame.CONTENT_TOP + 25 + 65 + lastCount * 40);
+			button.setPosition(75, BBTHGame.CONTENT_TOP + 25 + 65  + lastCount * 40);
 			button.setSize(BBTHGame.WIDTH - 150, 30);
 			button.setButtonDelegate(this);
 			button.tag = lastCount;

@@ -115,7 +115,6 @@ public class UILabel extends UIControl {
 
 	public void setText(String text)
 	{
-		if (this.text == text) return;
 		this.text = text;
 		if(wrapText)
 		{
@@ -131,6 +130,11 @@ public class UILabel extends UIControl {
 			if(!lineHeightSet)
 				line_height = text_size;
 		}
+	}
+	
+	public String getText()
+	{
+		return text;
 	}
 	
 	public void setText(int id)
