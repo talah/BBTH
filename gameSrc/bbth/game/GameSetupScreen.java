@@ -23,6 +23,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 
 	private UINavigationController controller;
 	private UILabel titleLabel;
+	private UILabel deviceNameLabel;
 
 	private String currentStatus = null;
 
@@ -66,6 +67,15 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
+		deviceNameLabel = new UILabel("");
+		deviceNameLabel.setWrapText(true); // actually needed for newlines too...
+		deviceNameLabel.setAnchor(Anchor.BOTTOM_CENTER);
+		deviceNameLabel.setTextSize(15);
+		deviceNameLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 80);
+		deviceNameLabel.setLineHeight(20);
+		deviceNameLabel.setSize(BBTHGame.WIDTH, 0);
+		addSubview(deviceNameLabel);
+
 		statusLabel = new UILabel("", null);
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
@@ -108,12 +118,19 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 			controller.pushUnder(new SongSelectionScreen(controller, Team.SERVER, bluetooth, protocol, false));
 			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		}
+
+		// We don't have an isVisible flag for deviceNameLabel, so clear
+		// the text instead
+		if (bluetooth.getState() != State.LISTEN_FOR_CONNECTIONS) {
+			deviceNameLabel.setText("");
+		}
 	}
 
 	@Override
 	public void onClick(UIButton sender) {
 		if (sender == serverButton) {
 			bluetooth.listen();
+			deviceNameLabel.setText("Tell other player to\nconnect to \"" + bluetooth.getLocalName() + "\"");
 		} else if (sender == clientButton) {
 			controller.push(new ServerSelectScreen(controller, protocol, bluetooth), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (sender == disconnectButton) {
