@@ -115,6 +115,7 @@ public class UILabel extends UIControl {
 
 	public void setText(String text)
 	{
+		if (this.text == text) return;
 		this.text = text;
 		if(wrapText)
 		{
@@ -218,22 +219,25 @@ public class UILabel extends UIControl {
 		else
 			wrapped_text.clear();
 		
-		String[] words = text.split(" ");
-		String lastPhrase = "";
+		String[] lines = text.split("\n");
+		for (int j = 0; j < lines.length; j++) {
+			String[] words = lines[j].split(" ");
+			String lastPhrase = "";
 
-		for (int i = 0; i < words.length; ++i) {
-			String word = words[i];
-			if (_paint.measureText(lastPhrase + " " + word) < _width) {
-				lastPhrase += " " + word;
-			} else {
-				if (lastPhrase.length() > 0) {
-					wrapped_text.add(lastPhrase.trim());
+			for (int i = 0; i < words.length; ++i) {
+				String word = words[i];
+				if (_paint.measureText(lastPhrase + " " + word) < _width) {
+					lastPhrase += " " + word;
+				} else {
+					if (lastPhrase.length() > 0) {
+						wrapped_text.add(lastPhrase.trim());
+					}
+					lastPhrase = word;
 				}
-				lastPhrase = word;
-			}
-			if (i== words.length -1) {
-				wrapped_text.add(lastPhrase.trim());
-				break;
+				if (i== words.length -1) {
+					wrapped_text.add(lastPhrase.trim());
+					break;
+				}
 			}
 		}
 	}
