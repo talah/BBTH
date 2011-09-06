@@ -17,7 +17,7 @@ import bbth.game.units.Unit;
 
 public class UberAI extends UnitAI {
 
-	private static final float FIRING_STOP_DISTANCE_SQR = 400.f;
+	private static final float ATTACKING_SPEED_MODIFIER = 0.25f;
 	private static final float WALL_EPS = 5.f;
 
 	private Point m_flock_dir;
@@ -73,21 +73,9 @@ public class UberAI extends UnitAI {
 	}
 	
 	private void do_attack(Unit entity, AIController c, FlockRulesCalculator flock) {
-		float goal_x = 0;
-		float goal_y = 0;
-		Unit target = entity.getTarget();
-		if (target != null) {
-			goal_x = target.getX();
-			goal_y = target.getY();
-		}
-		
-		if ((goal_x - entity.getX()) * (goal_x - entity.getX()) + (goal_y - entity.getY()) * (goal_y - entity.getY()) > FIRING_STOP_DISTANCE_SQR) {
-			do_movement(entity, c, flock);
-		}
-		else
-		{
-			entity.setVelocity(0.000001f, entity.getHeading());	
-		}
+		do_movement(entity, c, flock);
+		// Go at a slower movement speed while attacking
+		entity.setVelocity(getMaxVel() * ATTACKING_SPEED_MODIFIER, entity.getHeading());
 	}
 
 	private void do_movement(Unit entity, AIController c,
