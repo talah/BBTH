@@ -47,6 +47,17 @@ public enum Achievements {
 	public void lock(AchievementInfo info) {
 		_achievementActivations.put(info.id, 0);;
 	}
+	
+	// locks all achievements
+	@SuppressWarnings("unchecked")
+	public void lockAll() {
+		_achievementActivations = new HashMap<Integer, Integer>();
+		Map<String, Integer> activations = (HashMap<String, Integer>) _settings.getAll();
+		for (Map.Entry<String, Integer> entry : activations.entrySet()) {
+			_achievementActivations.put(Integer.valueOf(entry.getKey()), 0);
+		}
+		commit();
+	}
 
 	// increment an achievement, but don't commit the changes to sharedPreferences
 	public boolean increment(AchievementInfo info) {
