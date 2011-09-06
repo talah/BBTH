@@ -212,12 +212,12 @@ public class UILabel extends UIControl {
 	
 	private void wrapText()
 	{
-		if(text == null || text.equals(""))
-			return;
 		if(wrapped_text == null)
 			wrapped_text = new ArrayList<String>();
 		else
 			wrapped_text.clear();
+		if(text == null || text.equals(""))
+			return;
 		
 		String[] lines = text.split("\n");
 		for (int j = 0; j < lines.length; j++) {
