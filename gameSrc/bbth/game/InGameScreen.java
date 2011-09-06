@@ -36,7 +36,6 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final long TAP_HINT_DISPLAY_LENGTH = 3000;
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
-	private static final boolean USE_PAGINATED_TUTORIAL = false;
 	private static final float END_FADE_TIME = 4.f;
 
 	// Timers for profiling while debugging
@@ -74,11 +73,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		
 		aiDifficulty = BBTHGame.AI_DIFFICULTY;
 		
-		if (USE_PAGINATED_TUTORIAL) {
-			tutorial = new PaginatedTutorial();
-		} else {
-			tutorial = new InteractiveTutorial(playerTeam);
-		}
+		tutorial = new InteractiveTutorial(playerTeam);
 		tutorial.setSize(BBTHGame.WIDTH * 0.75f, BBTHGame.HEIGHT / 2.f);
 		tutorial.setAnchor(Anchor.CENTER_CENTER);
 		tutorial.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2.f);
