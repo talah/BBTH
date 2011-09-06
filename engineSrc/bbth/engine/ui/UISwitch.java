@@ -69,7 +69,7 @@ public class UISwitch extends UIControl {
 		if (this.userDragging) {
 			return true;
 		} else {
-			float padding = this.switchButtonRect.height();
+			float padding = this.switchButtonRect.height() * 0.7f;
 			
 			boolean inSwitch = super.containsPoint(x, y);
 			boolean onButton = x > this.switchButtonRect.left - this.offset - padding

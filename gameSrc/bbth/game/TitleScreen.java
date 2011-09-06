@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.sound.MusicPlayer;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
@@ -30,9 +29,9 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
-		titleBar.setPosition(BBTHGame.WIDTH/2, -150);
+		titleBar.setPosition(BBTHGame.WIDTH / 2, -150);
 		titleBar.setSize(300, 140);
-		titleBar.animatePosition(BBTHGame.WIDTH/2, 20, 3);
+		titleBar.animatePosition(BBTHGame.WIDTH / 2, 20, 3);
 		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton("Single Player", this);
