@@ -107,6 +107,10 @@ public class BeatTrack {
 		musicPlayer.stop();
 	}
 	
+	public void setVolume(float volume) {
+		musicPlayer.setVolume(volume);
+	}
+	
 	public void setStartDelay(int delayMillis) {
 		musicPlayer.setStartDelay(delayMillis);
 	}

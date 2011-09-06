@@ -100,6 +100,10 @@ public class MusicPlayer {
 	public boolean isPlaying() {
 		return _state == PLAYING;
 	}
+	
+	public void setVolume(float volume) {
+		_mediaPlayer.setVolume(volume, volume);
+	}
 
 	// release the resources associated with the song
 	// call this when you are done with the player

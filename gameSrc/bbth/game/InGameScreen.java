@@ -37,6 +37,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private static final long PLACEMENT_HINT_DISPLAY_LENGTH = 3000;
 	private static final long DRAG_HINT_DISPLAY_LENGTH = 3000;
 	private static final boolean USE_PAGINATED_TUTORIAL = false;
+	private static final float END_FADE_TIME = 4.f;
 
 	// Timers for profiling while debugging
 	private Timer entireUpdateTimer = new Timer();
@@ -53,7 +54,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	private long tap_location_hint_time;
 	private long drag_tip_start_time;
 	private PlayerAI player_ai;
-	private float secondsUntilNextScreen = 4;
+	private float secondsUntilNextScreen = END_FADE_TIME;
 	private boolean setSong;
 	private boolean gameIsStarted;
 	private boolean countdownStarted;
@@ -342,6 +343,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// End the game when the time comes
 		GameState gameState = sim.getGameState();
 		if (gameState != GameState.WAITING_TO_START && gameState != GameState.IN_PROGRESS) {
+			beatTrack.setVolume(secondsUntilNextScreen / END_FADE_TIME);
 			secondsUntilNextScreen -= seconds;
 			if (secondsUntilNextScreen < 0) {
 				moveToNextScreen();
