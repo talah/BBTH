@@ -29,9 +29,17 @@ public class UINavigationController extends UIView {
 	private UISwipeTransition _transition;
 	private boolean transitioning;
 	private float transitionTime; 
+	
+	private UINavigationEventListener navListener;
 
 	public UINavigationController() {
 		screens = new LinkedList<UIView>();
+		navListener = null;
+	}
+	
+	public void setNavListener(UINavigationEventListener newlistener)
+	{
+		navListener = newlistener;
 	}
 
 	@Override
@@ -51,6 +59,12 @@ public class UINavigationController extends UIView {
 				_transition.onUpdate(seconds);
 			if ((transition != null && transition.isDone()) || (_transition != null && _transition.isDone())) {
 				transitioning = false;
+				// Notify our navListener, if any.
+				if (navListener != null)
+				{
+					navListener.onScreenHidden(currentView);
+					navListener.onScreenShown(newView);
+				}
 				currentView = newView;
 				transitionTime = -1f;
 				

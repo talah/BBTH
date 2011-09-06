@@ -5,12 +5,15 @@ import android.graphics.Color;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
+import bbth.engine.sound.MusicPlayer;
 import bbth.engine.ui.UINavigationController;
+import bbth.engine.ui.UINavigationEventListener;
 import bbth.engine.ui.UISwipeTransition;
 import bbth.engine.ui.UISwipeTransition.Direction;
+import bbth.engine.ui.UIView;
 import bbth.game.achievements.BBTHAchievementManager;
 
-public class BBTHGame extends Game {
+public class BBTHGame extends Game implements UINavigationEventListener {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
@@ -20,8 +23,10 @@ public class BBTHGame extends Game {
 	public static float AI_DIFFICULTY = 0.75f;
 	public static final int AWESOME_GREEN = Color.rgb(159, 228, 74);
 	private UINavigationController navController;
+	private static MusicPlayer musicPlayer;
 	
 	public BBTHGame(Activity activity) {
+		stopTitleMusic();
 		navController = new UINavigationController();
 		currentScreen = navController;
 		
@@ -33,6 +38,10 @@ public class BBTHGame extends Game {
 		Achievements.INSTANCE.initialize(activity);
 		BBTHAchievementManager.INSTANCE.initialize();
 		navController.push(new TitleScreen(navController));
+		
+		navController.setNavListener(this);
+		
+		startTitleMusic();
 		
 //		controller.push(new BBTHAITest(this));
 //		controller.push(new MusicTestScreen(activity));
@@ -61,6 +70,7 @@ public class BBTHGame extends Game {
 	@Override
 	public void onBackPressed() {
 		if (!navController.pop(FROM_LEFT_TRANSITION)) {
+			stopTitleMusic();
 			GameActivity.instance.finish();
 		}
 	}
@@ -68,9 +78,50 @@ public class BBTHGame extends Game {
 	@Override
 	public void onStop() {
 		Achievements.INSTANCE.commit();
+		stopTitleMusic();
 		navController.onStop();
+	}
+	
+	public static void startTitleMusic() {
+		if (musicPlayer == null) {
+			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.mistakethegetaway);
+			musicPlayer.loop();
+		} else if (!musicPlayer.isLooping()) {
+			musicPlayer.loop();
+		}
+	}
+	
+	public static void stopTitleMusic() {
+		if(musicPlayer != null) {
+			musicPlayer.stop();
+			musicPlayer.release();
+			musicPlayer = null;
+		}
 	}
 
 	public static final UISwipeTransition FROM_RIGHT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_RIGHT, 0.3f);
 	public static final UISwipeTransition FROM_LEFT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_LEFT, 0.3f);
+
+	@Override
+	public void onScreenShown(UIView newscreen) {
+		if (newscreen == null)
+		{
+			stopTitleMusic();
+			return;
+		}
+		
+		if (BBTHGame.TITLE_SCREEN_MUSIC && newscreen.shouldPlayMenuMusic())
+		{
+			startTitleMusic();
+		}
+		else
+		{
+			stopTitleMusic();
+		}
+	}
+
+	@Override
+	public void onScreenHidden(UIView oldscreen) {
+		// Do nothing.
+	}
 }

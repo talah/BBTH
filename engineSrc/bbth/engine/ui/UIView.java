@@ -265,4 +265,8 @@ public class UIView extends GameScreen {
     		e.onStop();
 		}
 	}
+	
+	public boolean shouldPlayMenuMusic() {
+		return true;
+	}
 }
