@@ -56,7 +56,7 @@ public class SettingsScreen extends UIView {
 		ai.setAnchor(Anchor.CENTER_LEFT);
 		ai.setTextSize(16);
 		ai.sizeToFit();
-		ai.setPosition(25, BBTHGame.CONTENT_TOP + 2 * Y_OFFSET);
+		ai.setPosition(25, CONTENT_CENTER + 2 * Y_OFFSET);
 		
 		aiDifficulty = new UISlider(0.5f, 1.f, 0.75f);
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
