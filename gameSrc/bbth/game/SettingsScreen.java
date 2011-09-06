@@ -8,6 +8,7 @@ import bbth.engine.core.GameActivity;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UIControl;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UISlider;
@@ -132,6 +133,13 @@ public class SettingsScreen extends UIView {
 			playTitleScreenMusic = titleScreenMusicSwitch.isOn();
 		    _editor.putBoolean("titleScreenMusic", playTitleScreenMusic);
 		    BBTHGame.TITLE_SCREEN_MUSIC = playTitleScreenMusic;
+		    if (playTitleScreenMusic) {
+		    	BBTHGame.startTitleMusic();
+		    }
+		    else
+		    {
+		    	BBTHGame.stopTitleMusic();
+		    }
 		    _editor.commit();
 		}
 	}

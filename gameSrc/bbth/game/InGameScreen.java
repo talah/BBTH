@@ -529,4 +529,9 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	public BeatTrack getBeatTrack() {
 		return beatTrack;
 	}
+	
+	@Override
+	public boolean shouldPlayMenuMusic() {
+		return false;
+	}
 }

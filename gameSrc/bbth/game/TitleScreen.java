@@ -21,7 +21,6 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	private InfiniteCombatView combatView;
 	private UINavigationController controller;
 	private Paint paint = new Paint();
-	private MusicPlayer musicPlayer;
 	
 	public TitleScreen(UINavigationController controller) {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -84,12 +83,6 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 	@Override
 	public void willHide(boolean animating) {
 		super.willHide(animating);
-		if(musicPlayer != null)
-		{
-			musicPlayer.stop();
-			musicPlayer.release();
-			musicPlayer = null;
-		}
 		endAnimations();
 	}
 	
@@ -127,11 +120,7 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 
 	@Override
 	public void onStop() {
-		if (musicPlayer != null) {
-			musicPlayer.stop();
-			musicPlayer.release();
-			musicPlayer = null;
-		}
+		
 	}
 
 	@Override
@@ -139,11 +128,6 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		super.onUpdate(seconds);
 
 		combatView.onUpdate(seconds);
-		
-		if (BBTHGame.TITLE_SCREEN_MUSIC && musicPlayer == null) {
-			musicPlayer = new MusicPlayer(GameActivity.instance, R.raw.mistakethegetaway);
-			musicPlayer.loop();
-		}
 		
 		if (!titleBar.isAnimatingPosition)
 			animDelay -= seconds;
