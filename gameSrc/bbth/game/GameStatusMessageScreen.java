@@ -13,6 +13,7 @@ import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIView;
+import bbth.engine.util.ColorUtils;
 import bbth.engine.util.MathUtils;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
@@ -44,6 +45,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 			super.onDraw(canvas);
 		}
 
+		float[] tempHsv = new float[3];
 		@Override
 		public void onUpdate(float seconds) {
 			PARTICLES.tick(seconds);
@@ -55,12 +57,16 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 				secondsUntilNext += 0.5f;
 				float x = MathUtils.randInRange(0, BBTHGame.WIDTH);
 				float y = MathUtils.randInRange(0, BBTHGame.HEIGHT);
+				int color = ColorUtils.randomHSV(0f, 360f, .8f, 1f, .5f, 1f);
+				Color.colorToHSV(color, tempHsv);
+				float multiplier = MathUtils.randInRange(0, 1) == 0 ? -1f : 1f;
+				int color2 = ColorUtils.randomHSV(multiplier*(tempHsv[0]+15) % 360f, multiplier*(tempHsv[0]+30) % 360f, .8f, 1f, .5f, 1f);
 				for (int i = 0; i < 100; i++) {
 					float angle = MathUtils.randInRange(0, MathUtils.TWO_PI);
 					float radius = MathUtils.randInRange(0, 150);
 					float vx = FloatMath.cos(angle) * radius;
 					float vy = FloatMath.sin(angle) * radius;
-					PARTICLES.createParticle().position(x, y).velocity(vx, vy).angle(angle).shrink(0.1f, 0.2f).line().radius(10).color(Color.YELLOW);
+					PARTICLES.createParticle().position(x, y).velocity(vx, vy).angle(angle).shrink(0.1f, 0.2f).line().radius(10).color(i % 2 == 0 ? color : color2);
 				}
 			}
 		}
