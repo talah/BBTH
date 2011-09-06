@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.util.Log;
 import bbth.engine.util.MathUtils;
 
 public class UIScrollView extends UIView {
@@ -13,6 +14,8 @@ public class UIScrollView extends UIView {
 	protected boolean isScrolling, isDown, scrollsHorizontal = true, scrollsVertical = true, scrollEnabled = true;
 	protected RectF _content_bounds, _v_scroll_handle_rect, _v_track_rect, _h_track_rect, _h_scroll_handle_rect;
 	protected Paint _scroll_paint, _track_paint;
+	
+	private static final float MIN_SCROLLING_SWIPE_DIST = 900.0f;
 	
 	private float CORNER_RADIUS = 5, TRACK_THICKNESS = 8, SPACE_BETWEEN_TRACKS = 4, MIN_SCROLL_VELOCITY = 10, SCROLL_DECELERATION = -500f;
 	
@@ -86,9 +89,11 @@ public class UIScrollView extends UIView {
 
 	@Override
 	public void onTouchDown(float x, float y) {
-		boolean ignore = false;
 		_vy = 0;
 		_vx = 0;
+		
+		_x = x;
+    	_y = y;
 		
 		int idx = subviewCount;
 		while(idx-- > 0)
@@ -96,19 +101,9 @@ public class UIScrollView extends UIView {
 			UIView e = subviews.get(idx);
 			if(e.containsPoint(x+pos_x, y+pos_y) && !e.isDraggable())
 			{
-    		  ignore = true;
     		  e.onTouchDown(x+pos_x, y+pos_y);
 			}
 		}
-		
-	    if(!ignore)
-	    {
-	    	isDown = true;
-	    	isScrolling = true;
-	    	_x = x;
-	    	_y = y;
-	    	_iy = y;
-	    }
 	}
 
 	@Override
@@ -124,6 +119,24 @@ public class UIScrollView extends UIView {
 
 	@Override
 	public void onTouchMove(float x, float y) {
+		dx = x - _x;
+		dy = y - _y;
+		
+		if (dx * dx + dy * dy > MIN_SCROLLING_SWIPE_DIST)
+		{
+			isDown = true;
+	    	isScrolling = true;
+	    	_iy = y;
+	    	
+	    	int idx = subviewCount;
+			while(idx-- > 0)
+			{
+				UIView e = subviews.get(idx);
+				// XXX: HACK TO TELL OBJECT IT'S NO LONGER TOUCHED. SHOULD BE IMPROVED.
+				e.onTouchMove(e._position.x + e._width + 1, e._position.y + e._height + 1);
+			}
+		}
+		
 		if(isDown && scrollEnabled)
 		{
 			if(scrollsVertical && max_y > 0)
@@ -148,6 +161,12 @@ public class UIScrollView extends UIView {
 	@Override
 	public void addSubview(UIView view)
 	{
+		int i = 0;
+		_content_bounds.setEmpty();
+		for (i = 0; i < subviews.size(); i++)
+		{
+			_content_bounds.union(subviews.get(i)._rect);
+		}
 		_content_bounds.union(view._rect);
 		
 		_v_scroll_handle_rect.bottom = _v_scroll_handle_rect.top + getVerticalHandleHeight();
@@ -157,6 +176,25 @@ public class UIScrollView extends UIView {
 		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
 		
 		super.addSubview(view);
+	}
+
+	@Override
+	public void removeSubview(UIView view)
+	{
+		super.removeSubview(view);
+		
+		int i = 0;
+		_content_bounds.setEmpty();
+		for (i = 0; i < subviews.size(); i++)
+		{
+			_content_bounds.union(subviews.get(i)._rect);
+		}
+		
+		_v_scroll_handle_rect.bottom = _v_scroll_handle_rect.top + getVerticalHandleHeight();
+		_h_scroll_handle_rect.right = _h_scroll_handle_rect.left + getHorizontalHandleWidth();
+		
+		max_offset_y = _v_track_rect.height() - _v_scroll_handle_rect.height();
+		max_offset_x = _h_track_rect.width() - _h_scroll_handle_rect.width();
 	}
 	
 	@Override
