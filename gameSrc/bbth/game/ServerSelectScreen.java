@@ -42,14 +42,14 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 
 		UILabel titleLabel = new UILabel("Game Browser", null);
 		titleLabel.setTextSize(30.f);
-		titleLabel.setAnchor(Anchor.CENTER_CENTER);
-		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
+		titleLabel.setAnchor(Anchor.TOP_CENTER);
+		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
 		refreshButton = new UIButton("Refresh");
-		refreshButton.setAnchor(Anchor.CENTER_CENTER);
-		refreshButton.setPosition(BBTHGame.WIDTH / 2, 30);
+		refreshButton.setAnchor(Anchor.TOP_CENTER);
+		refreshButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 25);
 		refreshButton.setSize(100, 30);
 		refreshButton.setButtonDelegate(this);
 		addSubview(refreshButton);
@@ -57,8 +57,8 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		statusLabel = new UILabel("", null);
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
-		statusLabel.setAnchor(Anchor.CENTER_CENTER);
-		statusLabel.setPosition(BBTHGame.WIDTH / 2, 130);
+		statusLabel.setAnchor(Anchor.TOP_CENTER);
+		statusLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP);
 		statusLabel.setSize(BBTHGame.WIDTH - 10, 10);
 		statusLabel.setTextAlign(Align.CENTER);
 		statusLabel.setWrapText(true);
@@ -74,7 +74,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		while (lastCount < devices.size()) {
 			BluetoothDevice device = devices.get(lastCount);
 			UIButton button = new UIButton(device.getName());
-			button.setPosition(75, 160 + lastCount * 40);
+			button.setPosition(75, BBTHGame.CONTENT_TOP + 25 + 65  + lastCount * 40);
 			button.setSize(BBTHGame.WIDTH - 150, 30);
 			button.setButtonDelegate(this);
 			button.tag = lastCount;

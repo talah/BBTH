@@ -39,22 +39,22 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		bluetooth = new Bluetooth(GameActivity.instance, protocol);
 
 		serverButton = new UIButton("Create a Game", null);
-		serverButton.setAnchor(Anchor.CENTER_CENTER);
-		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 65);
+		serverButton.setAnchor(Anchor.TOP_CENTER);
+		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 65);
 		serverButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		serverButton.setButtonDelegate(this);
 		addSubview(serverButton);
 
 		clientButton = new UIButton("Join a Game", null);
-		clientButton.setAnchor(Anchor.CENTER_CENTER);
-		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2);
+		clientButton.setAnchor(Anchor.TOP_CENTER);
+		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 130);
 		clientButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
 
 		disconnectButton = new UIButton("Cancel", null);
-		disconnectButton.setAnchor(Anchor.CENTER_CENTER);
-		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 65);
+		disconnectButton.setAnchor(Anchor.TOP_CENTER);
+		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 195);
 		disconnectButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		disconnectButton.setButtonDelegate(this);
 		disconnectButton.isDisabled = true;
@@ -62,8 +62,8 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 
 		titleLabel = new UILabel("Multiplayer", null);
 		titleLabel.setTextSize(30.f);
-		titleLabel.setAnchor(Anchor.CENTER_CENTER);
-		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
+		titleLabel.setAnchor(Anchor.TOP_CENTER);
+		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
@@ -79,8 +79,8 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		statusLabel = new UILabel("", null);
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
-		statusLabel.setAnchor(Anchor.CENTER_CENTER);
-		statusLabel.setPosition(BBTHGame.WIDTH / 2, 130);
+		statusLabel.setAnchor(Anchor.TOP_CENTER);
+		statusLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP);
 		statusLabel.setSize(BBTHGame.WIDTH - 10, 10);
 		statusLabel.setTextAlign(Align.CENTER);
 		statusLabel.setWrapText(true);

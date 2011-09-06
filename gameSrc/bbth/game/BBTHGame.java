@@ -17,6 +17,8 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 	// This is the viewport width and height
 	public static final float WIDTH = 320;
 	public static final float HEIGHT = 530;
+	public static final float TITLE_TOP = 40;
+	public static final float CONTENT_TOP = 110;
 	public static final boolean DEBUG = false;
 	public static boolean SHOW_TUTORIAL = true;
 	public static boolean TITLE_SCREEN_MUSIC = true;

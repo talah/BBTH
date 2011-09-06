@@ -41,6 +41,7 @@ public class AchievementView extends UIView {
 		_nameLabel.sizeToFit();
 		addSubview(_nameLabel);
 		
+		if (info.description.contains("\n")) System.exit(-5);
 		_descriptionLabel = new UILabel(info.description, null);
 		_descriptionLabel.setTextSize(DESCRIPTION_SIZE);
 		_descriptionLabel.setTextAlign(Align.LEFT);

@@ -34,7 +34,7 @@ public class SongSelectionScreen extends UIScrollView implements
 		UILabel title = new UILabel("Song Selection", null);
 		title.setAnchor(Anchor.TOP_CENTER);
 		title.setTextSize(30.f);
-		title.setPosition(BBTHGame.WIDTH / 2.f, 40);
+		title.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.TITLE_TOP);
 		this.addSubview(title);
 		this.setScrollsHorizontal(false);
 		this.setScrollsVertical(false);
@@ -45,14 +45,14 @@ public class SongSelectionScreen extends UIScrollView implements
 		this.addSubview(makeButton(Song.JAVLA_SLADDAR, "Javla Sladdar", y++));
 		this.addSubview(makeButton(Song.ODINS_KRAFT, "Odin's Kraft", y++));
 		this.addSubview(makeButton(Song.MIGHT_AND_MAGIC, "Might and Magic", y++));
-		this.setContentRect(0, 0, BBTHGame.WIDTH, 110 + y * 50);
+		this.setContentRect(0, 0, BBTHGame.WIDTH, BBTHGame.CONTENT_TOP + y * 65);
 	}
 
 	private UIButton makeButton(Song song, String title, int idx) {
 		UIButton button = new UIButton(title, song);
 		button.setAnchor(Anchor.TOP_CENTER);
-		button.setSize(BBTHGame.WIDTH * 0.6f, 40);
-		button.setPosition(BBTHGame.WIDTH / 2, 110 + idx * 50);
+		button.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		button.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + idx * 65);
 		button.setButtonDelegate(this);
 		return button;
 	}

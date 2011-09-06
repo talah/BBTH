@@ -88,7 +88,7 @@ public class NetworkTestScreen extends UIView implements UIButtonDelegate {
 		switch (type) {
 		case CLIENT:
 			if (bluetooth.getState() == State.DISCONNECTED) {
-				bluetooth.connect();
+				//bluetooth.connect();
 			}
 			break;
 
