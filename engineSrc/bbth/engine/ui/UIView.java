@@ -136,11 +136,16 @@ public class UIView extends GameScreen {
 	{
 		_hasAppeared = true;
 		layoutSubviews(false);
+
+		int idx = subviewCount;
+		while(idx-- > 0){
+    		UIView e = subviews.get(idx);
+		    e.willAppear(animated);
+		}
 	}
 
 	public void willHide(boolean animated)
 	{
-		_hasAppeared = false;
 		int idx = subviewCount;
 		while(idx-- > 0){
     		UIView e = subviews.get(idx);

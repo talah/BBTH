@@ -5,7 +5,7 @@ public enum State {
 	ENABLE_BLUETOOTH("Enabling bluetooth..."),
 	CHECK_PREVIOUS_CONNECTION("Checking previous connection..."),
 	GET_NEARBY_DEVICES("Finding all nearby devices..."),
-	CONNECT_TO_NEARBY_DEVICES("Checking each nearby device..."),
+	CONNECT_TO_DEVICE("Connecting..."),
 	LISTEN_FOR_CONNECTIONS("Listening for connections..."),
 	CONNECTED("Connected");
 

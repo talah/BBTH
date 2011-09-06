@@ -21,8 +21,6 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	private UIButton disconnectButton;
 	private UILabel statusLabel;
 
-	private Team playerTeam;
-
 	private UINavigationController controller;
 	private UILabel titleLabel;
 
@@ -80,25 +78,35 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	}
 
 	@Override
+	public void willAppear(boolean animated) {
+		super.willAppear(animated);
+
+		// Reset the state if the ServerSelectScreen pops back to us
+		bluetooth.disconnect();
+	}
+
+	@Override
 	public void onUpdate(float seconds) {
+		// Update status message when it changes
 		String statusMessage = bluetooth.getString();
 		if (statusMessage != this.currentStatus) {
 			statusLabel.setText((statusMessage == null) ? "" : statusMessage);
 			this.currentStatus = statusMessage;
 		}
+
+		// Update button enabled state
+		boolean isDisconnected = (bluetooth.getState() == State.DISCONNECTED);
+		serverButton.isDisabled = !isDisconnected;
+		clientButton.isDisabled = !isDisconnected;
+		disconnectButton.isDisabled = isDisconnected;
 		
+		// If bluetooth connects, assume it was because of a click on the
+		// serverButton, since we disconnect when this view is switched to
+		// and the only way to get to the connected state from this class
+		// is bluetooth.listen().
 		if (bluetooth.getState() == State.CONNECTED) {
-			if (playerTeam == Team.SERVER) {
-				controller.pushUnder(new SongSelectionScreen(controller, playerTeam, bluetooth, protocol, false));
-				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
-			} else if (playerTeam == Team.CLIENT) {
-				controller.pushUnder(new InGameScreen(controller, playerTeam, bluetooth, null, protocol, false));
-				controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
-			}
-		} else if (bluetooth.getState() == State.DISCONNECTED) {
-			serverButton.isDisabled = false;
-			clientButton.isDisabled = false;
-			disconnectButton.isDisabled = true;
+			controller.pushUnder(new SongSelectionScreen(controller, Team.SERVER, bluetooth, protocol, false));
+			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
 
@@ -106,23 +114,10 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	public void onClick(UIButton sender) {
 		if (sender == serverButton) {
 			bluetooth.listen();
-			serverButton.isDisabled = true;
-			clientButton.isDisabled = true;
-			disconnectButton.isDisabled = false;
-
-			playerTeam = Team.SERVER;
 		} else if (sender == clientButton) {
-			bluetooth.connect();
-			serverButton.isDisabled = true;
-			clientButton.isDisabled = true;
-			disconnectButton.isDisabled = false;
-
-			playerTeam = Team.CLIENT;
+			controller.push(new ServerSelectScreen(controller, protocol, bluetooth), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (sender == disconnectButton) {
 			bluetooth.disconnect();
-			serverButton.isDisabled = false;
-			clientButton.isDisabled = false;
-			disconnectButton.isDisabled = true;
 		}
 	}
 

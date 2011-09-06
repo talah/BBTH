@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -43,7 +44,7 @@ public final class Bluetooth implements Runnable {
 	private final EnableBluetoothState ENABLE_BLUETOOTH = new EnableBluetoothState();
 	private final ListenForConnectionsState LISTEN_FOR_CONNECTIONS = new ListenForConnectionsState();
 	private final GetNearbyDevicesState GET_NEARBY_DEVICES = new GetNearbyDevicesState();
-	private final ConnectToNearbyDevicesState CONNECT_TO_NEARBY_DEVICES = new ConnectToNearbyDevicesState();
+	private final ConnectToDeviceState CONNECT_TO_DEVICE = new ConnectToDeviceState();
 	private final CheckPreviousConnectionState CHECK_PREVIOUS_CONNECTION = new CheckPreviousConnectionState();
 	private final ConnectedState CONNECTED = new ConnectedState();
 
@@ -52,6 +53,7 @@ public final class Bluetooth implements Runnable {
 	private StateBase nextState = DISCONNECTED;
 	private final SharedPreferences settings;
 	private BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+	private List<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
 	private Thread thread;
 	private boolean isDiscoverable;
 	private Protocol protocol;
@@ -72,6 +74,10 @@ public final class Bluetooth implements Runnable {
 
 	public String getString() {
 		return currentState.getString();
+	}
+
+	public List<BluetoothDevice> getDevices() {
+		return devices;
 	}
 
 	@Override
@@ -133,7 +139,7 @@ public final class Bluetooth implements Runnable {
 					}
 				}
 			}
-			transition(GET_NEARBY_DEVICES);
+			transition(DISCONNECTED);
 		}
 	}
 
@@ -145,7 +151,7 @@ public final class Bluetooth implements Runnable {
 
 		@Override
 		public String getString() {
-			return getState().toString() + " " + CONNECT_TO_NEARBY_DEVICES.devices.size() + " found";
+			return getState().toString() + " " + devices.size() + " found";
 		}
 
 		private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -153,10 +159,10 @@ public final class Bluetooth implements Runnable {
 			public void onReceive(Context context, Intent intent) {
 				String action = intent.getAction();
 				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-					CONNECT_TO_NEARBY_DEVICES.devices.add((BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE));
+					devices.add((BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE));
 				} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
 					try {
-						transition(CONNECT_TO_NEARBY_DEVICES);
+						transition(DISCONNECTED);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -167,7 +173,7 @@ public final class Bluetooth implements Runnable {
 		@Override
 		public void run() throws InterruptedException {
 			try {
-				CONNECT_TO_NEARBY_DEVICES.devices.clear();
+				devices.clear();
 				context.registerReceiver(receiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 				context.registerReceiver(receiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
 				bluetooth.startDiscovery();
@@ -175,14 +181,15 @@ public final class Bluetooth implements Runnable {
 			} finally {
 				bluetooth.cancelDiscovery();
 				context.unregisterReceiver(receiver);
+				transition(DISCONNECTED);
 			}
 		}
 	}
 
-	private class ConnectToNearbyDevicesState extends StateBase {
+	private class ConnectToDeviceState extends StateBase {
 		@Override
 		public State getState() {
-			return State.CONNECT_TO_NEARBY_DEVICES;
+			return State.CONNECT_TO_DEVICE;
 		}
 
 		@Override
@@ -191,25 +198,19 @@ public final class Bluetooth implements Runnable {
 			return getState().toString() + (device != null ? " trying " + device.getName() : "");
 		}
 
-		public ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
-		private BluetoothDevice currentDevice;
+		public BluetoothDevice currentDevice;
 
 		@Override
 		public void run() throws InterruptedException {
 			BluetoothSocket socket = null;
 			try {
-				for (int i = 0, n = devices.size(); i < n; i++) {
-					currentDevice = devices.get(i);
-					try {
-						socket = currentDevice.createRfcommSocketToServiceRecord(GAME_SPECIFIC_UUID);
-						socket.connect();
-					} catch (IOException e) {
-						continue;
-					}
-					CONNECTED.socket = socket;
-					socket = null;
-					transition(CONNECTED);
-				}
+				socket = currentDevice.createRfcommSocketToServiceRecord(GAME_SPECIFIC_UUID);
+				socket.connect();
+				CONNECTED.socket = socket;
+				socket = null;
+				transition(CONNECTED);
+			} catch (IOException e) {
+				transition(DISCONNECTED);
 			} finally {
 				if (socket != null) {
 					try {
@@ -369,24 +370,43 @@ public final class Bluetooth implements Runnable {
 	}
 
 	public void listen() {
-		if (currentState == DISCONNECTED) {
-			ENABLE_BLUETOOTH.nextState = LISTEN_FOR_CONNECTIONS;
-			try {
-				transition(ENABLE_BLUETOOTH);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		disconnect();
+		ENABLE_BLUETOOTH.nextState = LISTEN_FOR_CONNECTIONS;
+		try {
+			transition(ENABLE_BLUETOOTH);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public void connect() {
-		if (currentState == DISCONNECTED) {
-			ENABLE_BLUETOOTH.nextState = CHECK_PREVIOUS_CONNECTION;
-			try {
-				transition(ENABLE_BLUETOOTH);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+	public void connectToPreviousDevice() {
+		disconnect();
+		ENABLE_BLUETOOTH.nextState = CHECK_PREVIOUS_CONNECTION;
+		try {
+			transition(ENABLE_BLUETOOTH);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void findNearbyDevices() {
+		disconnect();
+		ENABLE_BLUETOOTH.nextState = GET_NEARBY_DEVICES;
+		try {
+			transition(ENABLE_BLUETOOTH);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void connectToDevice(BluetoothDevice device) {
+		disconnect();
+		CONNECT_TO_DEVICE.currentDevice = device;
+		ENABLE_BLUETOOTH.nextState = CONNECT_TO_DEVICE;
+		try {
+			transition(ENABLE_BLUETOOTH);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
