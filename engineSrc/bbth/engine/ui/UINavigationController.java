@@ -207,4 +207,11 @@ public class UINavigationController extends UIView {
 			currentView.onStop();
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode) {
+		int idx = screens.size();
+		while(idx-- > 0){
+    		screens.get(idx).onActivityResult(requestCode, resultCode);
+		}
+	}
 }
