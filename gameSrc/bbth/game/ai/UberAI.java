@@ -16,6 +16,10 @@ import bbth.game.Team;
 import bbth.game.units.Unit;
 
 public class UberAI extends UnitAI {
+
+	private static final float FIRING_STOP_DISTANCE_SQR = 400.f;
+	private static final float WALL_EPS = 5.f;
+
 	private Point m_flock_dir;
 
 	Point start_point;
@@ -55,28 +59,39 @@ public class UberAI extends UnitAI {
 		check_state_transition(entity, c, entity.getFSM());
 	}
 
-	private void check_state_transition(Unit entity, AIController c, FiniteStateMachine fsm) {
+	private void check_state_transition(Unit entity, AIController c,
+			FiniteStateMachine fsm) {
 		Unit target = entity.getTarget();
 		m_fsm_conditions.clear();
 		float dist = Float.MAX_VALUE;
 		if (target != null) {
-			dist = MathUtils.getDistSqr(entity.getX(), entity.getY(), target.getX(), target.getY());
+			dist = MathUtils.getDistSqr(entity.getX(), entity.getY(),
+					target.getX(), target.getY());
 		}
 		m_fsm_conditions.put("targetdist", dist);
 		fsm.update(m_fsm_conditions);
 	}
-
+	
 	private void do_attack(Unit entity, AIController c, FlockRulesCalculator flock) {
+		float goal_x = 0;
+		float goal_y = 0;
 		Unit target = entity.getTarget();
-		if (target == null) {
-			entity.setVelocity(0.0001f, 0.0f);
-			return;
+		if (target != null) {
+			goal_x = target.getX();
+			goal_y = target.getY();
 		}
-		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), target.getX(), target.getY());
-		entity.setVelocity(0.0001f, angle);
+		
+		if ((goal_x - entity.getX()) * (goal_x - entity.getX()) + (goal_y - entity.getY()) * (goal_y - entity.getY()) > FIRING_STOP_DISTANCE_SQR) {
+			do_movement(entity, c, flock);
+		}
+		else
+		{
+			entity.setVelocity(0.000001f, entity.getHeading());	
+		}
 	}
 
-	private void do_movement(Unit entity, AIController c, FlockRulesCalculator flock) {
+	private void do_movement(Unit entity, AIController c,
+			FlockRulesCalculator flock) {
 		float xcomp = 0;
 		float ycomp = 0;
 		float start_x = entity.getX();
@@ -89,62 +104,58 @@ public class UberAI extends UnitAI {
 		ycomp = m_flock_dir.y;
 
 		// Calculate somewhere to go if it's a leader.
-		// Calculate somewhere to go if it's a leader.
-		//if (!flock.hasLeader(entity)) {
-			Unit enemy = entity.getTarget();
+		float goal_x = BBTHSimulation.GAME_WIDTH / 2.0f;
+		float goal_y = WALL_EPS;
+		if (entity.getTeam() == Team.SERVER) {
+			goal_y = BBTHSimulation.GAME_HEIGHT - WALL_EPS;
+		}
 
-			float goal_x = entity.getX();
-			float goal_y = (entity.getTeam() == Team.SERVER ? BBTHSimulation.GAME_HEIGHT/4 : BBTHSimulation.GAME_HEIGHT - BBTHSimulation.GAME_HEIGHT/4);
-			
-			if (enemy != null) {
-				start_point.set(start_x, start_y);
-				end_point.set(goal_x, goal_y);
-				
-				if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
-					Point start = getClosestNode(start_point);
-					Point end = getClosestNode(end_point);
-
-					ArrayList<Point> path = null;
-
-					if (start != null && end != null) {
-						m_pathfinder.clearPath();
-						m_pathfinder.findPath(start, end);
-					}
-
-					path = m_pathfinder.getPath();
-
-					path.add(end_point);
-
-					if (path.size() > 1) {
-						Point goal_point = path.get(0);
-						if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
-							goal_point = path.get(1);
-						}
-
-						// System.out.println("Next point: " + goal_point.x +
-						// ", " + goal_point.y + " = " +
-						// m_map_grid.getXPos((int)goal_point.x) + ", " +
-						// m_map_grid.getYPos((int)goal_point.y));
-						goal_x = goal_point.x;
-						goal_y = goal_point.y;
-					}
-
-					// System.out.println("Team: " + entity.getTeam() +
-					// " Start: " + entity.getX() + ", " + entity.getY() + " = "
-					// + start.x + ", " + start.y + " End: " + end.x + ", " +
-					// end.y);
-				}
+		if (entity.getStateName().equals("attacking")) {
+			Unit target = entity.getTarget();
+			if (target != null) {
+				goal_x = target.getX();
+				goal_y = target.getY();
 			}
-			
-			float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
-			float objectiveweighting = getObjectiveWeighting();
-			xcomp += objectiveweighting * FloatMath.cos(angle);
-			ycomp += objectiveweighting * FloatMath.sin(angle);
-		//}
+		}
+
+		start_point.set(start_x, start_y);
+		end_point.set(goal_x, goal_y);
+
+		if (m_tester != null && m_tester.isLineOfSightClear(start_point, end_point) != null) {
+			Point start = getClosestNode(start_point);
+			Point end = getClosestNode(end_point);
+
+			ArrayList<Point> path = null;
+
+			if (start != null && end != null) {
+				m_pathfinder.clearPath();
+				m_pathfinder.findPath(start, end);
+			}
+
+			path = m_pathfinder.getPath();
+			path.add(end_point);
+
+			if (path.size() > 1) {
+				Point goal_point = path.get(0);
+				if (path.size() > 1 && m_tester.isLineOfSightClear(start_point, path.get(1)) == null) {
+					goal_point = path.get(1);
+				}
+
+				goal_x = goal_point.x;
+				goal_y = goal_point.y;
+			}
+		}
+
+		float angle = MathUtils.getAngle(entity.getX(), entity.getY(), goal_x, goal_y);
+		float objectiveweighting = getObjectiveWeighting();
+		xcomp += objectiveweighting * FloatMath.cos(angle);
+		ycomp += objectiveweighting * FloatMath.sin(angle);
 
 		float wanteddir = MathUtils.getAngle(0, 0, xcomp, ycomp);
 
-		float wantedchange = MathUtils.normalizeAngle(wanteddir, entity.getHeading()) - entity.getHeading();
+		float wantedchange = MathUtils.normalizeAngle(wanteddir,
+				entity.getHeading())
+				- entity.getHeading();
 
 		float actualchange = wantedchange;
 		float maxvelchange = getMaxVelChange();
@@ -156,9 +167,9 @@ public class UberAI extends UnitAI {
 		if (actualchange < -1.0f * maxvelchange) {
 			actualchange = -1.0f * maxvelchange;
 		}
-		
+
 		float heading = entity.getHeading() + actualchange;
-		
+
 		entity.setVelocity(getMaxVel(), heading);
 	}
 
@@ -166,11 +177,13 @@ public class UberAI extends UnitAI {
 		FiniteState moving = new FiniteState("moving");
 		FiniteState attacking = new FiniteState("attacking");
 
-		SimpleLessTransition movingtrans = new SimpleLessTransition(moving, attacking);
+		SimpleLessTransition movingtrans = new SimpleLessTransition(moving,
+				attacking);
 		movingtrans.setInputName("targetdist");
 		movingtrans.setVal(900);
 
-		SimpleGreaterTransition attackingtrans = new SimpleGreaterTransition(attacking, moving);
+		SimpleGreaterTransition attackingtrans = new SimpleGreaterTransition(
+				attacking, moving);
 		attackingtrans.setInputName("targetdist");
 		attackingtrans.setVal(900);
 
