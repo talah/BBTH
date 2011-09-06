@@ -1,7 +1,13 @@
 package bbth.game;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import bbth.engine.achievements.Achievements;
+import bbth.engine.core.GameActivity;
 import bbth.engine.ui.Anchor;
+import bbth.engine.ui.UIButton;
+import bbth.engine.ui.UIButtonDelegate;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UISlider;
@@ -13,14 +19,13 @@ public class SettingsScreen extends UIView {
 	private UISwitch tutorialSwitch, titleScreenMusicSwitch;
 	private UISlider aiDifficulty;
 	private UILabel tutorial, ai, title, titleScreenMusic;
-	private UINavigationController controller;
+	private UIButton resetAchievementsButton;
 	private boolean showTutorial, playTitleScreenMusic;
 	private float ai_level;
 	private SharedPreferences _settings;
 	private SharedPreferences.Editor _editor;
 	
 	public SettingsScreen(UINavigationController controller) {
-		this.controller = controller;
 		_settings = BBTHActivity.instance.getSharedPreferences("game_settings", 0);
 		_editor = _settings.edit();
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
@@ -67,6 +72,31 @@ public class SettingsScreen extends UIView {
 		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
 		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
+		resetAchievementsButton = new UIButton("Reset Achievements");
+		resetAchievementsButton.setAnchor(Anchor.CENTER_CENTER);
+		resetAchievementsButton.setSize(120, 30);
+		resetAchievementsButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 30);
+		resetAchievementsButton.setButtonDelegate(new UIButtonDelegate() {
+			public void onClick(UIButton button) {
+				// Game over dialog
+				AlertDialog.Builder confirmReset = new AlertDialog.Builder(GameActivity.instance);
+				confirmReset.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						Achievements.INSTANCE.lockAll();
+					}
+				})
+				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				
+				confirmReset.setTitle("Reset all achievement data?");
+				AlertDialog dialog = confirmReset.create();
+				dialog.show();
+			}
+		});
+		
 		addSubview(title);
 		addSubview(ai);
 		addSubview(aiDifficulty);
@@ -74,6 +104,7 @@ public class SettingsScreen extends UIView {
 		addSubview(tutorialSwitch);
 		addSubview(titleScreenMusic);
 		addSubview(titleScreenMusicSwitch);
+		addSubview(resetAchievementsButton);
 	}
 	
 	@Override

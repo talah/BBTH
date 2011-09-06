@@ -43,6 +43,11 @@ public class BBTHGame extends Game {
 	}
 
 	@Override
+	public float getDrawDelay() {
+		return 1.0f / 60.0f;
+	}
+
+	@Override
 	public float getWidth() {
 		return WIDTH;
 	}
@@ -66,6 +71,6 @@ public class BBTHGame extends Game {
 		navController.onStop();
 	}
 
-	public static final UISwipeTransition FROM_RIGHT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_RIGHT, 0.5f);
-	public static final UISwipeTransition FROM_LEFT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_LEFT, 0.5f);
+	public static final UISwipeTransition FROM_RIGHT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_RIGHT, 0.3f);
+	public static final UISwipeTransition FROM_LEFT_TRANSITION = new UISwipeTransition(WIDTH, Direction.FROM_LEFT, 0.3f);
 }
