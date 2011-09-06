@@ -69,7 +69,15 @@ public class UISwitch extends UIControl {
 		if (this.userDragging) {
 			return true;
 		} else {
-			return super.containsPoint(x, y);
+			float padding = this.switchButtonRect.height();
+			
+			boolean inSwitch = super.containsPoint(x, y);
+			boolean onButton = x > this.switchButtonRect.left - this.offset - padding
+			                   && x < this.switchButtonRect.right - this.offset + padding
+			                   && y > this.switchButtonRect.top - padding
+			                   && y < this.switchButtonRect.bottom + padding;
+			
+			return inSwitch || onButton;
 		}
 	}
 
@@ -189,7 +197,7 @@ public class UISwitch extends UIControl {
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-
+		
 		canvas.save();
 		canvas.clipRect(_rect, Op.INTERSECT);
 

@@ -115,7 +115,10 @@ public class UISlider extends UIControl {
 		if (isDepressed) {
 			return true;
 		} else {
-			return super.containsPoint(x, y) || MathUtils.getDistSqr(x, y, circleLocation.x, circleLocation.y) < this.circleRadius * this.circleRadius * 4.f;
+			boolean onBar = super.containsPoint(x, y);
+			boolean inCircle = MathUtils.getDistSqr(x, y, circleLocation.x, circleLocation.y) < this.circleRadius * this.circleRadius * 9.f;
+		
+			return onBar || inCircle;
 		}
 	}
 
