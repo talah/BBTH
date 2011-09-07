@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
-import android.util.Log;
 import bbth.engine.core.GameActivity;
 import bbth.engine.sound.Beat;
 import bbth.engine.sound.BeatTracker;
@@ -33,15 +32,7 @@ public class BeatTrack {
 	
 	public static final float COMBO_PULSE_TIME = 0.5f;
 	public static final float COMBO_BRAG_TIME = 2;
-
-	//private static final int MAX_SOUNDS = 8;
-	//private final int HIT_SOUND_ID;
-	//private final int MISS_SOUND_ID;
-	//private final int HOLD_SOUND_ID;
-	//private int holdId;
 	
-	//private SoundManager soundManager;
-	private boolean stopped;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
 	private int combo;
@@ -61,7 +52,6 @@ public class BeatTrack {
 		loadSong(Song.RETRO);
 		beatsInRange = new ArrayList<Beat>();
 		onCompletionListener = listener;
-		stopped = false;
 		
 		last_combo_time = 0;
 		display_uber_brag = false;
@@ -96,7 +86,6 @@ public class BeatTrack {
 		musicPlayer = new MusicPlayer(GameActivity.instance, song.songId);
 		beatTracker = new BeatTracker(musicPlayer, song.trackId);
 		musicPlayer.setOnCompletionListener(onCompletionListener);
-		stopped = false;
 	}
 
 	public void startMusic() {
