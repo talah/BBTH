@@ -84,7 +84,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER, this);
-		BBTHSimulation.PARTICLES.reset();
+		BBTHGame.PARTICLES.reset();
 		
 		if (team == Team.SERVER) {
 			if (singlePlayer) {
@@ -509,6 +509,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onCompletion(MusicPlayer mp) {
 		mp.stop();
+		mp.release();
 		
 		// End both games at the same time with a synced event
 		if (singlePlayer) {

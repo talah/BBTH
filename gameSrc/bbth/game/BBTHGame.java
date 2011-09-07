@@ -3,9 +3,11 @@ package bbth.game;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
 import bbth.engine.core.GameActivity;
+import bbth.engine.particles.ParticleSystem;
 import bbth.engine.sound.MusicPlayer;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UINavigationEventListener;
@@ -28,6 +30,16 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 	private UINavigationController navController;
 	private static MusicPlayer musicPlayer;
 	
+	private static final int NUM_PARTICLES = 1000;
+	private static final float PARTICLE_THRESHOLD = 0.5f;
+
+	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
+	public static final Paint PARTICLE_PAINT = new Paint();
+	static {
+		PARTICLE_PAINT.setStrokeWidth(2.f);
+		PARTICLE_PAINT.setAntiAlias(true);
+	}
+
 	public BBTHGame(Activity activity) {
 		stopTitleMusic();
 		navController = new UINavigationController();
@@ -53,6 +65,12 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 //		controller.push(new TransitionTest());
 //		controller.push(new GameSetupScreen());
 //		controller.push(new CombatTest(this));
+	}
+	
+	@Override
+	public void onUpdate(float seconds) {
+		BBTHGame.PARTICLES.tick(seconds);
+		super.onUpdate(seconds);
 	}
 
 	@Override

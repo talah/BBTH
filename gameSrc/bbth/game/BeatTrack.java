@@ -32,14 +32,7 @@ public class BeatTrack {
 	
 	public static final float COMBO_PULSE_TIME = 0.5f;
 	public static final float COMBO_BRAG_TIME = 2;
-
-	//private static final int MAX_SOUNDS = 8;
-	//private final int HIT_SOUND_ID;
-	//private final int MISS_SOUND_ID;
-	//private final int HOLD_SOUND_ID;
-	//private int holdId;
 	
-	//private SoundManager soundManager;
 	private BeatTracker beatTracker;
 	private boolean isHolding;
 	private int combo;
@@ -47,6 +40,7 @@ public class BeatTrack {
 	private MusicPlayer musicPlayer;
 	private List<Beat> beatsInRange;
 	private Paint paint;
+	private OnCompletionListener onCompletionListener;
 	
 	private long last_combo_time;
 	private float brag_text_pos;
@@ -57,17 +51,10 @@ public class BeatTrack {
 	public BeatTrack(OnCompletionListener listener) {
 		loadSong(Song.RETRO);
 		beatsInRange = new ArrayList<Beat>();
+		onCompletionListener = listener;
 		
 		last_combo_time = 0;
 		display_uber_brag = false;
-		
-		// Setup general stuff		
-		musicPlayer.setOnCompletionListener(new OnCompletionListener() {
-			public void onCompletion(MusicPlayer mp) {
-				mp.stop();
-			}
-		});
-		musicPlayer.setOnCompletionListener(listener);
 
 		//soundManager = new SoundManager(GameActivity.instance, MAX_SOUNDS);
 		//HIT_SOUND_ID = soundManager.addSound(R.raw.tambourine);
@@ -95,8 +82,10 @@ public class BeatTrack {
 	
 	// loads a song and an associated beat track
 	public final void loadSong(Song song) {
+		stopMusic();
 		musicPlayer = new MusicPlayer(GameActivity.instance, song.songId);
 		beatTracker = new BeatTracker(musicPlayer, song.trackId);
+		musicPlayer.setOnCompletionListener(onCompletionListener);
 	}
 
 	public void startMusic() {
@@ -104,7 +93,10 @@ public class BeatTrack {
 	}
 
 	public void stopMusic() {
-		musicPlayer.stop();
+		if (musicPlayer != null) {
+			musicPlayer.stop();
+			musicPlayer.release();
+		}
 	}
 	
 	public void setVolume(float volume) {

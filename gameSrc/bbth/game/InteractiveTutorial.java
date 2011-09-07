@@ -618,7 +618,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		drawGrid(canvas);
 		localPlayer.draw(canvas, team == Team.SERVER);
 		remotePlayer.draw(canvas, team == Team.SERVER);
-		BBTHSimulation.PARTICLES.draw(canvas, BBTHSimulation.PARTICLE_PAINT);
+		BBTHGame.PARTICLES.draw(canvas, BBTHGame.PARTICLE_PAINT);
 		paint.setColor(team.getWallColor());
 		canvas.drawLine(wallStartX, wallStartY, wallEndX, wallEndY, paint);
 		canvas.restore();
