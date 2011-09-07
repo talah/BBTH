@@ -84,7 +84,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 
 		this.bluetooth = bluetooth;
 		sim = new BBTHSimulation(playerTeam, protocol, team == Team.SERVER, this);
-		BBTHSimulation.PARTICLES.reset();
+		BBTHGame.PARTICLES.reset();
 		
 		if (team == Team.SERVER) {
 			if (singlePlayer) {
