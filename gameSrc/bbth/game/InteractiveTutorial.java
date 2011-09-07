@@ -324,7 +324,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
 			canvas.drawText(GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_1), x, y - 8, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_2), x, y + 8, paint);
+			canvas.drawText(GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_2), x, y + 8, paint);
 		}
 
 		@Override

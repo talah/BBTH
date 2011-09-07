@@ -44,13 +44,13 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 		// add title
 		UILabel titleLabel = new UILabel(R.string.achievements, null);
 		titleLabel.setTextSize(30.f);
-		titleLabel.setAnchor(Anchor.CENTER_CENTER);
-		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
+		titleLabel.setAnchor(Anchor.TOP_CENTER);
+		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 		
 		// add achievement subviews
-		float y = BBTHGame.HEIGHT / 2 - 65;
+		float y = BBTHGame.CONTENT_TOP;
 		for (BBTHAchievement achievement : achievements) {
 			AchievementInfo info = achievement.achievementInfo;
 			Integer id = info.id;
@@ -70,7 +70,7 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 				image = getLockedImage();
 			}
 			view = new AchievementView(info, activations.get(id), image);
-			view.setAnchor(Anchor.CENTER_LEFT);
+			view.setAnchor(Anchor.TOP_LEFT);
 			view.setPosition(0, y);
 			view.setSize(BBTHGame.WIDTH, ACHIEVEMENT_HEIGHT);
 			addSubview(view);

@@ -16,6 +16,8 @@ import bbth.engine.ui.UIView;
 
 public class SettingsScreen extends UIView {
 	
+	private static final int Y_OFFSET = 65;
+	
 	private UISwitch tutorialSwitch, titleScreenMusicSwitch;
 	private UISlider aiDifficulty;
 	private UILabel tutorial, ai, title, titleScreenMusic;
@@ -31,51 +33,53 @@ public class SettingsScreen extends UIView {
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		title = new UILabel(GameActivity.instance.getString(R.string.settings));
-		title.setAnchor(Anchor.CENTER_CENTER);
+		title.setAnchor(Anchor.TOP_CENTER);
 		title.setTextSize(30);
 		title.sizeToFit();
-		title.setPosition(BBTHGame.WIDTH / 2, 80);
+		title.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
+		
+		final float CONTENT_CENTER = BBTHGame.CONTENT_TOP + 8;
 		
 		tutorial = new UILabel(GameActivity.instance.getString(R.string.showtutorial));
 		tutorial.setAnchor(Anchor.CENTER_LEFT);
 		tutorial.setTextSize(16);
 		tutorial.sizeToFit();
-		tutorial.setPosition(10, BBTHGame.HEIGHT / 2 - 65);
+		tutorial.setPosition(25, CONTENT_CENTER);
 		
 		tutorialSwitch = new UISwitch();
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		tutorialSwitch.setSize(100, 30);
-		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 - 65);
+		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
 		ai = new UILabel(GameActivity.instance.getString(R.string.aidifficulty));
 		ai.setAnchor(Anchor.CENTER_LEFT);
 		ai.setTextSize(16);
 		ai.sizeToFit();
-		ai.setPosition(10, BBTHGame.HEIGHT / 2 + 65);
+		ai.setPosition(25, CONTENT_CENTER + 2 * Y_OFFSET);
 		
 		aiDifficulty = new UISlider(0.5f, 1.f, 0.75f);
 		aiDifficulty.setAnchor(Anchor.CENTER_RIGHT);
 		aiDifficulty.setSize(100, 24);
-		aiDifficulty.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 + 65);
+		aiDifficulty.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER + 2 * Y_OFFSET);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
 		
 		titleScreenMusic = new UILabel(GameActivity.instance.getString(R.string.titlescreenmusic));
 		titleScreenMusic.setAnchor(Anchor.CENTER_LEFT);
 		titleScreenMusic.setTextSize(16);
 		titleScreenMusic.sizeToFit();
-		titleScreenMusic.setPosition(10, BBTHGame.HEIGHT / 2);
+		titleScreenMusic.setPosition(25, CONTENT_CENTER + Y_OFFSET);
 		
 		titleScreenMusicSwitch = new UISwitch();
 		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		titleScreenMusicSwitch.setSize(100, 30);
-		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
+		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER + Y_OFFSET);
 		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
 		resetAchievementsButton = new UIButton(R.string.resetachievements);
-		resetAchievementsButton.setAnchor(Anchor.CENTER_CENTER);
+		resetAchievementsButton.setAnchor(Anchor.BOTTOM_CENTER);
 		resetAchievementsButton.setSize(120, 30);
-		resetAchievementsButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 30);
+		resetAchievementsButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 40);
 		resetAchievementsButton.setButtonDelegate(new UIButtonDelegate() {
 			public void onClick(UIButton button) {
 				// Game over dialog

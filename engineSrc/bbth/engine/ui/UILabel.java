@@ -142,6 +142,11 @@ public class UILabel extends UIControl {
 		}
 	}
 	
+	public String getText()
+	{
+		return text;
+	}
+	
 	public void setText(int id)
 	{
 		setText(BBTHActivity.instance.getString(id));
@@ -221,29 +226,32 @@ public class UILabel extends UIControl {
 	
 	private void wrapText()
 	{
-		if(text == null || text.equals("")) //$NON-NLS-1$
-			return;
 		if(wrapped_text == null)
 			wrapped_text = new ArrayList<String>();
 		else
 			wrapped_text.clear();
+		if(text == null || text.equals("")) //$NON-NLS-1$
+			return;
 		
-		String[] words = text.split(" "); //$NON-NLS-1$
-		String lastPhrase = ""; //$NON-NLS-1$
+		String[] lines = text.split("\n"); //$NON-NLS-1$
+		for (int j = 0; j < lines.length; j++) {
+			String[] words = lines[j].split(" "); //$NON-NLS-1$
+			String lastPhrase = ""; //$NON-NLS-1$
 
-		for (int i = 0; i < words.length; ++i) {
-			String word = words[i];
-			if (_paint.measureText(lastPhrase + " " + word) < _width) { //$NON-NLS-1$
-				lastPhrase += " " + word; //$NON-NLS-1$
-			} else {
-				if (lastPhrase.length() > 0) {
-					wrapped_text.add(lastPhrase.trim());
+			for (int i = 0; i < words.length; ++i) {
+				String word = words[i];
+				if (_paint.measureText(lastPhrase + " " + word) < _width) { //$NON-NLS-1$
+					lastPhrase += " " + word; //$NON-NLS-1$
+				} else {
+					if (lastPhrase.length() > 0) {
+						wrapped_text.add(lastPhrase.trim());
+					}
+					lastPhrase = word;
 				}
-				lastPhrase = word;
-			}
-			if (i== words.length -1) {
-				wrapped_text.add(lastPhrase.trim());
-				break;
+				if (i== words.length -1) {
+					wrapped_text.add(lastPhrase.trim());
+					break;
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.bluetooth.BluetoothDevice;
 import android.graphics.Paint.Align;
+import android.util.Log;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -34,7 +35,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		// UIScrollView needs to be tamed for adding and removing
 		// content, but without scrolling we support up to nine
 		// nearby devices :)
-		setScrollsVertical(false);
+		//setScrollsVertical(false);
 
 		this.controller = controller;
 		this.protocol = protocol;
@@ -42,14 +43,14 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 
 		UILabel titleLabel = new UILabel(R.string.gamebrowser, null);
 		titleLabel.setTextSize(30.f);
-		titleLabel.setAnchor(Anchor.CENTER_CENTER);
-		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
+		titleLabel.setAnchor(Anchor.TOP_CENTER);
+		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
 		refreshButton = new UIButton(R.string.refresh);
-		refreshButton.setAnchor(Anchor.CENTER_CENTER);
-		refreshButton.setPosition(BBTHGame.WIDTH / 2, 30);
+		refreshButton.setAnchor(Anchor.TOP_CENTER);
+		refreshButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 25);
 		refreshButton.setSize(100, 30);
 		refreshButton.setButtonDelegate(this);
 		addSubview(refreshButton);
@@ -57,8 +58,8 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		statusLabel = new UILabel("", null); //$NON-NLS-1$
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
-		statusLabel.setAnchor(Anchor.CENTER_CENTER);
-		statusLabel.setPosition(BBTHGame.WIDTH / 2, 130);
+		statusLabel.setAnchor(Anchor.TOP_CENTER);
+		statusLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP);
 		statusLabel.setSize(BBTHGame.WIDTH - 10, 10);
 		statusLabel.setTextAlign(Align.CENTER);
 		statusLabel.setWrapText(true);
@@ -73,16 +74,25 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		List<BluetoothDevice> devices = bluetooth.getDevices();
 		while (lastCount < devices.size()) {
 			BluetoothDevice device = devices.get(lastCount);
+			if (device == null || device.getName() == null) {
+				Log.d("Error", "Wtf, device name is null?"); //$NON-NLS-1$ //$NON-NLS-2$
+				continue;
+			}
 			UIButton button = new UIButton(device.getName());
-			button.setPosition(75, 160 + lastCount * 40);
-			button.setSize(BBTHGame.WIDTH - 150, 30);
+			button.setAnchor(Anchor.TOP_CENTER);
+			button.setPosition(BBTHGame.WIDTH/2, BBTHGame.CONTENT_TOP + 25 + 65  + lastCount * 50);
+			button.setSize(BBTHGame.WIDTH * 0.75f, 40);
 			button.setButtonDelegate(this);
 			button.tag = lastCount;
 			button.isDisabled = false;
 			buttons.add(button);
 			addSubview(button);
+			layoutSubviews(false);
 			lastCount++;
 		}
+		
+		// Disable the refresh button while refreshing.
+		refreshButton.isDisabled = bluetooth.getState() == State.GET_NEARBY_DEVICES;
 
 		// Update the current status label
 		String statusMessage = bluetooth.getString();
@@ -96,6 +106,8 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 			controller.pushUnder(new InGameScreen(controller, Team.CLIENT, bluetooth, null, protocol, false));
 			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		}
+		
+		super.onUpdate(seconds);
 	}
 
 	@Override
@@ -110,6 +122,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 			for (UIButton button : buttons) {
 				removeSubview(button);
 			}
+			layoutSubviews(false);
 			buttons.clear();
 			lastCount = 0;
 		} else {

@@ -29,9 +29,9 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
-		titleBar.setPosition(BBTHGame.WIDTH/2, -150);
+		titleBar.setPosition(BBTHGame.WIDTH / 2, -150);
 		titleBar.setSize(300, 140);
-		titleBar.animatePosition(BBTHGame.WIDTH/2, 20, 3);
+		titleBar.animatePosition(BBTHGame.WIDTH / 2, 20, 3);
 		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton(R.string.singleplayer, this);

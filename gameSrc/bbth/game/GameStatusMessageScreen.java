@@ -134,7 +134,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		message = new UILabel(text, tag);
 		message.setAnchor(Anchor.TOP_CENTER);
 		message.setTextSize(20.f);
-		message.setPosition(BBTHGame.WIDTH / 2.f, 80);
+		message.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.TITLE_TOP);
 		message.setTextAlign(Align.CENTER);
 		this.addSubview(message);
 

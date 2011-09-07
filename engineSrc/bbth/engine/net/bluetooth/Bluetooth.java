@@ -68,6 +68,10 @@ public final class Bluetooth implements Runnable {
 		thread.start();
 	}
 
+	public String getLocalName() {
+		return bluetooth.getName();
+	}
+
 	public State getState() {
 		return currentState.getState();
 	}
