@@ -32,11 +32,6 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		setScrollsHorizontal(false);
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 
-		// UIScrollView needs to be tamed for adding and removing
-		// content, but without scrolling we support up to nine
-		// nearby devices :)
-		//setScrollsVertical(false);
-
 		this.controller = controller;
 		this.protocol = protocol;
 		this.bluetooth = bluetooth;

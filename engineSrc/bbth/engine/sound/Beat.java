@@ -36,9 +36,14 @@ public class Beat {
 
 	// package private
 	Beat(BeatType beatType, float durationMillis) {
+		this(beatType, durationMillis, -1);
+	}
+
+	// package private
+	Beat(BeatType beatType, float durationMillis, float startTime) {
 		type = beatType;
 		duration = durationMillis;
-		_startTime = -1;
+		_startTime = startTime;
 		_tapped = false;
 	}
 
@@ -52,6 +57,18 @@ public class Beat {
 
 	public static Beat rest(float duration) {
 		return new Beat(BeatType.REST, duration);
+	}
+
+	public static Beat tap(float duration, float startTime) {
+		return new Beat(BeatType.TAP, duration, startTime);
+	}
+
+	public static Beat hold(float duration, float startTime) {
+		return new Beat(BeatType.HOLD, duration, startTime);
+	}
+
+	public static Beat rest(float duration, float startTime) {
+		return new Beat(BeatType.REST, duration, startTime);
 	}
 
 	// returns true if this noted was tapped, false if the note was missed

@@ -8,6 +8,10 @@ import static bbth.game.BeatTrack.BEAT_CIRCLE_RADIUS;
 import static bbth.game.BeatTrack.BEAT_LINE_X;
 import static bbth.game.BeatTrack.BEAT_LINE_Y;
 import static bbth.game.BeatTrack.BEAT_TRACK_WIDTH;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -82,6 +86,13 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private class PlaceUnitStep extends Step {
 		private boolean dontTapOnBeatTrack;
 
+		public PlaceUnitStep() {
+			beats.clear();
+			for (int i = 0; i < 7; i++) {
+				beats.add(Beat.tap(0, 1000 * i));
+			}
+		}
+
 		@Override
 		public void onDraw(Canvas canvas) {
 			float x = GAME_X + GAME_WIDTH / 2;
@@ -103,7 +114,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		@Override
 		public void onUpdate(float seconds) {
 			if (songTime > 1) {
-				songTime = MIN_SONG_TIME;
+				songTime = 0;
 			}
 		}
 
@@ -116,9 +127,12 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				dontTapOnBeatTrack = true;
 			} else {
 				dontTapOnBeatTrack = false;
-				if (beat.onTouchDown((int) (songTime * 1000))) {
-					localPlayer.spawnUnit(x, y);
-					transition(new UnitsUpAndDownStep());
+				for (int i = 0; i < beats.size(); i++) {
+					if (beats.get(i).onTouchDown((int) (songTime * 1000))) {
+						localPlayer.spawnUnit(x, y);
+						transition(new UnitsUpAndDownStep());
+						break;
+					}
 				}
 			}
 		}
@@ -239,7 +253,11 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private boolean isDragging;
 
 		public DrawWallStep() {
-			beat = Beat.hold(1000);
+			beats.clear();
+			for (int i = 0; i < 4; i++) {
+				beats.add(Beat.hold(1000, i * 2000));
+			}
+			songTime = MIN_SONG_TIME;
 		}
 
 		@Override
@@ -266,8 +284,15 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 
 		@Override
 		public void onUpdate(float seconds) {
-			if (!beat.isTapped() && songTime > 2) {
-				songTime = MIN_SONG_TIME;
+			// Continually reset the song if the player hasn't tapped any
+			// beat yet so it looks like an infinite stream of beats
+			for (int i = 0; i < beats.size(); i++) {
+				if (beats.get(i).isTapped()) {
+					return;
+				}
+			}
+			if (songTime > 2) {
+				songTime = 0;
 			}
 		}
 
@@ -278,10 +303,12 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				dontTapOnBeatTrack = true;
 			} else {
 				dontTapOnBeatTrack = false;
-				if (beat.onTouchDown((int) (songTime * 1000))) {
-					isDragging = true;
-					wallStartX = wallEndX = transformToGameSpaceX(x);
-					wallStartY = wallEndY = transformToGameSpaceY(y);
+				for (int i = 0; i < beats.size(); i++) {
+					if (beats.get(i).onTouchDown((int) (songTime * 1000))) {
+						isDragging = true;
+						wallStartX = wallEndX = transformToGameSpaceX(x);
+						wallStartY = wallEndY = transformToGameSpaceY(y);
+					}
 				}
 			}
 		}
@@ -303,7 +330,9 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 				isTooShort = MathUtils.getDist(wallStartX, wallStartY, wallEndX, wallEndY) < 30;
 				isDragging = false;
 				if (isTooShort) {
-					beat = Beat.hold(1000);
+					for (int i = 0; i < beats.size(); i++) {
+						beats.set(i, Beat.hold(1000, i * 2000));
+					}
 				} else {
 					transition(new WallBlockStep());
 				}
@@ -381,7 +410,7 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 	private Player localPlayer;
 	private Player remotePlayer;
 	private AIController aiController;
-	private Beat beat = Beat.tap(0);
+	private List<Beat> beats = new ArrayList<Beat>();
 	private float songTime = MIN_SONG_TIME;
 	private GridAcceleration accel;
 	private FastGraphGenerator gen;
@@ -525,19 +554,20 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
 		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
 
-		beat.draw((int) (songTime * 1000), BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		for (int i = 0; i < beats.size(); i++) {
+			beats.get(i).draw((int) (songTime * 1000), BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		}
 
 		paint.setColor(Color.WHITE);
-		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y
-				- BEAT_CIRCLE_RADIUS, paint);
-		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y
-				+ BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
+		canvas.drawLine(BEAT_LINE_X - BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X + BEAT_TRACK_WIDTH / 2, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, paint);
 		paint.setStrokeWidth(1);
 	}
 
 	@Override
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
+
 		if (!step.isPaused()) {
 			accel.clearUnits();
 			accel.insertUnits(serverPlayer.units);

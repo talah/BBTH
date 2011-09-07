@@ -254,6 +254,15 @@ public final class Bluetooth implements Runnable {
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
+
+							// Disconnect on IOExceptions because they will probably cause a
+							// lock-step desync otherwise, not sure what causes this but we
+							// got one once (not reproducible)
+							try {
+								transition(DISCONNECTED);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
