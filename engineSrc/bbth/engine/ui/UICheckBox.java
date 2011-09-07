@@ -32,7 +32,7 @@ public class UICheckBox extends UIControl {
 		
 		_button_rect = new RectF();
 
-		if (label != null && !label.equals("")) {
+		if (label != null && !label.equals("")) { //$NON-NLS-1$
 			_label = new UILabel(label, null);
 			_label.setPosition(1.5f * UIDefaultConstants.UI_CHECKBOX_BUTTON_WIDTH,
 					0);

@@ -149,7 +149,7 @@ public abstract class Simulation {
 				dispatchEvent(incomingEvents.remove());
 			}
 			if (event != null && event.fineTime < currentFineTimestep) {
-				Log.e("net", "causality violated, event time " + event.fineTime + " < " + currentFineTimestep);
+				Log.e("net", "causality violated, event time " + event.fineTime + " < " + currentFineTimestep); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				System.exit(0);
 			}
 

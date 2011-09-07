@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.graphics.Shader;
 import bbth.engine.util.MathUtils;
+import bbth.game.R;
 
 public class UISwitch extends UIControl {
 	private static float MIN_OFFSET_DURATION = .01f;
@@ -27,11 +28,11 @@ public class UISwitch extends UIControl {
 
 		this.onBackgroundColor = UIDefaultConstants.ACTIVE_COLOR;
 		
-		this.onTextLabel = new UILabel("ON", this);
+		this.onTextLabel = new UILabel(R.string.on, this);
 		this.onTextLabel.setTextColor(Color.WHITE);
 		this.onTextLabel.setBold(true);
 
-		this.offTextLabel = new UILabel("OFF", this);
+		this.offTextLabel = new UILabel(R.string.off, this);
 		this.offTextLabel.setTextColor(UIDefaultConstants.UI_BUTTON_DISABLED_COLOR);
 		this.offTextLabel.setBold(true);
 

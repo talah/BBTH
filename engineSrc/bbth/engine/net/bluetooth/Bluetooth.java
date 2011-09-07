@@ -28,13 +28,13 @@ public final class Bluetooth implements Runnable {
 	private static final int BLUETOOTH_ENABLED = Activity.RESULT_FIRST_USER;
 	private static final int BLUETOOTH_DISCOVERABLE = Activity.RESULT_FIRST_USER + 1;
 	private static final int LISTEN_DELAY_IN_SECONDS = 300;
-	private static final String PREV_DEVICE_ADDRESS = "prevDeviceAddress";
+	private static final String PREV_DEVICE_ADDRESS = "prevDeviceAddress"; //$NON-NLS-1$
 
 	private static abstract class StateBase {
 		public abstract State getState();
 
 		public String getString() {
-			return getState().toString();
+			return GameActivity.instance.getString(getState().getMessageResourceId());
 		}
 
 		public abstract void run() throws InterruptedException;
@@ -155,7 +155,7 @@ public final class Bluetooth implements Runnable {
 
 		@Override
 		public String getString() {
-			return getState().toString() + " " + devices.size() + " found";
+			return GameActivity.instance.getString(getState().getMessageResourceId(), devices.size());
 		}
 
 		private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -199,7 +199,7 @@ public final class Bluetooth implements Runnable {
 		@Override
 		public String getString() {
 			BluetoothDevice device = currentDevice;
-			return getState().toString() + (device != null ? " trying " + device.getName() : "");
+			return GameActivity.instance.getString(getState().getMessageResourceId(), device.getName());
 		}
 
 		public BluetoothDevice currentDevice;
@@ -334,7 +334,7 @@ public final class Bluetooth implements Runnable {
 			// Listen for connections and try to accept one
 			BluetoothServerSocket socket = null;
 			try {
-				socket = bluetooth.listenUsingRfcommWithServiceRecord("THIS POINTLESS STRING DOESN'T DO ANYTHING", GAME_SPECIFIC_UUID);
+				socket = bluetooth.listenUsingRfcommWithServiceRecord("THIS POINTLESS STRING DOESN'T DO ANYTHING", GAME_SPECIFIC_UUID); //$NON-NLS-1$
 				while (true) {
 					try {
 						// Don't block too long on accept so this thread can be

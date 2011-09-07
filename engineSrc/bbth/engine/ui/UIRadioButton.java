@@ -33,7 +33,7 @@ public class UIRadioButton extends UIControl {
 		// _fg_paint.setColor(DEFAULT_FG);
 		setForegroundColor(UIDefaultConstants.FOREGROUND_COLOR);
 
-		if (label != null && !label.equals("")) {
+		if (label != null && !label.equals("")) { //$NON-NLS-1$
 			_label = new UILabel(label);
 			_label.setPosition(1.5f * UIDefaultConstants.UI_RADIO_BUTTON_WIDTH, 0);
 			_label.setSize(0, UIDefaultConstants.UI_RADIO_BUTTON_LABEL_HEIGHT);

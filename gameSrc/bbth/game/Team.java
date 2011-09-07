@@ -4,7 +4,7 @@ import android.graphics.Color;
 import bbth.engine.util.ColorUtils;
 
 public enum Team {
-	CLIENT(Color.argb(255, 123, 160, 255), Color.argb(127, 123, 160, 255)) {
+	CLIENT(Color.argb(255, 123, 160, 255), Color.argb(127, 123, 160, 255), R.string.youcanonlyplaceunits_2_blue) {
 		@Override
 		public int getUnitColor() {
 			return Color.BLUE;
@@ -29,13 +29,8 @@ public enum Team {
 		public int getWavefrontColor() {
 			return Color.rgb(0, 0, 63);
 		}
-
-		@Override
-		public String getColorName() {
-			return "blue";
-		}
 	},
-	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71)) {
+	SERVER(Color.argb(255, 255, 80, 71), Color.argb(127, 255, 80, 71), R.string.youcanonlyplaceunits_2_red) {
 		@Override
 		public int getUnitColor() {
 			return Color.RED;
@@ -60,14 +55,9 @@ public enum Team {
 		public int getWavefrontColor() {
 			return Color.rgb(63, 0, 0);
 		}
-
-		@Override
-		public String getColorName() {
-			return "red";
-		}
 	};
 
-	private int wallColor, tempWallColor;
+	private int wallColor, tempWallColor, youCanOnlyPlaceUnitsResourceID;
 
 	// Scheme: Server -- RED, Client -- BLUE
 	public abstract int getUnitColor();
@@ -76,11 +66,11 @@ public enum Team {
 	
 	public abstract int getBaseColor();
 	public abstract int getWavefrontColor();
-	public abstract String getColorName();
 
-	private Team(int wallColor, int tempWallColor) {
+	private Team(int wallColor, int tempWallColor, int youCanOnlyPlaceUnitsResourceID) {
 		this.wallColor = wallColor;
 		this.tempWallColor = tempWallColor;
+		this.youCanOnlyPlaceUnitsResourceID = youCanOnlyPlaceUnitsResourceID;
 	}
 
 	public int getWallColor() {
@@ -93,5 +83,9 @@ public enum Team {
 	
 	public boolean isEnemy(Team otherTeam) {
 		return otherTeam != this;
+	}
+	
+	public int getYouCanOnlyPlaceUnitsResourceID() {
+		return youCanOnlyPlaceUnitsResourceID;
 	}
 }

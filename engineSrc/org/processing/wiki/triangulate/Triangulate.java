@@ -83,7 +83,6 @@ public class Triangulate {
 		
     /* Check for coincident points */
     if ( Math.abs(t.p1.y-t.p2.y) < EPSILON && Math.abs(t.p2.y-t.p3.y) < EPSILON ) {
-      System.err.println("CircumCircle: Points are coincident.");
       return false;
     }
 

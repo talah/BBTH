@@ -28,11 +28,11 @@ public class SettingsScreen extends UIView {
 	private SharedPreferences.Editor _editor;
 	
 	public SettingsScreen(UINavigationController controller) {
-		_settings = BBTHActivity.instance.getSharedPreferences("game_settings", 0);
+		_settings = BBTHActivity.instance.getSharedPreferences("game_settings", 0); //$NON-NLS-1$
 		_editor = _settings.edit();
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
-		title = new UILabel("Settings");
+		title = new UILabel(GameActivity.instance.getString(R.string.settings));
 		title.setAnchor(Anchor.TOP_CENTER);
 		title.setTextSize(30);
 		title.sizeToFit();
@@ -40,7 +40,7 @@ public class SettingsScreen extends UIView {
 		
 		final float CONTENT_CENTER = BBTHGame.CONTENT_TOP + 8;
 		
-		tutorial = new UILabel("Show Tutorial");
+		tutorial = new UILabel(GameActivity.instance.getString(R.string.showtutorial));
 		tutorial.setAnchor(Anchor.CENTER_LEFT);
 		tutorial.setTextSize(16);
 		tutorial.sizeToFit();
@@ -52,7 +52,7 @@ public class SettingsScreen extends UIView {
 		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER);
 		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
 		
-		ai = new UILabel("AI Difficulty");
+		ai = new UILabel(GameActivity.instance.getString(R.string.aidifficulty));
 		ai.setAnchor(Anchor.CENTER_LEFT);
 		ai.setTextSize(16);
 		ai.sizeToFit();
@@ -64,7 +64,7 @@ public class SettingsScreen extends UIView {
 		aiDifficulty.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER + 2 * Y_OFFSET);
 		aiDifficulty.setValue(BBTHGame.AI_DIFFICULTY);
 		
-		titleScreenMusic = new UILabel("Menu Screen Music");
+		titleScreenMusic = new UILabel(GameActivity.instance.getString(R.string.titlescreenmusic));
 		titleScreenMusic.setAnchor(Anchor.CENTER_LEFT);
 		titleScreenMusic.setTextSize(16);
 		titleScreenMusic.sizeToFit();
@@ -76,7 +76,7 @@ public class SettingsScreen extends UIView {
 		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER + Y_OFFSET);
 		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
 
-		resetAchievementsButton = new UIButton("Reset Achievements");
+		resetAchievementsButton = new UIButton(R.string.resetachievements);
 		resetAchievementsButton.setAnchor(Anchor.BOTTOM_CENTER);
 		resetAchievementsButton.setSize(120, 30);
 		resetAchievementsButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT - 40);
@@ -84,18 +84,18 @@ public class SettingsScreen extends UIView {
 			public void onClick(UIButton button) {
 				// Game over dialog
 				AlertDialog.Builder confirmReset = new AlertDialog.Builder(GameActivity.instance);
-				confirmReset.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+				confirmReset.setPositiveButton(GameActivity.instance.getString(R.string.reset), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						Achievements.INSTANCE.lockAll();
 					}
 				})
-				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				.setNegativeButton(GameActivity.instance.getString(R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
 				});
 				
-				confirmReset.setTitle("Reset all achievement data?");
+				confirmReset.setTitle(GameActivity.instance.getString(R.string.resetallachievementdata));
 				AlertDialog dialog = confirmReset.create();
 				dialog.show();
 			}
@@ -118,7 +118,7 @@ public class SettingsScreen extends UIView {
 		if(showTutorial != tutorialSwitch.isOn())
 		{
 			showTutorial = tutorialSwitch.isOn();
-		    _editor.putBoolean("showTutorial", showTutorial);
+		    _editor.putBoolean("showTutorial", showTutorial); //$NON-NLS-1$
 		    BBTHGame.SHOW_TUTORIAL = showTutorial;
 		    _editor.commit();
 		}
@@ -126,7 +126,7 @@ public class SettingsScreen extends UIView {
 		if(ai_level != aiDifficulty.getValue())
 		{
 			ai_level = aiDifficulty.getValue();
-		    _editor.putFloat("aiDifficulty", ai_level);
+		    _editor.putFloat("aiDifficulty", ai_level); //$NON-NLS-1$
 		    BBTHGame.AI_DIFFICULTY = ai_level;
 		    _editor.commit();
 		}
@@ -134,7 +134,7 @@ public class SettingsScreen extends UIView {
 		if(playTitleScreenMusic != titleScreenMusicSwitch.isOn())
 		{
 			playTitleScreenMusic = titleScreenMusicSwitch.isOn();
-		    _editor.putBoolean("titleScreenMusic", playTitleScreenMusic);
+		    _editor.putBoolean("titleScreenMusic", playTitleScreenMusic); //$NON-NLS-1$
 		    BBTHGame.TITLE_SCREEN_MUSIC = playTitleScreenMusic;
 		    if (playTitleScreenMusic) {
 		    	BBTHGame.startTitleMusic();
