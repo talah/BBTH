@@ -501,6 +501,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 	@Override
 	public void onCompletion(MusicPlayer mp) {
 		mp.stop();
+		mp.release();
 		
 		// End both games at the same time with a synced event
 		if (singlePlayer) {

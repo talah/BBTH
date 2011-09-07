@@ -19,6 +19,7 @@ public class MusicPlayer {
 	private static final int PLAYING = 1;
 	private static final int PAUSED = 2;
 	private static final int STOPPED = 3;
+	private static final int RELEASED = 4;
 
 	private MediaPlayer _mediaPlayer;
 	private int _state;
@@ -31,12 +32,14 @@ public class MusicPlayer {
 
 	// passes in a callback that is called when the song ends
 	public void setOnCompletionListener(final OnCompletionListener listener) {
-		_mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				listener.onCompletion(MusicPlayer.this);
-			}
-		});
+		if (_state != RELEASED) {
+			_mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					listener.onCompletion(MusicPlayer.this);
+				}
+			});
+		}
 	}
 
 	public int getCurrentPosition() {
@@ -47,8 +50,10 @@ public class MusicPlayer {
 	}
 
 	public void seekToPosition(int positionMillis) {
-		_mediaPlayer.seekTo(positionMillis);
-		_startTime = System.currentTimeMillis() - positionMillis;
+		if (_state == PLAYING || _state == PAUSED) {
+			_mediaPlayer.seekTo(positionMillis);
+			_startTime = System.currentTimeMillis() - positionMillis;
+		}
 	}
 	
 	public void setStartDelay(int delayMillis) {
@@ -69,12 +74,17 @@ public class MusicPlayer {
 
 	// loops the song infinitely
 	public void loop() {
-		_mediaPlayer.setLooping(true);
-		play();
+		if (_state == IDLE || _state == PAUSED) {
+			_mediaPlayer.setLooping(true);
+			play();
+		}
 	}
 	
 	public int getSongLength() {
-		return _mediaPlayer.getDuration();
+		if (_state == PLAYING || _state == PAUSED || _state == STOPPED) {
+			return _mediaPlayer.getDuration();
+		}
+		return 0;
 	}
 
 	// pauses the song, allowing for continuation from the current point
@@ -87,14 +97,18 @@ public class MusicPlayer {
 
 	// stops the song completely
 	public void stop() {
-		if (_state != STOPPED) {
+		if (_state == PLAYING || _state == PAUSED || _state == STOPPED) {
 			_mediaPlayer.stop();
 			_state = STOPPED;
 		}
 	}
 
 	public boolean isLooping() {
-		return _mediaPlayer.isLooping();
+		// valid in any other state
+		if (_state != RELEASED) {
+			return _mediaPlayer.isLooping();
+		}
+		return false;
 	}
 
 	public boolean isPlaying() {
@@ -102,12 +116,18 @@ public class MusicPlayer {
 	}
 	
 	public void setVolume(float volume) {
-		_mediaPlayer.setVolume(volume, volume);
+		// valid in any other state
+		if (_state != RELEASED) {
+			_mediaPlayer.setVolume(volume, volume);
+		}
 	}
 
 	// release the resources associated with the song
 	// call this when you are done with the player
 	public void release() {
-		_mediaPlayer.release();
+		if (_state != RELEASED) {
+			_mediaPlayer.release();
+			_state = RELEASED;
+		}
 	}
 }
