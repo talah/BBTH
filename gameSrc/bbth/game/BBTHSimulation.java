@@ -89,9 +89,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 		this.inGameScreen = inGameScreen;
 		
-		// THIS IS IMPORTANT
-		random.setSeed(0);
-
 		aiController = new AIController();
 		accel = new GridAcceleration(GAME_WIDTH, GAME_HEIGHT, GAME_WIDTH / 10);
 
@@ -294,6 +291,9 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		if (gameState == GameState.WAITING_TO_START) {
 			startingCountdown -= seconds;
 			if (startingCountdown < 0) {
+				// THIS IS IMPORTANT
+				random.setSeed(0);
+
 				gameState = GameState.IN_PROGRESS;
 			}
 		}
