@@ -73,13 +73,13 @@ public class UIScrollView extends UIView {
 		
 		if(isScrolling && scrollEnabled)
 		{
-			if(scrollsVertical)
+			if(scrollsVertical && max_y > 0)
 			{
 				canvas.drawRoundRect(_v_track_rect, CORNER_RADIUS, CORNER_RADIUS, _track_paint);
 				canvas.drawRoundRect(_v_scroll_handle_rect, CORNER_RADIUS, CORNER_RADIUS, _scroll_paint);
 			}
 			
-			if(scrollsHorizontal)
+			if(scrollsHorizontal && max_x > 0)
 			{
 				canvas.drawRoundRect(_h_track_rect, CORNER_RADIUS, CORNER_RADIUS, _track_paint);
 				canvas.drawRoundRect(_h_scroll_handle_rect, CORNER_RADIUS, CORNER_RADIUS, _scroll_paint);
