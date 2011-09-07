@@ -93,6 +93,12 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			}
 		}
 
+		String tapfurtherrighttocreateaunit_1 = GameActivity.instance.getString(R.string.tapfurtherrighttocreateaunit_1);
+		String tapfurtherrighttocreateaunit_2 = GameActivity.instance.getString(R.string.tapfurtherrighttocreateaunit_2);
+		String whenthebeatisbetweentwolines_1 = GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_1);
+		String whenthebeatisbetweentwolines_2 = GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_2);
+		String whenthebeatisbetweentwolines_3 = GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_3);
+		
 		@Override
 		public void onDraw(Canvas canvas) {
 			float x = GAME_X + GAME_WIDTH / 2;
@@ -101,13 +107,13 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
 			if (dontTapOnBeatTrack) {
-				canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttocreateaunit_1), x, y - 8, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttocreateaunit_2), x, y + 8, paint);
+				canvas.drawText(tapfurtherrighttocreateaunit_1, x, y - 8, paint);
+				canvas.drawText(tapfurtherrighttocreateaunit_2, x, y + 8, paint);
 				drawArrow(canvas, x - 25, y + 25, x + 25, y + 25, 5);
 			} else {
-				canvas.drawText(GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_1), x, y - 17, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_2), x, y, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.whenthebeatisbetweentwolines_3), x, y + 17, paint);
+				canvas.drawText(whenthebeatisbetweentwolines_1, x, y - 17, paint);
+				canvas.drawText(whenthebeatisbetweentwolines_2, x, y, paint);
+				canvas.drawText(whenthebeatisbetweentwolines_3, x, y + 17, paint);
 			}
 		}
 
@@ -144,14 +150,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private boolean wasPaused;
 		private float time;
 
+		String yourunitstravelup_1 = GameActivity.instance.getString(R.string.yourunitstravelup_1);
+		String yourunitstravelup_2 = GameActivity.instance.getString(R.string.yourunitstravelup_2);
+		
 		@Override
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.yourunitstravelup_1), x, y - 8, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.yourunitstravelup_2), x, y + 8, paint);
+			canvas.drawText(yourunitstravelup_1, x, y - 8, paint);
+			canvas.drawText(yourunitstravelup_2, x, y + 8, paint);
 		}
 
 		@Override
@@ -180,14 +189,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private boolean wasPaused;
 		private float time;
 
+		String youcanonlyplaceunits_1 = GameActivity.instance.getString(R.string.youcanonlyplaceunits_1);
+		String youcanonlyplaceunits_2 = GameActivity.instance.getString(team.getYouCanOnlyPlaceUnitsResourceID());
+		
 		@Override
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.youcanonlyplaceunits_1), x, y - 8, paint);
-			canvas.drawText(GameActivity.instance.getString(team.getYouCanOnlyPlaceUnitsResourceID()), x, y + 8, paint);
+			canvas.drawText(youcanonlyplaceunits_1, x, y - 8, paint);
+			canvas.drawText(youcanonlyplaceunits_2, x, y + 8, paint);
 		}
 
 		@Override
@@ -216,15 +228,19 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private boolean wasPaused;
 		private float time;
 
+		String youwinwhenyouropponentshealth_1 = GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_1);
+		String youwinwhenyouropponentshealth_2 = GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_2);
+		String youwinwhenyouropponentshealth_3 = GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_3);
+		
 		@Override
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_1), x, y - 17, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_2), x, y, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.youwinwhenyouropponentshealth_3), x, y + 17, paint);
+			canvas.drawText(youwinwhenyouropponentshealth_1, x, y - 17, paint);
+			canvas.drawText(youwinwhenyouropponentshealth_2, x, y, paint);
+			canvas.drawText(youwinwhenyouropponentshealth_3, x, y + 17, paint);
 		}
 
 		@Override
@@ -259,6 +275,15 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			}
 			songTime = MIN_SONG_TIME;
 		}
+		
+		String youneedtodragyourfingeraway_1 = GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_1);
+		String youneedtodragyourfingeraway_2 = GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_2);
+		String youneedtodragyourfingeraway_3 = GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_3);
+		String tapfurtherrighttocreateawall_1 = GameActivity.instance.getString(R.string.tapfurtherrighttocreateawall_1);
+		String tapfurtherrighttocreateawall_2 = GameActivity.instance.getString(R.string.tapfurtherrighttocreateawall_2);
+		String whenabeathasatailyoucandrag_1 = GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_1);
+		String whenabeathasatailyoucandrag_2 = GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_2);
+		String whenabeathasatailyoucandrag_3 = GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_3);
 
 		@Override
 		public void onDraw(Canvas canvas) {
@@ -268,17 +293,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
 			if (isTooShort) {
-				canvas.drawText(GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_1), x, y - 17, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_2), x, y, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.youneedtodragyourfingeraway_3), x, y + 17, paint);
+				canvas.drawText(youneedtodragyourfingeraway_1, x, y - 17, paint);
+				canvas.drawText(youneedtodragyourfingeraway_2, x, y, paint);
+				canvas.drawText(youneedtodragyourfingeraway_3, x, y + 17, paint);
 			} else if (dontTapOnBeatTrack) {
-				canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttocreateawall_1), x, y - 8, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttocreateawall_2), x, y + 8, paint);
+				canvas.drawText(tapfurtherrighttocreateawall_1, x, y - 8, paint);
+				canvas.drawText(tapfurtherrighttocreateawall_2, x, y + 8, paint);
 				drawArrow(canvas, x - 25, y + 25, x + 25, y + 25, 5);
 			} else {
-				canvas.drawText(GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_1), x, y - 17, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_2), x, y, paint);
-				canvas.drawText(GameActivity.instance.getString(R.string.whenabeathasatailyoucandrag_3), x, y + 17, paint);
+				canvas.drawText(whenabeathasatailyoucandrag_1, x, y - 17, paint);
+				canvas.drawText(whenabeathasatailyoucandrag_2, x, y, paint);
+				canvas.drawText(whenabeathasatailyoucandrag_3, x, y + 17, paint);
 			}
 		}
 
@@ -346,14 +371,17 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private boolean wasPaused;
 		private float time;
 
+		String unitstakelongertogoaroundwalls_1 = GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_1);
+		String unitstakelongertogoaroundwalls_2 = GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_2);
+		
 		@Override
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_1), x, y - 8, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.unitstakelongertogoaroundwalls_2), x, y + 8, paint);
+			canvas.drawText(unitstakelongertogoaroundwalls_1, x, y - 8, paint);
+			canvas.drawText(unitstakelongertogoaroundwalls_2, x, y + 8, paint);
 		}
 
 		@Override
@@ -381,13 +409,14 @@ public class InteractiveTutorial extends Tutorial implements UIButtonDelegate, U
 		private static final float y = GAME_Y + GAME_HEIGHT / 2;
 		private float time;
 
+		String havefunandgoodluck = GameActivity.instance.getString(R.string.havefunandgoodluck);
 		@Override
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(15);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.havefunandgoodluck), x, y, paint);
+			canvas.drawText(havefunandgoodluck, x, y, paint);
 		}
 
 		@Override

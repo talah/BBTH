@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.RectF;
+import bbth.engine.core.GameActivity;
 import bbth.engine.ui.UIView;
 import bbth.game.units.Unit;
 import bbth.game.units.UnitType;
@@ -18,7 +19,6 @@ public class Base extends UIView {
 	private Player player;
 	public boolean drawFill = true;
 	private HashSet<Unit> cachedUnits = new HashSet<Unit>();
-	public String healthText;
 
 	public Base(Player player) {
 		this.setSize(BBTHSimulation.GAME_WIDTH, BASE_HEIGHT);
@@ -43,6 +43,8 @@ public class Base extends UIView {
 			canvas.translate(0, paint.getTextSize() / 2);
 		}
 
+		if (health != cachedHealth)
+			regenHealthText();
 		canvas.drawText(healthText, 0, 0, paint);
 		canvas.restore();
 
@@ -68,5 +70,17 @@ public class Base extends UIView {
 				u.takeDamage(u.getHealth(), null);
 			}
 		}
+	}
+	
+	String healthText;
+	int cachedHealth = -1;
+	int health = -1;
+	protected void regenHealthText() {
+		cachedHealth = health;
+		healthText = player.isLocal() ? GameActivity.instance.getString(R.string.yourhealth, cachedHealth) : GameActivity.instance.getString(R.string.enemyhealth, cachedHealth);
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 }

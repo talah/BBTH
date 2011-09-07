@@ -33,8 +33,15 @@ public final class Bluetooth implements Runnable {
 	private static abstract class StateBase {
 		public abstract State getState();
 
-		public String getString() {
+		// only called when constructed, try to pre-cache localized state string
+		protected String getStateString() {
 			return GameActivity.instance.getString(getState().getMessageResourceId());
+		}
+		String stateString = getStateString();
+		
+		// called every update, avoid localization calls wherever possible (i.e. only override if absolutely necessary)
+		public String getString() {
+			return stateString;
 		}
 
 		public abstract void run() throws InterruptedException;
@@ -153,6 +160,9 @@ public final class Bluetooth implements Runnable {
 			return State.GET_NEARBY_DEVICES;
 		}
 
+		// TODO: This overrides getString instead of getStateString because the number of devices changes while the state doesn't.
+		//       At some point, we should have something just re-calculate stateString and make getString final in StateBase, but
+		//       I'm too lazy to do that right now. Since it's just the connecting screen, performance isn't really an issue. -ZD
 		@Override
 		public String getString() {
 			return GameActivity.instance.getString(getState().getMessageResourceId(), devices.size());
@@ -197,9 +207,9 @@ public final class Bluetooth implements Runnable {
 		}
 
 		@Override
-		public String getString() {
+		public String getStateString() {
 			BluetoothDevice device = currentDevice;
-			return GameActivity.instance.getString(getState().getMessageResourceId(), device.getName());
+			return GameActivity.instance.getString(getState().getMessageResourceId(), device == null ? "" : device.getName()); //$NON-NLS-1$
 		}
 
 		public BluetoothDevice currentDevice;

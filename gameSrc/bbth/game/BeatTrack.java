@@ -143,12 +143,15 @@ public class BeatTrack {
 		
 		if (combo >= BBTHSimulation.UBER_UNIT_THRESHOLD && combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
 			if (display_uber_brag == false) {
-				display_uber_brag = true;
 				last_uber_combo_time = System.currentTimeMillis();
-				combo_brag_text = GameActivity.instance.getString(R.string.combouberunit, comboStr);
+				if (combo_brag_text == null) {
+					display_uber_brag = true;
+					combo_brag_text = GameActivity.instance.getString(R.string.combouberunit, comboStr);
+				}
 			}
 		} else if (display_uber_brag && timesinceubercombo > COMBO_BRAG_TIME) {
 			display_uber_brag = false;
+			combo_brag_text = null;
 		}
 		
 		if (display_uber_brag && timesinceubercombo < COMBO_BRAG_TIME) {

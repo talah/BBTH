@@ -62,16 +62,16 @@ public class AchievementInfoParser {
 		int activations = 1;
 		
 		int eventType;
-		while ((eventType = parser.getEventType()) != XmlPullParser.END_TAG) {
+		while (!((eventType = parser.getEventType()) == XmlPullParser.END_TAG && parser.getName().equals("ACHIEVEMENT"))) { //$NON-NLS-1$
 			if (eventType == XmlPullParser.START_TAG) {
 				String elementName = parser.getName();
 				if (elementName.equals("NAME")) { //$NON-NLS-1$
-					String achievementName = getText(parser, elementName);
+					String achievementName = getStringResourceFromValue(parser, R.string.defaultachievementname);
 					if (achievementName == null)
 						return null;
 					name = achievementName;
 				} else if (elementName.equals("DESC")) { //$NON-NLS-1$
-					String desc = getText(parser, elementName);
+					String desc = getStringResourceFromValue(parser, R.string.defaultachievementdesc);
 					if (desc == null)
 						return null;
 					description = desc;
@@ -86,7 +86,8 @@ public class AchievementInfoParser {
 						return null;
 					activations = Integer.parseInt(activationStr);
 				}
-			}
+			} else
+				parser.next();
 		}
 		
 		Resources resources = GameActivity.instance.getResources();
@@ -94,6 +95,20 @@ public class AchievementInfoParser {
 		Bitmap image = BitmapFactory.decodeResource(resources, imageId);
 		
 		return new AchievementInfo(id, activations, name, description, image);
+	}
+	
+	private static String getStringResourceFromValue(XmlResourceParser parser, int defaultValue) throws Exception {
+		String ret = null;
+		for (int i=0; i < parser.getAttributeCount(); ++i) {
+			if ("value".equals(parser.getAttributeName(i))) { //$NON-NLS-1$
+				ret = GameActivity.instance.getString(parser.getAttributeResourceValue(i, defaultValue));
+				break;
+			}
+		}
+		
+		parser.next();
+		
+		return ret;
 	}
 	
 	private static String getText(XmlResourceParser parser, String name) throws Exception {

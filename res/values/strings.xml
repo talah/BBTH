@@ -3,19 +3,6 @@
 
 	<string name="app_name">Beat Back The Horde</string>
 	
-	<string name="beat_track">The beat track shows you when to tap the screen.
-		Tap when the beat is in the middle of the double horizontal lines.
-	</string>
-	<string name="field">Tap on the battlefield (not on the beat track) to
-		create a unit at that spot.</string>
-	<string name="walls">When there is a long, "hold" beat, drag your finger
-		across the field to create a wall.</string>
-	<string name="bases">Your base is at the bottom. Your opponent\'s base
-		is at the top. Destroy your opponent\'s base by creating units to
-		attack it.</string>
-	<string name="victory">You win when your opponent\'s health reaches 0, or
-		when the song ends and your health is higher.</string>
-	
 	<string name="on">ON</string>
 	<string name="off">OFF</string>
 	
@@ -115,6 +102,70 @@
 	
 	<!-- Achievements -->
 	
+	<string name="achievement_0_name">Escapist</string>
+	<string name="achievement_1_name">Fantastic</string>
+	<string name="achievement_2_name">Chiptune Enthusiast</string>
+	<string name="achievement_3_name">Climbing the Sladdar</string>
+	<string name="achievement_4_name">Crafty</string>
+	<string name="achievement_100_name">Desperate Times</string>
+	<string name="achievement_101_name">Desperate Measures</string>
+	<string name="achievement_102_name">Ultimate Stalemate</string>
+	<string name="achievement_103_name">Flawless Victory</string>
+	<string name="achievement_104_name">Strategist</string>
+	<string name="achievement_200_name">Why It\'s Better Not To Mash</string>
+	<string name="achievement_201_name">Beat Wizard</string>
+	<string name="achievement_202_name">Beat Master</string>
+	<string name="achievement_203_name">Beat Spartan</string>
+	<string name="achievement_204_name">Full Combo</string>
+	<string name="achievement_400_name">The Horde</string>
+	<string name="achievement_401_name">Humiliation</string>
+	<string name="achievement_402_name">It\'s Super Effective!</string>
+	<string name="achievement_403_name">Yo Dawg, I Heard You Like Units</string>
+	<string name="achievement_404_name">Showdown</string>
+	<string name="achievement_405_name">Quantity Over Quality</string>
+	<string name="achievement_406_name">Fireworks</string>
+	<string name="achievement_500_name">Anything You Can Do...</string>
+	<string name="achievement_600_name">Murder</string>
+	<string name="achievement_601_name">Genocide</string>
+	<string name="achievement_602_name">I Am Become Death...</string>
+	<string name="achievement_603_name">Builder</string>
+	<string name="achievement_604_name">Creator</string>
+	<string name="achievement_605_name">Lifebringer</string>
+	<string name="achievement_606_name">Overpowered</string>
+	<string name="achievement_607_name">Powerhouse</string>
+	<string name="achievement_608_name">Power Overwhelming</string>
 	
+	<string name="achievement_0_desc">Win \"Mistake the Getaway\" 10 times</string>
+	<string name="achievement_1_desc">Win \"Might and Magic\" 10 times</string>
+	<string name="achievement_2_desc">Win \"Retro\" 10 times</string>
+	<string name="achievement_3_desc">Win \"Javla Sladder\" 10 times</string>
+	<string name="achievement_4_desc">Win \"Odin\'s Craft\" 10 times</string>
+	<string name="achievement_100_desc">Destroy your opponent\'s base when your base has less than 10 health remaining</string>
+	<string name="achievement_101_desc">Destroy your opponent\'s base less than 10 seconds before the end of a song</string>
+	<string name="achievement_102_desc">End a 2-minute+ long song in a tie</string>
+	<string name="achievement_103_desc">Destroy your opponent\'s base without allowing your base to take any damage</string>
+	<string name="achievement_104_desc">Win a game having created fewer units than your opponent</string>
+	<string name="achievement_200_desc">Receive an Über unit</string>
+	<string name="achievement_201_desc">Get a combo of 25 beats or more</string>
+	<string name="achievement_202_desc">Get a combo of 100 beats or more</string>
+	<string name="achievement_203_desc">Get a combo of 300 beats or more</string>
+	<string name="achievement_204_desc">Get every beat (no mistaps or omissions) in a song</string>
+	<string name="achievement_400_desc">Have over 25 of your units on the screen at once</string>
+	<string name="achievement_401_desc">Spawn a unit less than 10 pixels from your opponent\'s base</string>
+	<string name="achievement_402_desc">Kill four or more enemy units with a single explosion of one of your units</string>
+	<string name="achievement_403_desc">Spawn a unit on top of an enemy unit</string>
+	<string name="achievement_404_desc">Kill an enemy Über unit with an Über unit of your own</string>
+	<string name="achievement_405_desc">Kill an enemy Über unit without an Über unit of your own damaging it</string>
+	<string name="achievement_406_desc">Witness the destruction of 10 units in under a second</string>
+	<string name="achievement_500_desc">Win a game against the hardest possible AI</string>
+	<string name="achievement_600_desc">Kill 500 enemy units</string>
+	<string name="achievement_601_desc">Kill 10000 enemy units</string>
+	<string name="achievement_602_desc">Kill 200000 enemy units</string>
+	<string name="achievement_603_desc">Spawn 1000 units</string>
+	<string name="achievement_604_desc">Spawn 20000 units</string>
+	<string name="achievement_605_desc">Spawn 400000 units</string>
+	<string name="achievement_606_desc">Spawn 200 Über units</string>
+	<string name="achievement_607_desc">Spawn 500 Über units</string>
+	<string name="achievement_608_desc">Spawn 1500 Über units</string>
 	
 </resources>

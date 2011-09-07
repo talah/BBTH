@@ -9,7 +9,6 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
-import bbth.engine.core.GameActivity;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.Hash;
 import bbth.engine.ui.Anchor;
@@ -243,19 +242,15 @@ public class Player {
 	public float getHealth() {
 		return _health;
 	}
-	
-	public String getHealthText() {
-		return _isLocal ? GameActivity.instance.getString(R.string.yourhealth, _health) : GameActivity.instance.getString(R.string.enemyhealth, _health);
-	}
 
 	public void resetHealth() {
 		_health = 100;
-		base.healthText = getHealthText();
+		base.setHealth(100);
 	}
 
 	public void adjustHealth(int delta) {
 		_health = (int)MathUtils.clamp(0, 100, _health + delta);
-		base.healthText = getHealthText();
+		base.setHealth(_health);
 		if (_isLocal) {
 			Vibrate.vibrate(0.1f);
 		}

@@ -143,6 +143,15 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		Achievements.INSTANCE.commit();
 	}
 
+	String dragfingerfurthertodrawlongerwall_1 = GameActivity.instance.getString(R.string.dragfingerfurthertodrawlongerwall_1);
+	String dragfingerfurthertodrawlongerwall_2 = GameActivity.instance.getString(R.string.dragfingerfurthertodrawlongerwall_2);
+	String tapinsideyourzoneofinfluence_1 = GameActivity.instance.getString(R.string.tapinsideyourzoneofinfluence_1);
+	String tapinsideyourzoneofinfluence_2 = GameActivity.instance.getString(R.string.tapinsideyourzoneofinfluence_2);
+	String tapfurtherrighttomakeunits_1 = GameActivity.instance.getString(R.string.tapfurtherrighttomakeunits_1);
+	String tapfurtherrighttomakeunits_2 = GameActivity.instance.getString(R.string.tapfurtherrighttomakeunits_2);
+	String notsynced = GameActivity.instance.getString(R.string.notsynced);
+	String waitingforotherplayer = GameActivity.instance.getString(R.string.waitingforotherplayer);
+	
 	@Override
 	public void onDraw(Canvas canvas) {
 		if (BBTHGame.SHOW_TUTORIAL && !tutorial.isFinished() && tutorial.supressDrawing()) {
@@ -194,7 +203,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		} else if (!sim.isReady()) {
 			paint.setColor(Color.WHITE);
 			paint.setTextSize(20);
-			canvas.drawText(GameActivity.instance.getString(R.string.waitingforotherplayer), BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
+			canvas.drawText(waitingforotherplayer, BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y
 					+ BBTHSimulation.GAME_HEIGHT / 2, paint);
 		} else {
 			float countdown = sim.getStartingCountdown();
@@ -215,8 +224,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setTextSize(18.0f);
 			paint.setStrokeCap(Cap.ROUND);
 			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
-			canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttomakeunits_1), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.tapfurtherrighttomakeunits_2), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
+			canvas.drawText(tapfurtherrighttomakeunits_1, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 20, paint);
+			canvas.drawText(tapfurtherrighttomakeunits_2, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .75f + 45, paint);
 			canvas.drawPath(arrowPath, paint);
 		}
 
@@ -227,8 +236,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
-			canvas.drawText(GameActivity.instance.getString(R.string.tapinsideyourzoneofinfluence_1), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.tapinsideyourzoneofinfluence_2), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
+			canvas.drawText(tapinsideyourzoneofinfluence_1, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 20, paint);
+			canvas.drawText(tapinsideyourzoneofinfluence_2, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .25f + 45, paint);
 		}
 
 		// Draw wall drag hint if necessary.
@@ -238,8 +247,8 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setStyle(Style.FILL);
 			paint.setTextSize(18.0f);
 			paint.setAlpha((int) (255 * 4 * (percent - percent * percent)));
-			canvas.drawText(GameActivity.instance.getString(R.string.dragfingerfurthertodrawlongerwall_1), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
-			canvas.drawText(GameActivity.instance.getString(R.string.dragfingerfurthertodrawlongerwall_2), BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
+			canvas.drawText(dragfingerfurthertodrawlongerwall_1, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 20, paint);
+			canvas.drawText(dragfingerfurthertodrawlongerwall_2, BBTHGame.WIDTH / 2.0f, BBTHGame.HEIGHT * .5f + 45, paint);
 		}
 
 		if (BBTHGame.DEBUG) {
@@ -267,8 +276,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
-			canvas.drawText(GameActivity.instance.getString(R.string.notsynced), BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2 + 40,
-					paint);
+			canvas.drawText(notsynced, BBTHSimulation.GAME_X + BBTHSimulation.GAME_WIDTH / 2, BBTHSimulation.GAME_Y + BBTHSimulation.GAME_HEIGHT / 2 + 40, paint);
 		}
 		super.onDraw(canvas);
 		entireDrawTimer.stop();
