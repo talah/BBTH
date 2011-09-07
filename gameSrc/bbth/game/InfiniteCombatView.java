@@ -153,7 +153,7 @@ public class InfiniteCombatView extends UIView implements UnitManager {
 			unit.setPosition(random.nextFloat() * WIDTH, random.nextFloat() * HEIGHT/4 + HEIGHT*.75f);
 			break;
 		default:
-			throw new RuntimeException("what");
+			throw new RuntimeException("what"); //$NON-NLS-1$
 		}
 		
 		unit.setVelocity(random.nextFloat() * .01f, random.nextFloat() * MathUtils.TWO_PI);

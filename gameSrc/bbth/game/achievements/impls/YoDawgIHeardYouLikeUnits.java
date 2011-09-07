@@ -13,8 +13,6 @@ public class YoDawgIHeardYouLikeUnits extends BBTHAchievement {
 		super(achievementInfo);
 	}
 
-	private static final float dist = 10f;
-	
 	@Override
 	public void unitCreated(UnitCreatedEvent e) {
 		Unit unit = e.getUnit();

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import bbth.engine.core.GameActivity;
 import bbth.game.BBTHActivity;
 
 public class UILabel extends UIControl {
@@ -39,9 +40,18 @@ public class UILabel extends UIControl {
 
 		sizeToFit();
 	}
+	
+	public UILabel(int stringResourceID) {
+		this(GameActivity.instance.getString(stringResourceID));
+	}
 
 	public UILabel(String text, Object tag) {
 		this(text);
+		this.tag = tag;
+	}
+	
+	public UILabel(int stringResourceID, Object tag) {
+		this(stringResourceID);
 		this.tag = tag;
 	}
 
@@ -220,18 +230,18 @@ public class UILabel extends UIControl {
 			wrapped_text = new ArrayList<String>();
 		else
 			wrapped_text.clear();
-		if(text == null || text.equals(""))
+		if(text == null || text.equals("")) //$NON-NLS-1$
 			return;
 		
-		String[] lines = text.split("\n");
+		String[] lines = text.split("\n"); //$NON-NLS-1$
 		for (int j = 0; j < lines.length; j++) {
-			String[] words = lines[j].split(" ");
-			String lastPhrase = "";
+			String[] words = lines[j].split(" "); //$NON-NLS-1$
+			String lastPhrase = ""; //$NON-NLS-1$
 
 			for (int i = 0; i < words.length; ++i) {
 				String word = words[i];
-				if (_paint.measureText(lastPhrase + " " + word) < _width) {
-					lastPhrase += " " + word;
+				if (_paint.measureText(lastPhrase + " " + word) < _width) { //$NON-NLS-1$
+					lastPhrase += " " + word; //$NON-NLS-1$
 				} else {
 					if (lastPhrase.length() > 0) {
 						wrapped_text.add(lastPhrase.trim());

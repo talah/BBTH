@@ -16,8 +16,8 @@ public class PlayerAI {
 	private Player m_enemy;
 	private BeatTrack m_beats;
 	
-	private static final float DEBUG_SPAWN_TIMER = 3.f;
-	private float elapsedTime = 0;
+//	private static final float DEBUG_SPAWN_TIMER = 3.f;
+//	private float elapsedTime = 0;
 	
 	private float m_difficulty = 1.0f;
 	private boolean m_spawned_this_beat = false;

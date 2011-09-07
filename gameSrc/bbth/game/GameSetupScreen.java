@@ -38,21 +38,21 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		protocol = new LockStepProtocol();
 		bluetooth = new Bluetooth(GameActivity.instance, protocol);
 
-		serverButton = new UIButton("Create a Game", null);
+		serverButton = new UIButton(R.string.createagame, null);
 		serverButton.setAnchor(Anchor.TOP_CENTER);
 		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 65);
 		serverButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		serverButton.setButtonDelegate(this);
 		addSubview(serverButton);
 
-		clientButton = new UIButton("Join a Game", null);
+		clientButton = new UIButton(R.string.joinagame, null);
 		clientButton.setAnchor(Anchor.TOP_CENTER);
 		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 130);
 		clientButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
 
-		disconnectButton = new UIButton("Cancel", null);
+		disconnectButton = new UIButton(R.string.cancel, null);
 		disconnectButton.setAnchor(Anchor.TOP_CENTER);
 		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.CONTENT_TOP + 195);
 		disconnectButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
@@ -60,14 +60,14 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 
-		titleLabel = new UILabel("Multiplayer", null);
+		titleLabel = new UILabel(R.string.multiplayer, null);
 		titleLabel.setTextSize(30.f);
 		titleLabel.setAnchor(Anchor.TOP_CENTER);
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
-		deviceNameLabel = new UILabel("");
+		deviceNameLabel = new UILabel(""); //$NON-NLS-1$
 		deviceNameLabel.setWrapText(true); // actually needed for newlines too...
 		deviceNameLabel.setAnchor(Anchor.BOTTOM_CENTER);
 		deviceNameLabel.setTextSize(15);
@@ -76,7 +76,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		deviceNameLabel.setSize(BBTHGame.WIDTH, 0);
 		addSubview(deviceNameLabel);
 
-		statusLabel = new UILabel("", null);
+		statusLabel = new UILabel("", null); //$NON-NLS-1$
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
 		statusLabel.setAnchor(Anchor.TOP_CENTER);
@@ -100,7 +100,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		// Update status message when it changes
 		String statusMessage = bluetooth.getString();
 		if (statusMessage != this.currentStatus) {
-			statusLabel.setText((statusMessage == null) ? "" : statusMessage);
+			statusLabel.setText((statusMessage == null) ? "" : statusMessage); //$NON-NLS-1$
 			this.currentStatus = statusMessage;
 		}
 
@@ -122,7 +122,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		// We don't have an isVisible flag for deviceNameLabel, so clear
 		// the text instead
 		if (bluetooth.getState() != State.LISTEN_FOR_CONNECTIONS) {
-			deviceNameLabel.setText("");
+			deviceNameLabel.setText(""); //$NON-NLS-1$
 		}
 	}
 
@@ -130,7 +130,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 	public void onClick(UIButton sender) {
 		if (sender == serverButton) {
 			bluetooth.listen();
-			deviceNameLabel.setText("Tell other player to\nconnect to \"" + bluetooth.getLocalName() + "\"");
+			deviceNameLabel.setText(GameActivity.instance.getString(R.string.tellotherplayertoconnectto, bluetooth.getLocalName()));
 		} else if (sender == clientButton) {
 			controller.push(new ServerSelectScreen(controller, protocol, bluetooth), BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (sender == disconnectButton) {
