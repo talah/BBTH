@@ -1,5 +1,6 @@
 package bbth.engine.ui;
 
+import bbth.engine.core.GameActivity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -19,6 +20,10 @@ public class UIButton extends UIControl {
 	public UIButtonDelegate delegate;
 	private float _expandForContainsX;
 	private float _expandForContainsY;
+	
+	public UIButton(int stringResourceID) {
+		this(GameActivity.instance.getString(stringResourceID));
+	}
 	
 	public UIButton(String text) {
 		padding = 8;
@@ -40,6 +45,11 @@ public class UIButton extends UIControl {
 		this.text = text;
 	}
 
+	public UIButton(int stringResourceID, Object tag) {
+		this(stringResourceID);
+		this.tag = tag;
+	}
+	
 	public UIButton(String text, Object tag) {
 		this(text);
 		this.tag = tag;

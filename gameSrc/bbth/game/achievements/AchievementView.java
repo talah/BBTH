@@ -61,7 +61,7 @@ public class AchievementView extends UIView {
 			_progressBar.setBackgroundColor(Color.rgb(100, 100, 100));
 			//_progressBar.setForegroundColor(Color.rgb(255, 255, 0));
 			addSubview(_progressBar);
-			_progressLabel = new UILabel(String.valueOf(activations) + "/" + info.maxActivations);
+			_progressLabel = new UILabel(String.valueOf(activations) + "/" + info.maxActivations); //$NON-NLS-1$
 			_progressLabel.setTextSize(DESCRIPTION_SIZE);
 			_progressLabel.sizeToFit();
 			addSubview(_progressLabel);

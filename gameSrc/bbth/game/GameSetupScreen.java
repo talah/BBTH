@@ -37,21 +37,21 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		protocol = new LockStepProtocol();
 		bluetooth = new Bluetooth(GameActivity.instance, protocol);
 
-		serverButton = new UIButton("Create a Game", null);
+		serverButton = new UIButton(R.string.createagame, null);
 		serverButton.setAnchor(Anchor.CENTER_CENTER);
 		serverButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 - 65);
 		serverButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		serverButton.setButtonDelegate(this);
 		addSubview(serverButton);
 
-		clientButton = new UIButton("Join a Game", null);
+		clientButton = new UIButton(R.string.joinagame, null);
 		clientButton.setAnchor(Anchor.CENTER_CENTER);
 		clientButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2);
 		clientButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		clientButton.setButtonDelegate(this);
 		addSubview(clientButton);
 
-		disconnectButton = new UIButton("Cancel", null);
+		disconnectButton = new UIButton(R.string.cancel, null);
 		disconnectButton.setAnchor(Anchor.CENTER_CENTER);
 		disconnectButton.setPosition(BBTHGame.WIDTH / 2, BBTHGame.HEIGHT / 2 + 65);
 		disconnectButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
@@ -59,14 +59,14 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 
-		titleLabel = new UILabel("Multiplayer", null);
+		titleLabel = new UILabel(R.string.multiplayer, null);
 		titleLabel.setTextSize(30.f);
 		titleLabel.setAnchor(Anchor.CENTER_CENTER);
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
-		statusLabel = new UILabel("", null);
+		statusLabel = new UILabel("", null); //$NON-NLS-1$
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
 		statusLabel.setAnchor(Anchor.CENTER_CENTER);
@@ -90,7 +90,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		// Update status message when it changes
 		String statusMessage = bluetooth.getString();
 		if (statusMessage != this.currentStatus) {
-			statusLabel.setText((statusMessage == null) ? "" : statusMessage);
+			statusLabel.setText((statusMessage == null) ? "" : statusMessage); //$NON-NLS-1$
 			this.currentStatus = statusMessage;
 		}
 

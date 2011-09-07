@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.FloatMath;
 import bbth.engine.achievements.Achievements;
+import bbth.engine.core.GameActivity;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
@@ -19,7 +20,7 @@ import bbth.engine.util.MathUtils;
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {
 		public DisconnectScreen(UINavigationController controller) {
-			super("You have been disconnected.", controller);
+			super(GameActivity.instance.getString(R.string.youhavebeendisconnected), controller);
 		}
 	}
 
@@ -35,7 +36,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		private float secondsUntilNext;
 		
 		public WinScreen(UINavigationController controller) {
-			super("Congratulations! You win!", controller);
+			super(GameActivity.instance.getString(R.string.congratulationsyouwin), controller);
 			PARTICLES.reset();
 		}
 
@@ -84,7 +85,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		private float secondsUntilNext;
 		
 		public LoseScreen(UINavigationController controller) {
-			super("Too bad, you lose.", controller);
+			super(GameActivity.instance.getString(R.string.toobadyoulose), controller);
 			PARTICLES.reset();
 		}
 		
@@ -119,7 +120,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 
 	public static class TieScreen extends GameStatusMessageScreen {
 		public TieScreen(UINavigationController controller) {
-			super("It's a tie!", controller);
+			super(GameActivity.instance.getString(R.string.itsatie), controller);
 		}
 	}
 
@@ -137,14 +138,14 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		message.setTextAlign(Align.CENTER);
 		this.addSubview(message);
 
-		playAgain = new UIButton("Play Again", tag);
+		playAgain = new UIButton(R.string.playagain, tag);
 		playAgain.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		playAgain.setAnchor(Anchor.CENTER_CENTER);
 		playAgain.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65);
 		playAgain.setButtonDelegate(this);
 		this.addSubview(playAgain);
 
-		quit = new UIButton("Quit", tag);
+		quit = new UIButton(R.string.quit, tag);
 		quit.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		quit.setAnchor(Anchor.CENTER_CENTER);
 		quit.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);

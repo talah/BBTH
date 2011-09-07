@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
+import bbth.engine.core.GameActivity;
 import bbth.engine.util.MathUtils;
+import bbth.game.R;
 
 /**
  * An animation that occurs when an achievement is unlocked.
@@ -31,6 +33,7 @@ public class UnlockAnimation {
 		_timeLeft -= seconds;
 	}
 	
+	String achievementUnlockedString = GameActivity.instance.getString(R.string.achievementunlocked);
 	// returns bottom
 	public float draw(Canvas canvas, Paint paint, float width, float height, float top) {
 		if (_timeLeft < 0) {
@@ -55,7 +58,7 @@ public class UnlockAnimation {
 		//paint.setTextAlign(Align.CENTER);
 		paint.setTextSize(height * 0.45f);
 		paint.setTypeface(Typeface.DEFAULT_BOLD);
-		canvas.drawText("ACHIEVEMENT UNLOCKED", width * 0.01f, top + height * 0.45f, paint); //width * 0.5f, top + height * 0.45f, paint);
+		canvas.drawText(achievementUnlockedString, width * 0.01f, top + height * 0.45f, paint); //width * 0.5f, top + height * 0.45f, paint);
 		
 		// draw the description
 		paint.setTextSize(height * 0.35f);

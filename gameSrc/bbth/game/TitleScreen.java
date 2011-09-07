@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import bbth.engine.core.GameActivity;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.simulation.LockStepProtocol;
-import bbth.engine.sound.MusicPlayer;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
@@ -35,28 +34,28 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		titleBar.animatePosition(BBTHGame.WIDTH/2, 20, 3);
 		this.addSubview(titleBar);
 		
-		singleplayerButton = new UIButton("Single Player", this);
+		singleplayerButton = new UIButton(R.string.singleplayer, this);
 		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		singleplayerButton.setAnchor(Anchor.CENTER_CENTER);
 		singleplayerButton.setPosition(-BBTHGame.WIDTH, BBTHGame.HEIGHT / 2 - 65);
 		singleplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 - 65, 0.5f);
 		singleplayerButton.setButtonDelegate(this);
 		
-		multiplayerButton = new UIButton("Multiplayer", this);
+		multiplayerButton = new UIButton(R.string.multiplayer, this);
 		multiplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		multiplayerButton.setAnchor(Anchor.CENTER_CENTER);
 		multiplayerButton.setPosition(-BBTHGame.WIDTH * 2.0f, BBTHGame.HEIGHT / 2);
 		multiplayerButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2, 1.0f);
 		multiplayerButton.setButtonDelegate(this);
 		
-		achievementsButton = new UIButton("Achievements", this);
+		achievementsButton = new UIButton(R.string.achievements, this);
 		achievementsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		achievementsButton.setAnchor(Anchor.CENTER_CENTER);
 		achievementsButton.setPosition(-BBTHGame.WIDTH * 3.0f, BBTHGame.HEIGHT / 2 + 65);
 		achievementsButton.animatePosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2 + 65, 1.5f);
 		achievementsButton.setButtonDelegate(this);
 		
-		settingsButton = new UIButton("Settings", this);
+		settingsButton = new UIButton(R.string.settings, this);
 		settingsButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		settingsButton.setAnchor(Anchor.CENTER_CENTER);
 		settingsButton.setPosition(-BBTHGame.WIDTH * 4.0f, BBTHGame.HEIGHT / 2 + 130);

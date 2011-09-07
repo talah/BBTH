@@ -54,7 +54,7 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 	 */
 	public Bag(int initialCapacity) {
 		if (initialCapacity < 1)
-			throw new IllegalArgumentException("Initial capacity was less than 1");
+			throw new IllegalArgumentException("Initial capacity was less than 1"); //$NON-NLS-1$
 		
 		numElements = 0;
 		capacity = initialCapacity;
@@ -80,10 +80,10 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 	 */
 	public Bag(Collection<? extends E> collection, int initialCapacity) {
 		if (initialCapacity < 1)
-			throw new IllegalArgumentException("Initial capacity was less than 1");
+			throw new IllegalArgumentException("Initial capacity was less than 1"); //$NON-NLS-1$
 		int size = collection.size();
 		if (initialCapacity < size)
-			throw new IllegalArgumentException("Initial capacity was less than given collection size");
+			throw new IllegalArgumentException("Initial capacity was less than given collection size"); //$NON-NLS-1$
 		
 		this.numElements = size;
 		this.capacity = initialCapacity;
@@ -126,7 +126,7 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 	 */
 	protected void ensureInBounds(int index) {
 		if (index < 0 || index >= numElements)
-			throw new IndexOutOfBoundsException("index = " + index + ", numElements = " + numElements);
+			throw new IndexOutOfBoundsException("index = " + index + ", numElements = " + numElements); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -459,9 +459,9 @@ public class Bag<E> extends AbstractCollection<E> implements RandomAccess, Clone
 		public void remove() {
 			ensureUnmodified();
 			if (lastOpWasRemove)
-				throw new IllegalStateException("BagIterator.remove() called twice in a row without a call to next");
+				throw new IllegalStateException("BagIterator.remove() called twice in a row without a call to next"); //$NON-NLS-1$
 			if (currentIndex == 0)
-				throw new IllegalStateException("BagIterator.remove() called before BagIterator.next()");
+				throw new IllegalStateException("BagIterator.remove() called before BagIterator.next()"); //$NON-NLS-1$
 			Bag.this.remove(--currentIndex);
 			myNumModifications = numModifications;
 		}

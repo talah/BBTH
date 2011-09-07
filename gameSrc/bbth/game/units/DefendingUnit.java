@@ -31,7 +31,7 @@ public class DefendingUnit extends Unit {
 		
 		timeSinceLastShot += seconds;
 		if (firing) {
-			if (!getStateName().equals("attacking") || fireTarget.isDead()) {
+			if (!getStateName().equals("attacking") || fireTarget.isDead()) { //$NON-NLS-1$
 				firing = false;
 				fireTarget = null;
 			} else if (timeSinceLastShot > FIRE_RATE) {
@@ -39,7 +39,7 @@ public class DefendingUnit extends Unit {
 				fireTarget.takeDamage(DAMAGE_PER_SHOT, this);
 			}
 		} else {
-			if (target != null && !target.isDead() && getStateName().equals("attacking")) {
+			if (target != null && !target.isDead() && getStateName().equals("attacking")) { //$NON-NLS-1$
 				firing = true;
 				fireTarget = target;
 			}
@@ -78,7 +78,7 @@ public class DefendingUnit extends Unit {
 			float targetX = currentTarget.getX() - getX();
 			float targetY = currentTarget.getY() - getY();
 			
-			float endLength = FloatMath.sqrt(targetX*targetX + targetY*targetY);
+//			float endLength = FloatMath.sqrt(targetX*targetX + targetY*targetY);
 			float headingToTarget = MathUtils.getAngle(0f, 0f, targetX, targetY);
 			
 			float xComponent = FloatMath.cos(headingToTarget - heading);

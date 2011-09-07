@@ -1,6 +1,7 @@
 package bbth.game;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import bbth.engine.achievements.Achievements;
 import bbth.engine.core.Game;
@@ -30,9 +31,10 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 		navController = new UINavigationController();
 		currentScreen = navController;
 		
-		SHOW_TUTORIAL = activity.getSharedPreferences("game_settings", 0).getBoolean("showTutorial", true);
-		TITLE_SCREEN_MUSIC = activity.getSharedPreferences("game_settings", 0).getBoolean("titleScreenMusic", true);
-		AI_DIFFICULTY = activity.getSharedPreferences("game_settings", 0).getFloat("aiDifficulty", 0.75f);
+		SharedPreferences sharedPreferences = activity.getSharedPreferences("game_settings", 0); //$NON-NLS-1$
+		SHOW_TUTORIAL = sharedPreferences.getBoolean("showTutorial", true); //$NON-NLS-1$
+		TITLE_SCREEN_MUSIC = sharedPreferences.getBoolean("titleScreenMusic", true); //$NON-NLS-1$
+		AI_DIFFICULTY = sharedPreferences.getFloat("aiDifficulty", 0.75f); //$NON-NLS-1$
 		
 		
 		Achievements.INSTANCE.initialize(activity);

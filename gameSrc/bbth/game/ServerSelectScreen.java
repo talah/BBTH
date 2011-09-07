@@ -40,21 +40,21 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		this.protocol = protocol;
 		this.bluetooth = bluetooth;
 
-		UILabel titleLabel = new UILabel("Game Browser", null);
+		UILabel titleLabel = new UILabel(R.string.gamebrowser, null);
 		titleLabel.setTextSize(30.f);
 		titleLabel.setAnchor(Anchor.CENTER_CENTER);
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
 		titleLabel.setTextAlign(Align.CENTER);
 		addSubview(titleLabel);
 
-		refreshButton = new UIButton("Refresh");
+		refreshButton = new UIButton(R.string.refresh);
 		refreshButton.setAnchor(Anchor.CENTER_CENTER);
 		refreshButton.setPosition(BBTHGame.WIDTH / 2, 30);
 		refreshButton.setSize(100, 30);
 		refreshButton.setButtonDelegate(this);
 		addSubview(refreshButton);
 
-		statusLabel = new UILabel("", null);
+		statusLabel = new UILabel("", null); //$NON-NLS-1$
 		statusLabel.setTextSize(15);
 		statusLabel.setItalics(true);
 		statusLabel.setAnchor(Anchor.CENTER_CENTER);
@@ -87,7 +87,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		// Update the current status label
 		String statusMessage = bluetooth.getString();
 		if (statusMessage != this.currentStatus) {
-			statusLabel.setText((statusMessage == null) ? "" : statusMessage);
+			statusLabel.setText((statusMessage == null) ? "" : statusMessage); //$NON-NLS-1$
 			this.currentStatus = statusMessage;
 		}
 

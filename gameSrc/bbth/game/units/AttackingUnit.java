@@ -105,7 +105,7 @@ public class AttackingUnit extends Unit {
 		// move only if not detonating
 		super.update(seconds);
 		
-		if (isDead() || target == null || !getStateName().equals("attacking"))
+		if (isDead() || target == null || !getStateName().equals("attacking")) //$NON-NLS-1$
 			return;
 		
 		float x = getX();

@@ -42,7 +42,7 @@ public class AchievementsScreen extends UIScrollView implements UIButtonDelegate
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		// add title
-		UILabel titleLabel = new UILabel("Achievements", null);
+		UILabel titleLabel = new UILabel(R.string.achievements, null);
 		titleLabel.setTextSize(30.f);
 		titleLabel.setAnchor(Anchor.CENTER_CENTER);
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, 80);
