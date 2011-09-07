@@ -338,6 +338,19 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.start();
 		clientPlayer.update(seconds);
 		clientPlayerTimer.stop();
+		
+		// Prevent units from leaving the play area
+		int size = serverPlayer.units.size();
+		for (int i = 0; i < size; i++)
+		{
+			serverPlayer.units.get(i).setX(MathUtils.clamp(0, GAME_WIDTH, serverPlayer.units.get(i).getX()));
+		}
+		
+		size = clientPlayer.units.size();
+		for (int i = 0; i < size; i++)
+		{
+			clientPlayer.units.get(i).setX(MathUtils.clamp(0, GAME_WIDTH, clientPlayer.units.get(i).getX()));
+		}
 
 		aiTickTimer.stop();
 
