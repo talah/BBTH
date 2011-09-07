@@ -16,7 +16,7 @@ public class Envelope {
 			float translateTime(float time, float totalLength) {
 				if (time >=0 && time <= totalLength)
 					return time;
-				throw new IllegalArgumentException("time was out of bounds");
+				throw new IllegalArgumentException("time was out of bounds"); //$NON-NLS-1$
 			}
 		}, RETURN_FIRST_OR_LAST {
 			@Override
@@ -103,7 +103,7 @@ public class Envelope {
 			else
 				max = mid - 1;
 		}
-		throw new IllegalStateException("Envelope.Entry not found");
+		throw new IllegalStateException("Envelope.Entry not found"); //$NON-NLS-1$
 	}
 	
 	public Envelope(double startValue) {
@@ -117,7 +117,7 @@ public class Envelope {
 	
 	private void checkLengthOfTime(float lengthOfTime) {
 		if (lengthOfTime <= 0)
-			throw new IllegalArgumentException("Length of time must be greater than 0");
+			throw new IllegalArgumentException("Length of time must be greater than 0"); //$NON-NLS-1$
 	}
 	
 	private double getEndValue() {
@@ -145,11 +145,11 @@ public class Envelope {
 	}
 	
 	public void scaleTimes(double factor) {
-		throw new UnsupportedOperationException("Envelope.scaleTimes(): Not implemented yet");
+		throw new UnsupportedOperationException("Envelope.scaleTimes(): Not implemented yet"); //$NON-NLS-1$
 	}
 	
 	public void scaleTimesToTotalLength(float totalLengthOfTime) {
-		throw new UnsupportedOperationException("Envelope.scaleTimesToTotalLength(): Not implemented yet");
+		throw new UnsupportedOperationException("Envelope.scaleTimesToTotalLength(): Not implemented yet"); //$NON-NLS-1$
 	}
 	
 	public float getTotalLength() {

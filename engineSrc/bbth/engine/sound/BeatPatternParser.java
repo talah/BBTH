@@ -33,17 +33,17 @@ public class BeatPatternParser {
     		while (eventType != XmlPullParser.END_DOCUMENT) {
     			if (eventType == XmlPullParser.START_TAG) {
     				String name = parser.getName();
-    				if (name.equals("pattern")) {
-    					Log.d("BBTH", "Starting pattern");
-    					String id = parser.getAttributeValue(null, "id");
+    				if (name.equals("pattern")) { //$NON-NLS-1$
+    					Log.d("BBTH", "Starting pattern"); //$NON-NLS-1$ //$NON-NLS-2$
+    					String id = parser.getAttributeValue(null, "id"); //$NON-NLS-1$
     					patterns.put(id, parseSubpattern(parser, millisPerBeat));
     					eventType = parser.getEventType();
-    				} else if (name.equals("song")) {
-    					Log.d("BBTH", "Starting song");
+    				} else if (name.equals("song")) { //$NON-NLS-1$
+    					Log.d("BBTH", "Starting song"); //$NON-NLS-1$ //$NON-NLS-2$
     					song = parseSong(parser, patterns);
     					eventType = parser.getEventType();
-    				} else if (name.equals("root")) {
-    					String mpb = parser.getAttributeValue(null, "mpb");
+    				} else if (name.equals("root")) { //$NON-NLS-1$
+    					String mpb = parser.getAttributeValue(null, "mpb"); //$NON-NLS-1$
     					millisPerBeat = Float.parseFloat(mpb);
     					eventType = parser.next();
     				} else {
@@ -55,9 +55,9 @@ public class BeatPatternParser {
     		}
     		
     	} catch (XmlPullParserException e) {
-    		Log.e("BBTH", "Error parsing beat track");
+    		Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
     	} catch (IOException e) {
-    		Log.e("BBTH", "Error parsing beat track");
+    		Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
     	}
     	
     	Beat []songArray = new Beat[song.size()];
@@ -76,15 +76,15 @@ public class BeatPatternParser {
     	 while (!patternOver) {
     		 if (parser.getEventType() == XmlPullParser.START_TAG) {
 
-    			 String type = parser.getAttributeValue(null, "type");
+    			 String type = parser.getAttributeValue(null, "type"); //$NON-NLS-1$
     			 float duration;
     			 if (type != null) {
     				 duration = parseNoteType(type, millisPerBeat);
     			 } else {
     				 // check for manual duration entry
-    				 String durationStr = parser.getAttributeValue(null, "duration");
+    				 String durationStr = parser.getAttributeValue(null, "duration"); //$NON-NLS-1$
     				 if (durationStr == null) {
-    					 throw new XmlPullParserException("no type or duration");
+    					 throw new XmlPullParserException("no type or duration"); //$NON-NLS-1$
     				 }
     				 duration = Float.parseFloat(durationStr);
     			 }
@@ -92,11 +92,11 @@ public class BeatPatternParser {
     			 parser.next();
 
     			 name = parser.getName();
-    			 if (name.equals("rest")) {
+    			 if (name.equals("rest")) { //$NON-NLS-1$
     				 beats.add(Beat.rest(duration));
-    			 } else if (name.equals("hold")) {
+    			 } else if (name.equals("hold")) { //$NON-NLS-1$
     				 beats.add(Beat.hold(duration));
-    			 } else if (name.equals("beat")) {
+    			 } else if (name.equals("beat")) { //$NON-NLS-1$
     				 beats.add(Beat.tap(duration));
     			 } else {
     				 patternOver = true;
@@ -115,25 +115,25 @@ public class BeatPatternParser {
     
     // parse a note type
     private static float parseNoteType(String type, float millisPerBeat) {
-    	if (type.equals("sixteenth")) {
+    	if (type.equals("sixteenth")) { //$NON-NLS-1$
     		return millisPerBeat * 0.25f;
     	}
-    	if (type.equals("eighth")) {
+    	if (type.equals("eighth")) { //$NON-NLS-1$
     		return millisPerBeat * 0.5f;
     	}
-    	if (type.equals("quarter")) {
+    	if (type.equals("quarter")) { //$NON-NLS-1$
     		return millisPerBeat;
     	}
-    	if (type.equals("half")) {
+    	if (type.equals("half")) { //$NON-NLS-1$
     		return millisPerBeat * 2.f;
     	}
-    	if (type.equals("whole")) {
+    	if (type.equals("whole")) { //$NON-NLS-1$
     		return millisPerBeat * 4.f;
     	}
-    	if (type.equals("eighth_triplet")) {
+    	if (type.equals("eighth_triplet")) { //$NON-NLS-1$
     		return millisPerBeat / 3.f;
     	}
-    	if (type.equals("quarter_triplet")) {
+    	if (type.equals("quarter_triplet")) { //$NON-NLS-1$
     		return millisPerBeat * 2.f / 3.f;
     	}
     	
@@ -150,10 +150,10 @@ public class BeatPatternParser {
 
     		if (parser.getEventType() == XmlPullParser.START_TAG) {
     			String name = parser.getName();
-    			if (name.equals("load-pattern")) {
-    				String id = parser.getAttributeValue(null, "id");
+    			if (name.equals("load-pattern")) { //$NON-NLS-1$
+    				String id = parser.getAttributeValue(null, "id"); //$NON-NLS-1$
     				if (!patterns.containsKey(id)) {
-    					throw new XmlPullParserException("bad load-pattern tag");
+    					throw new XmlPullParserException("bad load-pattern tag"); //$NON-NLS-1$
     				}
     				
     				// copy the pattern

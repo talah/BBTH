@@ -9,6 +9,7 @@ import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.util.FloatMath;
+import bbth.engine.core.GameActivity;
 import bbth.engine.fastgraph.Wall;
 import bbth.engine.net.simulation.Hash;
 import bbth.engine.ui.Anchor;
@@ -74,7 +75,7 @@ public class Player {
 		}
 
 		this.aiController = controller;
-		selector = new UnitSelector(team, unitManager, BBTHSimulation.PARTICLES);
+		selector = new UnitSelector(team, unitManager, BBTHGame.PARTICLES);
 
 		walls = new ArrayList<WallUnit>();
 	}
@@ -101,7 +102,7 @@ public class Player {
 			return null;
 		}
 
-		walls.add(new WallUnit(currentWall, unitManager, team, paint, BBTHSimulation.PARTICLES));
+		walls.add(new WallUnit(currentWall, unitManager, team, paint, BBTHGame.PARTICLES));
 
 		Wall toReturn = currentWall;
 		currentWall = null;
@@ -139,14 +140,14 @@ public class Player {
 			float angle = MathUtils.randInRange(0, 2 * MathUtils.PI);
 			float xVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.cos(angle);
 			float yVel = MathUtils.randInRange(25.f, 50.f) * FloatMath.sin(angle);
-			BBTHSimulation.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
+			BBTHGame.PARTICLES.createParticle().circle().velocity(xVel, yVel).shrink(0.1f, 0.15f).radius(3.0f).position(x, y).color(team.getRandomShade());
 		}
 
 		Unit newUnit = null;
 		if (_combo != 0 && _combo % BBTHSimulation.UBER_UNIT_THRESHOLD == 0) {
-			newUnit = UnitType.UBER.createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
+			newUnit = UnitType.UBER.createUnit(unitManager, team, paint, BBTHGame.PARTICLES);
 		} else {
-			newUnit = selector.getUnitType().createUnit(unitManager, team, paint, BBTHSimulation.PARTICLES);
+			newUnit = selector.getUnitType().createUnit(unitManager, team, paint, BBTHGame.PARTICLES);
 		}
 
 		newUnit.setPosition(x, y);
@@ -242,15 +243,19 @@ public class Player {
 	public float getHealth() {
 		return _health;
 	}
+	
+	public String getHealthText() {
+		return _isLocal ? GameActivity.instance.getString(R.string.yourhealth, _health) : GameActivity.instance.getString(R.string.enemyhealth, _health);
+	}
 
 	public void resetHealth() {
 		_health = 100;
-		base.healthText = (_isLocal ? "Your" : "Enemy") + " health: " + _health;
+		base.healthText = getHealthText();
 	}
 
 	public void adjustHealth(int delta) {
 		_health = (int)MathUtils.clamp(0, 100, _health + delta);
-		base.healthText = (_isLocal ? "Your" : "Enemy") + " health: " + _health;
+		base.healthText = getHealthText();
 		if (_isLocal) {
 			Vibrate.vibrate(0.1f);
 		}

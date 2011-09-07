@@ -35,7 +35,7 @@ public enum Achievements {
 	// Should be called before checking achievement statuses or going to an achievement screen
 	@SuppressWarnings("unchecked")
 	public void initialize(Context context) {
-		_settings = context.getSharedPreferences("achievements", Activity.MODE_PRIVATE);
+		_settings = context.getSharedPreferences("achievements", Activity.MODE_PRIVATE); //$NON-NLS-1$
 		_achievementActivations = new HashMap<Integer, Integer>();
 		Map<String, Integer> activations = (HashMap<String, Integer>) _settings.getAll();
 		for (Map.Entry<String, Integer> entry : activations.entrySet()) {

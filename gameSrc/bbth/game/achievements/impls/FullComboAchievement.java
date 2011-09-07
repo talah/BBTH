@@ -16,7 +16,7 @@ public class FullComboAchievement extends BBTHAchievement {
 	public void gameEnded(GameEndedEvent e) {
 		BeatTrack track = e.getBeatTrack();
 		if (track == null) {
-			System.err.println("Error: no beat track.");
+			System.err.println("Error: no beat track."); //$NON-NLS-1$
 			return;
 		}
 		boolean tappedall = true;

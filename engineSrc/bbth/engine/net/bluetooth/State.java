@@ -1,22 +1,23 @@
 package bbth.engine.net.bluetooth;
 
+import bbth.game.R;
+
 public enum State {
-	DISCONNECTED("Disconnected"),
-	ENABLE_BLUETOOTH("Enabling bluetooth..."),
-	CHECK_PREVIOUS_CONNECTION("Checking previous connection..."),
-	GET_NEARBY_DEVICES("Finding all nearby devices..."),
-	CONNECT_TO_DEVICE("Connecting..."),
-	LISTEN_FOR_CONNECTIONS("Listening for connections..."),
-	CONNECTED("Connected");
+	DISCONNECTED(R.string.disconnected),
+	ENABLE_BLUETOOTH(R.string.enablebluetooth),
+	CHECK_PREVIOUS_CONNECTION(R.string.checkpreviousconnection),
+	GET_NEARBY_DEVICES(R.string.getnearbydevices),
+	CONNECT_TO_DEVICE(R.string.connecting),
+	LISTEN_FOR_CONNECTIONS(R.string.listenforconnections),
+	CONNECTED(R.string.connected);
 
-	private final String message;
+	private final int message;
 
-	private State(String message) {
+	private State(int message) {
 		this.message = message;
 	}
 
-	@Override
-	public String toString() {
+	public int getMessageResourceId() {
 		return message;
 	}
 }

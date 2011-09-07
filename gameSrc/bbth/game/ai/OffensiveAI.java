@@ -47,12 +47,12 @@ public class OffensiveAI extends UnitAI {
 		entity.setTarget(enemy);
 
 		String statename = state.getName();
-		if (statename == "moving") {
+		if (statename == "moving") { //$NON-NLS-1$
 			do_movement(entity, c, flock);
-		} else if (statename == "attacking") {
+		} else if (statename == "attacking") { //$NON-NLS-1$
 			do_movement(entity, c, flock);
 		} else {
-			System.err.println("Error: entity in unknown state: " + statename);
+			System.err.println("Error: entity in unknown state: " + statename); //$NON-NLS-1$
 		}
 
 		check_state_transition(entity, c, entity.getFSM());
@@ -67,7 +67,7 @@ public class OffensiveAI extends UnitAI {
 			dist = MathUtils.getDistSqr(entity.getX(), entity.getY(),
 					target.getX(), target.getY());
 		}
-		m_fsm_conditions.put("targetdist", dist);
+		m_fsm_conditions.put("targetdist", dist); //$NON-NLS-1$
 		fsm.update(m_fsm_conditions);
 	}
 
@@ -91,7 +91,7 @@ public class OffensiveAI extends UnitAI {
 			goal_y = BBTHSimulation.GAME_HEIGHT - WALL_EPS;
 		}
 
-		if (entity.getStateName().equals("attacking")) {
+		if (entity.getStateName().equals("attacking")) { //$NON-NLS-1$
 			Unit target = entity.getTarget();
 			if (target != null) {
 				goal_x = target.getX();
@@ -155,25 +155,25 @@ public class OffensiveAI extends UnitAI {
 	}
 
 	private void initialize_fsm(Unit entity) {
-		FiniteState moving = new FiniteState("moving");
-		FiniteState attacking = new FiniteState("attacking");
+		FiniteState moving = new FiniteState("moving"); //$NON-NLS-1$
+		FiniteState attacking = new FiniteState("attacking"); //$NON-NLS-1$
 
 		SimpleLessTransition movingtrans = new SimpleLessTransition(moving,
 				attacking);
-		movingtrans.setInputName("targetdist");
+		movingtrans.setInputName("targetdist"); //$NON-NLS-1$
 		movingtrans.setVal(900);
 
 		SimpleGreaterTransition attackingtrans = new SimpleGreaterTransition(
 				attacking, moving);
-		attackingtrans.setInputName("targetdist");
+		attackingtrans.setInputName("targetdist"); //$NON-NLS-1$
 		attackingtrans.setVal(900);
 
 		moving.addTransition(movingtrans);
 		attacking.addTransition(attackingtrans);
 
 		FiniteStateMachine fsm = entity.getFSM();
-		fsm.addState("moving", moving);
-		fsm.addState("attacking", attacking);
+		fsm.addState("moving", moving); //$NON-NLS-1$
+		fsm.addState("attacking", attacking); //$NON-NLS-1$
 
 	}
 }

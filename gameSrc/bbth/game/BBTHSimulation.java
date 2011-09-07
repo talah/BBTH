@@ -16,7 +16,6 @@ import bbth.engine.net.simulation.Hash;
 import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.net.simulation.Simulation;
 import bbth.engine.particles.Particle;
-import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.UIScrollView;
 import bbth.engine.util.Bag;
 import bbth.engine.util.MathUtils;
@@ -38,16 +37,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 	}
 
 	private GameState gameState = GameState.WAITING_TO_START;
-
-	private static final int NUM_PARTICLES = 1000;
-	private static final float PARTICLE_THRESHOLD = 0.5f;
-
-	public static final ParticleSystem PARTICLES = new ParticleSystem(NUM_PARTICLES, PARTICLE_THRESHOLD);
-	public static final Paint PARTICLE_PAINT = new Paint();
-	static {
-		PARTICLE_PAINT.setStrokeWidth(2.f);
-		PARTICLE_PAINT.setAntiAlias(true);
-	}
 
 	private Team team;
 	public Player localPlayer, remotePlayer;
@@ -275,7 +264,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			float yVel = MathUtils.randInRange(25.f, 50.f)
 					* FloatMath.sin(angle);
 
-			PARTICLES.createParticle().circle().velocity(xVel, yVel)
+			BBTHGame.PARTICLES.createParticle().circle().velocity(xVel, yVel)
 					.shrink(0.1f, 0.15f).radius(3.0f).position(posX, posY)
 					.color(team.getRandomShade());
 		}
@@ -298,8 +287,6 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 
 	@Override
 	protected void update(float seconds) {
-		PARTICLES.tick(seconds);
-
 		if (!isReady()) {
 			return;
 		}
@@ -338,6 +325,19 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		clientPlayerTimer.start();
 		clientPlayer.update(seconds);
 		clientPlayerTimer.stop();
+		
+		// Prevent units from leaving the play area
+		int size = serverPlayer.units.size();
+		for (int i = 0; i < size; i++)
+		{
+			serverPlayer.units.get(i).setX(MathUtils.clamp(0, GAME_WIDTH, serverPlayer.units.get(i).getX()));
+		}
+		
+		size = clientPlayer.units.size();
+		for (int i = 0; i < size; i++)
+		{
+			clientPlayer.units.get(i).setX(MathUtils.clamp(0, GAME_WIDTH, clientPlayer.units.get(i).getX()));
+		}
 
 		aiTickTimer.stop();
 
@@ -385,7 +385,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 		localPlayer.draw(canvas, serverDraw);
 		remotePlayer.draw(canvas, serverDraw);
 		
-		PARTICLES.draw(canvas, PARTICLE_PAINT);
+		BBTHGame.PARTICLES.draw(canvas, BBTHGame.PARTICLE_PAINT);
 
 		if (BBTHGame.DEBUG) {
 			graphGen.draw(canvas);
@@ -572,7 +572,7 @@ public class BBTHSimulation extends Simulation implements UnitManager {
 			float radius = MathUtils.randInRange(0, speed);
 			float vx = FloatMath.cos(angle) * radius;
 			float vy = FloatMath.sin(angle) * radius;
-			Particle particle = PARTICLES.createParticle().position(x, y).velocity(vx, vy).shrink(0.1f, 0.15f).radius(10).color(team.getRandomShade()).angle(angle);
+			Particle particle = BBTHGame.PARTICLES.createParticle().position(x, y).velocity(vx, vy).shrink(0.1f, 0.15f).radius(10).color(team.getRandomShade()).angle(angle);
 			if ((i & 1) != 0) {
 				particle.line();
 			} else {

@@ -25,7 +25,7 @@ public abstract class UnitAI {
 	// Cached hash set of units to avoid allocations
 	private final HashSet<Unit> cachedUnitSet = new HashSet<Unit>();
 
-	private Point m_result;
+//	private Point m_result;
 	private float m_max_vel_change = 0.5f;
 	private float m_objective_weighting = 0.05f;
 	private float m_max_vel = 35.0f;
@@ -36,7 +36,7 @@ public abstract class UnitAI {
 	protected GridAcceleration m_accel;
 
 	public UnitAI() {
-		m_result = new Point();
+//		m_result = new Point();
 	}
 
 	public abstract void update(Unit entity, AIController c, FlockRulesCalculator flock);

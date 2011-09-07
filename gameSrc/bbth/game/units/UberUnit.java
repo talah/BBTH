@@ -37,7 +37,7 @@ public class UberUnit extends Unit {
 			return;
 		
 		if (firing) {
-			if (!getStateName().equals("attacking") || fireTarget.isDead() || powerLevel < 0) {
+			if (!getStateName().equals("attacking") || fireTarget.isDead() || powerLevel < 0) { //$NON-NLS-1$
 				powerLevel = Math.max(0f, powerLevel);
 				charging = true;
 				firing = false;
@@ -63,7 +63,7 @@ public class UberUnit extends Unit {
 				powerLevel += CHARGE_RATE * seconds;
 			}
 			
-			if (!charging && target != null && !target.isDead() && getStateName().equals("attacking")) {
+			if (!charging && target != null && !target.isDead() && getStateName().equals("attacking")) { //$NON-NLS-1$
 				firing = true;
 				fireTarget = target;
 			}

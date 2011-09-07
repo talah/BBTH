@@ -17,7 +17,7 @@ public final class ColorUtils {
 		float hue = MathUtils.randInRange(minHue, maxHue);
 		float saturation = MathUtils.randInRange(minSaturation, maxSaturation);
 		float value = MathUtils.randInRange(minValue, maxValue);
-		// unavoidable allocation :(
+		// avoidable allocation :)
 		hsv[0] = hue;
 		hsv[1] = saturation;
 		hsv[2] = value;
