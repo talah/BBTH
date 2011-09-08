@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.bluetooth.BluetoothDevice;
 import android.graphics.Paint.Align;
-import android.util.Log;
 import bbth.engine.net.bluetooth.Bluetooth;
 import bbth.engine.net.bluetooth.State;
 import bbth.engine.net.simulation.LockStepProtocol;
@@ -70,7 +69,7 @@ public class ServerSelectScreen extends UIScrollView implements UIButtonDelegate
 		while (lastCount < devices.size()) {
 			BluetoothDevice device = devices.get(lastCount);
 			if (device == null || device.getName() == null) {
-				Log.d("Error", "Wtf, device name is null?"); //$NON-NLS-1$ //$NON-NLS-2$
+				// Log.d("Error", "Wtf, device name is null?"); //$NON-NLS-1$ //$NON-NLS-2$
 				continue;
 			}
 			UIButton button = new UIButton(device.getName());

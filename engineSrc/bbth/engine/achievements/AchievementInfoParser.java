@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import bbth.engine.core.GameActivity;
 import bbth.engine.util.Bag;
 import bbth.game.R;
@@ -39,7 +38,7 @@ public class AchievementInfoParser {
     			}
     		}
     	} catch (Exception e) {
-    		Log.e("BBTH", "Error parsing achievements list", e); //$NON-NLS-1$ //$NON-NLS-2$
+//    		Log.e("BBTH", "Error parsing achievements list", e); //$NON-NLS-1$ //$NON-NLS-2$
     	} finally {
     		parser.close();
     	}
@@ -51,7 +50,7 @@ public class AchievementInfoParser {
 		
 		int id = parser.getAttributeIntValue(null, "id", -1); //$NON-NLS-1$
 		if (id < 0) {
-			Log.d("BBTH", "Missing or invalid achievement id!"); //$NON-NLS-1$ //$NON-NLS-2$
+//			Log.d("BBTH", "Missing or invalid achievement id!"); //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
 		}
 		
@@ -115,7 +114,7 @@ public class AchievementInfoParser {
 		parser.next();
 		
 		if (parser.getEventType() != XmlPullParser.TEXT) {
-			Log.d("BBTH", "Text expected in "+name+" element"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//			Log.d("BBTH", "Text expected in "+name+" element"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return null;
 		}
 		

@@ -10,7 +10,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.res.XmlResourceParser;
-import android.util.Log;
 import bbth.engine.core.GameActivity;
 
 /**
@@ -34,12 +33,12 @@ public class BeatPatternParser {
     			if (eventType == XmlPullParser.START_TAG) {
     				String name = parser.getName();
     				if (name.equals("pattern")) { //$NON-NLS-1$
-    					Log.d("BBTH", "Starting pattern"); //$NON-NLS-1$ //$NON-NLS-2$
+    					// Log.d("BBTH", "Starting pattern"); //$NON-NLS-1$ //$NON-NLS-2$
     					String id = parser.getAttributeValue(null, "id"); //$NON-NLS-1$
     					patterns.put(id, parseSubpattern(parser, millisPerBeat));
     					eventType = parser.getEventType();
     				} else if (name.equals("song")) { //$NON-NLS-1$
-    					Log.d("BBTH", "Starting song"); //$NON-NLS-1$ //$NON-NLS-2$
+    					// Log.d("BBTH", "Starting song"); //$NON-NLS-1$ //$NON-NLS-2$
     					song = parseSong(parser, patterns);
     					eventType = parser.getEventType();
     				} else if (name.equals("root")) { //$NON-NLS-1$
@@ -55,9 +54,9 @@ public class BeatPatternParser {
     		}
     		
     	} catch (XmlPullParserException e) {
-    		Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
+    		// Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
     	} catch (IOException e) {
-    		Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
+    		// Log.e("BBTH", "Error parsing beat track"); //$NON-NLS-1$ //$NON-NLS-2$
     	}
     	
     	Beat []songArray = new Beat[song.size()];

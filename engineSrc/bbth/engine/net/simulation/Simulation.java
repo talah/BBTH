@@ -3,8 +3,6 @@ package bbth.engine.net.simulation;
 import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import android.util.Log;
-
 /**
  * A lock-step simulation is a deterministic simulation that is run in sync on
  * both phones. It has two timesteps:
@@ -149,7 +147,7 @@ public abstract class Simulation {
 				dispatchEvent(incomingEvents.remove());
 			}
 			if (event != null && event.fineTime < currentFineTimestep) {
-				Log.e("net", "causality violated, event time " + event.fineTime + " < " + currentFineTimestep); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				// Log.e("net", "causality violated, event time " + event.fineTime + " < " + currentFineTimestep); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				System.exit(0);
 			}
 
