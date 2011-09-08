@@ -1,5 +1,6 @@
 package bbth.engine.ui;
 
+import bbth.game.BBTHGame;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.RectF;
@@ -11,7 +12,8 @@ public class UIDefaultConstants {
 	public static final int FOREGROUND_COLOR = Color.GRAY;
 	public static final float BORDER_WIDTH = 3.f;
 	public static final float CORNER_RADIUS = 6.f;
-	public static final int ACTIVE_COLOR = Color.rgb(37, 106, 218);
+	public static final int ACTIVE_COLOR = BBTHGame.AWESOME_GREEN;
+//	public static final int ACTIVE_COLOR = Color.rgb(37, 106, 218);
 	
 	// UILabel
 	public static final int UI_LABEL_TEXT_COLOR = Color.WHITE;

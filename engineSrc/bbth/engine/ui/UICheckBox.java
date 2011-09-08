@@ -144,6 +144,10 @@ public class UICheckBox extends UIControl {
 		return _selected;
 	}
 
+	public void setSelected(boolean value) {
+		_selected = value;
+	}
+	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
