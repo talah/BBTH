@@ -145,7 +145,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		playAgain.setButtonDelegate(this);
 		this.addSubview(playAgain);
 
-		quit = new UIButton(R.string.quit, tag);
+		quit = new UIButton(R.string.mainmenu, tag);
 		quit.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		quit.setAnchor(Anchor.CENTER_CENTER);
 		quit.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);

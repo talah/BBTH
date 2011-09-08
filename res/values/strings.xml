@@ -25,7 +25,7 @@
 	
 	<string name="showtutorial">Show Tutorial</string>
 	<string name="aidifficulty">AI Difficulty</string>
-	<string name="titlescreenmusic">Title Screen Music</string>
+	<string name="titlescreenmusic">Menu Screen Music</string>
 	<string name="resetachievements">Reset Achievements</string>
 	
 	<string name="singleplayer">Single Player</string>
@@ -37,7 +37,7 @@
 	<string name="joinagame">Join a Game</string>
 	
 	<string name="playagain">Play Again</string>
-	<string name="quit">Quit</string>
+	<string name="mainmenu">Main Menu</string>
 	
 	<string name="itsatie">It\'s a tie!</string>
 	<string name="toobadyoulose">Too bad, you lose.</string>
