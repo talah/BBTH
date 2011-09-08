@@ -169,7 +169,9 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 			}
 			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		} else if (button == mainMenu) {
-			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
+			while (controller.pop(BBTHGame.FROM_LEFT_TRANSITION)) {
+				// Oh Hai
+			}
 		}
 	}
 
