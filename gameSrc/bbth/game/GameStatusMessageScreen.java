@@ -148,7 +148,7 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		playAgain.setButtonDelegate(this);
 		this.addSubview(playAgain);
 
-		mainMenu = new UIButton(R.string.quit, tag);
+		mainMenu = new UIButton(R.string.mainmenu, tag);
 		mainMenu.setSize(BBTHGame.WIDTH * 0.75f, 45);
 		mainMenu.setAnchor(Anchor.CENTER_CENTER);
 		mainMenu.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
@@ -169,7 +169,9 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 			}
 			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		} else if (button == mainMenu) {
-			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
+			while (controller.pop(BBTHGame.FROM_LEFT_TRANSITION)) {
+				// Oh Hai
+			}
 		}
 	}
 

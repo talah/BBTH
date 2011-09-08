@@ -8,17 +8,18 @@ import bbth.engine.core.GameActivity;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
+import bbth.engine.ui.UICheckBox;
 import bbth.engine.ui.UILabel;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UISlider;
-import bbth.engine.ui.UISwitch;
 import bbth.engine.ui.UIView;
 
 public class SettingsScreen extends UIView {
 	
 	private static final int Y_OFFSET = 65;
 	
-	private UISwitch tutorialSwitch, titleScreenMusicSwitch;
+//	private UISwitch tutorialSwitch, titleScreenMusicSwitch;
+	private UICheckBox tutorialSwitch, titleScreenMusicSwitch;
 	private UISlider aiDifficulty;
 	private UILabel tutorial, ai, title, titleScreenMusic;
 	private UIButton resetAchievementsButton;
@@ -46,11 +47,15 @@ public class SettingsScreen extends UIView {
 		tutorial.sizeToFit();
 		tutorial.setPosition(25, CONTENT_CENTER);
 		
-		tutorialSwitch = new UISwitch();
+//		tutorialSwitch = new UISwitch();
+//		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
+//		tutorialSwitch.setSize(100, 30);
+//		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 - 65);
+//		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
+		tutorialSwitch = new UICheckBox(" ");
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
-		tutorialSwitch.setSize(100, 30);
-		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER);
-		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
+		tutorialSwitch.setPosition(BBTHGame.WIDTH - 13, CONTENT_CENTER);
+		tutorialSwitch.setSelected(BBTHGame.SHOW_TUTORIAL);
 		
 		ai = new UILabel(GameActivity.instance.getString(R.string.aidifficulty));
 		ai.setAnchor(Anchor.CENTER_LEFT);
@@ -70,12 +75,16 @@ public class SettingsScreen extends UIView {
 		titleScreenMusic.sizeToFit();
 		titleScreenMusic.setPosition(25, CONTENT_CENTER + Y_OFFSET);
 		
-		titleScreenMusicSwitch = new UISwitch();
+//		titleScreenMusicSwitch = new UISwitch();
+//		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
+//		titleScreenMusicSwitch.setSize(100, 30);
+//		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
+//		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
+		titleScreenMusicSwitch = new UICheckBox(" ");
 		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
-		titleScreenMusicSwitch.setSize(100, 30);
-		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, CONTENT_CENTER + Y_OFFSET);
-		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
-
+		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 13, CONTENT_CENTER + Y_OFFSET);
+		titleScreenMusicSwitch.setSelected(BBTHGame.TITLE_SCREEN_MUSIC);
+		
 		resetAchievementsButton = new UIButton(R.string.resetachievements);
 		resetAchievementsButton.setAnchor(Anchor.BOTTOM_CENTER);
 		resetAchievementsButton.setSize(120, 30);
@@ -115,10 +124,11 @@ public class SettingsScreen extends UIView {
 	public void onUpdate(float seconds) {
 		super.onUpdate(seconds);
 		
-		if(showTutorial != tutorialSwitch.isOn())
+		if(showTutorial != tutorialSwitch.isSelected())
 		{
-			showTutorial = tutorialSwitch.isOn();
+			showTutorial = tutorialSwitch.isSelected();
 		    _editor.putBoolean("showTutorial", showTutorial); //$NON-NLS-1$
+
 		    BBTHGame.SHOW_TUTORIAL = showTutorial;
 		    _editor.commit();
 		}
@@ -131,10 +141,11 @@ public class SettingsScreen extends UIView {
 		    _editor.commit();
 		}
 		
-		if(playTitleScreenMusic != titleScreenMusicSwitch.isOn())
+		if(playTitleScreenMusic != titleScreenMusicSwitch.isSelected())
 		{
-			playTitleScreenMusic = titleScreenMusicSwitch.isOn();
+			playTitleScreenMusic = titleScreenMusicSwitch.isSelected();
 		    _editor.putBoolean("titleScreenMusic", playTitleScreenMusic); //$NON-NLS-1$
+
 		    BBTHGame.TITLE_SCREEN_MUSIC = playTitleScreenMusic;
 		    if (playTitleScreenMusic) {
 		    	BBTHGame.startTitleMusic();

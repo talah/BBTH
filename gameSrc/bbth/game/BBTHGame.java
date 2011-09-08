@@ -58,13 +58,6 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 		navController.setNavListener(this);
 		
 		startTitleMusic();
-		
-//		controller.push(new BBTHAITest(this));
-//		controller.push(new MusicTestScreen(activity));
-//		controller.push(new NetworkTestScreen());
-//		controller.push(new TransitionTest());
-//		controller.push(new GameSetupScreen());
-//		controller.push(new CombatTest(this));
 	}
 	
 	@Override

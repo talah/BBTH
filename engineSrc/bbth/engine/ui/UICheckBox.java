@@ -55,6 +55,19 @@ public class UICheckBox extends UIControl {
 	}
 	
 	@Override
+	public boolean containsPoint(float x, float y) {
+		float padding = _button_rect.height() * .7f;
+		
+		boolean inBox = super.containsPoint(x, y);
+		boolean nearBox = x > this._button_rect.left - padding
+        				  && x < this._button_rect.right + padding
+        				  && y > this._button_rect.top - padding
+        				  && y < this._button_rect.bottom + padding;
+        
+		return nearBox || inBox;
+	}
+	
+	@Override
 	protected void layoutSubviews(boolean force) {
 		
 	}
@@ -144,6 +157,10 @@ public class UICheckBox extends UIControl {
 		return _selected;
 	}
 
+	public void setSelected(boolean value) {
+		_selected = value;
+	}
+	
 	@Override
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
