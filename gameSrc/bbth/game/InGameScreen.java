@@ -272,7 +272,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			canvas.drawText("- UI: " + drawUITimer.getMilliseconds() + " ms", x, y += jump, paint); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		if (!sim.isSynced()) {
+		if (BBTHGame.DEBUG && !sim.isSynced()) {
 			paint.setColor(Color.RED);
 			paint.setTextSize(40);
 			paint.setTextAlign(Align.CENTER);
