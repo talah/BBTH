@@ -25,6 +25,12 @@ public class MusicPlayer {
 	private int _state;
 	private long _startTime;
 
+	// creates a music player with no song, just for avoiding null checks
+	public MusicPlayer() {
+		_mediaPlayer = new MediaPlayer();
+		_state = IDLE;
+	}
+	
 	public MusicPlayer(Context context, int resourceId) {
 		_mediaPlayer = MediaPlayer.create(context, resourceId);
 		_state = IDLE;

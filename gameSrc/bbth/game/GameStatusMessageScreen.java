@@ -5,8 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.util.FloatMath;
-import bbth.engine.achievements.Achievements;
 import bbth.engine.core.GameActivity;
+import bbth.engine.net.bluetooth.Bluetooth;
+import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.particles.ParticleSystem;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
@@ -19,8 +20,8 @@ import bbth.engine.util.MathUtils;
 
 public class GameStatusMessageScreen extends UIView implements UIButtonDelegate {
 	public static class DisconnectScreen extends GameStatusMessageScreen {
-		public DisconnectScreen(UINavigationController controller) {
-			super(GameActivity.instance.getString(R.string.youhavebeendisconnected), controller);
+		public DisconnectScreen(UINavigationController controller, boolean isSinglePlayer) {
+			super(GameActivity.instance.getString(R.string.youhavebeendisconnected), controller, isSinglePlayer);
 		}
 	}
 
@@ -35,8 +36,8 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		}
 		private float secondsUntilNext;
 		
-		public WinScreen(UINavigationController controller) {
-			super(GameActivity.instance.getString(R.string.congratulationsyouwin), controller);
+		public WinScreen(UINavigationController controller, boolean isSinglePlayer) {
+			super(GameActivity.instance.getString(R.string.congratulationsyouwin), controller, isSinglePlayer);
 			PARTICLES.reset();
 		}
 
@@ -84,8 +85,8 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		}
 		private float secondsUntilNext;
 		
-		public LoseScreen(UINavigationController controller) {
-			super(GameActivity.instance.getString(R.string.toobadyoulose), controller);
+		public LoseScreen(UINavigationController controller, boolean isSinglePlayer) {
+			super(GameActivity.instance.getString(R.string.toobadyoulose), controller, isSinglePlayer);
 			PARTICLES.reset();
 		}
 		
@@ -119,17 +120,19 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	}
 
 	public static class TieScreen extends GameStatusMessageScreen {
-		public TieScreen(UINavigationController controller) {
-			super(GameActivity.instance.getString(R.string.itsatie), controller);
+		public TieScreen(UINavigationController controller, boolean isSinglePlayer) {
+			super(GameActivity.instance.getString(R.string.itsatie), controller, isSinglePlayer);
 		}
 	}
 
 	private UILabel message;
-	private UIButton playAgain, quit;
+	private UIButton playAgain, mainMenu;
 	UINavigationController controller;
+	boolean isSinglePlayer;
 
-	public GameStatusMessageScreen(String text, UINavigationController controller) {
+	public GameStatusMessageScreen(String text, UINavigationController controller, boolean isSinglePlayer) {
 		this.controller = controller;
+		this.isSinglePlayer = isSinglePlayer;
 		
 		message = new UILabel(text, tag);
 		message.setAnchor(Anchor.TOP_CENTER);
@@ -145,12 +148,12 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 		playAgain.setButtonDelegate(this);
 		this.addSubview(playAgain);
 
-		quit = new UIButton(R.string.mainmenu, tag);
-		quit.setSize(BBTHGame.WIDTH * 0.75f, 45);
-		quit.setAnchor(Anchor.CENTER_CENTER);
-		quit.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
-		quit.setButtonDelegate(this);
-		this.addSubview(quit);
+		mainMenu = new UIButton(R.string.mainmenu, tag);
+		mainMenu.setSize(BBTHGame.WIDTH * 0.75f, 45);
+		mainMenu.setAnchor(Anchor.CENTER_CENTER);
+		mainMenu.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.HEIGHT / 2);
+		mainMenu.setButtonDelegate(this);
+		this.addSubview(mainMenu);
 
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 	}
@@ -158,10 +161,15 @@ public class GameStatusMessageScreen extends UIView implements UIButtonDelegate 
 	@Override
 	public void onClick(UIButton button) {
 		if (button == playAgain) {
+			if (isSinglePlayer) {
+				LockStepProtocol protocol = new LockStepProtocol();
+				controller.pushUnder(new SongSelectionScreen(controller, Team.SERVER, new Bluetooth(GameActivity.instance, protocol), protocol, true));
+			} else {
+				controller.pushUnder(new GameSetupScreen(controller));
+			}
 			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
-		} else if (button == quit) {
-			Achievements.INSTANCE.commit();
-			System.exit(0);
+		} else if (button == mainMenu) {
+			controller.pop(BBTHGame.FROM_LEFT_TRANSITION);
 		}
 	}
 

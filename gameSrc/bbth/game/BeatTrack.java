@@ -49,7 +49,7 @@ public class BeatTrack {
 	private long last_uber_combo_time;
 	
 	public BeatTrack(OnCompletionListener listener) {
-		loadSong(Song.RETRO);
+		musicPlayer = new MusicPlayer();
 		beatsInRange = new ArrayList<Beat>();
 		onCompletionListener = listener;
 		
@@ -114,7 +114,9 @@ public class BeatTrack {
 		canvas.drawLine(BEAT_LINE_X, 0, BEAT_LINE_X, BEAT_LINE_Y - BEAT_CIRCLE_RADIUS, paint);
 		canvas.drawLine(BEAT_LINE_X, BEAT_LINE_Y + BEAT_CIRCLE_RADIUS, BEAT_LINE_X, BBTHGame.HEIGHT, paint);
 
-		beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		if (beatTracker != null) {
+			beatTracker.drawBeats(beatsInRange, BEAT_LINE_X, BEAT_LINE_Y, canvas, paint);
+		}
 
 		paint.setStyle(Style.STROKE);
 		paint.setColor(Color.WHITE);
@@ -159,15 +161,18 @@ public class BeatTrack {
 
 	public void refreshBeats() {
 		// Get beats in range
-		beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
+		if (beatTracker != null) {
+			beatsInRange = beatTracker.getBeatsInRange(-700, 6000);
+		}
 	}
 
 	// returns the closest beat in the touch zone, Beat.REST means no beat
 	public Beat.BeatType getTouchZoneBeat() {
-		return beatTracker.getTouchZoneBeat();
+		return beatTracker == null ? Beat.BeatType.REST : beatTracker.getTouchZoneBeat();
 	}
 	
 	public Beat.BeatType onTouchDown(float x, float y) {
+		if (beatTracker == null) return Beat.BeatType.REST;
 		Beat.BeatType beatType = beatTracker.onTouchDown();
 		boolean isOnBeat = (beatType != Beat.BeatType.REST);
 		if (isOnBeat) {
@@ -193,7 +198,7 @@ public class BeatTrack {
 	}
 	
 	public Beat[] getAllBeats() {
-		return beatTracker.getAllBeats();
+		return beatTracker == null ? new Beat[0] : beatTracker.getAllBeats();
 	}
 	
 	public void onTouchUp(float x, float y) {
