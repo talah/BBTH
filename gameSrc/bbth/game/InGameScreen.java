@@ -299,7 +299,7 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 			// Stop the music if we disconnect
 			if (bluetooth.getState() != State.CONNECTED) {
 				beatTrack.stopMusic();
-				controller.pushUnder(new GameStatusMessageScreen.DisconnectScreen(controller));
+				controller.pushUnder(new GameStatusMessageScreen.DisconnectScreen(controller, singlePlayer));
 				controller.pop();
 			}
 		}
@@ -363,13 +363,13 @@ public class InGameScreen extends UIView implements OnCompletionListener {
 		// Move on to the next screen
 		GameState gameState = sim.getGameState();
 		if (gameState == GameState.TIE) {
-			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.TieScreen(controller, singlePlayer));
 			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		} else if (sim.isServer == (gameState == GameState.SERVER_WON)) {
-			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.WinScreen(controller, singlePlayer));
 			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		} else {
-			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller));
+			controller.pushUnder(new GameStatusMessageScreen.LoseScreen(controller, singlePlayer));
 			controller.pop(BBTHGame.FROM_RIGHT_TRANSITION);
 		}
 	}
