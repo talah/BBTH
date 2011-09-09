@@ -2,7 +2,7 @@
 <resources>
 
 	<string name="app_name">bbth</string>
-	<string name="title">Beat Back the Horde</string>
+	<string name="title">beat back the horde</string>
 	
 	<string name="on">ON</string>
 	<string name="off">OFF</string>
@@ -45,7 +45,10 @@
 	<string name="congratulationsyouwin">Congratulations! You win!</string>
 	<string name="youhavebeendisconnected">You have been disconnected.</string>
 	
-	<string name="songselection">Song Selection</string>
+	<string name="songselectiontitle">song selection</string>
+	<string name="multiplayertitle">multiplayer</string>
+	<string name="achievementstitle">achievements</string>
+	<string name="settingstitle">settings</string>
 	
 	<string name="waitingforotherplayer">Waiting for other player...</string>
 	

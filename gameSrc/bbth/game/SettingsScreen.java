@@ -33,7 +33,7 @@ public class SettingsScreen extends UIView {
 		_editor = _settings.edit();
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
-		title = new UILabel(GameActivity.instance.getString(R.string.settings));
+		title = new UILabel(GameActivity.instance.getString(R.string.settingstitle));
 		title.setAnchor(Anchor.TOP_CENTER);
 		title.setTextSize(30);
 		title.sizeToFit();
