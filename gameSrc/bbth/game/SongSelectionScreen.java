@@ -31,7 +31,7 @@ public class SongSelectionScreen extends UIScrollView implements
 
 		this.setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 
-		UILabel title = new UILabel(R.string.songselectiontitle, null);
+		UILabel title = new UILabel(R.string.songselection, null);
 		title.setAnchor(Anchor.TOP_CENTER);
 		title.setTextSize(30.f);
 		title.setPosition(BBTHGame.WIDTH / 2.f, BBTHGame.TITLE_TOP);
