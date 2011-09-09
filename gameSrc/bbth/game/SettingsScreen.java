@@ -52,7 +52,7 @@ public class SettingsScreen extends UIView {
 //		tutorialSwitch.setSize(100, 30);
 //		tutorialSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2 - 65);
 //		tutorialSwitch.setOn(BBTHGame.SHOW_TUTORIAL);
-		tutorialSwitch = new UICheckBox(" ");
+		tutorialSwitch = new UICheckBox(" "); //$NON-NLS-1$
 		tutorialSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		tutorialSwitch.setPosition(BBTHGame.WIDTH - 13, CONTENT_CENTER);
 		tutorialSwitch.setSelected(BBTHGame.SHOW_TUTORIAL);
@@ -80,7 +80,7 @@ public class SettingsScreen extends UIView {
 //		titleScreenMusicSwitch.setSize(100, 30);
 //		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 25, BBTHGame.HEIGHT / 2);
 //		titleScreenMusicSwitch.setOn(BBTHGame.TITLE_SCREEN_MUSIC);
-		titleScreenMusicSwitch = new UICheckBox(" ");
+		titleScreenMusicSwitch = new UICheckBox(" "); //$NON-NLS-1$
 		titleScreenMusicSwitch.setAnchor(Anchor.CENTER_RIGHT);
 		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 13, CONTENT_CENTER + Y_OFFSET);
 		titleScreenMusicSwitch.setSelected(BBTHGame.TITLE_SCREEN_MUSIC);
