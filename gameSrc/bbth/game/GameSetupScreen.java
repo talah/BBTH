@@ -60,7 +60,7 @@ public class GameSetupScreen extends UIView implements UIButtonDelegate {
 		disconnectButton.isDisabled = true;
 		addSubview(disconnectButton);
 
-		titleLabel = new UILabel(R.string.multiplayer, null);
+		titleLabel = new UILabel(R.string.multiplayertitle, null);
 		titleLabel.setTextSize(30.f);
 		titleLabel.setAnchor(Anchor.TOP_CENTER);
 		titleLabel.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
