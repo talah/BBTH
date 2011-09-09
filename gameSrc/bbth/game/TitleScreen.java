@@ -8,14 +8,14 @@ import bbth.engine.net.simulation.LockStepProtocol;
 import bbth.engine.ui.Anchor;
 import bbth.engine.ui.UIButton;
 import bbth.engine.ui.UIButtonDelegate;
-import bbth.engine.ui.UILabel;
+import bbth.engine.ui.UIImageView;
 import bbth.engine.ui.UINavigationController;
 import bbth.engine.ui.UIView;
 import bbth.game.achievements.AchievementsScreen;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
-//	private UIImageView titleBar;
-	private UILabel titleBar;
+	private UIImageView titleBar;
+//	private UILabel titleBar;
 	private float animDelay = 1.0f;
 	private UIButton singleplayerButton, multiplayerButton, achievementsButton, settingsButton;
 	private InfiniteCombatView combatView;
@@ -28,17 +28,17 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		
 		combatView = new InfiniteCombatView();
 		
-//		titleBar = new UIImageView(R.drawable.logo);
-//		titleBar.setAnchor(Anchor.TOP_CENTER);
-//		titleBar.setPosition(BBTHGame.WIDTH / 2, -150);
-//		titleBar.setSize(300, 140);
-//		titleBar.animatePosition(BBTHGame.WIDTH / 2, 20, 3);
-//		this.addSubview(titleBar);
-		titleBar = new UILabel(GameActivity.instance.getString(R.string.title));
+		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
 		titleBar.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
-		titleBar.setTextSize(34.f);
+		titleBar.setSize(283, 30);
+//		titleBar.animatePosition(BBTHGame.WIDTH / 2, 20, 3);
 		this.addSubview(titleBar);
+//		titleBar = new UILabel(GameActivity.instance.getString(R.string.title));
+//		titleBar.setAnchor(Anchor.TOP_CENTER);
+//		titleBar.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
+//		titleBar.setTextSize(34.f);
+//		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton(R.string.singleplayer, this);
 		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
