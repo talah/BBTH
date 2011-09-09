@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">Beat Back The Horde</string>
+	<string name="app_name">bbth</string>
+	<string name="title">Beat Back the Horde</string>
 	
 	<string name="on">ON</string>
 	<string name="off">OFF</string>
