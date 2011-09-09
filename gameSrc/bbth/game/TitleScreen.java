@@ -15,7 +15,6 @@ import bbth.game.achievements.AchievementsScreen;
 
 public class TitleScreen extends UIView implements UIButtonDelegate {
 	private UIImageView titleBar;
-//	private UILabel titleBar;
 	private float animDelay = 1.0f;
 	private UIButton singleplayerButton, multiplayerButton, achievementsButton, settingsButton;
 	private InfiniteCombatView combatView;
@@ -31,14 +30,9 @@ public class TitleScreen extends UIView implements UIButtonDelegate {
 		titleBar = new UIImageView(R.drawable.logo);
 		titleBar.setAnchor(Anchor.TOP_CENTER);
 		titleBar.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
-		titleBar.setSize(283, 30);
-//		titleBar.animatePosition(BBTHGame.WIDTH / 2, 20, 3);
+		float percent = 0.7f;
+		titleBar.setSize(310 * percent, 124 * percent);
 		this.addSubview(titleBar);
-//		titleBar = new UILabel(GameActivity.instance.getString(R.string.title));
-//		titleBar.setAnchor(Anchor.TOP_CENTER);
-//		titleBar.setPosition(BBTHGame.WIDTH / 2, BBTHGame.TITLE_TOP);
-//		titleBar.setTextSize(34.f);
-//		this.addSubview(titleBar);
 		
 		singleplayerButton = new UIButton(R.string.singleplayer, this);
 		singleplayerButton.setSize(BBTHGame.WIDTH * 0.75f, 45);
