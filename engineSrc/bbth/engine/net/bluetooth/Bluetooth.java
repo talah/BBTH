@@ -206,10 +206,26 @@ public final class Bluetooth implements Runnable {
 			return State.CONNECT_TO_DEVICE;
 		}
 
+		boolean needToRegenerate = true;
+		private void regenerateStateString() {
+			BluetoothDevice device = currentDevice;
+			stateString = GameActivity.instance.getString(getState().getMessageResourceId(), device == null ? "" : device.getName()); //$NON-NLS-1$
+			if (device != null) {
+				needToRegenerate = false;
+			}
+		}
+		
 		@Override
 		public String getStateString() {
-			BluetoothDevice device = currentDevice;
-			return GameActivity.instance.getString(getState().getMessageResourceId(), device == null ? "" : device.getName()); //$NON-NLS-1$
+			regenerateStateString();
+			return stateString;
+		}
+		
+		@Override
+		public String getString() {
+			if (needToRegenerate)
+				regenerateStateString();
+			return stateString;
 		}
 
 		public BluetoothDevice currentDevice;
