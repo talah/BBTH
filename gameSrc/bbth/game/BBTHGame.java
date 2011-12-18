@@ -26,6 +26,7 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 	public static boolean SHOW_TUTORIAL = true;
 	public static boolean TITLE_SCREEN_MUSIC = true;
 	public static float AI_DIFFICULTY = 0.75f;
+	public static int SOUND_CALIBRATION = 0;
 	public static final int AWESOME_GREEN = Color.rgb(159, 228, 74);
 	private UINavigationController navController;
 	private static MusicPlayer musicPlayer;
@@ -49,7 +50,7 @@ public class BBTHGame extends Game implements UINavigationEventListener {
 		SHOW_TUTORIAL = sharedPreferences.getBoolean("showTutorial", true); //$NON-NLS-1$
 		TITLE_SCREEN_MUSIC = sharedPreferences.getBoolean("titleScreenMusic", true); //$NON-NLS-1$
 		AI_DIFFICULTY = sharedPreferences.getFloat("aiDifficulty", 0.75f); //$NON-NLS-1$
-		
+		SOUND_CALIBRATION = sharedPreferences.getInt("soundCalibration", 0); //$NON-NLS-1$
 		
 		Achievements.INSTANCE.initialize(activity);
 		BBTHAchievementManager.INSTANCE.initialize();

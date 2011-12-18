@@ -19,6 +19,10 @@
 	<string name="defaultachievementdesc">&lt;no description&gt;</string>
 	<string name="achievementunlocked">ACHIEVEMENT UNLOCKED</string>
 	
+	<string name="calibratesound">Calibrate Audio</string>
+	<string name="calibrationexplanation">Drag the slider to sync the beat track to the right with the music.</string>
+	<string name="calibrationlabel">Sound Delay</string>
+	
 	<string name="resetallachievementdata">Reset all achievement data?</string>
 	<string name="reset">Reset</string>
 	<string name="cancel">Cancel</string>

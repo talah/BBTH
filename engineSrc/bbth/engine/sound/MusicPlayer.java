@@ -71,9 +71,7 @@ public class MusicPlayer {
 		if (_state == IDLE || _state == PAUSED) {
 			_mediaPlayer.start();
 			_state = PLAYING;
-			while (_mediaPlayer.getCurrentPosition() < 1) {
-				// wait here, derp
-			}
+
 			_startTime = System.currentTimeMillis();
 		}
 	}

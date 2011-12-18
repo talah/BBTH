@@ -22,15 +22,17 @@ public class SettingsScreen extends UIView {
 	private UICheckBox tutorialSwitch, titleScreenMusicSwitch;
 	private UISlider aiDifficulty;
 	private UILabel tutorial, ai, title, titleScreenMusic;
-	private UIButton resetAchievementsButton;
+	private UIButton resetAchievementsButton, calibrateSoundButton;
 	private boolean showTutorial, playTitleScreenMusic;
 	private float ai_level;
 	private SharedPreferences _settings;
 	private SharedPreferences.Editor _editor;
+	private UINavigationController _controller;
 	
 	public SettingsScreen(UINavigationController controller) {
 		_settings = BBTHActivity.instance.getSharedPreferences("game_settings", 0); //$NON-NLS-1$
 		_editor = _settings.edit();
+		_controller = controller;
 		setSize(BBTHGame.WIDTH, BBTHGame.HEIGHT);
 		
 		title = new UILabel(GameActivity.instance.getString(R.string.settings));
@@ -85,6 +87,16 @@ public class SettingsScreen extends UIView {
 		titleScreenMusicSwitch.setPosition(BBTHGame.WIDTH - 13, CONTENT_CENTER + Y_OFFSET);
 		titleScreenMusicSwitch.setSelected(BBTHGame.TITLE_SCREEN_MUSIC);
 		
+		calibrateSoundButton = new UIButton(R.string.calibratesound);
+		calibrateSoundButton.setAnchor(Anchor.CENTER_CENTER);
+		calibrateSoundButton.setSize(120, 30);
+		calibrateSoundButton.setPosition(BBTHGame.WIDTH / 2, CONTENT_CENTER + 3 * Y_OFFSET);
+		calibrateSoundButton.setButtonDelegate(new UIButtonDelegate() {
+			public void onClick(UIButton button) {
+				_controller.push(new CalibrationScreen(_controller), BBTHGame.FROM_RIGHT_TRANSITION);
+			}
+		});
+		
 		resetAchievementsButton = new UIButton(R.string.resetachievements);
 		resetAchievementsButton.setAnchor(Anchor.BOTTOM_CENTER);
 		resetAchievementsButton.setSize(120, 30);
@@ -117,6 +129,7 @@ public class SettingsScreen extends UIView {
 		addSubview(tutorialSwitch);
 		addSubview(titleScreenMusic);
 		addSubview(titleScreenMusicSwitch);
+		addSubview(calibrateSoundButton);
 		addSubview(resetAchievementsButton);
 	}
 	

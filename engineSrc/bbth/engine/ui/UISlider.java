@@ -67,7 +67,7 @@ public class UISlider extends UIControl {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.range = maxValue - minValue;
-		// TODO Call recomputeDrawingLocations()
+		recomputeDrawingLocations();
 	}
 
 	public void setValue(float value) {

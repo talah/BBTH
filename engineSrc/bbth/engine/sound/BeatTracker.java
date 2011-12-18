@@ -3,6 +3,8 @@ package bbth.engine.sound;
 import java.util.ArrayList;
 import java.util.List;
 
+import bbth.game.BBTHGame;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -30,12 +32,16 @@ public class BeatTracker {
 		_allBeats = BeatPatternParser.parse(beatPatternXml);
 		_nearbyBeats = new ArrayList<Beat>();
 	}
+	
+	public int getCurrentPosition() {
+		return _musicPlayer.getCurrentPosition() + BBTHGame.SOUND_CALIBRATION;
+	}
 
 	// returns whether a beat was successfully tapped
 	public Beat.BeatType onTouchDown() {
 		updateCurrentBeatIndex();
 		Beat beat = _allBeats[_currentBeatIndex];
-		if (beat.onTouchDown(_musicPlayer.getCurrentPosition())) {
+		if (beat.onTouchDown(getCurrentPosition())) {
 			return beat.type;
 		}
 		return Beat.BeatType.REST;
@@ -45,7 +51,7 @@ public class BeatTracker {
 	public Beat.BeatType getTouchZoneBeat() {
 		updateCurrentBeatIndex();
 		Beat beat = _allBeats[_currentBeatIndex];
-		if (beat.inTouchZone(_musicPlayer.getCurrentPosition())) {
+		if (beat.inTouchZone(getCurrentPosition())) {
 			return beat.type;
 		}
 		return Beat.BeatType.REST;
@@ -58,7 +64,7 @@ public class BeatTracker {
 		
 	// return index into BeatPattern for closest beat
 	public final void updateCurrentBeatIndex() {		
-		int currTime = _musicPlayer.getCurrentPosition();
+		int currTime = getCurrentPosition();
 
 		if (_currentBeatIndex >= _allBeats.length - 1) {
 			return;
@@ -82,7 +88,7 @@ public class BeatTracker {
 		
 		updateCurrentBeatIndex();
 		int i = _currentBeatIndex;
-		int currTime = _musicPlayer.getCurrentPosition();
+		int currTime = getCurrentPosition();
 		int lowerBound = currTime + lowerOffset;
 		int upperBound = currTime + upperOffset;
 		
@@ -106,7 +112,7 @@ public class BeatTracker {
 	
 	// draw a list of beats, likely obtained from getBeatsInRange
 	public void drawBeats(List<Beat> beats, float xMid, float yMid, Canvas canvas, Paint paint) {
-		int time = _musicPlayer.getCurrentPosition();
+		int time = getCurrentPosition();
 		for (int i = 0; i < beats.size(); ++i) {
 			_nearbyBeats.get(i).draw(time, xMid, yMid, canvas, paint);
 		}
